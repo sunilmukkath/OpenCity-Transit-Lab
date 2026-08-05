@@ -17,3 +17,5 @@ __pycache__/
 # Large raw downloads (regenerate via ETL)
 data/raw/
 files (2).zip
+.vercel
+.env*

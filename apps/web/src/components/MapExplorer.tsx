@@ -1,108 +1,94 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Map, {
-  Layer,
-  NavigationControl,
-  Popup,
-  Source,
-} from "react-map-gl/maplibre";
-import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
-import type { FeatureCollection } from "geojson";
+import type { FeatureCollection, Geometry } from "geojson";
 import {
   fetchGeoJSONClient,
   fetchManifestClient,
+  fetchReportsClient,
   layerIsReady,
   type Manifest,
 } from "@/lib/data-client";
 import { StatusBadge } from "@/components/StatusBadge";
 import { ProvenanceStrip } from "@/components/ProvenanceStrip";
+import { TransitMap, joinWardGapIndex } from "@/components/TransitMap";
+import {
+  LAYER_PRESETS,
+  MAP_LAYER_META,
+  defaultVisibility,
+  type ChoroplethMode,
+  type LayerData,
+  type MapLayerKey,
+} from "@/lib/map-layers";
 
-type LayerKey =
-  | "wards"
-  | "zones"
-  | "stops"
-  | "shelters"
-  | "mrts_stations"
-  | "mrts_lines"
-  | "hubs"
-  | "catchment_400m"
-  | "catchment_800m";
-
-const LAYER_META: {
-  key: LayerKey;
-  label: string;
-  defaultOn: boolean;
-}[] = [
-  { key: "wards", label: "GCC wards", defaultOn: true },
-  { key: "zones", label: "GCC zones", defaultOn: false },
-  { key: "catchment_800m", label: "800m stop catchment", defaultOn: false },
-  { key: "catchment_400m", label: "400m stop catchment", defaultOn: true },
-  { key: "stops", label: "Transit stops (GTFS)", defaultOn: true },
-  { key: "shelters", label: "Bus shelters", defaultOn: false },
-  { key: "mrts_lines", label: "MRTS lines", defaultOn: true },
-  { key: "mrts_stations", label: "MRTS stations", defaultOn: true },
-  { key: "hubs", label: "Hubs", defaultOn: true },
+const MAP_HEIGHT = 640;
+const CORE_LAYERS: MapLayerKey[] = [
+  "wards",
+  "zones",
+  "mrts_lines",
+  "mrts_stations",
+  "hubs",
+  "stops",
+  "shelters",
 ];
+const HEAVY_LAYERS: MapLayerKey[] = ["catchment_400m", "catchment_800m"];
 
-const CHENNAI = { longitude: 80.2707, latitude: 13.0827, zoom: 10.4 };
-const MAP_HEIGHT = 620;
-
-export function MapExplorer({
-  audienceNote,
-}: {
-  audienceNote?: string;
-}) {
+export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
   const [manifest, setManifest] = useState<Manifest | null>(null);
-  const [data, setData] = useState<Partial<Record<LayerKey, FeatureCollection>>>(
-    {}
-  );
-  const [visibility, setVisibility] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(LAYER_META.map((l) => [l.key, l.defaultOn]))
-  );
-  const [popup, setPopup] = useState<{
-    lng: number;
-    lat: number;
-    title: string;
-    body: string;
-  } | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [mapError, setMapError] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [data, setData] = useState<LayerData>({});
+  const [visibility, setVisibility] = useState(defaultVisibility);
+  const [choropleth, setChoropleth] = useState<ChoroplethMode>("stops");
+  const [loadingCore, setLoadingCore] = useState(true);
+  const [loadingHeavy, setLoadingHeavy] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [activePreset, setActivePreset] = useState<string>("coverage");
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      setLoading(true);
-      setMapError(null);
+      setLoadingCore(true);
+      setLoadError(null);
       try {
-        const m = await fetchManifestClient();
+        const [m, reports] = await Promise.all([
+          fetchManifestClient(),
+          fetchReportsClient(),
+        ]);
         if (cancelled) return;
         setManifest(m);
-        const next: Partial<Record<LayerKey, FeatureCollection>> = {};
+
+        const gapByLabel = new Map<string, { gap_index: number; gap_band: string }>();
+        for (const w of reports?.wards ?? []) {
+          gapByLabel.set(w.label, {
+            gap_index: w.gap_index ?? w.priority_score,
+            gap_band: w.gap_band ?? "moderate",
+          });
+        }
+
+        const next: LayerData = {};
         if (m) {
           await Promise.all(
-            LAYER_META.map(async ({ key }) => {
+            CORE_LAYERS.map(async (key) => {
               const layer = m.layers[key];
               if (layerIsReady(layer) && layer.file) {
                 const fc = await fetchGeoJSONClient(layer.file);
-                if (fc) next[key] = fc;
+                if (!fc) return;
+                if (key === "wards" && gapByLabel.size) {
+                  next[key] = joinWardGapIndex(fc, gapByLabel);
+                } else {
+                  next[key] = fc;
+                }
               }
             })
           );
         }
         if (!cancelled) {
           setData(next);
-          setLoading(false);
+          setLoadingCore(false);
         }
       } catch (err) {
         if (!cancelled) {
-          setMapError(err instanceof Error ? err.message : "Failed to load map data");
-          setLoading(false);
+          setLoadError(err instanceof Error ? err.message : "Failed to load map data");
+          setLoadingCore(false);
         }
       }
     })();
@@ -111,61 +97,62 @@ export function MapExplorer({
     };
   }, []);
 
-  const toggle = useCallback((key: string) => {
+  // Fetch heavy catchments only when toggled on
+  useEffect(() => {
+    let cancelled = false;
+    const want400 = visibility.catchment_400m;
+    const want800 = visibility.catchment_800m;
+    if ((!want400 && !want800) || !manifest) return;
+
+    (async () => {
+      const needed = HEAVY_LAYERS.filter((k) => {
+        if (k === "catchment_400m" && !want400) return false;
+        if (k === "catchment_800m" && !want800) return false;
+        return true;
+      });
+
+      setLoadingHeavy(true);
+      const next: LayerData = {};
+      await Promise.all(
+        needed.map(async (key) => {
+          const layer = manifest.layers[key];
+          if (layerIsReady(layer) && layer.file) {
+            const fc = await fetchGeoJSONClient(layer.file);
+            if (fc) next[key] = fc;
+          }
+        })
+      );
+      if (!cancelled && Object.keys(next).length) {
+        setData((prev) => {
+          const merged = { ...prev };
+          for (const [k, v] of Object.entries(next)) {
+            if (!merged[k as MapLayerKey]) merged[k as MapLayerKey] = v;
+          }
+          return merged;
+        });
+      }
+      if (!cancelled) setLoadingHeavy(false);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [visibility.catchment_400m, visibility.catchment_800m, manifest]);
+
+  const toggle = useCallback((key: MapLayerKey) => {
     setVisibility((v) => ({ ...v, [key]: !v[key] }));
+    setActivePreset("custom");
   }, []);
 
-  const onClick = useCallback((e: MapLayerMouseEvent) => {
-    const f = e.features?.[0];
-    if (!f) {
-      setPopup(null);
-      return;
-    }
-    const props = f.properties ?? {};
-    const title = String(
-      props.ward_label ||
-        props.zone_label ||
-        props.stop_name ||
-        props.hub_name ||
-        props.station_name ||
-        props.shelter_name ||
-        props.line_name ||
-        f.layer?.id ||
-        "Feature"
-    );
-    const body = Object.entries(props)
-      .filter(([k]) => !["Description", "description"].includes(k))
-      .slice(0, 8)
-      .map(([k, v]) => `${k}: ${v}`)
-      .join("\n");
-    setPopup({
-      lng: e.lngLat.lng,
-      lat: e.lngLat.lat,
-      title,
-      body,
-    });
+  const applyPreset = useCallback((id: string) => {
+    const preset = LAYER_PRESETS[id];
+    if (!preset) return;
+    setActivePreset(id);
+    setChoropleth(preset.choropleth);
+    setVisibility((prev) => ({ ...prev, ...preset.layers }));
   }, []);
 
-  const interactiveLayerIds = useMemo(() => {
-    const ids: string[] = [];
-    if (visibility.wards && data.wards) ids.push("wards-fill");
-    if (visibility.stops && data.stops) ids.push("stops-circle");
-    if (visibility.shelters && data.shelters) ids.push("shelters-circle");
-    if (visibility.mrts_stations && data.mrts_stations)
-      ids.push("mrts-stations-circle");
-    if (visibility.hubs && data.hubs) ids.push("hubs-circle");
-    return ids;
-  }, [visibility, data]);
-
-  const stopCountExtent = useMemo(() => {
-    const wards = data.wards;
-    if (!wards) return null;
-    const counts = wards.features
-      .map((f) => Number(f.properties?.stop_count))
-      .filter((n) => Number.isFinite(n));
-    if (!counts.length) return null;
-    return { min: Math.min(...counts), max: Math.max(...counts) };
-  }, [data.wards]);
+  const loadedCount = useMemo(() => Object.keys(data).length, [data]);
 
   return (
     <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
@@ -175,19 +162,77 @@ export function MapExplorer({
             Map layers
           </h2>
           <p className="mt-1 text-sm text-[var(--ink-muted)]">
-            Only layers successfully ingested appear as toggles. Empty = unavailable.
+            Basemap draws first; heavy catchments load only when you turn them on.
           </p>
           {audienceNote ? (
             <p className="mt-2 rounded-md bg-[var(--accent-soft)] px-2 py-1.5 text-sm text-[var(--accent)]">
               {audienceNote}
             </p>
           ) : null}
+          {loadError ? (
+            <p className="mt-2 text-sm text-[var(--danger)]">{loadError}</p>
+          ) : null}
+        </div>
+
+        <div>
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
+            Presets
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {Object.entries(LAYER_PRESETS).map(([id, preset]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => applyPreset(id)}
+                className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition ${
+                  activePreset === id
+                    ? "border-[var(--yellow)] bg-[rgba(255,229,102,0.12)] text-[var(--yellow)]"
+                    : "border-[var(--border)] text-[var(--ink-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                }`}
+                title={preset.blurb}
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
+            Ward colour
+          </p>
+          <div className="flex gap-1.5">
+            {(
+              [
+                ["stops", "Stop count"],
+                ["gap", "Gap Index"],
+              ] as const
+            ).map(([mode, label]) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => {
+                  setChoropleth(mode);
+                  setActivePreset("custom");
+                }}
+                className={`flex-1 rounded-md border px-2 py-1.5 text-xs font-semibold ${
+                  choropleth === mode
+                    ? "border-[var(--yellow)] text-[var(--yellow)]"
+                    : "border-[var(--border)] text-[var(--ink-muted)]"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
 
         <ul className="space-y-2">
-          {LAYER_META.map(({ key, label }) => {
+          {MAP_LAYER_META.map(({ key, label, heavy }) => {
             const layer = manifest?.layers[key];
             const ready = Boolean(data[key]);
+            const pendingHeavy = Boolean(heavy && visibility[key] && !ready && loadingHeavy);
+            const canEnable = layerIsReady(layer) || ready;
             return (
               <li
                 key={key}
@@ -197,18 +242,24 @@ export function MapExplorer({
                   <input
                     type="checkbox"
                     className="mt-1"
-                    disabled={!ready}
-                    checked={Boolean(visibility[key] && ready)}
+                    disabled={!canEnable && !pendingHeavy}
+                    checked={Boolean(visibility[key] && (ready || pendingHeavy))}
                     onChange={() => toggle(key)}
                   />
                   <span>
                     <span className="font-medium">{label}</span>
                     <span className="mt-0.5 block text-xs text-[var(--ink-muted)]">
-                      {ready
-                        ? `${layer?.feature_count ?? data[key]?.features.length ?? 0} features`
-                        : layer?.status === "unavailable"
-                          ? layer.error || "Unavailable"
-                          : "Not loaded"}
+                      {pendingHeavy
+                        ? "Loading…"
+                        : ready
+                          ? `${layer?.feature_count ?? (data[key] as FeatureCollection<Geometry>)?.features.length ?? 0} features`
+                          : layer?.status === "unavailable"
+                            ? layer.error || "Unavailable"
+                            : heavy
+                              ? "On demand"
+                              : loadingCore
+                                ? "Loading…"
+                                : "Not loaded"}
                     </span>
                   </span>
                 </label>
@@ -216,7 +267,9 @@ export function MapExplorer({
                   status={
                     ready
                       ? "loaded"
-                      : (layer?.status as "unavailable") || "unavailable"
+                      : pendingHeavy
+                        ? "partial"
+                        : (layer?.status as "unavailable") || "unavailable"
                   }
                 />
               </li>
@@ -224,17 +277,12 @@ export function MapExplorer({
           })}
         </ul>
 
-        {stopCountExtent ? (
-          <div className="rounded-lg bg-white/[0.05] p-3 text-xs text-[var(--ink-muted)]">
-            Ward colour = GTFS stops inside ward (min {stopCountExtent.min}, max{" "}
-            {stopCountExtent.max}). Not an equity score.
-          </div>
-        ) : (
-          <div className="rounded-lg bg-white/[0.05] p-3 text-xs text-[var(--ink-muted)]">
-            Ward fill is neutral until stop counts are available from a loaded GTFS
-            layer.
-          </div>
-        )}
+        <div className="rounded-lg bg-white/[0.05] p-3 text-xs text-[var(--ink-muted)]">
+          {loadedCount} layers in memory
+          {choropleth === "gap"
+            ? " · Gap Index colour is inventory-based, not census equity."
+            : " · Stop-count colour uses GTFS × ward joins."}
+        </div>
 
         {manifest ? (
           <ProvenanceStrip
@@ -244,188 +292,14 @@ export function MapExplorer({
         ) : null}
       </aside>
 
-      <div
-        className="relative w-full overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--map-wash)] shadow-sm"
-        style={{ height: MAP_HEIGHT }}
-      >
-        {loading ? (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-[var(--overlay)] text-sm text-[var(--ink-muted)]">
-            Loading verified layers…
-          </div>
-        ) : null}
-        {mapError ? (
-          <div className="absolute inset-0 z-20 flex items-center justify-center p-6 text-center text-sm text-[var(--danger)]">
-            {mapError}
-          </div>
-        ) : null}
-        {!mounted ? (
-          <div className="flex h-full items-center justify-center text-sm text-[var(--ink-muted)]">
-            Preparing map…
-          </div>
-        ) : (
-          <Map
-            initialViewState={CHENNAI}
-            mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
-            style={{ width: "100%", height: MAP_HEIGHT }}
-            interactiveLayerIds={interactiveLayerIds}
-            onClick={onClick}
-            onError={(e) =>
-              setMapError(
-                e.error?.message || "Basemap failed to load. Check network / WebGL."
-              )
-            }
-            cursor={interactiveLayerIds.length ? "pointer" : "grab"}
-          >
-            <NavigationControl position="top-right" />
-
-            {visibility.catchment_800m && data.catchment_800m ? (
-              <Source id="catchment-800" type="geojson" data={data.catchment_800m}>
-                <Layer
-                  id="catchment-800-fill"
-                  type="fill"
-                  paint={{ "fill-color": "#38bdf8", "fill-opacity": 0.08 }}
-                />
-              </Source>
-            ) : null}
-
-            {visibility.catchment_400m && data.catchment_400m ? (
-              <Source id="catchment-400" type="geojson" data={data.catchment_400m}>
-                <Layer
-                  id="catchment-400-fill"
-                  type="fill"
-                  paint={{ "fill-color": "#2dd4bf", "fill-opacity": 0.14 }}
-                />
-              </Source>
-            ) : null}
-
-            {visibility.wards && data.wards ? (
-              <Source id="wards" type="geojson" data={data.wards}>
-                <Layer
-                  id="wards-fill"
-                  type="fill"
-                  paint={{
-                    "fill-color": stopCountExtent
-                      ? [
-                          "interpolate",
-                          ["linear"],
-                          ["coalesce", ["get", "stop_count"], 0],
-                          stopCountExtent.min,
-                          "#103466",
-                          stopCountExtent.max,
-                          "#38bdf8",
-                        ]
-                      : "#1a3a6e",
-                    "fill-opacity": 0.55,
-                  }}
-                />
-                <Layer
-                  id="wards-line"
-                  type="line"
-                  paint={{
-                    "line-color": "#94a3b8",
-                    "line-width": 0.7,
-                    "line-opacity": 0.7,
-                  }}
-                />
-              </Source>
-            ) : null}
-
-            {visibility.zones && data.zones ? (
-              <Source id="zones" type="geojson" data={data.zones}>
-                <Layer
-                  id="zones-line"
-                  type="line"
-                  paint={{ "line-color": "#e8a820", "line-width": 1.5 }}
-                />
-              </Source>
-            ) : null}
-
-            {visibility.mrts_lines && data.mrts_lines ? (
-              <Source id="mrts-lines" type="geojson" data={data.mrts_lines}>
-                <Layer
-                  id="mrts-lines-line"
-                  type="line"
-                  paint={{ "line-color": "#fb923c", "line-width": 3 }}
-                />
-              </Source>
-            ) : null}
-
-            {visibility.stops && data.stops ? (
-              <Source id="stops" type="geojson" data={data.stops}>
-                <Layer
-                  id="stops-circle"
-                  type="circle"
-                  paint={{
-                    "circle-radius": 2.2,
-                    "circle-color": "#38bdf8",
-                    "circle-opacity": 0.8,
-                  }}
-                />
-              </Source>
-            ) : null}
-
-            {visibility.shelters && data.shelters ? (
-              <Source id="shelters" type="geojson" data={data.shelters}>
-                <Layer
-                  id="shelters-circle"
-                  type="circle"
-                  paint={{
-                    "circle-radius": 3,
-                    "circle-color": "#2dd4bf",
-                    "circle-stroke-width": 1,
-                    "circle-stroke-color": "#0a1f4a",
-                  }}
-                />
-              </Source>
-            ) : null}
-
-            {visibility.mrts_stations && data.mrts_stations ? (
-              <Source id="mrts-stations" type="geojson" data={data.mrts_stations}>
-                <Layer
-                  id="mrts-stations-circle"
-                  type="circle"
-                  paint={{
-                    "circle-radius": 5,
-                    "circle-color": "#fb923c",
-                    "circle-stroke-width": 1.5,
-                    "circle-stroke-color": "#0a1f4a",
-                  }}
-                />
-              </Source>
-            ) : null}
-
-            {visibility.hubs && data.hubs ? (
-              <Source id="hubs" type="geojson" data={data.hubs}>
-                <Layer
-                  id="hubs-circle"
-                  type="circle"
-                  paint={{
-                    "circle-radius": 6,
-                    "circle-color": "#e8a820",
-                    "circle-stroke-width": 2,
-                    "circle-stroke-color": "#0a1f4a",
-                  }}
-                />
-              </Source>
-            ) : null}
-
-            {popup ? (
-              <Popup
-                longitude={popup.lng}
-                latitude={popup.lat}
-                anchor="bottom"
-                onClose={() => setPopup(null)}
-                closeOnClick={false}
-              >
-                <strong className="text-[var(--ink)]">{popup.title}</strong>
-                <pre className="mt-1 max-w-xs whitespace-pre-wrap text-[11px] text-[var(--ink-muted)]">
-                  {popup.body}
-                </pre>
-              </Popup>
-            ) : null}
-          </Map>
-        )}
-      </div>
+      <TransitMap
+        data={data}
+        visibility={visibility}
+        choropleth={choropleth}
+        height={MAP_HEIGHT}
+        loading={loadingCore || loadingHeavy}
+        interactive
+      />
     </div>
   );
 }

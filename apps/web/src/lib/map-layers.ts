@@ -1,0 +1,122 @@
+import type { FeatureCollection, Geometry } from "geojson";
+
+export type MapLayerKey =
+  | "wards"
+  | "zones"
+  | "stops"
+  | "shelters"
+  | "mrts_stations"
+  | "mrts_lines"
+  | "hubs"
+  | "catchment_400m"
+  | "catchment_800m";
+
+export const MAP_LAYER_META: {
+  key: MapLayerKey;
+  label: string;
+  defaultOn: boolean;
+  heavy?: boolean;
+}[] = [
+  { key: "wards", label: "GCC wards", defaultOn: true },
+  { key: "zones", label: "GCC zones", defaultOn: false },
+  { key: "stops", label: "Transit stops (GTFS)", defaultOn: true },
+  { key: "shelters", label: "Bus shelters", defaultOn: false },
+  { key: "mrts_lines", label: "MRTS lines", defaultOn: true },
+  { key: "mrts_stations", label: "MRTS stations", defaultOn: true },
+  { key: "hubs", label: "Rail / metro hubs", defaultOn: true },
+  { key: "catchment_400m", label: "400m walk catchment", defaultOn: false, heavy: true },
+  { key: "catchment_800m", label: "800m walk catchment", defaultOn: false, heavy: true },
+];
+
+export const CHENNAI_VIEW = {
+  longitude: 80.2707,
+  latitude: 13.0827,
+  zoom: 10.35,
+};
+
+/** Primary + fallback basemap styles (Carto → OpenFreeMap → MapLibre demo). */
+export const BASEMAP_STYLES = [
+  "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+  "https://tiles.openfreemap.org/styles/dark",
+  "https://demotiles.maplibre.org/style.json",
+] as const;
+
+export type ChoroplethMode = "stops" | "gap";
+
+export type LayerData = Partial<Record<MapLayerKey, FeatureCollection<Geometry>>>;
+
+export function defaultVisibility(): Record<MapLayerKey, boolean> {
+  return Object.fromEntries(
+    MAP_LAYER_META.map((l) => [l.key, l.defaultOn])
+  ) as Record<MapLayerKey, boolean>;
+}
+
+export const LAYER_PRESETS: Record<
+  string,
+  { label: string; blurb: string; layers: Partial<Record<MapLayerKey, boolean>>; choropleth: ChoroplethMode }
+> = {
+  coverage: {
+    label: "Coverage",
+    blurb: "Wards, stops, rail",
+    choropleth: "stops",
+    layers: {
+      wards: true,
+      zones: false,
+      stops: true,
+      shelters: false,
+      mrts_lines: true,
+      mrts_stations: true,
+      hubs: true,
+      catchment_400m: false,
+      catchment_800m: false,
+    },
+  },
+  gaps: {
+    label: "Gap Index",
+    blurb: "Ward gaps + hubs",
+    choropleth: "gap",
+    layers: {
+      wards: true,
+      zones: false,
+      stops: false,
+      shelters: false,
+      mrts_lines: true,
+      mrts_stations: false,
+      hubs: true,
+      catchment_400m: false,
+      catchment_800m: false,
+    },
+  },
+  hubs: {
+    label: "Hubs & feeders",
+    blurb: "Stations, hubs, stops",
+    choropleth: "stops",
+    layers: {
+      wards: true,
+      zones: false,
+      stops: true,
+      shelters: false,
+      mrts_lines: true,
+      mrts_stations: true,
+      hubs: true,
+      catchment_400m: false,
+      catchment_800m: false,
+    },
+  },
+  walk: {
+    label: "Walk access",
+    blurb: "400m catchment",
+    choropleth: "stops",
+    layers: {
+      wards: false,
+      zones: true,
+      stops: true,
+      shelters: false,
+      mrts_lines: true,
+      mrts_stations: true,
+      hubs: true,
+      catchment_400m: true,
+      catchment_800m: false,
+    },
+  },
+};

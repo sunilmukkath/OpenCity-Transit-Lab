@@ -23,7 +23,8 @@ export default async function MapPage({
           Network map
         </h1>
         <p className="mt-1 text-[var(--ink-muted)]">
-          Real GCC / transit / shelter geometries only. Toggle layers that loaded successfully.
+          Basemap first, then verified layers. Use presets for coverage, Gap Index, hubs, or
+          walk catchments. Click any feature for inventory details.
         </p>
       </header>
       <MapExplorerClient audienceNote={note} />

@@ -1,0 +1,162 @@
+{
+  "status": "loaded",
+  "source_portal": "https://data.opencity.in/dataset/tamil-nadu-sir-voter-rolls-2026",
+  "source_official": "https://www.elections.tn.gov.in/SIR_2026.aspx",
+  "boundaries_portal": "https://data.opencity.in/dataset/chennai-election-boundaries",
+  "grain": "assembly_constituency",
+  "as_of": "2026-04-06",
+  "map_ac_count": 24,
+  "map_electors_total": 5804521,
+  "chennai_district_ac_count": 16,
+  "chennai_district_electors_total": 2893505,
+  "joined_to_wards": false,
+  "joined_to_walk_bands": false,
+  "reason_not_ward": "Open public SIR tables are AC-level only; booth/part rolls are PDFs without machine-readable counts.",
+  "note": "SIR electors at assembly constituency level. Not GCC ward households; not total population (excludes under-18). Includes ACs on the OpenCity Chennai AC map (Chennai district + some adjoining ACs). Boundaries are 2021.",
+  "acs": [
+    {
+      "ac_no": 2,
+      "ac_name": "Ponneri",
+      "district": "Thiruvallur",
+      "electors_total": 251397
+    },
+    {
+      "ac_no": 7,
+      "ac_name": "Maduravoyal",
+      "district": "Thiruvallur",
+      "electors_total": 373283
+    },
+    {
+      "ac_no": 8,
+      "ac_name": "Ambattur",
+      "district": "Thiruvallur",
+      "electors_total": 337019
+    },
+    {
+      "ac_no": 9,
+      "ac_name": "Madavaram",
+      "district": "Thiruvallur",
+      "electors_total": 431796
+    },
+    {
+      "ac_no": 10,
+      "ac_name": "Thiruvottiyur",
+      "district": "Thiruvallur",
+      "electors_total": 244903
+    },
+    {
+      "ac_no": 11,
+      "ac_name": "Dr.Radhakrishnan Nagar",
+      "district": "Chennai",
+      "electors_total": 199359
+    },
+    {
+      "ac_no": 12,
+      "ac_name": "Perambur",
+      "district": "Chennai",
+      "electors_total": 226296
+    },
+    {
+      "ac_no": 13,
+      "ac_name": "Kolathur",
+      "district": "Chennai",
+      "electors_total": 211772
+    },
+    {
+      "ac_no": 14,
+      "ac_name": "Villivakkam",
+      "district": "Chennai",
+      "electors_total": 163372
+    },
+    {
+      "ac_no": 15,
+      "ac_name": "Thiru-Vi-Ka-Nagar",
+      "district": "Chennai",
+      "electors_total": 181621
+    },
+    {
+      "ac_no": 16,
+      "ac_name": "Egmore",
+      "district": "Chennai",
+      "electors_total": 138775
+    },
+    {
+      "ac_no": 17,
+      "ac_name": "Royapuram",
+      "district": "Chennai",
+      "electors_total": 159654
+    },
+    {
+      "ac_no": 18,
+      "ac_name": "Harbour",
+      "district": "Chennai",
+      "electors_total": 120126
+    },
+    {
+      "ac_no": 19,
+      "ac_name": "Chepauk-Thiruvallikeni",
+      "district": "Chennai",
+      "electors_total": 166023
+    },
+    {
+      "ac_no": 20,
+      "ac_name": "Thousand Lights",
+      "district": "Chennai",
+      "electors_total": 157529
+    },
+    {
+      "ac_no": 21,
+      "ac_name": "Anna Nagar",
+      "district": "Chennai",
+      "electors_total": 188861
+    },
+    {
+      "ac_no": 22,
+      "ac_name": "Virugampakkam",
+      "district": "Chennai",
+      "electors_total": 200578
+    },
+    {
+      "ac_no": 23,
+      "ac_name": "Saidapet",
+      "district": "Chennai",
+      "electors_total": 204146
+    },
+    {
+      "ac_no": 24,
+      "ac_name": "Thiyagarayanagar",
+      "district": "Chennai",
+      "electors_total": 158757
+    },
+    {
+      "ac_no": 25,
+      "ac_name": "Mylapore",
+      "district": "Chennai",
+      "electors_total": 199465
+    },
+    {
+      "ac_no": 26,
+      "ac_name": "Velachery",
+      "district": "Chennai",
+      "electors_total": 217171
+    },
+    {
+      "ac_no": 27,
+      "ac_name": "Shozhinganallur",
+      "district": "Chengalpattu",
+      "electors_total": 553905
+    },
+    {
+      "ac_no": 29,
+      "ac_name": "Sriperumbudur",
+      "district": "Kancheepuram",
+      "electors_total": 381750
+    },
+    {
+      "ac_no": 30,
+      "ac_name": "Pallavaram",
+      "district": "Chengalpattu",
+      "electors_total": 336963
+    }
+  ]
+}

@@ -288,14 +288,16 @@ textarea {
   font-family: var(--font-dm-sans), system-ui, sans-serif;
   border-radius: 8px;
   padding: 10px 12px;
-  background: var(--bg-card) !important;
-  color: var(--ink) !important;
-  border: 1px solid var(--border);
-  box-shadow: 0 12px 32px rgba(8, 13, 26, 0.45);
+  /* Light card on map — dark theme tokens make popup text unreadable */
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 12px 32px rgba(8, 13, 26, 0.35);
 }
 
 .maplibregl-popup-close-button {
-  color: var(--ink-muted) !important;
+  color: #64748b !important;
+  font-size: 16px !important;
 }
 
 .maplibregl-ctrl-group {

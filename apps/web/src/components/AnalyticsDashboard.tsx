@@ -40,32 +40,22 @@ type CategoryFilter =
 
 const LAYER_CATEGORY: Record<string, CategoryFilter> = {
   wards: "admin",
-  zones: "admin",
-  metro_area_boundaries: "admin",
-  corridor_aois: "admin",
-  omr_corridor: "transit",
   stops: "transit",
-  shelters: "shelter",
   mrts_stations: "rail",
   mrts_lines: "rail",
   hubs: "rail",
-  catchment_400m: "catchment",
-  catchment_800m: "catchment",
+  connectivity_need: "gap",
+  walk_distance_bands: "catchment",
 };
 
 const DEFAULT_MAP_LAYERS: Record<string, boolean> = {
-  wards: true,
-  zones: false,
-  metro_area_boundaries: true,
-  corridor_aois: false,
-  omr_corridor: true,
+  wards: false,
   stops: true,
-  shelters: false,
   mrts_stations: true,
   mrts_lines: true,
   hubs: true,
-  catchment_400m: false,
-  catchment_800m: false,
+  connectivity_need: false,
+  walk_distance_bands: true,
 };
 
 const SOURCE_CATEGORY: Record<string, CategoryFilter> = {

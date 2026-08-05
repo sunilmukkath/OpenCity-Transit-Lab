@@ -246,6 +246,18 @@ export interface AdvancedAnalyses {
     }[];
     counts?: Record<string, number>;
   };
+  walk_distance_bands?: {
+    status: string;
+    note?: string;
+    method?: Record<string, string>;
+    counts?: {
+      study_area_km2?: number;
+      within_500m_km2?: number;
+      band_500_1000m_km2?: number;
+      over_1000m_km2?: number;
+      pct_over_1000m?: number;
+    };
+  };
 }
 
 export type AudienceId = "local" | "traffic" | "public";

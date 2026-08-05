@@ -63,6 +63,10 @@ function ascendingStops(stops: number[]): number[] {
 
 function formatPopupProps(props: Record<string, unknown>): string {
   const prefer = [
+    "label",
+    "band",
+    "area_km2",
+    "note",
     "gap_index",
     "gap_band",
     "sec_proxy_band",
@@ -126,8 +130,7 @@ function setGeoJsonSource(
 function wardFillExpression(
   choropleth: ChoroplethMode,
   stopExtent: { min: number; max: number } | null,
-  gapExtent: { min: number; max: number } | null,
-  slumExtent: { min: number; max: number } | null
+  gapExtent: { min: number; max: number } | null
 ): ExpressionSpecification | string {
   if (choropleth === "sec") {
     return [
@@ -140,21 +143,6 @@ function wardFillExpression(
       "lower_proxy",
       "#e11d48",
       "#94a3b8",
-    ];
-  }
-  if (choropleth === "slum" && slumExtent) {
-    return [
-      "interpolate",
-      ["linear"],
-      ["coalesce", ["to-number", ["get", "pct_slum_area"]], 0],
-      0,
-      "#f8fafc",
-      Math.max(slumExtent.max * 0.25, 1),
-      "#fdba74",
-      Math.max(slumExtent.max * 0.55, 2),
-      "#ea580c",
-      Math.max(slumExtent.max, 5),
-      "#9f1239",
     ];
   }
   if (choropleth === "gap" && gapExtent) {
@@ -199,36 +187,6 @@ const LAYER_STACK: {
   layers: { id: string; type: "fill" | "line" | "circle"; paint: Record<string, unknown> }[];
 }[] = [
   {
-    key: "corridor_aois",
-    sourceId: "tm-corridor-aois",
-    layers: [
-      { id: "tm-corridor-aois-fill", type: "fill", paint: { "fill-color": "#8b5cf6", "fill-opacity": 0.08 } },
-      { id: "tm-corridor-aois-line", type: "line", paint: { "line-color": "#7c3aed", "line-width": 1.5, "line-dasharray": [2, 1] } },
-    ],
-  },
-  {
-    key: "metro_area_boundaries",
-    sourceId: "tm-metro-boundaries",
-    layers: [
-      { id: "tm-metro-boundaries-fill", type: "fill", paint: { "fill-color": "#db2777", "fill-opacity": 0.12 } },
-      { id: "tm-metro-boundaries-line", type: "line", paint: { "line-color": "#be185d", "line-width": 2.2 } },
-    ],
-  },
-  {
-    key: "omr_corridor",
-    sourceId: "tm-omr",
-    layers: [
-      {
-        id: "tm-omr-line",
-        type: "line",
-        paint: {
-          "line-color": "#7c3aed",
-          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 3, 14, 6],
-        },
-      },
-    ],
-  },
-  {
     key: "connectivity_need",
     sourceId: "tm-connectivity-need",
     layers: [
@@ -253,36 +211,6 @@ const LAYER_STACK: {
     ],
   },
   {
-    key: "slums",
-    sourceId: "tm-slums",
-    layers: [
-      {
-        id: "tm-slums-fill",
-        type: "fill",
-        paint: { "fill-color": "#be123c", "fill-opacity": 0.35 },
-      },
-      {
-        id: "tm-slums-line",
-        type: "line",
-        paint: { "line-color": "#9f1239", "line-width": 0.8, "line-opacity": 0.85 },
-      },
-    ],
-  },
-  {
-    key: "catchment_800m",
-    sourceId: "tm-catchment-800",
-    layers: [
-      { id: "tm-catchment-800-fill", type: "fill", paint: { "fill-color": "#0284c7", "fill-opacity": 0.12 } },
-    ],
-  },
-  {
-    key: "catchment_400m",
-    sourceId: "tm-catchment-400",
-    layers: [
-      { id: "tm-catchment-400-fill", type: "fill", paint: { "fill-color": "#0d9488", "fill-opacity": 0.18 } },
-    ],
-  },
-  {
     key: "wards",
     sourceId: "tm-wards",
     layers: [
@@ -291,11 +219,64 @@ const LAYER_STACK: {
     ],
   },
   {
-    key: "zones",
-    sourceId: "tm-zones",
+    key: "walk_distance_bands",
+    sourceId: "tm-walk-bands",
     layers: [
-      { id: "tm-zones-fill", type: "fill", paint: { "fill-color": "#f59e0b", "fill-opacity": 0.08 } },
-      { id: "tm-zones-line", type: "line", paint: { "line-color": "#b45309", "line-width": 2 } },
+      {
+        id: "tm-walk-bands-fill",
+        type: "fill",
+        paint: {
+          "fill-color": [
+            "match",
+            ["get", "band"],
+            "within_500m",
+            "#86efac",
+            "band_500_1000m",
+            "#fde047",
+            "over_1000m",
+            "#dc2626",
+            "#94a3b8",
+          ],
+          "fill-opacity": [
+            "match",
+            ["get", "band"],
+            "over_1000m",
+            0.78,
+            "band_500_1000m",
+            0.32,
+            0.18,
+          ],
+        },
+      },
+      {
+        id: "tm-walk-bands-line",
+        type: "line",
+        paint: {
+          "line-color": [
+            "match",
+            ["get", "band"],
+            "over_1000m",
+            "#7f1d1d",
+            "band_500_1000m",
+            "#a16207",
+            "#166534",
+          ],
+          "line-width": [
+            "match",
+            ["get", "band"],
+            "over_1000m",
+            1.8,
+            0.5,
+          ],
+          "line-opacity": [
+            "match",
+            ["get", "band"],
+            "over_1000m",
+            0.95,
+            0.45,
+          ],
+        },
+      },
     ],
   },
   {
@@ -323,22 +304,6 @@ const LAYER_STACK: {
           "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 1.6, 12, 3, 15, 5.5],
           "circle-color": "#0369a1",
           "circle-opacity": 0.9,
-          "circle-stroke-width": 1,
-          "circle-stroke-color": "#ffffff",
-        },
-      },
-    ],
-  },
-  {
-    key: "shelters",
-    sourceId: "tm-shelters",
-    layers: [
-      {
-        id: "tm-shelters-circle",
-        type: "circle",
-        paint: {
-          "circle-radius": ["interpolate", ["linear"], ["zoom"], 10, 2.5, 14, 5],
-          "circle-color": "#0f766e",
           "circle-stroke-width": 1,
           "circle-stroke-color": "#ffffff",
         },
@@ -381,9 +346,8 @@ const LAYER_STACK: {
 
 const INTERACTIVE_LAYER_IDS = [
   "tm-wards-fill",
-  "tm-zones-fill",
+  "tm-walk-bands-fill",
   "tm-stops-circle",
-  "tm-shelters-circle",
   "tm-mrts-stations-circle",
   "tm-hubs-circle",
   "tm-connectivity-need-line",
@@ -414,14 +378,11 @@ export function TransitMap({
 
   const stopExtent = useMemo(() => extentOf(data.wards, "stop_count"), [data.wards]);
   const gapExtent = useMemo(() => extentOf(data.wards, "gap_index"), [data.wards]);
-  const slumExtent = useMemo(() => extentOf(data.wards, "pct_slum_area"), [data.wards]);
-
   const dataRef = useRef(data);
   const visibilityRef = useRef(visibility);
   const choroplethRef = useRef(choropleth);
   const stopExtentRef = useRef(stopExtent);
   const gapExtentRef = useRef(gapExtent);
-  const slumExtentRef = useRef(slumExtent);
   const interactiveRef = useRef(interactive);
 
   dataRef.current = data;
@@ -429,7 +390,6 @@ export function TransitMap({
   choroplethRef.current = choropleth;
   stopExtentRef.current = stopExtent;
   gapExtentRef.current = gapExtent;
-  slumExtentRef.current = slumExtent;
   interactiveRef.current = interactive;
 
   const syncLayers = useCallback((map: MapLibreMap) => {
@@ -440,8 +400,7 @@ export function TransitMap({
     const fill = wardFillExpression(
       choroplethRef.current,
       stopExtentRef.current,
-      gapExtentRef.current,
-      slumExtentRef.current
+      gapExtentRef.current
     );
 
     for (const entry of LAYER_STACK) {
@@ -460,10 +419,15 @@ export function TransitMap({
       }
 
       for (const layer of entry.layers) {
-        const paint =
-          layer.id === "tm-wards-fill"
-            ? { ...layer.paint, "fill-color": fill }
-            : layer.paint;
+        let paint = layer.paint;
+        if (layer.id === "tm-wards-fill") {
+          paint = {
+            ...layer.paint,
+            "fill-color": fill,
+            // Keep wards under walk bands readable without washing out >1km red
+            "fill-opacity": vis.walk_distance_bands ? 0.22 : 0.55,
+          };
+        }
 
         if (map.getLayer(layer.id)) {
           for (const [k, v] of Object.entries(paint)) {
@@ -565,6 +529,7 @@ export function TransitMap({
       const title = String(
         props.ward_label ||
           props.zone_label ||
+          props.label ||
           props.road_name ||
           props.stop_name ||
           props.hub_name ||
@@ -654,8 +619,8 @@ export function TransitMap({
     }
 
     const el = document.createElement("div");
-    el.innerHTML = `<strong style="color:#0f172a">${escapeHtml(popup.title)}</strong>
-      <pre style="margin-top:4px;max-width:16rem;white-space:pre-wrap;font-size:11px;color:#475569">${escapeHtml(popup.body)}</pre>`;
+    el.innerHTML = `<strong style="display:block;color:#0f172a;font-size:14px;line-height:1.3">${escapeHtml(popup.title)}</strong>
+      <pre style="margin:6px 0 0;max-width:16rem;white-space:pre-wrap;font-size:12px;line-height:1.45;color:#334155;font-family:ui-monospace,SFMono-Regular,Menlo,monospace">${escapeHtml(popup.body)}</pre>`;
 
     popupRef.current
       .setLngLat([popup.lng, popup.lat])
@@ -769,17 +734,20 @@ export function TransitMap({
       <div ref={containerRef} className="absolute inset-0 h-full w-full" />
 
       <div className="pointer-events-none absolute bottom-3 left-3 z-20 max-w-[260px] rounded-md border border-slate-300 bg-white/90 px-2.5 py-2 text-[10px] text-slate-700 shadow-sm">
-        {choropleth === "sec" ? (
+        {visibility.walk_distance_bands ? (
+          <span>
+            <strong style={{ color: "#dc2626" }}>Red = over 1km</strong> to nearest GTFS stop ·
+            light green &lt;500m · yellow 500m–1km (crow-flies).
+          </span>
+        ) : choropleth === "sec" ? (
           <span>
             Ward colour = SEC proxy (blue higher amenity → red lower). Not income. Grey =
             unavailable.
           </span>
-        ) : choropleth === "slum" ? (
-          <span>Ward colour = % area in mapped slum polygons (OpenCity). Not poverty income.</span>
         ) : choropleth === "gap" ? (
           <span>Ward colour = Gap Index (teal → red). Dashed lines = connectivity need.</span>
         ) : (
-          <span>Ward colour = GTFS stop count. Dashed lines = roads outside 400m catchments.</span>
+          <span>Ward colour = GTFS stop count. Toggle Walk km for distance bands.</span>
         )}
       </div>
     </div>

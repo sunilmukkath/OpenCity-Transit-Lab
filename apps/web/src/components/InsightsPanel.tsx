@@ -12,7 +12,14 @@ import { MetricCard } from "@/components/MetricCard";
 import { StatusBadge } from "@/components/StatusBadge";
 import { SectionEyebrow } from "@/components/BrandMotif";
 
-type InsightView = "hubs" | "shelters" | "coverage" | "corridors" | "needlines" | "sec";
+type InsightView =
+  | "hubs"
+  | "shelters"
+  | "coverage"
+  | "corridors"
+  | "needlines"
+  | "sec"
+  | "walkkm";
 
 function fmt(n: number | null | undefined, digits = 0): string {
   if (n === null || n === undefined || Number.isNaN(n)) return "—";
@@ -163,6 +170,7 @@ export function InsightsPanel() {
               ["corridors", "OMR / South"],
               ["needlines", "Need lines"],
               ["sec", "SEC / Slum"],
+              ["walkkm", "Walk km"],
             ] as const
           ).map(([id, label]) => (
             <button
@@ -710,6 +718,66 @@ export function InsightsPanel() {
             className="inline-flex text-sm font-semibold text-[var(--accent)]"
           >
             Open map with SEC / Slum preset →
+          </a>
+        </section>
+      ) : null}
+
+      {view === "walkkm" ? (
+        <section className="space-y-4">
+          <div className="et-card border-[rgba(239,68,68,0.35)] p-4 text-sm text-[var(--ink-muted)]">
+            {data.walk_distance_bands?.note ??
+              "Crow-flies distance to nearest GTFS stop inside GCC wards. Red = over 1km."}
+          </div>
+          {!data.walk_distance_bands || data.walk_distance_bands.status !== "loaded" ? (
+            <div className="et-card p-5 text-sm text-[var(--ink-muted)]">
+              Walk-distance bands unavailable. Run{" "}
+              <code>etl/build_walk_distance_bands.py</code> after stops are loaded.
+            </div>
+          ) : (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <MetricCard
+                label="Within 500m"
+                value={
+                  data.walk_distance_bands.counts?.within_500m_km2 != null
+                    ? `${fmt(data.walk_distance_bands.counts.within_500m_km2, 1)} km²`
+                    : null
+                }
+                subtext="Green on map"
+              />
+              <MetricCard
+                label="500m–1km"
+                value={
+                  data.walk_distance_bands.counts?.band_500_1000m_km2 != null
+                    ? `${fmt(data.walk_distance_bands.counts.band_500_1000m_km2, 1)} km²`
+                    : null
+                }
+                subtext="Amber on map"
+              />
+              <MetricCard
+                label="Over 1km (red)"
+                value={
+                  data.walk_distance_bands.counts?.over_1000m_km2 != null
+                    ? `${fmt(data.walk_distance_bands.counts.over_1000m_km2, 1)} km²`
+                    : null
+                }
+                subtext={`${fmt(data.walk_distance_bands.counts?.pct_over_1000m, 1)}% of study area`}
+              />
+              <MetricCard
+                label="Study area"
+                value={
+                  data.walk_distance_bands.counts?.study_area_km2 != null
+                    ? `${fmt(data.walk_distance_bands.counts.study_area_km2, 1)} km²`
+                    : null
+                }
+                subtext="GCC ward union"
+              />
+            </div>
+          )}
+          <a
+            href="/map"
+            className="inline-flex text-sm font-semibold text-[var(--accent)]"
+          >
+            Open map with Walk km preset →
           </a>
         </section>
       ) : null}

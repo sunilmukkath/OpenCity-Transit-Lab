@@ -6,30 +6,27 @@ import {
   fetchManifestClient,
   fetchReportsClient,
   layerIsReady,
-  type Manifest,
 } from "@/lib/data-client";
 import { TransitMap, joinWardGapIndex } from "@/components/TransitMap";
 import type { LayerData, MapLayerKey } from "@/lib/map-layers";
 
 const MAP_HEIGHT = 560;
-const LIGHT: MapLayerKey[] = [
-  "metro_area_boundaries",
-  "omr_corridor",
+const CORE: MapLayerKey[] = [
+  "walk_distance_bands",
   "connectivity_need",
-  "slums",
   "mrts_lines",
   "mrts_stations",
   "hubs",
+  "wards",
+  "stops",
 ];
-const MEDIUM: MapLayerKey[] = ["wards", "zones", "corridor_aois"];
-const POINTS: MapLayerKey[] = ["stops", "shelters"];
-const HEAVY: MapLayerKey[] = ["catchment_400m", "catchment_800m"];
 
 async function loadBatch(
-  m: Manifest,
+  m: Awaited<ReturnType<typeof fetchManifestClient>>,
   keys: MapLayerKey[],
   gapByLabel: Map<string, { gap_index: number; gap_band: string }>
 ): Promise<LayerData> {
+  if (!m) return {};
   const next: LayerData = {};
   await Promise.all(
     keys.map(async (key) => {
@@ -51,7 +48,6 @@ export function AnalyticsMap({
 }) {
   const [data, setData] = useState<LayerData>({});
   const [loading, setLoading] = useState(true);
-  const [loadingHeavy, setLoadingHeavy] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -74,59 +70,15 @@ export function AnalyticsMap({
         return;
       }
 
-      const light = await loadBatch(manifest, LIGHT, gapByLabel);
+      const core = await loadBatch(manifest, CORE, gapByLabel);
       if (cancelled) return;
-      setData((prev) => ({ ...prev, ...light }));
-
-      const medium = await loadBatch(manifest, MEDIUM, gapByLabel);
-      if (cancelled) return;
-      setData((prev) => ({ ...prev, ...medium }));
-
-      const points = await loadBatch(manifest, POINTS, gapByLabel);
-      if (cancelled) return;
-      setData((prev) => ({ ...prev, ...points }));
+      setData(core);
       setLoading(false);
     })();
     return () => {
       cancelled = true;
     };
   }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    const want400 = visibility.catchment_400m;
-    const want800 = visibility.catchment_800m;
-    if (!want400 && !want800) return;
-
-    (async () => {
-      setLoadingHeavy(true);
-      const manifest = await fetchManifestClient();
-      if (!manifest || cancelled) {
-        if (!cancelled) setLoadingHeavy(false);
-        return;
-      }
-      const needed = HEAVY.filter((k) => {
-        if (k === "catchment_400m" && !want400) return false;
-        if (k === "catchment_800m" && !want800) return false;
-        return true;
-      });
-      const next = await loadBatch(manifest, needed, new Map());
-      if (!cancelled && Object.keys(next).length) {
-        setData((prev) => {
-          const merged = { ...prev };
-          for (const [k, v] of Object.entries(next)) {
-            if (!merged[k as MapLayerKey]) merged[k as MapLayerKey] = v;
-          }
-          return merged;
-        });
-      }
-      if (!cancelled) setLoadingHeavy(false);
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [visibility.catchment_400m, visibility.catchment_800m]);
 
   const choropleth =
     visibility.wards && !visibility.stops ? ("gap" as const) : ("stops" as const);
@@ -137,7 +89,7 @@ export function AnalyticsMap({
       visibility={visibility}
       choropleth={choropleth}
       height={MAP_HEIGHT}
-      loading={loading || loadingHeavy}
+      loading={loading}
       interactive
     />
   );

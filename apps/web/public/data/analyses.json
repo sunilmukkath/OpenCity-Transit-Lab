@@ -11794,5 +11794,21 @@
         "sc_pct_2011": 41.23
       }
     ]
+  },
+  "walk_distance_bands": {
+    "status": "loaded",
+    "note": "Areas classified by crow-flies distance to the nearest GTFS stop, inside GCC ward boundaries. Red = more than 1km from any stop. Not street-network distance and not population-weighted.",
+    "method": {
+      "within_500m": "union of 500m stop buffers \u2229 wards",
+      "band_500_1000m": "(1000m buffer \u2212 500m buffer) \u2229 wards",
+      "over_1000m": "wards \u2212 1000m stop buffer (rendered red)"
+    },
+    "counts": {
+      "study_area_km2": 458.16,
+      "within_500m_km2": 346.07,
+      "band_500_1000m_km2": 90.3,
+      "over_1000m_km2": 21.79,
+      "pct_over_1000m": 4.8
+    }
   }
 }

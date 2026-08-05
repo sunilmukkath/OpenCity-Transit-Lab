@@ -274,6 +274,19 @@
       "feature_count": 887,
       "notes": "OpenCity Chennai Slum Boundaries Map (KML). Presence polygons \u2014 not income.",
       "derived_from": "opencity_chennai_slums"
+    },
+    "walk_distance_bands": {
+      "status": "loaded",
+      "file": "walk_distance_bands.geojson",
+      "feature_count": 3,
+      "notes": "Walk-distance bands from GTFS stops: <500m, 500\u20131000m, >1km (red). Crow-flies buffers clipped to GCC wards \u2014 not population-weighted.",
+      "attributes": [
+        "band",
+        "label",
+        "color_hint",
+        "area_km2",
+        "note"
+      ]
     }
   },
   "realtime": [

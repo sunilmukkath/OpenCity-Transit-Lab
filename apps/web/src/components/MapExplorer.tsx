@@ -20,21 +20,16 @@ import {
 } from "@/lib/map-layers";
 
 const MAP_HEIGHT = 680;
-/** Small corridor / rail layers — paint first so the map is useful immediately. */
-const LIGHT_LAYERS: MapLayerKey[] = [
-  "metro_area_boundaries",
-  "omr_corridor",
+
+const CORE_LAYERS: MapLayerKey[] = [
+  "walk_distance_bands",
   "connectivity_need",
-  "slums",
   "mrts_lines",
   "mrts_stations",
   "hubs",
+  "wards",
+  "stops",
 ];
-/** Polygons next. */
-const MEDIUM_LAYERS: MapLayerKey[] = ["wards", "zones", "corridor_aois"];
-/** Dense point layers last. */
-const POINT_LAYERS: MapLayerKey[] = ["stops", "shelters"];
-const HEAVY_LAYERS: MapLayerKey[] = ["catchment_400m", "catchment_800m"];
 
 async function loadLayerBatch(
   m: Manifest,
@@ -65,12 +60,17 @@ const chipOff =
 export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
   const [manifest, setManifest] = useState<Manifest | null>(null);
   const [data, setData] = useState<LayerData>({});
-  const [visibility, setVisibility] = useState(defaultVisibility);
-  const [choropleth, setChoropleth] = useState<ChoroplethMode>("stops");
+  const [visibility, setVisibility] = useState(() => {
+    const base = defaultVisibility();
+    const walk = LAYER_PRESETS.walkkm?.layers ?? {};
+    return { ...base, ...walk };
+  });
+  const [choropleth, setChoropleth] = useState<ChoroplethMode>(
+    LAYER_PRESETS.walkkm?.choropleth ?? "stops"
+  );
   const [loadingCore, setLoadingCore] = useState(true);
-  const [loadingHeavy, setLoadingHeavy] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [activePreset, setActivePreset] = useState<string>("coverage");
+  const [activePreset, setActivePreset] = useState<string>("walkkm");
 
   useEffect(() => {
     let cancelled = false;
@@ -98,17 +98,9 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
           return;
         }
 
-        const light = await loadLayerBatch(m, LIGHT_LAYERS, gapByLabel);
+        const core = await loadLayerBatch(m, CORE_LAYERS, gapByLabel);
         if (cancelled) return;
-        setData((prev) => ({ ...prev, ...light }));
-
-        const medium = await loadLayerBatch(m, MEDIUM_LAYERS, gapByLabel);
-        if (cancelled) return;
-        setData((prev) => ({ ...prev, ...medium }));
-
-        const points = await loadLayerBatch(m, POINT_LAYERS, gapByLabel);
-        if (cancelled) return;
-        setData((prev) => ({ ...prev, ...points }));
+        setData(core);
         setLoadingCore(false);
       } catch (err) {
         if (!cancelled) {
@@ -121,47 +113,6 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
       cancelled = true;
     };
   }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    const want400 = visibility.catchment_400m;
-    const want800 = visibility.catchment_800m;
-    if ((!want400 && !want800) || !manifest) return;
-
-    (async () => {
-      const needed = HEAVY_LAYERS.filter((k) => {
-        if (k === "catchment_400m" && !want400) return false;
-        if (k === "catchment_800m" && !want800) return false;
-        return true;
-      });
-
-      setLoadingHeavy(true);
-      const next: LayerData = {};
-      await Promise.all(
-        needed.map(async (key) => {
-          const layer = manifest.layers[key];
-          if (layerIsReady(layer) && layer.file) {
-            const fc = await fetchGeoJSONClient(layer.file);
-            if (fc) next[key] = fc;
-          }
-        })
-      );
-      if (!cancelled && Object.keys(next).length) {
-        setData((prev) => {
-          const merged = { ...prev };
-          for (const [k, v] of Object.entries(next)) {
-            if (!merged[k as MapLayerKey]) merged[k as MapLayerKey] = v;
-          }
-          return merged;
-        });
-      }
-      if (!cancelled) setLoadingHeavy(false);
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [visibility.catchment_400m, visibility.catchment_800m, manifest]);
 
   const toggle = useCallback((key: MapLayerKey) => {
     setVisibility((v) => ({ ...v, [key]: !v[key] }));
@@ -211,7 +162,7 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
           <span className="hidden h-4 w-px bg-[var(--border)] sm:block" aria-hidden />
 
           <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-muted)]">
-            Colour
+            Ward colour
           </span>
           <div className="flex flex-wrap gap-1">
             {(
@@ -219,7 +170,6 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
                 ["stops", "Stops"],
                 ["gap", "Gap"],
                 ["sec", "SEC"],
-                ["slum", "Slum %"],
               ] as const
             ).map(([mode, label]) => (
               <button
@@ -242,58 +192,26 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
             Layers
           </span>
           <div className="flex flex-wrap gap-1">
-            {MAP_LAYER_META.map(({ key, label, short, heavy }) => {
-              const layer = manifest?.layers[key];
-              const ready = Boolean(data[key]);
-              const pendingHeavy = Boolean(heavy && visibility[key] && !ready && loadingHeavy);
-              const canEnable = layerIsReady(layer) || ready || pendingHeavy;
-              const active = Boolean(visibility[key] && (ready || pendingHeavy));
-              const tip = pendingHeavy
-                ? `${label} — loading…`
-                : ready
-                  ? `${label} · ${layer?.feature_count ?? data[key]?.features.length ?? 0} features`
-                  : heavy
-                    ? `${label} — on demand`
-                    : loadingCore
-                      ? `${label} — loading…`
-                      : `${label} — not loaded`;
-
+            {MAP_LAYER_META.map(({ key, label, short }) => {
+              const ready = layerIsReady(manifest?.layers[key]);
+              const on = visibility[key];
               return (
                 <button
                   key={key}
                   type="button"
-                  disabled={!canEnable}
-                  aria-pressed={active}
-                  title={tip}
+                  title={label}
+                  disabled={!ready}
                   onClick={() => toggle(key)}
-                  className={`${chipBase} ${active ? chipOn : chipOff}`}
+                  className={`${chipBase} ${on ? chipOn : chipOff}`}
                 >
                   {short}
-                  {pendingHeavy ? "…" : null}
                 </button>
               );
             })}
           </div>
-        </div>
-
-        <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] text-[var(--ink-muted)]">
-          <span>
-            {loadedCount} layers ready
-            {choropleth === "sec"
-              ? " · SEC colour is Census 2011 amenity + slum share — not income"
-              : choropleth === "slum"
-                ? " · Slum % is mapped polygon area share (OpenCity)"
-                : choropleth === "gap"
-                  ? " · Gap colour is inventory-based, not census equity"
-                  : " · Stop colour uses GTFS × ward joins"}
-            {loadingCore || loadingHeavy ? " · Loading…" : null}
+          <span className="ml-auto text-[10px] text-[var(--ink-muted)]">
+            {loadingCore ? "Loading…" : `${loadedCount} layers`}
           </span>
-          {manifest ? (
-            <ProvenanceStrip
-              source="OpenCity CKAN + ChennaiGTFS + GCC MRTS"
-              fetchedAt={manifest.generated_at}
-            />
-          ) : null}
         </div>
       </div>
 
@@ -302,9 +220,16 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
         visibility={visibility}
         choropleth={choropleth}
         height={MAP_HEIGHT}
-        loading={loadingCore || loadingHeavy}
-        interactive
+        loading={loadingCore}
       />
+
+      {manifest ? (
+        <ProvenanceStrip
+          source="OpenCity / GCC / GTFS verified layers"
+          fetchedAt={manifest.generated_at}
+          kind="Map"
+        />
+      ) : null}
     </div>
   );
 }

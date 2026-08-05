@@ -1,19 +1,6 @@
-import dynamic from "next/dynamic";
+import { MapExplorerClient } from "@/components/MapExplorerClient";
 import { ExportBar } from "@/components/ExportBar";
 import { fetchManifest, fetchMetrics } from "@/lib/data";
-
-const MapExplorer = dynamic(
-  () =>
-    import("@/components/MapExplorer").then((m) => ({ default: m.MapExplorer })),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex h-[620px] items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--map-wash)] text-sm text-[var(--ink-muted)]">
-        Loading map…
-      </div>
-    ),
-  }
-);
 
 export default async function MapPage({
   searchParams,
@@ -39,7 +26,7 @@ export default async function MapPage({
           Real GCC / transit / shelter geometries only. Toggle layers that loaded successfully.
         </p>
       </header>
-      <MapExplorer audienceNote={note} />
+      <MapExplorerClient audienceNote={note} />
       <ExportBar manifest={manifest} metrics={metrics} />
     </div>
   );

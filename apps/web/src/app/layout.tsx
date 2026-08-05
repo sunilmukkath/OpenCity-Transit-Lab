@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
-import { Fraunces, Source_Sans_3 } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { DM_Sans, Outfit } from "next/font/google";
 import { SiteHeader } from "@/components/SiteHeader";
 import "./globals.css";
 
-const display = Fraunces({
+const display = Outfit({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-outfit",
 });
 
-const sans = Source_Sans_3({
+const sans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-source-sans",
+  variable: "--font-dm-sans",
 });
 
 export const metadata: Metadata = {
@@ -19,13 +19,18 @@ export const metadata: Metadata = {
     "Civic evidence platform for Chennai public transport — verified open data only for policymakers, local bodies, traffic, and the public.",
 };
 
+export const viewport: Viewport = {
+  themeColor: "#0a1f4a",
+  colorScheme: "dark",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body className={`${display.variable} ${sans.variable} antialiased`}>
         <SiteHeader />
         <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>

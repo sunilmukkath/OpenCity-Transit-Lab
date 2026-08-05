@@ -27,9 +27,9 @@ export function RealtimePanel() {
   }, []);
 
   return (
-    <section className="rounded-xl border border-dashed border-[var(--border)] bg-slate-50 p-5">
+    <section className="rounded-xl border border-dashed border-[var(--border)] bg-white/[0.03] p-5">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">
+        <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--ink)]">
           Real-time connectors
         </h2>
         <StatusBadge status="not_connected" />
@@ -37,7 +37,7 @@ export function RealtimePanel() {
       <p className="mb-4 text-sm text-[var(--ink-muted)]">
         Live arrivals, vehicle positions, and crowding improve traffic coordination and
         reliability analysis — only when an official feed is plugged in. Until then these
-        panels stay <strong>Not connected</strong>. No simulated live data is shown.
+        panels stay <strong className="text-[var(--ink)]">Not connected</strong>. No simulated live data is shown.
       </p>
       {error ? (
         <p className="text-sm text-[var(--danger)]">{error}</p>
@@ -46,10 +46,10 @@ export function RealtimePanel() {
         {(health ?? []).map((feed) => (
           <li
             key={feed.id}
-            className="rounded-lg border border-[var(--border)] bg-white p-3"
+            className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-3"
           >
             <div className="mb-1 flex items-center justify-between gap-2">
-              <span className="font-medium text-sm">{feed.id.replaceAll("_", " ")}</span>
+              <span className="font-medium text-sm text-[var(--ink)]">{feed.id.replaceAll("_", " ")}</span>
               <StatusBadge
                 status={
                   feed.status === "connected"

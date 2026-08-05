@@ -16,7 +16,7 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="no-print border-b border-[var(--border)] bg-[var(--bg-card)]">
+    <header className="no-print border-b border-[var(--border)] bg-[rgba(10,31,74,0.92)] backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <Link href="/" className="font-[family-name:var(--font-display)] text-xl font-semibold tracking-tight text-[var(--ink)]">
@@ -38,7 +38,7 @@ export function SiteHeader() {
                 href={link.href}
                 className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${
                   active
-                    ? "bg-[var(--accent)] text-white"
+                    ? "bg-[var(--accent)] text-[var(--void)]"
                     : "text-[var(--ink-muted)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent)]"
                 }`}
               >

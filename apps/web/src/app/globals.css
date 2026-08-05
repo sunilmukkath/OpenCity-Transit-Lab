@@ -1,28 +1,42 @@
 @import "tailwindcss";
 @import "maplibre-gl/dist/maplibre-gl.css";
 
+/* Dark navy palette aligned with elastictree.com (no brand attribution in UI) */
 :root {
-  --bg: #f4f6f8;
-  --bg-card: #ffffff;
-  --ink: #15202b;
-  --ink-muted: #5b6b7c;
-  --border: #d8dee6;
-  --accent: #0b5f8a;
-  --accent-soft: #e6f2f8;
-  --success: #1b7f4e;
-  --warning: #9a6b00;
-  --danger: #a33b3b;
-  --hub: #c45c26;
-  --stop: #0b5f8a;
-  --shelter: #1b7f4e;
-  --ward: #6b7c8f;
+  color-scheme: dark;
+  --void: #080d1a;
+  --bg: #0a1f4a;
+  --bg-deep: #0c1a38;
+  --bg-card: #103466;
+  --bg-elevated: #0c2d5c;
+  --ink: #f1f5f9;
+  --ink-muted: #94a3b8;
+  --ink-subtle: #64748b;
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --accent: #38bdf8;
+  --accent-bright: #5eead4;
+  --accent-soft: rgba(56, 189, 248, 0.14);
+  --teal: #2dd4bf;
+  --amber: #e8a820;
+  --gold: #c9a84c;
+  --success: #2dd4bf;
+  --warning: #e8a820;
+  --danger: #fb7185;
+  --hub: #fb923c;
+  --stop: #38bdf8;
+  --shelter: #2dd4bf;
+  --ward: #64748b;
+  --map-wash: #0c1a38;
+  --overlay: rgba(8, 13, 26, 0.72);
+  --focus-ring: rgba(56, 189, 248, 0.45);
 }
 
 @theme inline {
   --color-background: var(--bg);
   --color-foreground: var(--ink);
-  --font-sans: var(--font-source-sans);
-  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-outfit);
 }
 
 * {
@@ -35,8 +49,22 @@ body {
   padding: 0;
   min-height: 100%;
   background: var(--bg);
+  background-image:
+    radial-gradient(80% 50% at 50% -10%, rgba(56, 189, 248, 0.12), transparent 55%),
+    radial-gradient(60% 40% at 100% 0%, rgba(45, 212, 191, 0.08), transparent 50%),
+    linear-gradient(180deg, var(--void) 0%, var(--bg) 40%, var(--bg-deep) 100%);
+  background-attachment: fixed;
   color: var(--ink);
-  font-family: var(--font-source-sans), "Source Sans 3", system-ui, sans-serif;
+  font-family: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-outfit), "Outfit", system-ui, sans-serif;
+  color: var(--ink);
+  letter-spacing: -0.02em;
 }
 
 a {
@@ -44,15 +72,49 @@ a {
   text-decoration: none;
 }
 
-button {
+button,
+input,
+select,
+textarea {
   font: inherit;
+  color: var(--ink);
+}
+
+::selection {
+  background: rgba(56, 189, 248, 0.35);
+  color: var(--ink);
 }
 
 .maplibregl-popup-content {
-  font-family: var(--font-source-sans), system-ui, sans-serif;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
   border-radius: 8px;
   padding: 10px 12px;
-  box-shadow: 0 8px 24px rgba(21, 32, 43, 0.12);
+  background: var(--bg-card) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 32px rgba(8, 13, 26, 0.45);
+}
+
+.maplibregl-popup-close-button {
+  color: var(--ink-muted) !important;
+}
+
+.maplibregl-ctrl-group {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: none !important;
+}
+
+.maplibregl-ctrl-group button {
+  background: transparent !important;
+}
+
+.maplibregl-ctrl-group button + button {
+  border-top-color: var(--border) !important;
+}
+
+.maplibregl-ctrl button .maplibregl-ctrl-icon {
+  filter: invert(1) brightness(1.2);
 }
 
 @media print {
@@ -66,6 +128,7 @@ button {
 
   body {
     background: white;
+    color: #15202b;
   }
 }
 

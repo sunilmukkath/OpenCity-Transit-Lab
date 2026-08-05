@@ -60,7 +60,7 @@ export function ExportBar({
         type="button"
         onClick={exportMetricsCsv}
         disabled={!metrics?.counts || !Object.keys(metrics.counts).length}
-        className="rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--accent-soft)] disabled:opacity-40"
+        className="rounded-md border border-[var(--border)] px-3 py-1.5 text-sm text-[var(--ink)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent)] disabled:opacity-40"
       >
         Metrics CSV
       </button>
@@ -68,7 +68,7 @@ export function ExportBar({
         type="button"
         onClick={exportWardsCsv}
         disabled={!wardRows?.length}
-        className="rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--accent-soft)] disabled:opacity-40"
+        className="rounded-md border border-[var(--border)] px-3 py-1.5 text-sm text-[var(--ink)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent)] disabled:opacity-40"
       >
         Ward counts CSV
       </button>
@@ -76,14 +76,14 @@ export function ExportBar({
         type="button"
         onClick={exportManifest}
         disabled={!manifest}
-        className="rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--accent-soft)] disabled:opacity-40"
+        className="rounded-md border border-[var(--border)] px-3 py-1.5 text-sm text-[var(--ink)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent)] disabled:opacity-40"
       >
         Manifest JSON
       </button>
       <button
         type="button"
         onClick={() => window.print()}
-        className="rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--accent-soft)]"
+        className="rounded-md border border-[var(--border)] px-3 py-1.5 text-sm text-[var(--ink)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent)]"
       >
         Print brief
       </button>
@@ -92,7 +92,7 @@ export function ExportBar({
           key={g.key}
           href={`/data/${g.file}`}
           download
-          className="rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--accent-soft)]"
+          className="rounded-md border border-[var(--border)] px-3 py-1.5 text-sm text-[var(--ink)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent)]"
         >
           {g.key} GeoJSON
         </a>

@@ -10,8 +10,12 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[linear-gradient(135deg,#f7fafc_0%,#e8f1f6_45%,#f3efe8_100%)] px-6 py-10 shadow-sm sm:px-10">
-        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">
+      <section className="relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[linear-gradient(135deg,rgba(16,52,102,0.95)_0%,rgba(10,31,74,0.98)_45%,rgba(12,26,56,1)_100%)] px-6 py-10 shadow-[0_20px_60px_rgba(8,13,26,0.45)] sm:px-10">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(56,189,248,0.22),transparent_65%)]"
+        />
+        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--accent-bright)]">
           OpenCity Transit Lab
         </p>
         <h1 className="mt-2 max-w-3xl font-[family-name:var(--font-display)] text-4xl font-semibold tracking-tight text-[var(--ink)] sm:text-5xl">
@@ -25,13 +29,13 @@ export default async function HomePage() {
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href="/map"
-            className="rounded-md bg-[var(--accent)] px-4 py-2.5 text-sm font-semibold text-white"
+            className="rounded-md bg-[var(--accent)] px-4 py-2.5 text-sm font-semibold text-[var(--void)]"
           >
             Open network map
           </Link>
           <Link
             href="/sources"
-            className="rounded-md border border-[var(--border)] bg-white px-4 py-2.5 text-sm font-semibold"
+            className="rounded-md border border-[var(--border-strong)] bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-[var(--ink)] hover:bg-white/[0.08]"
           >
             Data Sources
           </Link>

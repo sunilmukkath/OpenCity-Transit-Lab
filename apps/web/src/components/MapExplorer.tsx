@@ -211,12 +211,12 @@ export function MapExplorer({
         </ul>
 
         {stopCountExtent ? (
-          <div className="rounded-lg bg-slate-50 p-3 text-xs text-[var(--ink-muted)]">
+          <div className="rounded-lg bg-white/[0.05] p-3 text-xs text-[var(--ink-muted)]">
             Ward colour = GTFS stops inside ward (min {stopCountExtent.min}, max{" "}
             {stopCountExtent.max}). Not an equity score.
           </div>
         ) : (
-          <div className="rounded-lg bg-slate-50 p-3 text-xs text-[var(--ink-muted)]">
+          <div className="rounded-lg bg-white/[0.05] p-3 text-xs text-[var(--ink-muted)]">
             Ward fill is neutral until stop counts are available from a loaded GTFS
             layer.
           </div>
@@ -230,15 +230,15 @@ export function MapExplorer({
         ) : null}
       </aside>
 
-      <div className="relative min-h-[560px] overflow-hidden rounded-xl border border-[var(--border)] bg-[#dfe8ef] shadow-sm">
+      <div className="relative min-h-[560px] overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--map-wash)] shadow-sm">
         {loading ? (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/70 text-sm text-[var(--ink-muted)]">
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-[var(--overlay)] text-sm text-[var(--ink-muted)]">
             Loading verified layers…
           </div>
         ) : null}
         <Map
           initialViewState={CHENNAI}
-          mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+          mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
           style={{ width: "100%", height: "100%", minHeight: 560 }}
           interactiveLayerIds={interactiveLayerIds}
           onClick={onClick}
@@ -251,7 +251,7 @@ export function MapExplorer({
               <Layer
                 id="catchment-800-fill"
                 type="fill"
-                paint={{ "fill-color": "#0b5f8a", "fill-opacity": 0.08 }}
+                paint={{ "fill-color": "#38bdf8", "fill-opacity": 0.08 }}
               />
             </Source>
           ) : null}
@@ -261,7 +261,7 @@ export function MapExplorer({
               <Layer
                 id="catchment-400-fill"
                 type="fill"
-                paint={{ "fill-color": "#0b5f8a", "fill-opacity": 0.14 }}
+                paint={{ "fill-color": "#2dd4bf", "fill-opacity": 0.14 }}
               />
             </Source>
           ) : null}
@@ -278,18 +278,18 @@ export function MapExplorer({
                         ["linear"],
                         ["coalesce", ["get", "stop_count"], 0],
                         stopCountExtent.min,
-                        "#e8eef3",
+                        "#103466",
                         stopCountExtent.max,
-                        "#0b5f8a",
+                        "#38bdf8",
                       ]
-                    : "#c5d0db",
-                  "fill-opacity": 0.45,
+                    : "#1a3a6e",
+                  "fill-opacity": 0.55,
                 }}
               />
               <Layer
                 id="wards-line"
                 type="line"
-                paint={{ "line-color": "#4a5b6c", "line-width": 0.8 }}
+                paint={{ "line-color": "#94a3b8", "line-width": 0.7, "line-opacity": 0.7 }}
               />
             </Source>
           ) : null}
@@ -299,7 +299,7 @@ export function MapExplorer({
               <Layer
                 id="zones-line"
                 type="line"
-                paint={{ "line-color": "#6b4f2a", "line-width": 1.5 }}
+                paint={{ "line-color": "#e8a820", "line-width": 1.5 }}
               />
             </Source>
           ) : null}
@@ -309,7 +309,7 @@ export function MapExplorer({
               <Layer
                 id="mrts-lines-line"
                 type="line"
-                paint={{ "line-color": "#c45c26", "line-width": 3 }}
+                paint={{ "line-color": "#fb923c", "line-width": 3 }}
               />
             </Source>
           ) : null}
@@ -321,8 +321,8 @@ export function MapExplorer({
                 type="circle"
                 paint={{
                   "circle-radius": 2.2,
-                  "circle-color": "#0b5f8a",
-                  "circle-opacity": 0.75,
+                  "circle-color": "#38bdf8",
+                  "circle-opacity": 0.8,
                 }}
               />
             </Source>
@@ -335,9 +335,9 @@ export function MapExplorer({
                 type="circle"
                 paint={{
                   "circle-radius": 3,
-                  "circle-color": "#1b7f4e",
+                  "circle-color": "#2dd4bf",
                   "circle-stroke-width": 1,
-                  "circle-stroke-color": "#fff",
+                  "circle-stroke-color": "#0a1f4a",
                 }}
               />
             </Source>
@@ -350,9 +350,9 @@ export function MapExplorer({
                 type="circle"
                 paint={{
                   "circle-radius": 5,
-                  "circle-color": "#c45c26",
+                  "circle-color": "#fb923c",
                   "circle-stroke-width": 1.5,
-                  "circle-stroke-color": "#fff",
+                  "circle-stroke-color": "#0a1f4a",
                 }}
               />
             </Source>
@@ -365,9 +365,9 @@ export function MapExplorer({
                 type="circle"
                 paint={{
                   "circle-radius": 6,
-                  "circle-color": "#8b2e1a",
+                  "circle-color": "#e8a820",
                   "circle-stroke-width": 2,
-                  "circle-stroke-color": "#fff",
+                  "circle-stroke-color": "#0a1f4a",
                 }}
               />
             </Source>
@@ -381,8 +381,8 @@ export function MapExplorer({
               onClose={() => setPopup(null)}
               closeOnClick={false}
             >
-              <strong>{popup.title}</strong>
-              <pre className="mt-1 max-w-xs whitespace-pre-wrap text-[11px] text-slate-600">
+              <strong className="text-[var(--ink)]">{popup.title}</strong>
+              <pre className="mt-1 max-w-xs whitespace-pre-wrap text-[11px] text-[var(--ink-muted)]">
                 {popup.body}
               </pre>
             </Popup>

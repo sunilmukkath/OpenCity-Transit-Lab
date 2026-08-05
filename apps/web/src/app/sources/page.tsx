@@ -119,7 +119,7 @@ export default async function SourcesPage() {
         </h2>
         <div className="overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--bg-card)]">
           <table className="min-w-full text-left text-sm">
-            <thead className="border-b border-[var(--border)] bg-slate-50 text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+            <thead className="border-b border-[var(--border)] bg-white/[0.04] text-xs uppercase tracking-wide text-[var(--ink-muted)]">
               <tr>
                 <th className="px-4 py-3">Layer</th>
                 <th className="px-4 py-3">Status</th>

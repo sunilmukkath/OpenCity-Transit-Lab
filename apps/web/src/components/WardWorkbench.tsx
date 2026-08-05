@@ -118,7 +118,7 @@ export function WardWorkbench({
             Select ward
           </label>
           <select
-            className="mt-2 w-full rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm"
+            className="mt-2 w-full rounded-md border border-[var(--border)] bg-[var(--bg-elevated)] px-3 py-2 text-sm text-[var(--ink)]"
             value={selected}
             onChange={(e) => setSelected(e.target.value)}
           >
@@ -145,11 +145,11 @@ export function WardWorkbench({
                 Printable local-body brief · verified attributes only
               </p>
               <dl className="mt-4 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-lg bg-slate-50 p-3">
+                <div className="rounded-lg bg-white/[0.05] p-3">
                   <dt className="text-xs uppercase text-[var(--ink-muted)]">
                     GTFS stops in ward
                   </dt>
-                  <dd className="mt-1 text-2xl font-semibold">
+                  <dd className="mt-1 text-2xl font-semibold text-[var(--ink)]">
                     {current.stop_count === undefined ? (
                       <span className="text-[var(--ink-muted)]">Unavailable</span>
                     ) : (
@@ -157,11 +157,11 @@ export function WardWorkbench({
                     )}
                   </dd>
                 </div>
-                <div className="rounded-lg bg-slate-50 p-3">
+                <div className="rounded-lg bg-white/[0.05] p-3">
                   <dt className="text-xs uppercase text-[var(--ink-muted)]">
                     Mapped bus shelters
                   </dt>
-                  <dd className="mt-1 text-2xl font-semibold">
+                  <dd className="mt-1 text-2xl font-semibold text-[var(--ink)]">
                     {current.shelter_count === undefined ? (
                       <span className="text-[var(--ink-muted)]">Unavailable</span>
                     ) : (

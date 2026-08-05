@@ -67,7 +67,7 @@ export default async function ExplorePage() {
         </ul>
       </section>
 
-      <section className="rounded-xl bg-slate-50 p-5 text-sm text-[var(--ink-muted)]">
+      <section className="rounded-xl bg-white/[0.04] border border-[var(--border)] p-5 text-sm text-[var(--ink-muted)]">
         <p>
           Live bus tracking is <strong>not connected</strong>
           {manifest ? ` (${manifest.realtime.length} connector slots ready)` : ""}. When

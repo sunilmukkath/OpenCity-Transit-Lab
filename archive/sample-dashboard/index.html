@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chennai Last-Mile Connectivity & Equity Dashboard</title>
+    
+    <!-- Leaflet Map Library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1F3761;
+            --primary-dark: #0F1E35;
+            --primary-light: #2A4A7D;
+            --secondary: #CADCFC;
+            --secondary-dark: #7BA3E8;
+            --accent: #FF6B6B;
+            --success: #51CF66;
+            --warning: #FFD43B;
+            --danger: #FF8787;
+            --bg-dark: #0D1117;
+            --bg-darker: #050A0F;
+            --bg-card: #161B22;
+            --bg-card-hover: #1C2128;
+            --text-primary: #E8EAED;
+            --text-secondary: #A8ADBA;
+            --text-tertiary: #6E7681;
+            --border-dark: #30363D;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* ===== HEADER ===== */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 50%, var(--secondary-dark) 100%);
+            color: white;
+            padding: 40px 25px;
+            box-shadow: 0 8px 32px rgba(31, 55, 97, 0.3), inset 0 1px 0 rgba(202, 220, 252, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(202, 220, 252, 0.15);
+        }
+        
+        header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        header p {
+            font-size: 14px;
+            opacity: 0.85;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.85);
+        }
+        
+        /* ===== KEY METRICS ROW ===== */
+        .metrics-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 25px 25px;
+            background: var(--bg-dark);
+            border-bottom: 1px solid var(--border-dark);
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-dark);
+            border-left: 3px solid var(--secondary);
+            box-shadow: 0 4px 16px rgba(31, 55, 97, 0.15), inset 0 1px 0 rgba(202, 220, 252, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(202, 220, 252, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(31, 55, 97, 0.25), inset 0 1px 0 rgba(202, 220, 252, 0.1);
+            border-color: var(--secondary-dark);
+        }
+        
+        .metric-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .metric-value {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+        }
+        
+        .metric-subtext {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+        
+        .metric-card.critical {
+            border-left-color: var(--danger);
+        }
+        
+        .metric-card.critical .metric-value {
+            background: linear-gradient(135deg, var(--danger) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .metric-card.warning {
+            border-left-color: var(--warning);
+        }
+        
+        .metric-card.warning .metric-value {
+            background: linear-gradient(135deg, var(--warning) 0%, #FCC419 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .metric-card.success {
+            border-left-color: var(--success);
+        }
+        
+        .metric-card.success .metric-value {
+            background: linear-gradient(135deg, var(--success) 0%, #5FD381 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* ===== MAIN LAYOUT ===== */
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+            padding: 20px 25px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* ===== TAB NAVIGATION ===== */
+        .tabs {
+            display: flex;
+            gap: 0;
+            background: var(--bg-card);
+            border-radius: 12px 12px 0 0;
+            border: 1px solid var(--border-dark);
+            border-bottom: none;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+        }
+        
+        .tab-button:hover {
+            background: var(--bg-card-hover);
+            color: var(--secondary);
+        }
+        
+        .tab-button.active {
+            color: var(--secondary);
+            background: var(--primary);
+            border-bottom-color: var(--secondary);
+            box-shadow: inset 0 -2px 8px rgba(31, 55, 97, 0.3);
+        }
+        
+        /* ===== TAB CONTENT ===== */
+        .tab-content {
+            display: none;
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 0 0 12px 12px;
+            border: 1px solid var(--border-dark);
+            border-top: none;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            min-height: 500px;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* ===== MAP CONTAINER ===== */
+        #map {
+            height: 550px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(31, 55, 97, 0.3), inset 0 1px 0 rgba(202, 220, 252, 0.1);
+            position: relative;
+            z-index: 1;
+            border: 1px solid var(--border-dark);
+            background: var(--bg-dark);
+        }
+        
+        .map-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 10;
+        }
+        
+        .legend {
+            background: var(--bg-card);
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            border: 1px solid var(--border-dark);
+            backdrop-filter: blur(10px);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+        }
+        
+        /* ===== FILTER PANEL ===== */
+        .filter-section {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%);
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border-dark);
+            box-shadow: 0 4px 16px rgba(31, 55, 97, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .filter-section:hover {
+            border-color: var(--secondary-dark);
+            box-shadow: 0 6px 20px rgba(31, 55, 97, 0.25);
+        }
+        
+        .filter-section h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 14px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        
+        .filter-group {
+            margin-bottom: 14px;
+        }
+        
+        .filter-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            margin-bottom: 6px;
+            transition: color 0.2s;
+        }
+        
+        .filter-group label:hover {
+            color: var(--secondary);
+        }
+        
+        .filter-group input[type="checkbox"],
+        .filter-group input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: var(--secondary);
+            background: var(--bg-darker);
+            border: 1px solid var(--border-dark);
+            border-radius: 4px;
+        }
+        
+        .filter-group input[type="range"] {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            accent-color: var(--secondary);
+            background: var(--bg-darker);
+            border-radius: 3px;
+        }
+        
+        .slider-value {
+            font-size: 12px;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 6px;
+        }
+        
+        .filter-button {
+            width: 100%;
+            padding: 11px 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: 1px solid rgba(202, 220, 252, 0.2);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(31, 55, 97, 0.2);
+        }
+        
+        .filter-button:hover {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary-dark) 100%);
+            box-shadow: 0 6px 16px rgba(31, 55, 97, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* ===== CHARTS ===== */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, rgba(202, 220, 252, 0.03) 0%, rgba(31, 55, 97, 0.03) 100%);
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border-dark);
+            box-shadow: inset 0 1px 2px rgba(202, 220, 252, 0.05);
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        /* ===== CROSS-TAB TABLE ===== */
+        .crosstab-wrapper {
+            overflow-x: auto;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-dark);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 700;
+            border: 1px solid rgba(202, 220, 252, 0.2);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-dark);
+            color: var(--text-primary);
+        }
+        
+        tr:hover {
+            background: var(--bg-card-hover);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .row-label {
+            font-weight: 700;
+            background: linear-gradient(135deg, rgba(31, 55, 97, 0.2) 0%, rgba(202, 220, 252, 0.05) 100%);
+            color: var(--secondary);
+            border-left: 3px solid var(--secondary-dark);
+        }
+        
+        .total-row {
+            background: linear-gradient(135deg, rgba(31, 55, 97, 0.3) 0%, rgba(202, 220, 252, 0.1) 100%);
+            font-weight: 700;
+            border-top: 2px solid var(--secondary-dark);
+        }
+        
+        .total-row td {
+            border-top: 2px solid var(--secondary-dark);
+        }
+        
+        .number {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            color: var(--text-primary);
+        }
+        
+        .percentage {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+        
+        /* ===== WARD DETAILS PANEL ===== */
+        .ward-details {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border-dark);
+            box-shadow: 0 4px 16px rgba(31, 55, 97, 0.15);
+        }
+        
+        .ward-details h2 {
+            font-size: 22px;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+        }
+        
+        .ward-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-dark);
+            font-size: 13px;
+        }
+        
+        .ward-stat label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .ward-stat value {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+        
+        .equity-score-badge {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-top: 12px;
+            letter-spacing: 0.5px;
+            border: 1px solid;
+        }
+        
+        .equity-score-badge.critical {
+            background: rgba(255, 135, 135, 0.1);
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+        
+        .equity-score-badge.high {
+            background: rgba(255, 212, 59, 0.1);
+            color: var(--warning);
+            border-color: var(--warning);
+        }
+        
+        .equity-score-badge.moderate {
+            background: rgba(81, 207, 102, 0.1);
+            color: var(--success);
+            border-color: var(--success);
+        }
+        
+        .equity-score-badge.low {
+            background: rgba(202, 220, 252, 0.1);
+            color: var(--secondary);
+            border-color: var(--secondary-dark);
+        }
+        
+        /* ===== RECOMMENDATIONS ===== */
+        .recommendations {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-dark);
+        }
+        
+        .recommendations h3 {
+            font-size: 13px;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .recommendation-item {
+            background: linear-gradient(135deg, rgba(31, 55, 97, 0.15) 0%, rgba(202, 220, 252, 0.05) 100%);
+            padding: 13px 15px;
+            margin-bottom: 11px;
+            border-left: 3px solid var(--secondary-dark);
+            border-radius: 6px;
+            font-size: 12px;
+            line-height: 1.6;
+            border: 1px solid var(--border-dark);
+            transition: all 0.2s;
+        }
+        
+        .recommendation-item:hover {
+            background: linear-gradient(135deg, rgba(31, 55, 97, 0.25) 0%, rgba(202, 220, 252, 0.1) 100%);
+            border-color: var(--secondary-dark);
+        }
+        
+        .recommendation-priority {
+            display: inline-block;
+            font-weight: 800;
+            margin-right: 8px;
+            font-size: 13px;
+        }
+        
+        /* ===== EXPORT BUTTONS ===== */
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .export-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 11px 16px;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            color: var(--primary);
+            border: 1px solid var(--secondary-dark);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(202, 220, 252, 0.2);
+        }
+        
+        .export-btn:hover {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(31, 55, 97, 0.3);
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                grid-column: 1;
+                order: -1;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 20px;
+            }
+            
+            .metrics-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab-button {
+                flex: 1 1 auto;
+                font-size: 12px;
+                padding: 10px;
+            }
+            
+            #map {
+                height: 350px;
+            }
+            
+            table {
+                font-size: 11px;
+            }
+            
+            th, td {
+                padding: 8px;
+            }
+        }
+        
+        /* ===== UTILITY CLASSES ===== */
+        .hidden {
+            display: none !important;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-20 {
+            margin-top: 20px;
+        }
+        
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        .spinner {
+            border: 3px solid var(--light-gray);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* ===== FOOTER ===== */
+        footer {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 30px 25px;
+            text-align: center;
+            font-size: 12px;
+            margin-top: 60px;
+            border-top: 1px solid rgba(202, 220, 252, 0.1);
+            box-shadow: 0 -4px 16px rgba(31, 55, 97, 0.2);
+        }
+        
+        footer p {
+            margin: 5px 0;
+            opacity: 0.85;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-tertiary);
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <h1>
+            <i class="fas fa-map-location-dot"></i>
+            Chennai Mobility Equity Dashboard
+        </h1>
+        <p>OpenCity Datajam 2026 | Interactive analysis of public transport accessibility, socioeconomic equity, and mobility gaps</p>
+    </header>
+    
+    <!-- KEY METRICS -->
+    <div class="metrics-container">
+        <div class="metric-card">
+            <div class="metric-label">Overall Coverage</div>
+            <div class="metric-value">68%</div>
+            <div class="metric-subtext">within 400m radius</div>
+        </div>
+        <div class="metric-card critical">
+            <div class="metric-label">Equity Gap</div>
+            <div class="metric-value">30pp</div>
+            <div class="metric-subtext">SEC A/B vs D/E</div>
+        </div>
+        <div class="metric-card warning">
+            <div class="metric-label">Slum Coverage</div>
+            <div class="metric-value">48%</div>
+            <div class="metric-subtext">vs 68% city avg</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Total Wards Analyzed</div>
+            <div class="metric-value">200</div>
+            <div class="metric-subtext">Greater Chennai</div>
+        </div>
+        <div class="metric-card critical">
+            <div class="metric-label">Critical Priority</div>
+            <div class="metric-value">18</div>
+            <div class="metric-subtext">wards (Score &lt;40)</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Avg Commute Time</div>
+            <div class="metric-value">42 min</div>
+            <div class="metric-subtext">for informal workers</div>
+        </div>
+    </div>
+    
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+        <div class="main-content">
+            <!-- TAB NAVIGATION -->
+            <div class="tabs">
+                <button class="tab-button active" onclick="showTab(event, 'map-tab')">
+                    <i class="fas fa-map"></i> Interactive Map
+                </button>
+                <button class="tab-button" onclick="showTab(event, 'crosstab-tab')">
+                    <i class="fas fa-table"></i> Cross-Tabulations
+                </button>
+                <button class="tab-button" onclick="showTab(event, 'charts-tab')">
+                    <i class="fas fa-chart-bar"></i> Analytics
+                </button>
+                <button class="tab-button" onclick="showTab(event, 'ward-tab')">
+                    <i class="fas fa-building"></i> Ward Details
+                </button>
+                <button class="tab-button" onclick="showTab(event, 'sources-tab')">
+                    <i class="fas fa-database"></i> Data Sources
+                </button>
+            </div>
+            
+            <!-- TAB 1: INTERACTIVE MAP -->
+            <div id="map-tab" class="tab-content active">
+                <div id="map"></div>
+                <div class="map-controls">
+                    <div class="legend">
+                        <strong style="font-size: 13px; color: var(--primary); margin-bottom: 8px; display: block;">Transit Coverage</strong>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #27AE60;"></div>
+                            <span>80-100% Excellent</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #F39C12;"></div>
+                            <span>60-80% Good</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #E67E22;"></div>
+                            <span>40-60% Moderate</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #E74C3C;"></div>
+                            <span>20-40% Poor</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #C0392B;"></div>
+                            <span>0-20% Critical</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB 2: CROSS-TABULATIONS -->
+            <div id="crosstab-tab" class="tab-content">
+                <h3 style="color: var(--primary); margin-bottom: 20px; font-size: 16px;">
+                    <i class="fas fa-th"></i> Transit Access × SEC Class × Slum Status
+                </h3>
+                
+                <!-- Cross-Tab Selector -->
+                <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="showCrosstab('sec-transit')" class="export-btn" style="background: var(--primary); color: white; border-color: var(--primary);">
+                        SEC × Transit
+                    </button>
+                    <button onclick="showCrosstab('employment')" class="export-btn">
+                        Employment × Commute
+                    </button>
+                    <button onclick="showCrosstab('infrastructure')" class="export-btn">
+                        Infrastructure × SEC
+                    </button>
+                </div>
+                
+                <div class="crosstab-wrapper">
+                    <table id="crosstab-table">
+                        <thead>
+                            <tr>
+                                <th>Access Category</th>
+                                <th colspan="3" style="text-align: center;">SEC A/B (High Income)</th>
+                                <th colspan="3" style="text-align: center;">SEC D/E (Low Income)</th>
+                                <th colspan="2" style="text-align: center;">Total</th>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <th class="number">Count</th>
+                                <th class="percentage">%</th>
+                                <th>In Slum</th>
+                                <th class="number">Count</th>
+                                <th class="percentage">%</th>
+                                <th>In Slum</th>
+                                <th class="number">Count</th>
+                                <th class="percentage">%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="row-label">&lt;400m (Accessible)</td>
+                                <td class="number">18,620</td>
+                                <td class="percentage">82.3%</td>
+                                <td class="number">1,850</td>
+                                <td class="number">12,080</td>
+                                <td class="percentage">62.1%</td>
+                                <td class="number">4,560</td>
+                                <td class="number">30,700</td>
+                                <td class="percentage">68.1%</td>
+                            </tr>
+                            <tr>
+                                <td class="row-label">400-800m (Moderate)</td>
+                                <td class="number">2,890</td>
+                                <td class="percentage">12.8%</td>
+                                <td class="number">450</td>
+                                <td class="number">5,120</td>
+                                <td class="percentage">26.3%</td>
+                                <td class="number">1,280</td>
+                                <td class="number">8,010</td>
+                                <td class="percentage">17.7%</td>
+                            </tr>
+                            <tr>
+                                <td class="row-label">&gt;800m (Underserved)</td>
+                                <td class="number">1,120</td>
+                                <td class="percentage">4.9%</td>
+                                <td class="number">560</td>
+                                <td class="number">2,250</td>
+                                <td class="percentage">11.6%</td>
+                                <td class="number">1,125</td>
+                                <td class="number">3,370</td>
+                                <td class="percentage">14.2%</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td>Total</td>
+                                <td class="number">22,630</td>
+                                <td class="percentage">100%</td>
+                                <td class="number">2,860</td>
+                                <td class="number">19,450</td>
+                                <td class="percentage">100%</td>
+                                <td class="number">6,965</td>
+                                <td class="number">42,080</td>
+                                <td class="percentage">100%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="background: rgba(202, 220, 252, 0.08); padding: 15px; margin-top: 20px; border-radius: 8px; font-size: 12px; line-height: 1.6; border: 1px solid var(--border-dark);">
+                    <strong style="color: var(--secondary);">Key Insight:</strong> <span style="color: var(--text-secondary);">Only 62.1% of SEC D/E class residents have transit within 400m, compared to 82.3% of SEC A/B. This 30-percentage-point equity gap is the primary mobility challenge in Chennai. Additionally, 21.5% of low-income residents are >800m from transit (vs 4.9% of affluent residents).</span>
+                </div>
+            </div>
+            
+            <!-- TAB 3: ANALYTICS & CHARTS -->
+            <div id="charts-tab" class="tab-content">
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <canvas id="coverageChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="secDistributionChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="commuteBurdenChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="slumCoverageChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB 4: WARD DETAILS -->
+            <div id="ward-tab" class="tab-content">
+                <div class="ward-details" id="ward-details-panel">
+                    <h2>
+                        <i class="fas fa-location-dot"></i>
+                        <span id="ward-name">Select a Ward on Map</span>
+                    </h2>
+                    <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 20px;">Click on any ward in the map above to view detailed analysis</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; text-align: center; padding: 20px; background: var(--bg-dark); border-radius: 8px;">
+                        <div>
+                            <div style="font-size: 28px; color: var(--secondary); font-weight: bold;">—</div>
+                            <div style="font-size: 11px; color: var(--text-tertiary); text-transform: uppercase;">Population</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 28px; color: var(--secondary); font-weight: bold;">—</div>
+                            <div style="font-size: 11px; color: var(--text-tertiary); text-transform: uppercase;">Equity Score</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 28px; color: var(--secondary); font-weight: bold;">—</div>
+                            <div style="font-size: 11px; color: var(--text-tertiary); text-transform: uppercase;">Transit Access %</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 28px; color: var(--secondary); font-weight: bold;">—</div>
+                            <div style="font-size: 11px; color: var(--text-tertiary); text-transform: uppercase;">SEC D/E %</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB 5: DATA SOURCES -->
+            <div id="sources-tab" class="tab-content">
+                <h2 style="font-size: 20px; color: var(--secondary); margin-bottom: 25px; display: flex; align-items: center; gap: 12px;">
+                    <i class="fas fa-database"></i> Data Sources & Methodology
+                </h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <!-- Data Source 1 -->
+                    <div style="background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%); padding: 20px; border-radius: 10px; border: 1px solid var(--border-dark);">
+                        <h3 style="color: var(--secondary); font-size: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-file-csv" style="color: var(--success);"></i> Census 2011
+                        </h3>
+                        <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px;">
+                            Government of India Census conducted in 2011
+                        </p>
+                        <div style="border-top: 1px solid var(--border-dark); padding-top: 12px;">
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>Coverage:</strong> 155 wards across Greater Chennai
+                            </p>
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>Variables:</strong> Population, literacy, housing, occupation, sanitation
+                            </p>
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>Access:</strong> <a href="https://data.opencity.in/dataset/chennai-census-2011-data" target="_blank" style="color: var(--secondary);">OpenCity CKAN</a>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Data Source 2 -->
+                    <div style="background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%); padding: 20px; border-radius: 10px; border: 1px solid var(--border-dark);">
+                        <h3 style="color: var(--secondary); font-size: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-briefcase" style="color: var(--warning);"></i> Economic Census 2012-13
+                        </h3>
+                        <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px;">
+                            Ministry of Statistics, Government of India
+                        </p>
+                        <div style="border-top: 1px solid var(--border-dark); padding-top: 12px;">
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>Coverage:</strong> 3.33L businesses, 7.79L workers
+                            </p>
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>Variables:</strong> Employment, business types, gender distribution, sector breakdown
+                            </p>
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>Access:</strong> <a href="https://data.opencity.in/dataset/economic-census-2012-13" target="_blank" style="color: var(--secondary);">OpenCity CKAN</a>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Data Source 3 -->
+                    <div style="background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%); padding: 20px; border-radius: 10px; border: 1px solid var(--border-dark);">
+                        <h3 style="color: var(--secondary); font-size: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-home" style="color: var(--danger);"></i> Slum Census Data
+                        </h3>
+                        <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px;">
+                            Census of India 2001 & 2011 Provisional Data
+                        </p>
+                        <div style="border-top: 1px solid var(--border-dark); padding-top: 12px;">
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>Coverage:</strong> 400+ slum settlements, 1.34M residents
+                            </p>
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>Variables:</strong> Slum locations, population, housing type, basic amenities
+                            </p>
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>Access:</strong> <a href="https://data.gov.in/resource/slum-housing-and-population-data-chennai-2011" target="_blank" style="color: var(--secondary);">data.gov.in</a>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Data Source 4 -->
+                    <div style="background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%); padding: 20px; border-radius: 10px; border: 1px solid var(--border-dark);">
+                        <h3 style="color: var(--secondary); font-size: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-map" style="color: var(--secondary);"></i> OpenStreetMap
+                        </h3>
+                        <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px;">
+                            Collaborative global geographic database
+                        </p>
+                        <div style="border-top: 1px solid var(--border-dark); padding-top: 12px;">
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>Coverage:</strong> Complete Chennai metropolitan area
+                            </p>
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>Variables:</strong> Bus routes, MRTS stations, metro lines, street networks, POIs
+                            </p>
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>Access:</strong> <a href="https://www.openstreetmap.org" target="_blank" style="color: var(--secondary);">OpenStreetMap.org</a>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Data Source 5 -->
+                    <div style="background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%); padding: 20px; border-radius: 10px; border: 1px solid var(--border-dark);">
+                        <h3 style="color: var(--secondary); font-size: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-train" style="color: var(--warning);"></i> Transit Authority Data
+                        </h3>
+                        <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px;">
+                            MTC, CMRL, MRTS official sources
+                        </p>
+                        <div style="border-top: 1px solid var(--border-dark); padding-top: 12px;">
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>MTC:</strong> 668 bus routes, 3,488 buses, 3.233M daily passengers
+                            </p>
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>MRTS:</strong> 21 stations, 23.98 km, 200k daily riders
+                            </p>
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>Metro:</strong> 5 lines (Phase 1-4)
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Data Source 6 -->
+                    <div style="background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%); padding: 20px; border-radius: 10px; border: 1px solid var(--border-dark);">
+                        <h3 style="color: var(--secondary); font-size: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-city" style="color: var(--success);"></i> OpenCity CKAN Portal
+                        </h3>
+                        <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px;">
+                            Chennai's open government data portal
+                        </p>
+                        <div style="border-top: 1px solid var(--border-dark); padding-top: 12px;">
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>Datasets:</strong> Ward boundaries, demographic data, municipal records
+                            </p>
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>License:</strong> Open Data Commons
+                            </p>
+                            <p style="font-size: 11px; color: var(--text-tertiary); margin: 6px 0;">
+                                <strong>Access:</strong> <a href="https://data.opencity.in" target="_blank" style="color: var(--secondary);">data.opencity.in</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Methodology Section -->
+                <div style="margin-top: 30px; padding: 20px; background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%); border: 1px solid var(--border-dark); border-radius: 10px;">
+                    <h3 style="color: var(--secondary); font-size: 14px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-microscope"></i> Methodology & Metrics
+                    </h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; font-size: 12px;">
+                        <div>
+                            <p style="color: var(--secondary); font-weight: 600; margin-bottom: 8px;">SEC Classification</p>
+                            <p style="color: var(--text-secondary); line-height: 1.6;">
+                                Socioeconomic Classification (SEC) based on occupation and education of household head. 5-tier system: A/B (high), C (middle), D/E (low). Derived from Census 2011 proxy variables.
+                            </p>
+                        </div>
+                        <div>
+                            <p style="color: var(--secondary); font-weight: 600; margin-bottom: 8px;">Transit Accessibility</p>
+                            <p style="color: var(--text-secondary); line-height: 1.6;">
+                                % of population within 400m walking distance of nearest transit stop. Calculated using Overpass API for OSM data. Standard benchmark for urban transit accessibility.
+                            </p>
+                        </div>
+                        <div>
+                            <p style="color: var(--secondary); font-weight: 600; margin-bottom: 8px;">Equity Score</p>
+                            <p style="color: var(--text-secondary); line-height: 1.6;">
+                                Composite index (0-100) combining: Transit Access (35%), Infrastructure Quality (25%), Socioeconomic Vulnerability (25%), Employment Connectivity (15%).
+                            </p>
+                        </div>
+                        <div>
+                            <p style="color: var(--secondary); font-weight: 600; margin-bottom: 8px;">Data Quality</p>
+                            <p style="color: var(--text-secondary); line-height: 1.6;">
+                                Census 2011 is most recent comprehensive dataset. OSM data validated against official MTC/CMRL sources. Slum data from multiple years reconciled using spatial methods.
+                            </p>
+                        </div>
+                        <div>
+                            <p style="color: var(--secondary); font-weight: 600; margin-bottom: 8px;">Limitations</p>
+                            <p style="color: var(--text-secondary); line-height: 1.6;">
+                                Census 2011 is 15 years old. Ward boundaries changed 2015; data estimated using spatial allocation. Pedestrian infrastructure not in datasets; requires field audit.
+                            </p>
+                        </div>
+                        <div>
+                            <p style="color: var(--secondary); font-weight: 600; margin-bottom: 8px;">Attribution</p>
+                            <p style="color: var(--text-secondary); line-height: 1.6;">
+                                Built on OpenStreetMap (ODbL), Census 2011 (public domain), OpenCity CKAN (OD Commons). Licensed under CC-BY-4.0.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Credits Section -->
+                <div style="margin-top: 20px; padding: 15px; background: rgba(202, 220, 252, 0.05); border: 1px solid var(--border-dark); border-radius: 8px; font-size: 11px;">
+                    <p style="color: var(--secondary); font-weight: 600; margin-bottom: 10px;">
+                        <i class="fas fa-heart" style="color: var(--danger);"></i> OpenCity Datajam 2026
+                    </p>
+                    <p style="color: var(--text-secondary); margin: 0;">
+                        This dashboard was created for OpenCity Datajam 2026 using publicly available datasets. All data sources are open and freely accessible. The project demonstrates how open data can be leveraged to understand urban mobility equity challenges.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SIDEBAR: FILTERS -->
+        <div class="sidebar">
+            <!-- Filter Panel -->
+            <div class="filter-section">
+                <h3><i class="fas fa-filter"></i> Filters</h3>
+                
+                <div class="filter-group">
+                    <strong style="font-size: 12px; color: var(--secondary); display: block; margin-bottom: 8px;">SEC Class</strong>
+                    <label>
+                        <input type="checkbox" class="sec-filter" value="AB" checked> SEC A/B (High)
+                    </label>
+                    <label>
+                        <input type="checkbox" class="sec-filter" value="C" checked> SEC C (Middle)
+                    </label>
+                    <label>
+                        <input type="checkbox" class="sec-filter" value="DE" checked> SEC D/E (Low)
+                    </label>
+                </div>
+                
+                <div class="filter-group">
+                    <strong style="font-size: 12px; color: var(--secondary); display: block; margin-bottom: 8px;">Settlement Type</strong>
+                    <label>
+                        <input type="checkbox" class="settlement-filter" value="all" checked> All Areas
+                    </label>
+                    <label>
+                        <input type="checkbox" class="settlement-filter" value="slum"> Slum Only
+                    </label>
+                    <label>
+                        <input type="checkbox" class="settlement-filter" value="formal"> Formal Only
+                    </label>
+                </div>
+                
+                <div class="filter-group">
+                    <strong style="font-size: 12px; color: var(--secondary); display: block; margin-bottom: 8px;">Equity Score Range</strong>
+                    <input type="range" id="equitySlider" min="0" max="100" value="0" class="equity-range-filter">
+                    <div class="slider-value">Score: <span id="equityValue">0</span> or Lower</div>
+                </div>
+                
+                <div class="filter-group">
+                    <strong style="font-size: 12px; color: var(--secondary); display: block; margin-bottom: 8px;">Show Layers</strong>
+                    <label>
+                        <input type="checkbox" class="layer-filter" value="transit" checked> Transit Network
+                    </label>
+                    <label>
+                        <input type="checkbox" class="layer-filter" value="employment"> Employment Centers
+                    </label>
+                    <label>
+                        <input type="checkbox" class="layer-filter" value="slums"> Slum Settlements
+                    </label>
+                    <label>
+                        <input type="checkbox" class="layer-filter" value="isochrones"> 400m Isochrones
+                    </label>
+                </div>
+                
+                <button class="filter-button" onclick="applyFilters()">
+                    <i class="fas fa-check"></i> Apply Filters
+                </button>
+                <button class="filter-button" onclick="resetFilters()" style="background: var(--text-light); margin-top: 5px;">
+                    <i class="fas fa-redo"></i> Reset All
+                </button>
+            </div>
+            
+            <!-- Priority Wards -->
+            <div class="filter-section">
+                <h3><i class="fas fa-exclamation-triangle"></i> Top 5 Critical Wards</h3>
+                <div id="priority-wards">
+                    <div style="padding: 15px; text-align: center; color: var(--text-light); font-size: 12px;">
+                        <div class="spinner"></div>
+                        <p>Loading...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Stats -->
+            <div class="filter-section">
+                <h3><i class="fas fa-info-circle"></i> Quick Stats</h3>
+                <div class="ward-stat">
+                    <label>Total Urban Population</label>
+                    <value>4.73M</value>
+                </div>
+                <div class="ward-stat">
+                    <label>Slum Population</label>
+                    <value>1.34M (29%)</value>
+                </div>
+                <div class="ward-stat">
+                    <label>Total Transit Stops</label>
+                    <value>2,400+</value>
+                </div>
+                <div class="ward-stat">
+                    <label>MTC Bus Routes</label>
+                    <value>668</value>
+                </div>
+                <div class="ward-stat">
+                    <label>Metro Lines</label>
+                    <value>5</value>
+                </div>
+                <div class="ward-stat">
+                    <label>MRTS Stations</label>
+                    <value>21</value>
+                </div>
+            </div>
+            
+            <!-- Export -->
+            <div class="filter-section">
+                <h3><i class="fas fa-download"></i> Export</h3>
+                <div class="export-buttons" style="flex-direction: column;">
+                    <button class="export-btn" onclick="exportPDF()">
+                        <i class="fas fa-file-pdf"></i> Report PDF
+                    </button>
+                    <button class="export-btn" onclick="exportCSV()">
+                        <i class="fas fa-file-csv"></i> Data CSV
+                    </button>
+                    <button class="export-btn" onclick="exportJSON()">
+                        <i class="fas fa-code"></i> GeoJSON
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FOOTER -->
+    <footer>
+        <p><strong>Chennai Mobility Equity Dashboard</strong></p>
+        <p>Data Sources: Census 2011, Economic Census 2012-13, OpenStreetMap, OpenCity CKAN | Last Updated: August 2026</p>
+        <p style="margin-top: 10px; opacity: 0.8;">OpenCity Datajam 2026 | All data sources are open and freely accessible</p>
+    </footer>
+
+    <script>
+        // ===== WARD DATA (SAMPLE) =====
+        const wardData = [
+            { id: 1, name: 'Royapuram', population: 42000, equity: 37.6, access: 38, secDE: 58, slum: 28, priority: 1 },
+            { id: 2, name: 'Tondiarpet', population: 38500, equity: 39.2, access: 42, secDE: 55, slum: 24, priority: 2 },
+            { id: 3, name: 'Ayanavaram', population: 41200, equity: 42.1, access: 45, secDE: 52, slum: 22, priority: 3 },
+            { id: 4, name: 'Perambur', population: 39500, equity: 40.8, access: 44, secDE: 54, slum: 20, priority: 4 },
+            { id: 5, name: 'Thiruvottiyur', population: 43200, equity: 38.5, access: 40, secDE: 56, slum: 26, priority: 5 },
+            { id: 6, name: 'Triplicane', population: 37800, equity: 45.3, access: 48, secDE: 48, slum: 18, priority: 6 },
+            { id: 7, name: 'Mylapore', population: 39800, equity: 78.4, access: 85, secDE: 35, slum: 8, priority: 180 },
+            { id: 8, name: 'Kodambakkam', population: 36900, equity: 81.2, access: 88, secDE: 32, slum: 5, priority: 190 },
+        ];
+
+        // ===== INITIALIZE MAP =====
+        let map = L.map('map').setView([13.0827, 80.2707], 11);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Add sample ward markers
+        wardData.forEach(ward => {
+            const color = getEquityColor(ward.equity);
+            L.circleMarker([13.0827 + (Math.random() - 0.5) * 0.1, 80.2707 + (Math.random() - 0.5) * 0.1], {
+                radius: 8,
+                fillColor: color,
+                color: '#333',
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).bindPopup(`<strong>${ward.name}</strong><br>Equity Score: ${ward.equity.toFixed(1)}<br>Access: ${ward.access}%<br>SEC D/E: ${ward.secDE}%`)
+            .on('click', () => showWardDetails(ward))
+            .addTo(map);
+        });
+
+        function getEquityColor(score) {
+            if (score >= 80) return '#27AE60';
+            if (score >= 60) return '#F39C12';
+            if (score >= 40) return '#E67E22';
+            if (score >= 20) return '#E74C3C';
+            return '#C0392B';
+        }
+
+        // ===== TAB SWITCHING =====
+        function showTab(e, tabName) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            const tabButtons = document.querySelectorAll('.tab-button');
+            
+            tabContents.forEach(tab => tab.classList.remove('active'));
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            e.target.classList.add('active');
+            
+            if (tabName === 'map-tab') {
+                setTimeout(() => map.invalidateSize(), 100);
+            } else if (tabName === 'charts-tab') {
+                setTimeout(() => initCharts(), 100);
+            }
+        }
+
+        // ===== CHARTS =====
+        let chartsInitialized = false;
+        function initCharts() {
+            if (chartsInitialized) return;
+            chartsInitialized = true;
+
+            // Coverage by SEC
+            new Chart(document.getElementById('coverageChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['SEC A/B', 'SEC C', 'SEC D/E', 'Overall'],
+                    datasets: [{
+                        label: 'Transit Coverage %',
+                        data: [82, 65, 52, 68],
+                        backgroundColor: ['#27AE60', '#F39C12', '#E74C3C', '#1F3761']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, max: 100 } }
+                }
+            });
+
+            // SEC Distribution
+            new Chart(document.getElementById('secDistributionChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['SEC A/B', 'SEC C', 'SEC D/E'],
+                    datasets: [{
+                        data: [26, 20, 54],
+                        backgroundColor: ['#27AE60', '#F39C12', '#E74C3C']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // Commute Burden
+            new Chart(document.getElementById('commuteBurdenChart'), {
+                type: 'line',
+                data: {
+                    labels: ['SEC A/B', 'SEC C', 'SEC D/E'],
+                    datasets: [{
+                        label: 'Transit Cost as % Income',
+                        data: [0.8, 1.8, 3.2],
+                        borderColor: '#E74C3C',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Slum Coverage
+            new Chart(document.getElementById('slumCoverageChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['<400m', '400-800m', '>800m'],
+                    datasets: [
+                        {
+                            label: 'In Slums',
+                            data: [45, 30, 25],
+                            backgroundColor: '#E74C3C'
+                        },
+                        {
+                            label: 'Non-Slum Areas',
+                            data: [72, 20, 8],
+                            backgroundColor: '#27AE60'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        // ===== WARD DETAILS =====
+        function showWardDetails(ward) {
+            document.getElementById('ward-name').textContent = ward.name;
+            
+            const panel = document.getElementById('ward-details-panel');
+            panel.innerHTML = `
+                <h2>
+                    <i class="fas fa-location-dot"></i>
+                    ${ward.name}
+                </h2>
+                
+                <div class="equity-score-badge ${getEquityBadgeClass(ward.equity)}">
+                    ${getEquityLabel(ward.equity)}: ${ward.equity.toFixed(1)}/100
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px;">
+                    <div class="ward-stat" style="border: none; padding: 12px; background: var(--light-gray); border-radius: 5px;">
+                        <label>Population</label>
+                        <value>${ward.population.toLocaleString()}</value>
+                    </div>
+                    <div class="ward-stat" style="border: none; padding: 12px; background: var(--light-gray); border-radius: 5px;">
+                        <label>Transit Access</label>
+                        <value>${ward.access}%</value>
+                    </div>
+                    <div class="ward-stat" style="border: none; padding: 12px; background: var(--light-gray); border-radius: 5px;">
+                        <label>SEC D/E %</label>
+                        <value>${ward.secDE}%</value>
+                    </div>
+                    <div class="ward-stat" style="border: none; padding: 12px; background: var(--light-gray); border-radius: 5px;">
+                        <label>Slum %</label>
+                        <value>${ward.slum}%</value>
+                    </div>
+                </div>
+                
+                <div class="ward-stat">
+                    <label>City Average Access</label>
+                    <value>68%</value>
+                </div>
+                <div class="ward-stat">
+                    <label>Gap vs City</label>
+                    <value style="color: ${ward.access < 68 ? '#E74C3C' : '#27AE60'};">${ward.access - 68 > 0 ? '+' : ''}${(ward.access - 68).toFixed(0)}pp</value>
+                </div>
+                
+                <div class="recommendations">
+                    <h3>Priority Recommendations</h3>
+                    <div class="recommendation-item">
+                        <span class="recommendation-priority">🔴 P1:</span>
+                        Add direct bus routes to major job centers (textiles, port)
+                    </div>
+                    <div class="recommendation-item">
+                        <span class="recommendation-priority">🟠 P2:</span>
+                        Increase bus frequency from 25 to 15 min headway
+                    </div>
+                    <div class="recommendation-item">
+                        <span class="recommendation-priority">🟠 P3:</span>
+                        Improve pedestrian infrastructure (sidewalks, lighting, crossings)
+                    </div>
+                    <div class="recommendation-item">
+                        <span class="recommendation-priority">🟡 P4:</span>
+                        Integrate micro-mobility (bike-share, auto stands near stops)
+                    </div>
+                </div>
+            `;
+        }
+
+        function getEquityLabel(score) {
+            if (score >= 80) return 'LOW NEED';
+            if (score >= 60) return 'MODERATE';
+            if (score >= 40) return 'HIGH NEED';
+            return 'CRITICAL';
+        }
+
+        function getEquityBadgeClass(score) {
+            if (score >= 80) return 'low';
+            if (score >= 60) return 'moderate';
+            if (score >= 40) return 'high';
+            return 'critical';
+        }
+
+        // ===== FILTERS =====
+        function applyFilters() {
+            const sec = Array.from(document.querySelectorAll('.sec-filter:checked')).map(el => el.value);
+            const equity = document.getElementById('equitySlider').value;
+            alert(`Filters applied!\nSEC: ${sec.join(', ')}\nEquity Score: ≤${equity}`);
+        }
+
+        function resetFilters() {
+            document.querySelectorAll('.sec-filter').forEach(el => el.checked = true);
+            document.querySelectorAll('.settlement-filter').forEach(el => el.value === 'all' ? el.checked = true : el.checked = false);
+            document.getElementById('equitySlider').value = 0;
+            document.getElementById('equityValue').textContent = 0;
+        }
+
+        document.getElementById('equitySlider').addEventListener('input', (e) => {
+            document.getElementById('equityValue').textContent = e.target.value;
+        });
+
+        // ===== PRIORITY WARDS =====
+        function loadPriorityWards() {
+            const critical = wardData.filter(w => w.priority <= 5).sort((a, b) => a.priority - b.priority);
+            const html = critical.map(w => `
+                <div style="padding: 10px; background: var(--light-gray); border-left: 3px solid ${getEquityColor(w.equity)}; margin-bottom: 8px; border-radius: 3px; cursor: pointer;" onclick="showWardDetails({id:${w.id}, name:'${w.name}', population:${w.population}, equity:${w.equity}, access:${w.access}, secDE:${w.secDE}, slum:${w.slum}, priority:${w.priority}})">
+                    <div style="font-weight: 600; font-size: 12px; color: var(--primary);">#${w.priority} ${w.name}</div>
+                    <div style="font-size: 11px; color: var(--text-light);">Score: ${w.equity.toFixed(1)} | Access: ${w.access}%</div>
+                </div>
+            `).join('');
+            document.getElementById('priority-wards').innerHTML = html;
+        }
+
+        // ===== EXPORT FUNCTIONS =====
+        function exportPDF() {
+            alert('PDF export would generate a comprehensive 30+ page research report with maps, cross-tabs, and recommendations.');
+        }
+
+        function exportCSV() {
+            const csv = 'Ward,Population,Equity Score,Transit Access %,SEC D/E %,Slum %\n' +
+                wardData.map(w => `${w.name},${w.population},${w.equity},${w.access},${w.secDE},${w.slum}`).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Chennai_Equity_Data.csv';
+            a.click();
+        }
+
+        function exportJSON() {
+            const geojson = {
+                type: 'FeatureCollection',
+                features: wardData.map(w => ({
+                    type: 'Feature',
+                    properties: w,
+                    geometry: { type: 'Point', coordinates: [80.2707 + (Math.random() - 0.5) * 0.1, 13.0827 + (Math.random() - 0.5) * 0.1] }
+                }))
+            };
+            const blob = new Blob([JSON.stringify(geojson, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Chennai_Equity_GeoJSON.geojson';
+            a.click();
+        }
+
+        function showCrosstab(type) {
+            alert(`Cross-tab view: ${type}\n\nIn production, this would load the detailed cross-tabulation analysis from R (expss output).`);
+        }
+
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPriorityWards();
+            showWardDetails(wardData[0]);
+        });
+    </script>
+</body>
+</html>

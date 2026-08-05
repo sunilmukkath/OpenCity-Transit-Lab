@@ -1,0 +1,16 @@
+{
+  "generated_at": "2026-08-05T07:23:46.363317+00:00",
+  "note": "Only counts derived from successfully loaded geometries. No equity or population-weighted access scores.",
+  "counts": {
+    "transit_stops": 5580,
+    "bus_shelters": 983,
+    "rail_hubs": 143,
+    "wards": 200,
+    "wards_with_zero_stops": 3,
+    "mean_stops_per_ward": 12.91
+  },
+  "unavailable": [
+    "equity_sec",
+    "pop_weighted_access"
+  ]
+}

@@ -1,0 +1,253 @@
+{
+  "generated_at": "2026-08-05T07:22:19.759171+00:00",
+  "platform": "OpenCity Transit Lab \u2014 Chennai Last-Mile Decision Support",
+  "integrity_rule": "No fabricated metrics. Unavailable or not_connected when data is missing.",
+  "sources": {
+    "gcc_wards_2022": {
+      "id": "gcc_wards_2022",
+      "name": "GCC Ward Map 2022",
+      "publisher": "Greater Chennai Corporation via OpenCity CKAN",
+      "url": "https://data.opencity.in/dataset/c77de7f8-e377-4990-90fc-4f0f8ca0e2d2/resource/e90176d4-319a-45bd-918e-ecce4f048c4d/download/6a8a05ed-a41c-492a-aade-ff7517e1a4b1.kml",
+      "portal": "https://data.opencity.in/dataset/gcc-ward-information",
+      "license": "Open Data Commons / see OpenCity portal",
+      "kind": "static",
+      "notes": null,
+      "status": "loaded",
+      "bytes": 2815875,
+      "sha256": "be48ef7eb4320279e790f59da1691ece9efc92b34459ca73c492957943c347e0",
+      "fetched_at": "2026-08-05T07:22:20.297721+00:00",
+      "path": "data/raw/gcc_wards_2022.kml"
+    },
+    "gcc_zones_2022": {
+      "id": "gcc_zones_2022",
+      "name": "GCC Zones Map 2022",
+      "publisher": "Greater Chennai Corporation via OpenCity CKAN",
+      "url": "https://data.opencity.in/dataset/c77de7f8-e377-4990-90fc-4f0f8ca0e2d2/resource/00b3ea2e-e3a4-4b28-aec2-769a01404e5b/download/0f0ccbda-9485-4964-b3b1-6ce53af82bbb.kml",
+      "portal": "https://data.opencity.in/dataset/gcc-ward-information",
+      "license": "Open Data Commons / see OpenCity portal",
+      "kind": "static",
+      "notes": null,
+      "status": "loaded",
+      "bytes": 758272,
+      "sha256": "5939657bf539b4c708758232cf8c77129a67928df3f74699d5b8c3660aef951d",
+      "fetched_at": "2026-08-05T07:22:20.602037+00:00",
+      "path": "data/raw/gcc_zones_2022.kml"
+    },
+    "bus_shelters": {
+      "id": "bus_shelters",
+      "name": "Chennai Bus Shelters",
+      "publisher": "TNGIS / OpenCity CKAN",
+      "url": "https://data.opencity.in/dataset/fc4c6937-2927-4c9c-939b-ac77af811aa7/resource/b1710404-a6e5-4311-ba38-3805a00e36ce/download/6e6ba0e8-8ddd-44b4-84b3-2d672559bf2f.kml",
+      "portal": "https://data.opencity.in/dataset/chennai-bus-shelters",
+      "license": "See OpenCity portal",
+      "kind": "static",
+      "notes": "Indicates presence of shelters; not a complete stop inventory.",
+      "status": "loaded",
+      "bytes": 779902,
+      "sha256": "bf8b97b772f050da4052a8b3e7367f2297f30109afa7632e3d98c67d07fde039",
+      "fetched_at": "2026-08-05T07:22:20.799284+00:00",
+      "path": "data/raw/chennai_bus_shelters.kml"
+    },
+    "mrts_stations": {
+      "id": "mrts_stations",
+      "name": "Chennai MRTS Stations 2018",
+      "publisher": "GCC via OpenCity CKAN",
+      "url": "https://data.opencity.in/dataset/0c84bec3-c682-484b-9cfa-3ef8c7366338/resource/848a8268-8b80-4fa1-b8d3-485abfbece60/download/b3221b7e-cb19-4f5d-a404-1fc96060cb66.kml",
+      "portal": "https://data.opencity.in/dataset/chennai-mrts-data",
+      "license": "Public Domain / see OpenCity",
+      "kind": "static",
+      "notes": null,
+      "status": "loaded",
+      "bytes": 53161,
+      "sha256": "306bd6abbe359131bb35581bd036a1e7433373f90078e1ba616e9f11b7821ce0",
+      "fetched_at": "2026-08-05T07:22:21.037384+00:00",
+      "path": "data/raw/mrts_stations.kml"
+    },
+    "mrts_lines": {
+      "id": "mrts_lines",
+      "name": "Chennai MRTS Lines 2018",
+      "publisher": "GCC via OpenCity CKAN",
+      "url": "https://data.opencity.in/dataset/0c84bec3-c682-484b-9cfa-3ef8c7366338/resource/daab9817-166e-40a6-aaad-c457f6ad33ea/download/77c9aa1c-d8d3-44e4-b55c-90a1046ba87e.kml",
+      "portal": "https://data.opencity.in/dataset/chennai-mrts-data",
+      "license": "Public Domain / see OpenCity",
+      "kind": "static",
+      "notes": null,
+      "status": "loaded",
+      "bytes": 58771,
+      "sha256": "2f0a6de504bb990025af388654642fe68e097905878027244ee5e1485382b1fb",
+      "fetched_at": "2026-08-05T07:22:21.161243+00:00",
+      "path": "data/raw/mrts_lines.kml"
+    },
+    "chennai_gtfs_unified": {
+      "id": "chennai_gtfs_unified",
+      "name": "Chennai Unified GTFS (MTC + CMRL)",
+      "publisher": "UngalSoththu / ChennaiGTFS (community)",
+      "url": "https://raw.githubusercontent.com/ungalsoththu/ChennaiGTFS/main/data/chennai-unified-gtfs.zip",
+      "portal": "https://github.com/ungalsoththu/ChennaiGTFS",
+      "license": "See GitHub repository",
+      "kind": "static",
+      "notes": "Unofficial community GTFS. Shapes may be straight-line; no suburban rail; no GTFS-RT.",
+      "status": "loaded",
+      "bytes": 9091816,
+      "sha256": "db1da880f9ad93e352f6658df0e94a8b2d71cd1dc8bdfbb60fa3968a9b0ad3e6",
+      "fetched_at": "2026-08-05T07:23:37.627581+00:00",
+      "path": "data/raw/chennai-unified-gtfs.zip"
+    }
+  },
+  "layers": {
+    "wards": {
+      "status": "loaded",
+      "feature_count": 200,
+      "bbox": [
+        80.13409479076076,
+        12.85209293883966,
+        80.3314935303818,
+        13.23504905520032
+      ],
+      "file": "wards.geojson",
+      "derived_from": "gcc_wards_2022",
+      "attributes": [
+        "ward_label",
+        "stop_count",
+        "shelter_count"
+      ]
+    },
+    "zones": {
+      "status": "loaded",
+      "feature_count": 16,
+      "bbox": [
+        80.13409479076076,
+        12.85209460200581,
+        80.33149353038178,
+        13.23504905520032
+      ],
+      "file": "zones.geojson",
+      "derived_from": "gcc_zones_2022"
+    },
+    "shelters": {
+      "status": "loaded",
+      "feature_count": 983,
+      "bbox": [
+        76.6693944077555,
+        8.7274130116579,
+        80.3267836962469,
+        13.2272433174029
+      ],
+      "file": "shelters.geojson",
+      "derived_from": "bus_shelters",
+      "notes": "Indicates presence of shelters; not a complete stop inventory."
+    },
+    "mrts_stations": {
+      "status": "loaded",
+      "feature_count": 118,
+      "bbox": [
+        79.612427999688,
+        12.6935674384806,
+        80.3216789995442,
+        13.6965620002703
+      ],
+      "file": "mrts_stations.geojson",
+      "derived_from": "mrts_stations"
+    },
+    "mrts_lines": {
+      "status": "loaded",
+      "feature_count": 7,
+      "bbox": [
+        79.6124267582173,
+        12.6932611632526,
+        80.3218013051646,
+        13.6965682514054
+      ],
+      "file": "mrts_lines.geojson",
+      "derived_from": "mrts_lines"
+    },
+    "stops": {
+      "status": "loaded",
+      "feature_count": 5580,
+      "bbox": [
+        79.80188,
+        12.6148,
+        80.33584,
+        13.49042
+      ],
+      "file": "stops.geojson",
+      "derived_from": "chennai_gtfs_unified",
+      "notes": "Unofficial community GTFS. Shapes may be straight-line; no suburban rail; no GTFS-RT."
+    },
+    "hubs": {
+      "status": "loaded",
+      "feature_count": 143,
+      "bbox": [
+        79.612427999688,
+        12.6935674384806,
+        80.3216789995442,
+        13.6965620002703
+      ],
+      "file": "hubs.geojson",
+      "notes": "Union of MRTS stations and metro-tagged GTFS stops. Not a scored equity index."
+    },
+    "catchment_400m": {
+      "status": "loaded",
+      "feature_count": 1,
+      "bbox": [
+        79.79819172488334,
+        12.611183187085,
+        80.33951634626125,
+        13.493977996413461
+      ],
+      "file": "catchment_400m.geojson",
+      "notes": "Dissolved 400m buffer around GTFS stops. Not population-weighted."
+    },
+    "catchment_800m": {
+      "status": "loaded",
+      "feature_count": 1,
+      "bbox": [
+        79.79453554446567,
+        12.607603440415025,
+        80.34319268467524,
+        13.497575990614735
+      ],
+      "file": "catchment_800m.geojson",
+      "notes": "Dissolved 800m buffer around GTFS stops. Not population-weighted."
+    }
+  },
+  "realtime": [
+    {
+      "id": "gtfs_rt_vehicle",
+      "name": "GTFS Realtime \u2014 Vehicle Positions",
+      "status": "not_connected",
+      "would_unlock": "Live bus/metro positions for traffic coordination at hubs and corridors.",
+      "how_to_plug": "Set GTFS_RT_VEHICLE_URL env var to an agency GTFS-RT protobuf endpoint."
+    },
+    {
+      "id": "gtfs_rt_trip_updates",
+      "name": "GTFS Realtime \u2014 Trip Updates / Arrivals",
+      "status": "not_connected",
+      "would_unlock": "Arrival reliability and delay heatmaps for policy and operations.",
+      "how_to_plug": "Set GTFS_RT_TRIP_URL env var when MTC/CMRL publish a feed."
+    },
+    {
+      "id": "station_crowd",
+      "name": "Station Crowding / Incidents API",
+      "status": "not_connected",
+      "would_unlock": "Dynamic feeder priority during peaks; incident awareness for traffic dept.",
+      "how_to_plug": "Configure AGENCY_CROWD_API_URL when an official API is available."
+    }
+  ],
+  "unavailable_analytics": [
+    {
+      "id": "equity_sec",
+      "name": "Equity / SEC gap scores",
+      "status": "unavailable",
+      "reason": "Census\u21922022 ward joins not validated in this pipeline. No invented equity scores are shown.",
+      "needed": "Validated Census 2011 (or newer) attributes joined to GCC 2022 ward geometries."
+    },
+    {
+      "id": "pop_weighted_access",
+      "name": "Population-weighted % within 400m of transit",
+      "status": "unavailable",
+      "reason": "Requires a validated population surface joined to wards. Geometry catchments are available without population weights.",
+      "needed": "Ward-level population table with acceptable join rate to GCC 2022 wards."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+# Node
+apps/web/node_modules/
+apps/web/.next/
+
+# Python
+etl/.venv/
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+
+# Secrets
+.env
+.env.local
+
+# Large raw downloads (regenerate via ETL)
+data/raw/
+files (2).zip

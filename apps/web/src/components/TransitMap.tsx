@@ -1,26 +1,27 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Map, {
-  Layer,
+import {
+  Map as MapLibreMap,
   NavigationControl,
   Popup,
-  Source,
-  type MapRef,
-} from "react-map-gl/maplibre";
-import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
-import type { ExpressionSpecification } from "maplibre-gl";
+  type ExpressionSpecification,
+  type GeoJSONSource,
+  type MapMouseEvent,
+} from "maplibre-gl";
 import type { FeatureCollection, Geometry } from "geojson";
 import {
-  BASEMAP_LABELS,
-  BASEMAP_STYLES,
   CHENNAI_VIEW,
   type ChoroplethMode,
   type LayerData,
   type MapLayerKey,
 } from "@/lib/map-layers";
+import {
+  RASTER_BASEMAP,
+  VECTOR_BASEMAPS,
+  ensureMapLibreWorker,
+} from "@/lib/maplibre-setup";
 
-// Ensure MapLibre CSS is present even if global @import is stripped.
 import "maplibre-gl/dist/maplibre-gl.css";
 
 const MAP_HEIGHT_DEFAULT = 640;
@@ -31,6 +32,8 @@ type PopupState = {
   title: string;
   body: string;
 };
+
+type BasemapChoice = "osm" | (typeof VECTOR_BASEMAPS)[number]["id"];
 
 function extentOf(
   fc: FeatureCollection<Geometry> | undefined,
@@ -53,7 +56,7 @@ function ascendingStops(stops: number[]): number[] {
     const v = Number(n);
     if (!Number.isFinite(v)) continue;
     if (!out.length || v > out[out.length - 1]) out.push(v);
-    else if (v <= out[out.length - 1]) out.push(out[out.length - 1] + 0.01);
+    else out.push(out[out.length - 1] + 0.01);
   }
   return out;
 }
@@ -86,6 +89,223 @@ function formatPopupProps(props: Record<string, unknown>): string {
   return lines.join("\n");
 }
 
+function safeRemoveLayer(map: MapLibreMap, id: string) {
+  if (map.getLayer(id)) map.removeLayer(id);
+}
+
+function safeRemoveSource(map: MapLibreMap, id: string) {
+  if (map.getSource(id)) map.removeSource(id);
+}
+
+function setGeoJsonSource(
+  map: MapLibreMap,
+  id: string,
+  data: FeatureCollection<Geometry>
+) {
+  const existing = map.getSource(id) as GeoJSONSource | undefined;
+  if (existing) {
+    existing.setData(data);
+    return;
+  }
+  map.addSource(id, { type: "geojson", data });
+}
+
+function wardFillExpression(
+  choropleth: ChoroplethMode,
+  stopExtent: { min: number; max: number } | null,
+  gapExtent: { min: number; max: number } | null
+): ExpressionSpecification | string {
+  if (choropleth === "gap" && gapExtent) {
+    const [a, b, c, d] = ascendingStops([
+      gapExtent.min,
+      Math.min(gapExtent.max, Math.max(gapExtent.min + 1, 25)),
+      Math.min(gapExtent.max, Math.max(gapExtent.min + 2, 45)),
+      Math.max(gapExtent.max, 70),
+    ]);
+    return [
+      "interpolate",
+      ["linear"],
+      ["coalesce", ["to-number", ["get", "gap_index"]], 0],
+      a,
+      "#14b8a6",
+      b,
+      "#eab308",
+      c,
+      "#f97316",
+      d,
+      "#f43f5e",
+    ];
+  }
+  if (stopExtent) {
+    return [
+      "interpolate",
+      ["linear"],
+      ["coalesce", ["to-number", ["get", "stop_count"]], 0],
+      stopExtent.min,
+      "#bfdbfe",
+      stopExtent.max,
+      "#0369a1",
+    ];
+  }
+  return "#7dd3fc";
+}
+
+/** Layer stack order (bottom → top). */
+const LAYER_STACK: {
+  key: MapLayerKey;
+  sourceId: string;
+  layers: { id: string; type: "fill" | "line" | "circle"; paint: Record<string, unknown> }[];
+}[] = [
+  {
+    key: "corridor_aois",
+    sourceId: "tm-corridor-aois",
+    layers: [
+      { id: "tm-corridor-aois-fill", type: "fill", paint: { "fill-color": "#8b5cf6", "fill-opacity": 0.08 } },
+      { id: "tm-corridor-aois-line", type: "line", paint: { "line-color": "#7c3aed", "line-width": 1.5, "line-dasharray": [2, 1] } },
+    ],
+  },
+  {
+    key: "metro_area_boundaries",
+    sourceId: "tm-metro-boundaries",
+    layers: [
+      { id: "tm-metro-boundaries-fill", type: "fill", paint: { "fill-color": "#db2777", "fill-opacity": 0.12 } },
+      { id: "tm-metro-boundaries-line", type: "line", paint: { "line-color": "#be185d", "line-width": 2.2 } },
+    ],
+  },
+  {
+    key: "omr_corridor",
+    sourceId: "tm-omr",
+    layers: [
+      {
+        id: "tm-omr-line",
+        type: "line",
+        paint: {
+          "line-color": "#7c3aed",
+          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 3, 14, 6],
+        },
+      },
+    ],
+  },
+  {
+    key: "catchment_800m",
+    sourceId: "tm-catchment-800",
+    layers: [
+      { id: "tm-catchment-800-fill", type: "fill", paint: { "fill-color": "#0284c7", "fill-opacity": 0.12 } },
+    ],
+  },
+  {
+    key: "catchment_400m",
+    sourceId: "tm-catchment-400",
+    layers: [
+      { id: "tm-catchment-400-fill", type: "fill", paint: { "fill-color": "#0d9488", "fill-opacity": 0.18 } },
+    ],
+  },
+  {
+    key: "wards",
+    sourceId: "tm-wards",
+    layers: [
+      { id: "tm-wards-fill", type: "fill", paint: { "fill-color": "#7dd3fc", "fill-opacity": 0.55 } },
+      { id: "tm-wards-line", type: "line", paint: { "line-color": "#0f172a", "line-width": 1.1, "line-opacity": 0.9 } },
+    ],
+  },
+  {
+    key: "zones",
+    sourceId: "tm-zones",
+    layers: [
+      { id: "tm-zones-fill", type: "fill", paint: { "fill-color": "#f59e0b", "fill-opacity": 0.08 } },
+      { id: "tm-zones-line", type: "line", paint: { "line-color": "#b45309", "line-width": 2 } },
+    ],
+  },
+  {
+    key: "mrts_lines",
+    sourceId: "tm-mrts-lines",
+    layers: [
+      {
+        id: "tm-mrts-lines-line",
+        type: "line",
+        paint: {
+          "line-color": "#ea580c",
+          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 2.5, 14, 5],
+        },
+      },
+    ],
+  },
+  {
+    key: "stops",
+    sourceId: "tm-stops",
+    layers: [
+      {
+        id: "tm-stops-circle",
+        type: "circle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 1.6, 12, 3, 15, 5.5],
+          "circle-color": "#0369a1",
+          "circle-opacity": 0.9,
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+      },
+    ],
+  },
+  {
+    key: "shelters",
+    sourceId: "tm-shelters",
+    layers: [
+      {
+        id: "tm-shelters-circle",
+        type: "circle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 10, 2.5, 14, 5],
+          "circle-color": "#0f766e",
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+      },
+    ],
+  },
+  {
+    key: "mrts_stations",
+    sourceId: "tm-mrts-stations",
+    layers: [
+      {
+        id: "tm-mrts-stations-circle",
+        type: "circle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 4.5, 14, 8],
+          "circle-color": "#ea580c",
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "#ffffff",
+        },
+      },
+    ],
+  },
+  {
+    key: "hubs",
+    sourceId: "tm-hubs",
+    layers: [
+      {
+        id: "tm-hubs-circle",
+        type: "circle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 5, 14, 9],
+          "circle-color": "#ca8a04",
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "#ffffff",
+        },
+      },
+    ],
+  },
+];
+
+const INTERACTIVE_LAYER_IDS = [
+  "tm-wards-fill",
+  "tm-zones-fill",
+  "tm-stops-circle",
+  "tm-shelters-circle",
+  "tm-mrts-stations-circle",
+  "tm-hubs-circle",
+];
+
 export function TransitMap({
   data,
   visibility,
@@ -101,8 +321,10 @@ export function TransitMap({
   loading?: boolean;
   interactive?: boolean;
 }) {
-  const mapRef = useRef<MapRef>(null);
-  const [styleIndex, setStyleIndex] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<MapLibreMap | null>(null);
+  const popupRef = useRef<Popup | null>(null);
+  const [basemap, setBasemap] = useState<BasemapChoice>("osm");
   const [mapError, setMapError] = useState<string | null>(null);
   const [basemapReady, setBasemapReady] = useState(false);
   const [popup, setPopup] = useState<PopupState | null>(null);
@@ -110,22 +332,144 @@ export function TransitMap({
   const stopExtent = useMemo(() => extentOf(data.wards, "stop_count"), [data.wards]);
   const gapExtent = useMemo(() => extentOf(data.wards, "gap_index"), [data.wards]);
 
-  const interactiveLayerIds = useMemo(() => {
-    if (!interactive) return [];
-    const ids: string[] = [];
-    if (visibility.wards && data.wards) ids.push("tm-wards-fill");
-    if (visibility.zones && data.zones) ids.push("tm-zones-fill");
-    if (visibility.stops && data.stops) ids.push("tm-stops-circle");
-    if (visibility.shelters && data.shelters) ids.push("tm-shelters-circle");
-    if (visibility.mrts_stations && data.mrts_stations) ids.push("tm-mrts-stations-circle");
-    if (visibility.hubs && data.hubs) ids.push("tm-hubs-circle");
-    return ids;
-  }, [visibility, data, interactive]);
+  const dataRef = useRef(data);
+  const visibilityRef = useRef(visibility);
+  const choroplethRef = useRef(choropleth);
+  const stopExtentRef = useRef(stopExtent);
+  const gapExtentRef = useRef(gapExtent);
+  const interactiveRef = useRef(interactive);
 
-  const onClick = useCallback(
-    (e: MapLayerMouseEvent) => {
-      if (!interactive) return;
-      const f = e.features?.[0];
+  dataRef.current = data;
+  visibilityRef.current = visibility;
+  choroplethRef.current = choropleth;
+  stopExtentRef.current = stopExtent;
+  gapExtentRef.current = gapExtent;
+  interactiveRef.current = interactive;
+
+  const syncLayers = useCallback((map: MapLibreMap) => {
+    if (!map.isStyleLoaded()) return false;
+
+    const vis = visibilityRef.current;
+    const layerData = dataRef.current;
+    const fill = wardFillExpression(
+      choroplethRef.current,
+      stopExtentRef.current,
+      gapExtentRef.current
+    );
+
+    for (const entry of LAYER_STACK) {
+      const show = Boolean(vis[entry.key] && layerData[entry.key]);
+      if (!show) {
+        for (const layer of entry.layers) safeRemoveLayer(map, layer.id);
+        safeRemoveSource(map, entry.sourceId);
+        continue;
+      }
+
+      try {
+        setGeoJsonSource(map, entry.sourceId, layerData[entry.key]!);
+      } catch (err) {
+        console.warn("Failed to set source", entry.sourceId, err);
+        continue;
+      }
+
+      for (const layer of entry.layers) {
+        const paint =
+          layer.id === "tm-wards-fill"
+            ? { ...layer.paint, "fill-color": fill }
+            : layer.paint;
+
+        if (map.getLayer(layer.id)) {
+          for (const [k, v] of Object.entries(paint)) {
+            try {
+              map.setPaintProperty(layer.id, k as never, v as never);
+            } catch {
+              /* ignore invalid paint updates during style swap */
+            }
+          }
+          continue;
+        }
+
+        try {
+          map.addLayer({
+            id: layer.id,
+            type: layer.type,
+            source: entry.sourceId,
+            paint: paint as never,
+          } as never);
+        } catch (err) {
+          console.warn("Failed to add layer", layer.id, err);
+        }
+      }
+    }
+    return true;
+  }, []);
+
+  const scheduleSync = useCallback(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const attempt = (n: number) => {
+      if (syncLayers(map)) return;
+      if (n <= 0) return;
+      window.setTimeout(() => attempt(n - 1), 200);
+    };
+    attempt(10);
+  }, [syncLayers]);
+
+  // Create map once
+  useEffect(() => {
+    if (!containerRef.current || mapRef.current) return;
+
+    ensureMapLibreWorker();
+    setMapError(null);
+    setBasemapReady(false);
+
+    let cancelled = false;
+    let map: MapLibreMap;
+
+    try {
+      map = new MapLibreMap({
+        container: containerRef.current,
+        style: RASTER_BASEMAP,
+        center: [CHENNAI_VIEW.longitude, CHENNAI_VIEW.latitude],
+        zoom: CHENNAI_VIEW.zoom,
+        attributionControl: { compact: true },
+      });
+    } catch (err) {
+      setMapError(err instanceof Error ? err.message : "Failed to create map");
+      return;
+    }
+
+    mapRef.current = map;
+    map.addControl(new NavigationControl({ showCompass: false }), "top-right");
+
+    const onLoad = () => {
+      if (cancelled) return;
+      setBasemapReady(true);
+      setMapError(null);
+      map.resize();
+      scheduleSync();
+    };
+
+    const onIdle = () => {
+      if (cancelled) return;
+      setBasemapReady(true);
+      map.resize();
+    };
+
+    const onError = (e: { error?: Error }) => {
+      const msg = e.error?.message || "Map error";
+      if (/tile|image|sprite|glyph|favicon|AbortError/i.test(msg)) return;
+      console.error("MapLibre error", e.error);
+      setMapError(msg);
+    };
+
+    const onClick = (e: MapMouseEvent) => {
+      if (!interactiveRef.current) return;
+      const layerIds = INTERACTIVE_LAYER_IDS.filter((id) => map.getLayer(id));
+      const features = layerIds.length
+        ? map.queryRenderedFeatures(e.point, { layers: layerIds })
+        : [];
+      const f = features[0];
       if (!f) {
         setPopup(null);
         return;
@@ -148,76 +492,133 @@ export function TransitMap({
         title,
         body: formatPopupProps(props),
       });
-    },
-    [interactive]
-  );
-
-  const forceResize = useCallback(() => {
-    try {
-      mapRef.current?.getMap()?.resize();
-    } catch {
-      /* ignore */
-    }
-  }, []);
-
-  useEffect(() => {
-    forceResize();
-    const onWin = () => forceResize();
-    window.addEventListener("resize", onWin);
-    const timers = [80, 250, 800, 1600].map((ms) => window.setTimeout(forceResize, ms));
-    // Never leave the UI stuck on "Drawing basemap…"
-    const readyFallback = window.setTimeout(() => setBasemapReady(true), 3500);
-    return () => {
-      window.removeEventListener("resize", onWin);
-      timers.forEach((t) => window.clearTimeout(t));
-      window.clearTimeout(readyFallback);
     };
-  }, [forceResize, height, styleIndex]);
 
-  // High-contrast fills — previous navy (#103466) vanished on Dark Matter
-  const wardFillColor = useMemo((): ExpressionSpecification | string => {
-    if (choropleth === "gap" && gapExtent) {
-      const [a, b, c, d] = ascendingStops([
-        gapExtent.min,
-        Math.min(gapExtent.max, Math.max(gapExtent.min + 1, 25)),
-        Math.min(gapExtent.max, Math.max(gapExtent.min + 2, 45)),
-        Math.max(gapExtent.max, 70),
-      ]);
-      return [
-        "interpolate",
-        ["linear"],
-        ["coalesce", ["to-number", ["get", "gap_index"]], 0],
-        a,
-        "#14b8a6",
-        b,
-        "#eab308",
-        c,
-        "#f97316",
-        d,
-        "#f43f5e",
-      ];
+    map.on("load", onLoad);
+    map.on("idle", onIdle);
+    map.on("error", onError);
+    map.on("click", onClick);
+
+    // Fallback if load event is delayed
+    const readyFallback = window.setTimeout(() => {
+      if (!cancelled) {
+        setBasemapReady(true);
+        try {
+          map.resize();
+          scheduleSync();
+        } catch {
+          /* ignore */
+        }
+      }
+    }, 2500);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(readyFallback);
+      popupRef.current?.remove();
+      popupRef.current = null;
+      map.remove();
+      mapRef.current = null;
+    };
+  }, [scheduleSync]);
+
+  // Resize when height changes
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const t = window.setTimeout(() => map.resize(), 50);
+    return () => window.clearTimeout(t);
+  }, [height]);
+
+  // Sync data / visibility / choropleth onto the live map
+  useEffect(() => {
+    if (!basemapReady) return;
+    scheduleSync();
+  }, [data, visibility, choropleth, basemapReady, scheduleSync]);
+
+  // Update interactive cursor / query targets
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !basemapReady) return;
+    const ids = interactive
+      ? INTERACTIVE_LAYER_IDS.filter((id) => map.getLayer(id))
+      : [];
+    map.getCanvas().style.cursor = ids.length ? "pointer" : "grab";
+  }, [data, visibility, basemapReady, interactive]);
+
+  // Popup DOM
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    if (!popup) {
+      popupRef.current?.remove();
+      popupRef.current = null;
+      return;
     }
-    if (stopExtent) {
-      return [
-        "interpolate",
-        ["linear"],
-        ["coalesce", ["to-number", ["get", "stop_count"]], 0],
-        stopExtent.min,
-        "#bfdbfe",
-        stopExtent.max,
-        "#0369a1",
-      ];
+
+    if (!popupRef.current) {
+      popupRef.current = new Popup({
+        closeOnClick: false,
+        maxWidth: "280px",
+        anchor: "bottom",
+      });
     }
-    return "#7dd3fc";
-  }, [choropleth, gapExtent, stopExtent]);
 
-  const styleUrl = BASEMAP_STYLES[Math.min(styleIndex, BASEMAP_STYLES.length - 1)];
+    const el = document.createElement("div");
+    el.innerHTML = `<strong style="color:#0f172a">${escapeHtml(popup.title)}</strong>
+      <pre style="margin-top:4px;max-width:16rem;white-space:pre-wrap;font-size:11px;color:#475569">${escapeHtml(popup.body)}</pre>`;
 
-  const markReady = useCallback(() => {
-    setBasemapReady(true);
-    setMapError(null);
-    forceResize();
-  }, [forceResize]);
+    popupRef.current
+      .setLngLat([popup.lng, popup.lat])
+      .setDOMContent(el)
+      .addTo(map);
+
+    const p = popupRef.current;
+    const onClose = () => setPopup(null);
+    p.on("close", onClose);
+    return () => {
+      p.off("close", onClose);
+    };
+  }, [popup]);
+
+  const switchBasemap = useCallback(
+    async (next: BasemapChoice) => {
+      const map = mapRef.current;
+      if (!map || next === basemap) return;
+      setBasemap(next);
+      setBasemapReady(false);
+      setMapError(null);
+
+      const style: string | typeof RASTER_BASEMAP =
+        next === "osm"
+          ? RASTER_BASEMAP
+          : VECTOR_BASEMAPS.find((b) => b.id === next)?.style || RASTER_BASEMAP;
+
+      try {
+        map.setStyle(style);
+        map.once("style.load", () => {
+          setBasemapReady(true);
+          scheduleSync();
+          map.resize();
+        });
+        window.setTimeout(() => {
+          setBasemapReady(true);
+          try {
+            scheduleSync();
+            map.resize();
+          } catch {
+            /* ignore */
+          }
+        }, 3000);
+      } catch (err) {
+        setMapError(err instanceof Error ? err.message : "Basemap switch failed");
+        setBasemap("osm");
+        map.setStyle(RASTER_BASEMAP);
+      }
+    },
+    [basemap, scheduleSync]
+  );
 
   return (
     <div
@@ -231,22 +632,29 @@ export function TransitMap({
       ) : null}
 
       <div className="absolute bottom-3 right-3 z-20 flex flex-wrap gap-1">
-        {BASEMAP_STYLES.map((_, i) => (
+        <button
+          type="button"
+          onClick={() => switchBasemap("osm")}
+          className={`rounded-md border px-2 py-1 text-[10px] font-semibold ${
+            basemap === "osm"
+              ? "border-[var(--yellow)] bg-[rgba(8,13,26,0.88)] text-[var(--yellow)]"
+              : "border-[var(--border)] bg-[rgba(8,13,26,0.72)] text-[var(--ink-muted)]"
+          }`}
+        >
+          Basemap
+        </button>
+        {VECTOR_BASEMAPS.map((b) => (
           <button
-            key={BASEMAP_LABELS[i]}
+            key={b.id}
             type="button"
-            onClick={() => {
-              setBasemapReady(false);
-              setMapError(null);
-              setStyleIndex(i);
-            }}
+            onClick={() => switchBasemap(b.id)}
             className={`rounded-md border px-2 py-1 text-[10px] font-semibold ${
-              styleIndex === i
+              basemap === b.id
                 ? "border-[var(--yellow)] bg-[rgba(8,13,26,0.88)] text-[var(--yellow)]"
                 : "border-[var(--border)] bg-[rgba(8,13,26,0.72)] text-[var(--ink-muted)]"
             }`}
           >
-            {BASEMAP_LABELS[i]}
+            {b.label}
           </button>
         ))}
       </div>
@@ -254,248 +662,23 @@ export function TransitMap({
       {mapError ? (
         <div className="absolute inset-x-3 top-3 z-30 rounded-lg border border-[var(--danger)] bg-[rgba(8,13,26,0.92)] p-3 text-sm text-[var(--danger)]">
           <p>{mapError}</p>
-          {styleIndex < BASEMAP_STYLES.length - 1 ? (
-            <button
-              type="button"
-              className="mt-2 rounded-md border border-[var(--border)] px-2 py-1 text-xs text-[var(--ink)]"
-              onClick={() => {
-                setMapError(null);
-                setBasemapReady(false);
-                setStyleIndex((i) => i + 1);
-              }}
-            >
-              Try next basemap
-            </button>
-          ) : null}
+          <button
+            type="button"
+            className="mt-2 rounded-md border border-[var(--border)] px-2 py-1 text-xs text-[var(--ink)]"
+            onClick={() => switchBasemap("osm")}
+          >
+            Reset to OSM basemap
+          </button>
         </div>
       ) : null}
 
       {!basemapReady && !mapError ? (
-        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-[rgba(219,228,238,0.55)] text-sm font-medium text-slate-700">
+        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-[rgba(219,228,238,0.45)] text-sm font-medium text-slate-700">
           Drawing basemap…
         </div>
       ) : null}
 
-      <Map
-        key={`basemap-${styleIndex}`}
-        ref={mapRef}
-        initialViewState={CHENNAI_VIEW}
-        mapStyle={styleUrl}
-        style={{ width: "100%", height: "100%", position: "absolute", inset: 0 }}
-        interactiveLayerIds={interactiveLayerIds}
-        onClick={onClick}
-        onLoad={markReady}
-        onIdle={markReady}
-        onError={(e) => {
-          const msg = e.error?.message || "Basemap failed to load";
-          if (/tile|image|sprite|glyph|favicon/i.test(msg)) return;
-          setMapError(msg);
-        }}
-        cursor={interactiveLayerIds.length ? "pointer" : "grab"}
-        attributionControl={{ compact: true }}
-      >
-        <NavigationControl position="top-right" showCompass={false} />
-
-        {visibility.corridor_aois && data.corridor_aois ? (
-          <Source id="tm-corridor-aois" type="geojson" data={data.corridor_aois}>
-            <Layer
-              id="tm-corridor-aois-fill"
-              type="fill"
-              paint={{ "fill-color": "#8b5cf6", "fill-opacity": 0.08 }}
-            />
-            <Layer
-              id="tm-corridor-aois-line"
-              type="line"
-              paint={{ "line-color": "#7c3aed", "line-width": 1.5, "line-dasharray": [2, 1] }}
-            />
-          </Source>
-        ) : null}
-
-        {visibility.metro_area_boundaries && data.metro_area_boundaries ? (
-          <Source id="tm-metro-boundaries" type="geojson" data={data.metro_area_boundaries}>
-            <Layer
-              id="tm-metro-boundaries-fill"
-              type="fill"
-              paint={{ "fill-color": "#db2777", "fill-opacity": 0.12 }}
-            />
-            <Layer
-              id="tm-metro-boundaries-line"
-              type="line"
-              paint={{ "line-color": "#be185d", "line-width": 2.2 }}
-            />
-          </Source>
-        ) : null}
-
-        {visibility.omr_corridor && data.omr_corridor ? (
-          <Source id="tm-omr" type="geojson" data={data.omr_corridor}>
-            <Layer
-              id="tm-omr-line"
-              type="line"
-              paint={{
-                "line-color": "#7c3aed",
-                "line-width": ["interpolate", ["linear"], ["zoom"], 9, 3, 14, 6],
-              }}
-            />
-          </Source>
-        ) : null}
-
-        {visibility.catchment_800m && data.catchment_800m ? (
-          <Source id="tm-catchment-800" type="geojson" data={data.catchment_800m}>
-            <Layer
-              id="tm-catchment-800-fill"
-              type="fill"
-              paint={{ "fill-color": "#0284c7", "fill-opacity": 0.12 }}
-            />
-          </Source>
-        ) : null}
-
-        {visibility.catchment_400m && data.catchment_400m ? (
-          <Source id="tm-catchment-400" type="geojson" data={data.catchment_400m}>
-            <Layer
-              id="tm-catchment-400-fill"
-              type="fill"
-              paint={{ "fill-color": "#0d9488", "fill-opacity": 0.18 }}
-            />
-          </Source>
-        ) : null}
-
-        {visibility.wards && data.wards ? (
-          <Source id="tm-wards" type="geojson" data={data.wards}>
-            <Layer
-              id="tm-wards-fill"
-              type="fill"
-              paint={{
-                "fill-color": wardFillColor,
-                "fill-opacity": 0.55,
-              }}
-            />
-            <Layer
-              id="tm-wards-line"
-              type="line"
-              paint={{
-                "line-color": "#0f172a",
-                "line-width": 1.1,
-                "line-opacity": 0.9,
-              }}
-            />
-          </Source>
-        ) : null}
-
-        {visibility.zones && data.zones ? (
-          <Source id="tm-zones" type="geojson" data={data.zones}>
-            <Layer
-              id="tm-zones-fill"
-              type="fill"
-              paint={{ "fill-color": "#f59e0b", "fill-opacity": 0.08 }}
-            />
-            <Layer
-              id="tm-zones-line"
-              type="line"
-              paint={{ "line-color": "#b45309", "line-width": 2 }}
-            />
-          </Source>
-        ) : null}
-
-        {visibility.mrts_lines && data.mrts_lines ? (
-          <Source id="tm-mrts-lines" type="geojson" data={data.mrts_lines}>
-            <Layer
-              id="tm-mrts-lines-line"
-              type="line"
-              paint={{
-                "line-color": "#ea580c",
-                "line-width": ["interpolate", ["linear"], ["zoom"], 9, 2.5, 14, 5],
-              }}
-            />
-          </Source>
-        ) : null}
-
-        {visibility.stops && data.stops ? (
-          <Source id="tm-stops" type="geojson" data={data.stops}>
-            <Layer
-              id="tm-stops-circle"
-              type="circle"
-              paint={{
-                "circle-radius": [
-                  "interpolate",
-                  ["linear"],
-                  ["zoom"],
-                  9,
-                  1.6,
-                  12,
-                  3,
-                  15,
-                  5.5,
-                ],
-                "circle-color": "#0369a1",
-                "circle-opacity": 0.9,
-                "circle-stroke-width": 1,
-                "circle-stroke-color": "#ffffff",
-              }}
-            />
-          </Source>
-        ) : null}
-
-        {visibility.shelters && data.shelters ? (
-          <Source id="tm-shelters" type="geojson" data={data.shelters}>
-            <Layer
-              id="tm-shelters-circle"
-              type="circle"
-              paint={{
-                "circle-radius": ["interpolate", ["linear"], ["zoom"], 10, 2.5, 14, 5],
-                "circle-color": "#0f766e",
-                "circle-stroke-width": 1,
-                "circle-stroke-color": "#ffffff",
-              }}
-            />
-          </Source>
-        ) : null}
-
-        {visibility.mrts_stations && data.mrts_stations ? (
-          <Source id="tm-mrts-stations" type="geojson" data={data.mrts_stations}>
-            <Layer
-              id="tm-mrts-stations-circle"
-              type="circle"
-              paint={{
-                "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 4.5, 14, 8],
-                "circle-color": "#ea580c",
-                "circle-stroke-width": 2,
-                "circle-stroke-color": "#ffffff",
-              }}
-            />
-          </Source>
-        ) : null}
-
-        {visibility.hubs && data.hubs ? (
-          <Source id="tm-hubs" type="geojson" data={data.hubs}>
-            <Layer
-              id="tm-hubs-circle"
-              type="circle"
-              paint={{
-                "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 5, 14, 9],
-                "circle-color": "#ca8a04",
-                "circle-stroke-width": 2,
-                "circle-stroke-color": "#ffffff",
-              }}
-            />
-          </Source>
-        ) : null}
-
-        {popup ? (
-          <Popup
-            longitude={popup.lng}
-            latitude={popup.lat}
-            anchor="bottom"
-            onClose={() => setPopup(null)}
-            closeOnClick={false}
-            maxWidth="280px"
-          >
-            <strong className="text-slate-900">{popup.title}</strong>
-            <pre className="mt-1 max-w-xs whitespace-pre-wrap text-[11px] text-slate-600">
-              {popup.body}
-            </pre>
-          </Popup>
-        ) : null}
-      </Map>
+      <div ref={containerRef} className="absolute inset-0 h-full w-full" />
 
       <div className="pointer-events-none absolute bottom-3 left-3 z-20 max-w-[240px] rounded-md border border-slate-300 bg-white/90 px-2.5 py-2 text-[10px] text-slate-700 shadow-sm">
         {choropleth === "gap" ? (
@@ -506,6 +689,14 @@ export function TransitMap({
       </div>
     </div>
   );
+}
+
+function escapeHtml(s: string) {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 /** Attach gap_index / gap_band from reports onto ward features. */

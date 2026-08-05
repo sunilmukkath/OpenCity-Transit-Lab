@@ -40,21 +40,6 @@ export const CHENNAI_VIEW = {
   zoom: 9.6,
 };
 
-/** Voyager first — dark navy ward fills were invisible on Dark Matter. */
-export const BASEMAP_STYLES = [
-  "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json",
-  "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
-  "https://tiles.openfreemap.org/styles/liberty",
-  "https://demotiles.maplibre.org/style.json",
-] as const;
-
-export const BASEMAP_LABELS = [
-  "Streets (Voyager)",
-  "Dark Matter",
-  "Liberty",
-  "Demo",
-] as const;
-
 export type ChoroplethMode = "stops" | "gap";
 
 export type LayerData = Partial<Record<MapLayerKey, FeatureCollection<Geometry>>>;

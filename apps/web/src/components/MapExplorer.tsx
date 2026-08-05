@@ -22,19 +22,38 @@ import {
 } from "@/lib/map-layers";
 
 const MAP_HEIGHT = 640;
-const CORE_LAYERS: MapLayerKey[] = [
-  "wards",
-  "zones",
+/** Small corridor / rail layers — paint first so the map is useful immediately. */
+const LIGHT_LAYERS: MapLayerKey[] = [
   "metro_area_boundaries",
-  "corridor_aois",
   "omr_corridor",
   "mrts_lines",
   "mrts_stations",
   "hubs",
-  "stops",
-  "shelters",
 ];
+/** Polygons next. */
+const MEDIUM_LAYERS: MapLayerKey[] = ["wards", "zones", "corridor_aois"];
+/** Dense point layers last. */
+const POINT_LAYERS: MapLayerKey[] = ["stops", "shelters"];
 const HEAVY_LAYERS: MapLayerKey[] = ["catchment_400m", "catchment_800m"];
+
+async function loadLayerBatch(
+  m: Manifest,
+  keys: MapLayerKey[],
+  gapByLabel: Map<string, { gap_index: number; gap_band: string }>
+): Promise<LayerData> {
+  const next: LayerData = {};
+  await Promise.all(
+    keys.map(async (key) => {
+      const layer = m.layers[key];
+      if (!layerIsReady(layer) || !layer.file) return;
+      const fc = await fetchGeoJSONClient(layer.file);
+      if (!fc) return;
+      next[key] =
+        key === "wards" && gapByLabel.size ? joinWardGapIndex(fc, gapByLabel) : fc;
+    })
+  );
+  return next;
+}
 
 export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
   const [manifest, setManifest] = useState<Manifest | null>(null);
@@ -67,27 +86,26 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
           });
         }
 
-        const next: LayerData = {};
-        if (m) {
-          await Promise.all(
-            CORE_LAYERS.map(async (key) => {
-              const layer = m.layers[key];
-              if (layerIsReady(layer) && layer.file) {
-                const fc = await fetchGeoJSONClient(layer.file);
-                if (!fc) return;
-                if (key === "wards" && gapByLabel.size) {
-                  next[key] = joinWardGapIndex(fc, gapByLabel);
-                } else {
-                  next[key] = fc;
-                }
-              }
-            })
-          );
+        if (!m) {
+          if (!cancelled) setLoadingCore(false);
+          return;
         }
-        if (!cancelled) {
-          setData(next);
-          setLoadingCore(false);
-        }
+
+        // Wave 1 — light layers (map useful immediately)
+        const light = await loadLayerBatch(m, LIGHT_LAYERS, gapByLabel);
+        if (cancelled) return;
+        setData((prev) => ({ ...prev, ...light }));
+
+        // Wave 2 — wards / zones
+        const medium = await loadLayerBatch(m, MEDIUM_LAYERS, gapByLabel);
+        if (cancelled) return;
+        setData((prev) => ({ ...prev, ...medium }));
+
+        // Wave 3 — dense stops / shelters
+        const points = await loadLayerBatch(m, POINT_LAYERS, gapByLabel);
+        if (cancelled) return;
+        setData((prev) => ({ ...prev, ...points }));
+        setLoadingCore(false);
       } catch (err) {
         if (!cancelled) {
           setLoadError(err instanceof Error ? err.message : "Failed to load map data");

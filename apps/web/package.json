@@ -3,17 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/copy-maplibre-assets.mjs && next dev",
+    "prebuild": "node scripts/copy-maplibre-assets.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "copy-maplibre": "node scripts/copy-maplibre-assets.mjs"
   },
   "dependencies": {
     "maplibre-gl": "^6.1.0",
     "next": "^15.5.22",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-map-gl": "^8.0.0"
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

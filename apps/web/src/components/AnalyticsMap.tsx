@@ -6,24 +6,41 @@ import {
   fetchManifestClient,
   fetchReportsClient,
   layerIsReady,
+  type Manifest,
 } from "@/lib/data-client";
 import { TransitMap, joinWardGapIndex } from "@/components/TransitMap";
 import type { LayerData, MapLayerKey } from "@/lib/map-layers";
 
 const MAP_HEIGHT = 560;
-const CORE: MapLayerKey[] = [
-  "wards",
-  "zones",
+const LIGHT: MapLayerKey[] = [
   "metro_area_boundaries",
-  "corridor_aois",
   "omr_corridor",
-  "stops",
-  "shelters",
-  "mrts_stations",
   "mrts_lines",
+  "mrts_stations",
   "hubs",
 ];
+const MEDIUM: MapLayerKey[] = ["wards", "zones", "corridor_aois"];
+const POINTS: MapLayerKey[] = ["stops", "shelters"];
 const HEAVY: MapLayerKey[] = ["catchment_400m", "catchment_800m"];
+
+async function loadBatch(
+  m: Manifest,
+  keys: MapLayerKey[],
+  gapByLabel: Map<string, { gap_index: number; gap_band: string }>
+): Promise<LayerData> {
+  const next: LayerData = {};
+  await Promise.all(
+    keys.map(async (key) => {
+      const layer = m.layers[key];
+      if (!layerIsReady(layer) || !layer.file) return;
+      const fc = await fetchGeoJSONClient(layer.file);
+      if (!fc) return;
+      next[key] =
+        key === "wards" && gapByLabel.size ? joinWardGapIndex(fc, gapByLabel) : fc;
+    })
+  );
+  return next;
+}
 
 export function AnalyticsMap({
   visibility,
@@ -50,26 +67,23 @@ export function AnalyticsMap({
         });
       }
 
-      const next: LayerData = {};
-      if (manifest) {
-        await Promise.all(
-          CORE.map(async (key) => {
-            const layer = manifest.layers[key];
-            if (layerIsReady(layer) && layer.file) {
-              const fc = await fetchGeoJSONClient(layer.file);
-              if (!fc) return;
-              next[key] =
-                key === "wards" && gapByLabel.size
-                  ? joinWardGapIndex(fc, gapByLabel)
-                  : fc;
-            }
-          })
-        );
+      if (!manifest) {
+        if (!cancelled) setLoading(false);
+        return;
       }
-      if (!cancelled) {
-        setData(next);
-        setLoading(false);
-      }
+
+      const light = await loadBatch(manifest, LIGHT, gapByLabel);
+      if (cancelled) return;
+      setData((prev) => ({ ...prev, ...light }));
+
+      const medium = await loadBatch(manifest, MEDIUM, gapByLabel);
+      if (cancelled) return;
+      setData((prev) => ({ ...prev, ...medium }));
+
+      const points = await loadBatch(manifest, POINTS, gapByLabel);
+      if (cancelled) return;
+      setData((prev) => ({ ...prev, ...points }));
+      setLoading(false);
     })();
     return () => {
       cancelled = true;
@@ -94,16 +108,7 @@ export function AnalyticsMap({
         if (k === "catchment_800m" && !want800) return false;
         return true;
       });
-      const next: LayerData = {};
-      await Promise.all(
-        needed.map(async (key) => {
-          const layer = manifest.layers[key];
-          if (layerIsReady(layer) && layer.file) {
-            const fc = await fetchGeoJSONClient(layer.file);
-            if (fc) next[key] = fc;
-          }
-        })
-      );
+      const next = await loadBatch(manifest, needed, new Map());
       if (!cancelled && Object.keys(next).length) {
         setData((prev) => {
           const merged = { ...prev };

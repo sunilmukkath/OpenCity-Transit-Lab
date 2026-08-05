@@ -28,10 +28,16 @@ export default async function HomePage() {
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
-            href="/map"
+            href="/analytics"
             className="rounded-md bg-[var(--accent)] px-4 py-2.5 text-sm font-semibold text-[var(--void)]"
           >
-            Open network map
+            Open analytics dashboard
+          </Link>
+          <Link
+            href="/map"
+            className="rounded-md border border-[var(--border-strong)] bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-[var(--ink)] hover:bg-white/[0.08]"
+          >
+            Network map
           </Link>
           <Link
             href="/sources"

@@ -275,7 +275,6 @@ export function MapExplorer({
               )
             }
             cursor={interactiveLayerIds.length ? "pointer" : "grab"}
-            attributionControl
           >
             <NavigationControl position="top-right" />
 

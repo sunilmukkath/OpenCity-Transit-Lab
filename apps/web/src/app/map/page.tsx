@@ -26,8 +26,8 @@ export default async function MapPage({
           Real GCC / transit / shelter geometries only. Toggle layers that loaded successfully.
         </p>
       </header>
-      <ExportBar manifest={manifest} metrics={metrics} />
       <MapExplorer audienceNote={note} />
+      <ExportBar manifest={manifest} metrics={metrics} />
     </div>
   );
 }

@@ -110,8 +110,6 @@ export function WardWorkbench({
 
   return (
     <div className="space-y-4">
-      <ExportBar manifest={manifest} metrics={metrics} wardRows={wards} />
-
       <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
         <aside className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
           <label className="text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
@@ -190,6 +188,8 @@ export function WardWorkbench({
           )}
         </section>
       </div>
+
+      <ExportBar manifest={manifest} metrics={metrics} wardRows={wards} />
     </div>
   );
 }

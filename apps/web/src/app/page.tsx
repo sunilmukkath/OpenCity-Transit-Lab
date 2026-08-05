@@ -15,10 +15,10 @@ export default async function HomePage() {
           aria-hidden
           className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(56,189,248,0.22),transparent_65%)]"
         />
-        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--accent-bright)]">
+        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--yellow)]">
           OpenCity Transit Lab
         </p>
-        <h1 className="mt-2 max-w-3xl font-[family-name:var(--font-display)] text-4xl font-semibold tracking-tight text-[var(--ink)] sm:text-5xl">
+        <h1 className="mt-2 max-w-3xl font-[family-name:var(--font-display)] text-4xl font-semibold tracking-tight text-[var(--yellow-bright)] sm:text-5xl">
           Chennai last-mile decision support
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-[var(--ink-muted)]">
@@ -53,7 +53,7 @@ export default async function HomePage() {
       </section>
 
       <section>
-        <h2 className="mb-3 font-[family-name:var(--font-display)] text-xl font-semibold">
+        <h2 className="mb-3 font-[family-name:var(--font-display)] text-xl font-semibold text-[var(--yellow)]">
           Who is this for?
         </h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -72,7 +72,7 @@ export default async function HomePage() {
 
       <section>
         <div className="mb-3 flex items-center justify-between gap-2">
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-semibold">
+          <h2 className="font-[family-name:var(--font-display)] text-xl font-semibold text-[var(--yellow)]">
             Verified city counts
           </h2>
           <Link href="/sources" className="text-sm font-medium text-[var(--accent)]">

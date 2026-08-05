@@ -138,7 +138,7 @@ export function WardWorkbench({
             <p className="text-sm text-[var(--ink-muted)]">Loading wards…</p>
           ) : (
             <>
-              <h2 className="font-[family-name:var(--font-display)] text-2xl font-semibold">
+              <h2 className="font-[family-name:var(--font-display)] text-2xl font-semibold text-[var(--yellow)]">
                 {current.ward_label}
               </h2>
               <p className="mt-1 text-sm text-[var(--ink-muted)]">

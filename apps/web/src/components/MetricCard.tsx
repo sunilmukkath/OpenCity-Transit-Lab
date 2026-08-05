@@ -32,7 +32,7 @@ export function MetricCard({
         </>
       ) : (
         <>
-          <p className="font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--ink)]">
+          <p className="font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow)]">
             {value}
           </p>
           {subtext ? (

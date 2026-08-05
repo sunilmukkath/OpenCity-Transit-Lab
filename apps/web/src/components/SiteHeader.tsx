@@ -19,7 +19,7 @@ export function SiteHeader() {
     <header className="no-print border-b border-[var(--border)] bg-[rgba(10,31,74,0.92)] backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <Link href="/" className="font-[family-name:var(--font-display)] text-xl font-semibold tracking-tight text-[var(--ink)]">
+          <Link href="/" className="font-[family-name:var(--font-display)] text-xl font-semibold tracking-tight text-[var(--yellow)]">
             OpenCity Transit Lab
           </Link>
           <p className="mt-0.5 text-sm text-[var(--ink-muted)]">

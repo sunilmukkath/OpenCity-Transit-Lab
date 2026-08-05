@@ -12,10 +12,10 @@ export default async function PolicyPage() {
   return (
     <div className="space-y-6">
       <header className="space-y-2">
-        <p className="text-sm font-semibold uppercase tracking-wider text-[var(--accent)]">
+        <p className="text-sm font-semibold uppercase tracking-wider text-[var(--yellow)]">
           Policymaker briefing
         </p>
-        <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold">
+        <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)]">
           City overview
         </h1>
         <p className="max-w-3xl text-[var(--ink-muted)]">

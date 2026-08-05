@@ -9,7 +9,7 @@ export default async function SourcesPage() {
   return (
     <div className="space-y-8">
       <header className="space-y-2">
-        <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold">
+        <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)]">
           Data Sources
         </h1>
         <p className="max-w-3xl text-[var(--ink-muted)]">

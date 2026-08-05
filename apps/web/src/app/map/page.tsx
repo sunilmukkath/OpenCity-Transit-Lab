@@ -19,7 +19,7 @@ export default async function MapPage({
   return (
     <div className="space-y-4">
       <header>
-        <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold">
+        <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)]">
           Network map
         </h1>
         <p className="mt-1 text-[var(--ink-muted)]">

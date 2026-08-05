@@ -9,10 +9,10 @@ export default async function ExplorePage() {
   return (
     <div className="space-y-6">
       <header className="space-y-2">
-        <p className="text-sm font-semibold uppercase tracking-wider text-[var(--accent)]">
+        <p className="text-sm font-semibold uppercase tracking-wider text-[var(--yellow)]">
           Public explorer
         </p>
-        <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold">
+        <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)]">
           Explore Chennai transit coverage
         </h1>
         <p className="max-w-2xl text-lg text-[var(--ink-muted)]">

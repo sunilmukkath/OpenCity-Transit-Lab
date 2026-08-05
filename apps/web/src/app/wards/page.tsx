@@ -7,10 +7,10 @@ export default async function WardsPage() {
   return (
     <div className="space-y-4">
       <header>
-        <p className="text-sm font-semibold uppercase tracking-wider text-[var(--accent)]">
+        <p className="text-sm font-semibold uppercase tracking-wider text-[var(--yellow)]">
           Local body workbench
         </p>
-        <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold">
+        <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)]">
           Ward / zone inventory
         </h1>
         <p className="mt-1 max-w-3xl text-[var(--ink-muted)]">

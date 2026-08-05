@@ -60,7 +60,7 @@ export interface Metrics {
   unavailable: string[];
 }
 
-export type AudienceId = "policy" | "local" | "traffic" | "public";
+export type AudienceId = "local" | "traffic" | "public";
 
 export const AUDIENCES: {
   id: AudienceId;
@@ -68,12 +68,6 @@ export const AUDIENCES: {
   blurb: string;
   href: string;
 }[] = [
-  {
-    id: "policy",
-    label: "City overview",
-    blurb: "For policymakers — verified coverage counts and gaps, no invented scores.",
-    href: "/policy",
-  },
   {
     id: "local",
     label: "Ward / zone",

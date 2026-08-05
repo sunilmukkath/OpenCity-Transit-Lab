@@ -12,7 +12,7 @@ import { MetricCard } from "@/components/MetricCard";
 import { StatusBadge } from "@/components/StatusBadge";
 import { SectionEyebrow } from "@/components/BrandMotif";
 
-type InsightView = "hubs" | "shelters" | "coverage";
+type InsightView = "hubs" | "shelters" | "coverage" | "corridors";
 
 function fmt(n: number | null | undefined, digits = 0): string {
   if (n === null || n === undefined || Number.isNaN(n)) return "—";
@@ -160,6 +160,7 @@ export function InsightsPanel() {
               ["hubs", "Hub last-mile"],
               ["shelters", "Shelter mismatch"],
               ["coverage", "Catchment coverage"],
+              ["corridors", "OMR / South"],
             ] as const
           ).map(([id, label]) => (
             <button
@@ -503,6 +504,62 @@ export function InsightsPanel() {
               </article>
             ) : null}
           </div>
+        </section>
+      ) : null}
+
+      {view === "corridors" ? (
+        <section className="space-y-4">
+          <div className="et-card p-4 text-sm text-[var(--ink-muted)]">
+            {data.metro_corridors?.note ??
+              "Extended metro corridors beyond GCC wards."}
+          </div>
+          {!data.metro_corridors?.areas?.length ? (
+            <div className="et-card p-5 text-sm text-[var(--ink-muted)]">
+              Corridor inventory unavailable. Run the metro extension ETL.
+            </div>
+          ) : (
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {data.metro_corridors.areas.map((area) => (
+                <article key={area.id} className="et-card p-4">
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--accent)]">
+                    {area.kind.replaceAll("_", " ")}
+                  </p>
+                  <h4 className="mt-1 font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--yellow-bright)]">
+                    {area.label}
+                  </h4>
+                  {area.note ? (
+                    <p className="mt-2 text-xs text-[var(--ink-muted)]">{area.note}</p>
+                  ) : null}
+                  <div className="mt-4 grid grid-cols-3 gap-2">
+                    <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-2 text-center">
+                      <p className="text-[10px] uppercase text-[var(--ink-muted)]">Stops</p>
+                      <p className="text-lg font-semibold text-[var(--yellow)]">
+                        {area.stop_count}
+                      </p>
+                    </div>
+                    <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-2 text-center">
+                      <p className="text-[10px] uppercase text-[var(--ink-muted)]">Shelters</p>
+                      <p className="text-lg font-semibold text-[var(--yellow)]">
+                        {area.shelter_count}
+                      </p>
+                    </div>
+                    <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-2 text-center">
+                      <p className="text-[10px] uppercase text-[var(--ink-muted)]">Hubs</p>
+                      <p className="text-lg font-semibold text-[var(--yellow)]">
+                        {area.hub_count}
+                      </p>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+          <a
+            href="/map"
+            className="inline-flex text-sm font-semibold text-[var(--accent)]"
+          >
+            Open map with OMR / South preset →
+          </a>
         </section>
       ) : null}
     </div>

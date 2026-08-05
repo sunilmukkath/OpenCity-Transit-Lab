@@ -24,6 +24,9 @@ from shapely.geometry import Point
 from shapely.ops import unary_union
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from build_metro_extension import build_metro_extension  # noqa: E402
+
 RAW = ROOT / "data" / "raw"
 PROCESSED = ROOT / "data" / "processed"
 WEB_PUBLIC = ROOT / "apps" / "web" / "public" / "data"
@@ -1505,6 +1508,33 @@ def main() -> int:
         catchment_400=layers.get("catchment_400m"),
         catchment_800=layers.get("catchment_800m"),
     )
+
+    # Extended metro: OMR → Mahabalipuram, Tambaram, Chengalpattu
+    try:
+        metro_ext = build_metro_extension(
+            stops=layers.get("stops"),
+            shelters=layers.get("shelters"),
+            hubs=layers.get("hubs"),
+        )
+        for key, meta in metro_ext.get("layers", {}).items():
+            manifest["layers"][key] = meta
+            if meta.get("status") == "loaded" and meta.get("file"):
+                print(f"[ok] {meta['file']}")
+        if metro_ext.get("inventory"):
+            analyses["metro_corridors"] = metro_ext["inventory"]
+            print(
+                f"[ok] metro corridor inventory ({len(metro_ext['inventory'].get('areas', []))} areas)"
+            )
+        for err in metro_ext.get("errors") or []:
+            print(f"[warn] metro extension: {err}", file=sys.stderr)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[fail] metro extension: {exc}", file=sys.stderr)
+        analyses["metro_corridors"] = {
+            "status": "unavailable",
+            "reason": str(exc),
+            "areas": [],
+        }
+
     (PROCESSED / "analyses.json").write_text(json.dumps(analyses, indent=2))
     hub_n = len(analyses.get("hub_last_mile", {}).get("hubs", []))
     mm_n = analyses.get("shelter_mismatch", {}).get("counts", {}).get("mismatch_wards", 0)

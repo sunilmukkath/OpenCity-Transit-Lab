@@ -9,7 +9,10 @@ export type MapLayerKey =
   | "mrts_lines"
   | "hubs"
   | "catchment_400m"
-  | "catchment_800m";
+  | "catchment_800m"
+  | "omr_corridor"
+  | "metro_area_boundaries"
+  | "corridor_aois";
 
 export const MAP_LAYER_META: {
   key: MapLayerKey;
@@ -19,6 +22,9 @@ export const MAP_LAYER_META: {
 }[] = [
   { key: "wards", label: "GCC wards", defaultOn: true },
   { key: "zones", label: "GCC zones", defaultOn: false },
+  { key: "metro_area_boundaries", label: "Tambaram / Chengalpattu / Mahabalipuram", defaultOn: true },
+  { key: "corridor_aois", label: "South corridor AOIs", defaultOn: false },
+  { key: "omr_corridor", label: "OMR → Mahabalipuram", defaultOn: true },
   { key: "stops", label: "Transit stops (GTFS)", defaultOn: true },
   { key: "shelters", label: "Bus shelters", defaultOn: false },
   { key: "mrts_lines", label: "MRTS lines", defaultOn: true },
@@ -29,9 +35,9 @@ export const MAP_LAYER_META: {
 ];
 
 export const CHENNAI_VIEW = {
-  longitude: 80.2707,
-  latitude: 13.0827,
-  zoom: 10.4,
+  longitude: 80.18,
+  latitude: 12.92,
+  zoom: 9.6,
 };
 
 /** Voyager first — dark navy ward fills were invisible on Dark Matter. */
@@ -82,6 +88,9 @@ export const LAYER_PRESETS: Record<
       hubs: true,
       catchment_400m: false,
       catchment_800m: false,
+      omr_corridor: true,
+      metro_area_boundaries: true,
+      corridor_aois: false,
     },
   },
   gaps: {
@@ -98,6 +107,9 @@ export const LAYER_PRESETS: Record<
       hubs: true,
       catchment_400m: false,
       catchment_800m: false,
+      omr_corridor: false,
+      metro_area_boundaries: true,
+      corridor_aois: false,
     },
   },
   hubs: {
@@ -114,6 +126,9 @@ export const LAYER_PRESETS: Record<
       hubs: true,
       catchment_400m: false,
       catchment_800m: false,
+      omr_corridor: true,
+      metro_area_boundaries: true,
+      corridor_aois: false,
     },
   },
   walk: {
@@ -130,6 +145,28 @@ export const LAYER_PRESETS: Record<
       hubs: true,
       catchment_400m: true,
       catchment_800m: false,
+      omr_corridor: false,
+      metro_area_boundaries: false,
+      corridor_aois: false,
+    },
+  },
+  south: {
+    label: "OMR / South",
+    blurb: "OMR, Tambaram, Chengalpattu",
+    choropleth: "stops",
+    layers: {
+      wards: true,
+      zones: false,
+      stops: true,
+      shelters: false,
+      mrts_lines: true,
+      mrts_stations: true,
+      hubs: true,
+      catchment_400m: false,
+      catchment_800m: false,
+      omr_corridor: true,
+      metro_area_boundaries: true,
+      corridor_aois: true,
     },
   },
 };

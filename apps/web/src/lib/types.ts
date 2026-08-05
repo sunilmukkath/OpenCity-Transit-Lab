@@ -184,6 +184,21 @@ export interface AdvancedAnalyses {
     priority_wards: CatchmentCoverageRow[];
     counts?: Record<string, number>;
   };
+  metro_corridors?: {
+    status: string;
+    note?: string;
+    reason?: string;
+    areas: {
+      id: string;
+      label: string;
+      kind: string;
+      note?: string;
+      stop_count: number;
+      shelter_count: number;
+      hub_count: number;
+      bbox?: number[] | null;
+    }[];
+  };
 }
 
 export type AudienceId = "local" | "traffic" | "public";

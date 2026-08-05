@@ -26,8 +26,8 @@ export default async function MapPage({
           See coverage as it actually loaded
         </h1>
         <p className="mt-2 max-w-3xl text-[var(--ink-muted)]">
-          Basemap first, then verified layers. Use presets for coverage, Gap Index, hubs, or
-          walk catchments. Click any feature for inventory details.
+          Basemap first, then verified layers — including OMR to Mahabalipuram and approaches
+          toward Tambaram / Chengalpattu. Use the <strong>OMR / South</strong> preset.
         </p>
       </header>
       <MapExplorerClient audienceNote={note} />

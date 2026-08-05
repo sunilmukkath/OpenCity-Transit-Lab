@@ -41,6 +41,9 @@ type CategoryFilter =
 const LAYER_CATEGORY: Record<string, CategoryFilter> = {
   wards: "admin",
   zones: "admin",
+  metro_area_boundaries: "admin",
+  corridor_aois: "admin",
+  omr_corridor: "transit",
   stops: "transit",
   shelters: "shelter",
   mrts_stations: "rail",
@@ -48,6 +51,21 @@ const LAYER_CATEGORY: Record<string, CategoryFilter> = {
   hubs: "rail",
   catchment_400m: "catchment",
   catchment_800m: "catchment",
+};
+
+const DEFAULT_MAP_LAYERS: Record<string, boolean> = {
+  wards: true,
+  zones: false,
+  metro_area_boundaries: true,
+  corridor_aois: false,
+  omr_corridor: true,
+  stops: true,
+  shelters: false,
+  mrts_stations: true,
+  mrts_lines: true,
+  hubs: true,
+  catchment_400m: false,
+  catchment_800m: false,
 };
 
 const SOURCE_CATEGORY: Record<string, CategoryFilter> = {
@@ -132,17 +150,7 @@ export function AnalyticsDashboard() {
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const [query, setQuery] = useState("");
   const [minFeatures, setMinFeatures] = useState(0);
-  const [mapLayers, setMapLayers] = useState<Record<string, boolean>>({
-    wards: true,
-    zones: false,
-    stops: true,
-    shelters: false,
-    mrts_stations: true,
-    mrts_lines: true,
-    hubs: true,
-    catchment_400m: false,
-    catchment_800m: false,
-  });
+  const [mapLayers, setMapLayers] = useState<Record<string, boolean>>(DEFAULT_MAP_LAYERS);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -292,17 +300,7 @@ export function AnalyticsDashboard() {
         next[key] = cat === "all" ? true : LAYER_CATEGORY[key] === cat;
       }
       if (cat === "all") {
-        return {
-          wards: true,
-          zones: false,
-          stops: true,
-          shelters: false,
-          mrts_stations: true,
-          mrts_lines: true,
-          hubs: true,
-          catchment_400m: false,
-          catchment_800m: false,
-        };
+        return { ...DEFAULT_MAP_LAYERS };
       }
       return next;
     });
@@ -313,17 +311,7 @@ export function AnalyticsDashboard() {
     setCategoryFilter("all");
     setQuery("");
     setMinFeatures(0);
-    setMapLayers({
-      wards: true,
-      zones: false,
-      stops: true,
-      shelters: false,
-      mrts_stations: true,
-      mrts_lines: true,
-      hubs: true,
-      catchment_400m: false,
-      catchment_800m: false,
-    });
+    setMapLayers({ ...DEFAULT_MAP_LAYERS });
   };
 
   if (loading) {

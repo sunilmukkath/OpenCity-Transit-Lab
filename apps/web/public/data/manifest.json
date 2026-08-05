@@ -218,6 +218,30 @@
       ],
       "file": "catchment_800m.geojson",
       "notes": "Dissolved 800m buffer around GTFS stops. Not population-weighted."
+    },
+    "omr_corridor": {
+      "status": "loaded",
+      "file": "omr_corridor.geojson",
+      "feature_count": 1,
+      "notes": "OSM OMR / Rajiv Gandhi Salai (SH49A) toward Mahabalipuram."
+    },
+    "metro_area_boundaries": {
+      "status": "loaded",
+      "file": "metro_area_boundaries.geojson",
+      "feature_count": 3,
+      "notes": "OSM Tambaram & Chengalpattu boundaries + Mahabalipuram study buffer.",
+      "attributes": [
+        "name",
+        "kind",
+        "note",
+        "source"
+      ]
+    },
+    "corridor_aois": {
+      "status": "loaded",
+      "file": "corridor_aois.geojson",
+      "feature_count": 3,
+      "notes": "Study AOIs for OMR, Tambaram, Chengalpattu \u2014 not official wards."
     }
   },
   "realtime": [

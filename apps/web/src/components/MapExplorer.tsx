@@ -25,6 +25,9 @@ const MAP_HEIGHT = 640;
 const CORE_LAYERS: MapLayerKey[] = [
   "wards",
   "zones",
+  "metro_area_boundaries",
+  "corridor_aois",
+  "omr_corridor",
   "mrts_lines",
   "mrts_stations",
   "hubs",

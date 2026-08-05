@@ -7878,5 +7878,101 @@
       "moderate_gap_wards": 39,
       "low_gap_wards": 147
     }
+  },
+  "metro_corridors": {
+    "status": "loaded",
+    "note": "Extended metro corridors beyond GCC wards: OMR to Mahabalipuram, Tambaram, and Chengalpattu. Boundaries from OSM where available; AOIs are study boxes, not official ward delimitation (Tambaram ward PDFs are not machine-readable).",
+    "areas": [
+      {
+        "id": "Tambaram",
+        "label": "Tambaram",
+        "kind": "municipal_boundary",
+        "note": "OSM administrative boundary. Not GCC wards. Tambaram official ward maps on OpenCity are PDF-only.",
+        "stop_count": 217,
+        "shelter_count": 15,
+        "hub_count": 3,
+        "bbox": [
+          80.06439,
+          12.85938,
+          80.18938,
+          12.95319
+        ]
+      },
+      {
+        "id": "Chengalpattu",
+        "label": "Chengalpattu",
+        "kind": "admin_boundary",
+        "note": "OSM administrative boundary covering Chengalpattu area (may be taluk-scale).",
+        "stop_count": 246,
+        "shelter_count": 0,
+        "hub_count": 12,
+        "bbox": [
+          79.87764,
+          12.62736,
+          80.17102,
+          12.90611
+        ]
+      },
+      {
+        "id": "Mahabalipuram (study buffer)",
+        "label": "Mahabalipuram (study buffer)",
+        "kind": "study_buffer",
+        "note": "Approx. 3\u20134 km study buffer around Mahabalipuram / Mamallapuram \u2014 not an official municipal ward map.",
+        "stop_count": 21,
+        "shelter_count": 0,
+        "hub_count": 0,
+        "bbox": [
+          80.1578,
+          12.5858,
+          80.2278,
+          12.6558
+        ]
+      },
+      {
+        "id": "OMR \u2192 Mahabalipuram",
+        "label": "OMR \u2192 Mahabalipuram",
+        "kind": "corridor_aoi",
+        "note": "Buffer around OSM OMR / Rajiv Gandhi Salai toward Mahabalipuram.",
+        "stop_count": 228,
+        "shelter_count": 39,
+        "hub_count": 5,
+        "bbox": [
+          80.15741,
+          12.60283,
+          80.26474,
+          12.99826
+        ]
+      },
+      {
+        "id": "Toward Tambaram",
+        "label": "Toward Tambaram",
+        "kind": "corridor_aoi",
+        "note": "Focus AOI for Tambaram / southern GST approaches (not official wards).",
+        "stop_count": 841,
+        "shelter_count": 21,
+        "hub_count": 20,
+        "bbox": [
+          80.05,
+          12.86,
+          80.19,
+          13.02
+        ]
+      },
+      {
+        "id": "Toward Chengalpattu",
+        "label": "Toward Chengalpattu",
+        "kind": "corridor_aoi",
+        "note": "Focus AOI along approaches to Chengalpattu (not official wards).",
+        "stop_count": 209,
+        "shelter_count": 0,
+        "hub_count": 11,
+        "bbox": [
+          79.9,
+          12.65,
+          80.1,
+          12.88
+        ]
+      }
+    ]
   }
 }

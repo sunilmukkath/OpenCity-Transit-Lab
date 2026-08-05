@@ -296,6 +296,49 @@ export function TransitMap({
       >
         <NavigationControl position="top-right" showCompass={false} />
 
+        {visibility.corridor_aois && data.corridor_aois ? (
+          <Source id="tm-corridor-aois" type="geojson" data={data.corridor_aois}>
+            <Layer
+              id="tm-corridor-aois-fill"
+              type="fill"
+              paint={{ "fill-color": "#8b5cf6", "fill-opacity": 0.08 }}
+            />
+            <Layer
+              id="tm-corridor-aois-line"
+              type="line"
+              paint={{ "line-color": "#7c3aed", "line-width": 1.5, "line-dasharray": [2, 1] }}
+            />
+          </Source>
+        ) : null}
+
+        {visibility.metro_area_boundaries && data.metro_area_boundaries ? (
+          <Source id="tm-metro-boundaries" type="geojson" data={data.metro_area_boundaries}>
+            <Layer
+              id="tm-metro-boundaries-fill"
+              type="fill"
+              paint={{ "fill-color": "#db2777", "fill-opacity": 0.12 }}
+            />
+            <Layer
+              id="tm-metro-boundaries-line"
+              type="line"
+              paint={{ "line-color": "#be185d", "line-width": 2.2 }}
+            />
+          </Source>
+        ) : null}
+
+        {visibility.omr_corridor && data.omr_corridor ? (
+          <Source id="tm-omr" type="geojson" data={data.omr_corridor}>
+            <Layer
+              id="tm-omr-line"
+              type="line"
+              paint={{
+                "line-color": "#7c3aed",
+                "line-width": ["interpolate", ["linear"], ["zoom"], 9, 3, 14, 6],
+              }}
+            />
+          </Source>
+        ) : null}
+
         {visibility.catchment_800m && data.catchment_800m ? (
           <Source id="tm-catchment-800" type="geojson" data={data.catchment_800m}>
             <Layer

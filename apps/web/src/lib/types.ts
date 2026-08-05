@@ -113,6 +113,79 @@ export interface SpatialReports {
   severe_gap_wards?: SpatialUnitReport[];
 }
 
+export interface HubLastMileRow {
+  id: string;
+  label: string;
+  hub_type: string;
+  lon: number | null;
+  lat: number | null;
+  in_chennai_core?: boolean;
+  nearest_stop_m: number | null;
+  stops_within_300m: number;
+  stops_within_500m: number;
+  shelters_within_300m: number | null;
+  last_mile_score: number;
+  last_mile_band: string;
+  components: Record<string, number>;
+  recommendation: string;
+}
+
+export interface ShelterMismatchRow {
+  id: string;
+  label: string;
+  unit_type: string;
+  stop_count: number;
+  shelter_count: number;
+  shelter_to_stop_ratio: number;
+  mismatch_score: number;
+  recommendation: string;
+}
+
+export interface CatchmentCoverageRow {
+  id: string;
+  label: string;
+  unit_type: string;
+  area_km2: number;
+  pct_area_within_400m: number | null;
+  pct_area_within_800m: number | null;
+  pct_area_outside_400m: number | null;
+  coverage_band: string;
+  stop_count: number | null;
+  recommendation: string;
+}
+
+export interface AdvancedAnalyses {
+  generated_at: string;
+  note: string;
+  hub_last_mile: {
+    status: string;
+    note?: string;
+    reason?: string;
+    method?: GapIndexMethod | Record<string, unknown>;
+    hubs: HubLastMileRow[];
+    priority_hubs: HubLastMileRow[];
+    counts?: Record<string, number>;
+  };
+  shelter_mismatch: {
+    status: string;
+    note?: string;
+    wards: ShelterMismatchRow[];
+    zones: ShelterMismatchRow[];
+    priority_wards: ShelterMismatchRow[];
+    priority_zones: ShelterMismatchRow[];
+    counts?: Record<string, number>;
+  };
+  catchment_coverage: {
+    status: string;
+    note?: string;
+    reason?: string;
+    city_mean_pct_outside_400m?: number | null;
+    wards: CatchmentCoverageRow[];
+    priority_wards: CatchmentCoverageRow[];
+    counts?: Record<string, number>;
+  };
+}
+
 export type AudienceId = "local" | "traffic" | "public";
 
 export const AUDIENCES: {
@@ -135,9 +208,9 @@ export const AUDIENCES: {
   },
   {
     id: "public",
-    label: "Analytics & Gap Index",
-    blurb: "City inventory, ward/zone Gap Index, and transparent data sources.",
-    href: "/analytics",
+    label: "Insights & Gap Index",
+    blurb: "Hub last-mile, shelter mismatch, walk coverage, and city inventory.",
+    href: "/analytics?tab=insights",
   },
 ];
 

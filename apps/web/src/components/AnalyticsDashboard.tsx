@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { StatusBadge } from "@/components/StatusBadge";
 import { MetricCard } from "@/components/MetricCard";
 import { SpatialReports } from "@/components/SpatialReports";
+import { InsightsPanel } from "@/components/InsightsPanel";
 import type { Manifest, ManifestLayer, ManifestSource, Metrics } from "@/lib/types";
 import { layerIsReady } from "@/lib/types";
 import {
@@ -25,7 +26,7 @@ const AnalyticsMap = dynamic(
   }
 );
 
-type AnalyticsTab = "overview" | "spatial" | "sources";
+type AnalyticsTab = "overview" | "insights" | "spatial" | "sources";
 type StatusFilter = "all" | "loaded" | "unavailable" | "not_connected" | "partial";
 type CategoryFilter =
   | "all"
@@ -74,6 +75,11 @@ const TABS: { id: AnalyticsTab; label: string; blurb: string }[] = [
     id: "overview",
     label: "Overview",
     blurb: "City inventory, map layers, and feature charts",
+  },
+  {
+    id: "insights",
+    label: "Insights",
+    blurb: "Hub last-mile, shelter gaps, walk coverage",
   },
   {
     id: "spatial",
@@ -141,7 +147,7 @@ export function AnalyticsDashboard() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const t = params.get("tab");
-    if (t === "spatial" || t === "sources" || t === "overview") {
+    if (t === "spatial" || t === "sources" || t === "overview" || t === "insights") {
       setTab(t);
     }
   }, []);
@@ -366,6 +372,8 @@ export function AnalyticsDashboard() {
         ))}
       </nav>
 
+      {tab === "insights" ? <InsightsPanel /> : null}
+
       {tab === "spatial" ? <SpatialReports /> : null}
 
       {tab === "overview" ? (
@@ -387,40 +395,36 @@ export function AnalyticsDashboard() {
               subtext="Across loaded layers only"
             />
             <MetricCard
-              label="City Gap Index"
-              value={
-                metrics?.counts?.city_mean_gap_index != null
-                  ? Number(metrics.counts.city_mean_gap_index).toFixed(1)
-                  : null
-              }
+              label="Weak last-mile hubs"
+              value={metrics?.counts?.weak_last_mile_hubs}
               subtext={
-                metrics?.counts?.severe_gap_wards != null
-                  ? `${metrics.counts.severe_gap_wards} severe · ${metrics.counts.high_gap_wards ?? metrics.counts.priority_wards ?? "—"} high-gap wards`
-                  : "Mean inventory gap across wards (0–100)"
+                metrics?.counts?.shelter_mismatch_wards != null
+                  ? `${metrics.counts.shelter_mismatch_wards} shelter-mismatch wards`
+                  : "Open Insights for hub feeder scores"
               }
-              unavailableReason="Run ETL to emit Gap Index"
+              unavailableReason="Run ETL to emit hub last-mile analysis"
             />
           </div>
 
           <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="text-sm text-[var(--ink-muted)]">
-                Need ward- or zone-level actions? Open{" "}
+                Need feeder or walk-coverage actions? Open{" "}
                 <button
                   type="button"
-                  onClick={() => selectTab("spatial")}
+                  onClick={() => selectTab("insights")}
                   className="font-semibold text-[var(--yellow)] underline-offset-2 hover:underline"
                 >
-                  Ward / zone reports
+                  Insights
                 </button>{" "}
-                for inventory recommendations by area.
+                for hub last-mile, shelter mismatch, and catchment coverage.
               </p>
               <button
                 type="button"
-                onClick={() => selectTab("spatial")}
+                onClick={() => selectTab("insights")}
                 className="rounded-md border border-[var(--yellow)] bg-[rgba(255,229,102,0.1)] px-3 py-1.5 text-sm font-semibold text-[var(--yellow)]"
               >
-                View reports →
+                View insights →
               </button>
             </div>
           </div>

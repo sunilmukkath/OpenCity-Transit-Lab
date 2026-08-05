@@ -694,6 +694,434 @@ def build_spatial_reports(
     }
 
 
+def build_hub_last_mile(
+    hubs: gpd.GeoDataFrame | None,
+    stops: gpd.GeoDataFrame | None,
+    shelters: gpd.GeoDataFrame | None,
+) -> dict[str, Any]:
+    """Per-hub feeder access within 300m/500m — inventory only."""
+    if hubs is None or hubs.empty:
+        return {
+            "status": "unavailable",
+            "reason": "Hub layer not loaded",
+            "hubs": [],
+            "priority_hubs": [],
+        }
+    if stops is None or stops.empty:
+        return {
+            "status": "unavailable",
+            "reason": "Stops layer not loaded",
+            "hubs": [],
+            "priority_hubs": [],
+        }
+
+    hubs_ll = hubs.to_crs(4326).reset_index(drop=True)
+    hubs_m = project_m(hubs).reset_index(drop=True)
+    stops_m = project_m(stops).reset_index(drop=True)
+    shelters_m = (
+        project_m(shelters).reset_index(drop=True)
+        if shelters is not None and not shelters.empty
+        else None
+    )
+
+    nearest = gpd.sjoin_nearest(
+        hubs_m[["geometry"]],
+        stops_m[["geometry"]],
+        how="left",
+        distance_col="nearest_stop_m",
+    )
+    nearest_dist = nearest.groupby(nearest.index)["nearest_stop_m"].min()
+
+    rows: list[dict[str, Any]] = []
+    for idx, hub in hubs_m.iterrows():
+        src = hubs_ll.loc[idx]
+        name = clean_label(
+            src.get("hub_name")
+            or src.get("station_name")
+            or src.get("stop_name")
+            or hub.get("hub_name")
+            or f"Hub {idx}"
+        )
+        if not name:
+            name = f"Hub {idx}"
+        hub_type = clean_label(src.get("hub_type") or hub.get("hub_type") or "") or "hub"
+        pt = hub.geometry
+        ll = src.geometry
+        if pt is None or pt.is_empty:
+            continue
+
+        buf300 = pt.buffer(300)
+        buf500 = pt.buffer(500)
+        stops_300 = int(stops_m.within(buf300).sum())
+        stops_500 = int(stops_m.within(buf500).sum())
+        shelters_300 = int(shelters_m.within(buf300).sum()) if shelters_m is not None else None
+        nearest_m = nearest_dist.get(idx)
+        nearest_m_f = (
+            round(float(nearest_m), 1)
+            if nearest_m is not None and str(nearest_m) != "nan"
+            else None
+        )
+
+        # Last-mile gap 0–100 (higher = weaker feeder access)
+        nearest_gap = 0
+        if nearest_m_f is None:
+            nearest_gap = 40
+        elif nearest_m_f > 500:
+            nearest_gap = 40
+        elif nearest_m_f > 300:
+            nearest_gap = 30
+        elif nearest_m_f > 150:
+            nearest_gap = 18
+        elif nearest_m_f > 80:
+            nearest_gap = 8
+
+        stop300_gap = 0
+        if stops_300 == 0:
+            stop300_gap = 30
+        elif stops_300 < 3:
+            stop300_gap = 22
+        elif stops_300 < 6:
+            stop300_gap = 12
+        elif stops_300 < 10:
+            stop300_gap = 5
+
+        stop500_gap = 0
+        if stops_500 < 3:
+            stop500_gap = 15
+        elif stops_500 < 8:
+            stop500_gap = 8
+
+        shelter_gap = 0
+        if shelters_300 is None:
+            shelter_gap = 0
+        elif shelters_300 == 0 and stops_300 > 0:
+            shelter_gap = 15
+        elif shelters_300 == 0:
+            shelter_gap = 10
+
+        components = {
+            "nearest_stop_gap": nearest_gap,
+            "stops_300m_gap": stop300_gap,
+            "stops_500m_gap": stop500_gap,
+            "shelter_300m_gap": shelter_gap,
+        }
+        score = int(min(100, sum(components.values())))
+        if score >= 55:
+            band = "weak"
+        elif score >= 30:
+            band = "moderate"
+        else:
+            band = "strong"
+
+        lon = round(float(ll.x), 6) if ll is not None and hasattr(ll, "x") else None
+        lat = round(float(ll.y), 6) if ll is not None and hasattr(ll, "y") else None
+        # Rough GCC / Chennai urban box — flags suburban rail hubs outside city GTFS density
+        in_chennai_core = (
+            lon is not None
+            and lat is not None
+            and 80.05 <= lon <= 80.35
+            and 12.85 <= lat <= 13.28
+        )
+
+        rows.append(
+            {
+                "id": name,
+                "label": name,
+                "hub_type": hub_type,
+                "lon": lon,
+                "lat": lat,
+                "in_chennai_core": in_chennai_core,
+                "nearest_stop_m": nearest_m_f,
+                "stops_within_300m": stops_300,
+                "stops_within_500m": stops_500,
+                "shelters_within_300m": shelters_300,
+                "last_mile_score": score,
+                "last_mile_band": band,
+                "components": components,
+                "recommendation": (
+                    "Hub sits outside dense Chennai GTFS coverage (likely suburban rail) — treat separately from city feeders."
+                    if not in_chennai_core and score >= 55
+                    else (
+                        "Few feeders near this hub — prioritise stop clustering within 100–300m and clear walk links."
+                        if score >= 55
+                        else (
+                            "Moderate feeder access — check shelters and mid-block walk paths to the entrance."
+                            if score >= 30
+                            else "Relatively strong stop presence near this hub — focus on wayfinding and passenger info."
+                        )
+                    )
+                ),
+            }
+        )
+
+    rows.sort(key=lambda r: (-r["last_mile_score"], r["label"]))
+    core_weak = [h for h in rows if h["in_chennai_core"] and h["last_mile_score"] >= 55]
+    priority = core_weak[:25] or [h for h in rows if h["last_mile_score"] >= 55][:25]
+    return {
+        "status": "loaded",
+        "note": (
+            "Last-mile score uses verified stop/shelter distances to hubs only. "
+            "Not ridership or equity. Higher score = weaker feeder access. "
+            "Priority list prefers hubs inside the Chennai urban box."
+        ),
+        "method": {
+            "scale": "0–100 (higher = weaker last-mile / feeder access)",
+            "bands": {"weak": "≥55", "moderate": "30–54", "strong": "<30"},
+            "components": {
+                "nearest_stop_gap": "max 40 — distance to nearest GTFS stop",
+                "stops_300m_gap": "max 30 — stop count inside 300m",
+                "stops_500m_gap": "max 15 — stop count inside 500m",
+                "shelter_300m_gap": "max 15 — shelter presence inside 300m",
+            },
+        },
+        "hubs": rows,
+        "priority_hubs": priority,
+        "counts": {
+            "hubs_scored": len(rows),
+            "hubs_in_chennai_core": sum(1 for h in rows if h["in_chennai_core"]),
+            "weak_hubs": sum(1 for h in rows if h["last_mile_band"] == "weak"),
+            "weak_hubs_chennai_core": len(core_weak),
+            "moderate_hubs": sum(1 for h in rows if h["last_mile_band"] == "moderate"),
+            "strong_hubs": sum(1 for h in rows if h["last_mile_band"] == "strong"),
+        },
+    }
+
+
+def build_shelter_mismatch(
+    wards: gpd.GeoDataFrame | None,
+    zones: gpd.GeoDataFrame | None,
+) -> dict[str, Any]:
+    """Units with stops present but weak shelter coverage."""
+
+    def score_unit(row: dict[str, Any], unit_type: str) -> dict[str, Any] | None:
+        label = clean_label(row.get("label") or "")
+        if not label:
+            label = f"Unnamed {unit_type}"
+        stops = row.get("stop_count")
+        shelters = row.get("shelter_count")
+        if stops is None or str(stops) == "nan":
+            return None
+        stops_i = int(stops)
+        if stops_i <= 0:
+            return None
+        shelters_i = (
+            int(shelters) if shelters is not None and str(shelters) != "nan" else 0
+        )
+        ratio = shelters_i / max(stops_i, 1)
+        # Mismatch 0–100
+        if shelters_i == 0:
+            mismatch = min(100, 55 + min(stops_i, 40))
+        elif ratio < 0.08:
+            mismatch = 70
+        elif ratio < 0.15:
+            mismatch = 55
+        elif ratio < 0.25:
+            mismatch = 40
+        elif ratio < 0.4:
+            mismatch = 25
+        else:
+            return None  # not a meaningful mismatch
+
+        return {
+            "id": label,
+            "label": label,
+            "unit_type": unit_type,
+            "stop_count": stops_i,
+            "shelter_count": shelters_i,
+            "shelter_to_stop_ratio": round(ratio, 3),
+            "mismatch_score": int(mismatch),
+            "recommendation": (
+                "Stops present but shelters absent or scarce — field-audit high-boarding locations "
+                "and prioritise weather protection at transfer points."
+            ),
+        }
+
+    ward_rows: list[dict[str, Any]] = []
+    zone_rows: list[dict[str, Any]] = []
+    if wards is not None and not wards.empty and "stop_count" in wards.columns:
+        for _, row in wards.iterrows():
+            item = score_unit(
+                {
+                    "label": row.get("ward_label"),
+                    "stop_count": row.get("stop_count"),
+                    "shelter_count": row.get("shelter_count"),
+                },
+                "ward",
+            )
+            if item:
+                ward_rows.append(item)
+    if zones is not None and not zones.empty and "stop_count" in zones.columns:
+        for _, row in zones.iterrows():
+            item = score_unit(
+                {
+                    "label": row.get("zone_label"),
+                    "stop_count": row.get("stop_count"),
+                    "shelter_count": row.get("shelter_count"),
+                },
+                "zone",
+            )
+            if item:
+                zone_rows.append(item)
+
+    ward_rows.sort(key=lambda r: (-r["mismatch_score"], -r["stop_count"], r["label"]))
+    zone_rows.sort(key=lambda r: (-r["mismatch_score"], -r["stop_count"], r["label"]))
+    return {
+        "status": "loaded" if ward_rows or zone_rows else "unavailable",
+        "note": (
+            "Shelter mismatch ranks units where GTFS stops exist but mapped shelters are scarce. "
+            "Shelter layer is presence-only — confirm with field audit."
+        ),
+        "wards": ward_rows,
+        "zones": zone_rows,
+        "priority_wards": ward_rows[:25],
+        "priority_zones": zone_rows[:10],
+        "counts": {
+            "mismatch_wards": len(ward_rows),
+            "mismatch_zones": len(zone_rows),
+            "zero_shelter_wards": sum(1 for w in ward_rows if w["shelter_count"] == 0),
+        },
+    }
+
+
+def build_catchment_coverage(
+    wards: gpd.GeoDataFrame | None,
+    catchment_400: gpd.GeoDataFrame | None,
+    catchment_800: gpd.GeoDataFrame | None,
+) -> dict[str, Any]:
+    """Share of each ward's land area inside dissolved stop catchments (geometry only)."""
+    if wards is None or wards.empty:
+        return {
+            "status": "unavailable",
+            "reason": "Wards not loaded",
+            "wards": [],
+            "priority_wards": [],
+        }
+    if catchment_400 is None or catchment_400.empty:
+        return {
+            "status": "unavailable",
+            "reason": "400m catchment not loaded",
+            "wards": [],
+            "priority_wards": [],
+        }
+
+    wards_m = project_m(wards).reset_index(drop=True)
+    c400 = unary_union(project_m(catchment_400).geometry.values)
+    c800 = None
+    if catchment_800 is not None and not catchment_800.empty:
+        c800 = unary_union(project_m(catchment_800).geometry.values)
+
+    rows: list[dict[str, Any]] = []
+    for _, row in wards_m.iterrows():
+        label = clean_label(row.get("ward_label") or "") or "Unnamed ward"
+        geom = row.geometry
+        if geom is None or geom.is_empty:
+            continue
+        area = float(geom.area)
+        if area <= 0:
+            continue
+        try:
+            inter400 = geom.intersection(c400)
+            pct400 = round(100.0 * float(inter400.area) / area, 1)
+        except Exception:  # noqa: BLE001
+            pct400 = None
+        pct800 = None
+        if c800 is not None:
+            try:
+                inter800 = geom.intersection(c800)
+                pct800 = round(100.0 * float(inter800.area) / area, 1)
+            except Exception:  # noqa: BLE001
+                pct800 = None
+
+        # Coverage gap: how much of the ward sits outside 400m walk of a stop
+        outside400 = None if pct400 is None else round(100.0 - pct400, 1)
+        band = "unknown"
+        if outside400 is not None:
+            if outside400 >= 60:
+                band = "high_gap"
+            elif outside400 >= 35:
+                band = "moderate_gap"
+            else:
+                band = "low_gap"
+
+        rows.append(
+            {
+                "id": label,
+                "label": label,
+                "unit_type": "ward",
+                "area_km2": round(area / 1_000_000, 3),
+                "pct_area_within_400m": pct400,
+                "pct_area_within_800m": pct800,
+                "pct_area_outside_400m": outside400,
+                "coverage_band": band,
+                "stop_count": int(row["stop_count"])
+                if "stop_count" in row and row.get("stop_count") is not None and str(row.get("stop_count")) != "nan"
+                else None,
+                "recommendation": (
+                    "Large share of ward area sits beyond 400m of a mapped stop — review mid-block stops or feeders."
+                    if band == "high_gap"
+                    else (
+                        "Moderate walk-coverage gaps remain — check residential pockets against the 400m catchment map."
+                        if band == "moderate_gap"
+                        else "Most land area falls inside 400m stop catchments (geometry only — not population-weighted)."
+                    )
+                ),
+            }
+        )
+
+    rows.sort(
+        key=lambda r: (
+            -(r["pct_area_outside_400m"] if r["pct_area_outside_400m"] is not None else -1),
+            r["label"],
+        )
+    )
+    mean_outside = None
+    outs = [r["pct_area_outside_400m"] for r in rows if r["pct_area_outside_400m"] is not None]
+    if outs:
+        mean_outside = round(sum(outs) / len(outs), 1)
+
+    return {
+        "status": "loaded",
+        "note": (
+            "Catchment coverage is the share of ward polygon area inside dissolved 400m/800m "
+            "stop buffers. Geometry only — not population-weighted access."
+        ),
+        "city_mean_pct_outside_400m": mean_outside,
+        "wards": rows,
+        "priority_wards": [w for w in rows if w["coverage_band"] == "high_gap"][:25],
+        "counts": {
+            "wards_scored": len(rows),
+            "high_gap_wards": sum(1 for w in rows if w["coverage_band"] == "high_gap"),
+            "moderate_gap_wards": sum(1 for w in rows if w["coverage_band"] == "moderate_gap"),
+            "low_gap_wards": sum(1 for w in rows if w["coverage_band"] == "low_gap"),
+        },
+    }
+
+
+def build_advanced_analyses(
+    *,
+    hubs: gpd.GeoDataFrame | None,
+    stops: gpd.GeoDataFrame | None,
+    shelters: gpd.GeoDataFrame | None,
+    wards: gpd.GeoDataFrame | None,
+    zones: gpd.GeoDataFrame | None,
+    catchment_400: gpd.GeoDataFrame | None,
+    catchment_800: gpd.GeoDataFrame | None,
+) -> dict[str, Any]:
+    hub_lm = build_hub_last_mile(hubs, stops, shelters)
+    shelter_mm = build_shelter_mismatch(wards, zones)
+    coverage = build_catchment_coverage(wards, catchment_400, catchment_800)
+    return {
+        "generated_at": utc_now(),
+        "note": (
+            "Advanced analyses derived only from verified spatial joins and buffers. "
+            "No census equity or ridership scores."
+        ),
+        "hub_last_mile": hub_lm,
+        "shelter_mismatch": shelter_mm,
+        "catchment_coverage": coverage,
+    }
+
+
 def build_metrics(
     wards: gpd.GeoDataFrame | None,
     stops: gpd.GeoDataFrame | None,
@@ -1068,6 +1496,21 @@ def main() -> int:
         f"[ok] reports.json ({len(reports.get('wards', []))} wards, {len(reports.get('zones', []))} zones)"
     )
 
+    analyses = build_advanced_analyses(
+        hubs=layers.get("hubs"),
+        stops=layers.get("stops"),
+        shelters=layers.get("shelters"),
+        wards=layers.get("wards"),
+        zones=layers.get("zones"),
+        catchment_400=layers.get("catchment_400m"),
+        catchment_800=layers.get("catchment_800m"),
+    )
+    (PROCESSED / "analyses.json").write_text(json.dumps(analyses, indent=2))
+    hub_n = len(analyses.get("hub_last_mile", {}).get("hubs", []))
+    mm_n = analyses.get("shelter_mismatch", {}).get("counts", {}).get("mismatch_wards", 0)
+    cov_n = analyses.get("catchment_coverage", {}).get("counts", {}).get("wards_scored", 0)
+    print(f"[ok] analyses.json (hubs={hub_n}, shelter_mismatch_wards={mm_n}, coverage_wards={cov_n})")
+
     metrics = build_metrics(
         layers["wards"], layers["stops"], layers["shelters"], layers["hubs"]
     )
@@ -1083,6 +1526,25 @@ def main() -> int:
     if reports.get("priority_zones") is not None:
         metrics["counts"]["priority_zones"] = len(reports["priority_zones"])
         metrics["counts"]["high_gap_zones"] = len(reports["priority_zones"])
+    # Advanced analysis rollups
+    hlm = analyses.get("hub_last_mile", {})
+    if hlm.get("status") == "loaded":
+        metrics["counts"]["weak_last_mile_hubs"] = hlm.get("counts", {}).get("weak_hubs", 0)
+    smm = analyses.get("shelter_mismatch", {})
+    if smm.get("status") == "loaded":
+        metrics["counts"]["shelter_mismatch_wards"] = smm.get("counts", {}).get(
+            "mismatch_wards", 0
+        )
+        metrics["counts"]["zero_shelter_with_stops_wards"] = smm.get("counts", {}).get(
+            "zero_shelter_wards", 0
+        )
+    cov = analyses.get("catchment_coverage", {})
+    if cov.get("status") == "loaded":
+        metrics["counts"]["high_catchment_gap_wards"] = cov.get("counts", {}).get(
+            "high_gap_wards", 0
+        )
+        if cov.get("city_mean_pct_outside_400m") is not None:
+            metrics["counts"]["city_mean_pct_outside_400m"] = cov["city_mean_pct_outside_400m"]
     (PROCESSED / "metrics.json").write_text(json.dumps(metrics, indent=2))
     (PROCESSED / "manifest.json").write_text(json.dumps(manifest, indent=2))
     print("[ok] metrics.json + manifest.json")

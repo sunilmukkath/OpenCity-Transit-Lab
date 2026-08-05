@@ -126,6 +126,7 @@ export function ExportBar({
                 Data manifest JSON
               </ExportButton>
               <ExportLink href="/data/reports.json">Ward / zone reports JSON</ExportLink>
+              <ExportLink href="/data/analyses.json">Advanced analyses JSON</ExportLink>
             </div>
           </div>
 

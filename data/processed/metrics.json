@@ -14,7 +14,12 @@
     "city_mean_gap_index": 38.9,
     "high_gap_wards": 25,
     "severe_gap_wards": 17,
-    "high_gap_zones": 1
+    "high_gap_zones": 1,
+    "weak_last_mile_hubs": 28,
+    "shelter_mismatch_wards": 124,
+    "zero_shelter_with_stops_wards": 46,
+    "high_catchment_gap_wards": 14,
+    "city_mean_pct_outside_400m": 21.3
   },
   "unavailable": [
     "equity_sec",

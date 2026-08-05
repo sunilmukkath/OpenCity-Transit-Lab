@@ -1,5 +1,11 @@
 import type { FeatureCollection, Geometry } from "geojson";
-import type { Manifest, ManifestLayer, Metrics, SpatialReports } from "@/lib/types";
+import type {
+  AdvancedAnalyses,
+  Manifest,
+  ManifestLayer,
+  Metrics,
+  SpatialReports,
+} from "@/lib/types";
 import { layerIsReady } from "@/lib/types";
 
 export async function fetchJson<T>(urlPath: string): Promise<T | null> {
@@ -24,6 +30,10 @@ export async function fetchReportsClient(): Promise<SpatialReports | null> {
   return fetchJson<SpatialReports>("/data/reports.json");
 }
 
+export async function fetchAnalysesClient(): Promise<AdvancedAnalyses | null> {
+  return fetchJson<AdvancedAnalyses>("/data/analyses.json");
+}
+
 export async function fetchGeoJSONClient(
   file: string
 ): Promise<FeatureCollection<Geometry> | null> {
@@ -31,4 +41,4 @@ export async function fetchGeoJSONClient(
 }
 
 export { layerIsReady };
-export type { Manifest, ManifestLayer, Metrics, SpatialReports };
+export type { Manifest, ManifestLayer, Metrics, SpatialReports, AdvancedAnalyses };

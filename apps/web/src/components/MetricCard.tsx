@@ -14,7 +14,7 @@ export function MetricCard({
   const unavailable = value === null || value === undefined || value === "";
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
+    <div className="et-card p-4">
       <div className="mb-2 flex items-start justify-between gap-2">
         <p className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-muted)]">
           {label}

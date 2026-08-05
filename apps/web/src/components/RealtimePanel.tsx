@@ -27,7 +27,7 @@ export function RealtimePanel() {
   }, []);
 
   return (
-    <section className="rounded-xl border border-dashed border-[var(--border)] bg-white/[0.03] p-5">
+    <section className="et-card border-dashed p-5">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--ink)]">
           Real-time connectors

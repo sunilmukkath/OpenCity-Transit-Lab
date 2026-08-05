@@ -8,7 +8,14 @@ export default async function SourcesPage() {
 
   return (
     <div className="space-y-8">
-      <header className="space-y-2">
+      <header className="relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[linear-gradient(145deg,rgba(16,52,102,0.9),rgba(10,31,74,0.96))] px-6 py-7 sm:px-8 space-y-2">
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(56,189,248,0.55),rgba(139,92,246,0.7),rgba(45,212,191,0.55),transparent)]"
+        />
+        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--yellow)]">
+          Catalog
+        </p>
         <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)]">
           Data Sources
         </h1>

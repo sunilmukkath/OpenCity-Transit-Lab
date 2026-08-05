@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "maplibre-gl/dist/maplibre-gl.css";
 
-/* Dark navy palette aligned with elastictree.com (no brand attribution in UI) */
+/* Dark navy spectrum palette (no third-party brand name in UI) */
 :root {
   color-scheme: dark;
   --void: #080d1a;
@@ -17,6 +17,8 @@
   --accent: #38bdf8;
   --accent-bright: #5eead4;
   --accent-soft: rgba(56, 189, 248, 0.14);
+  --violet: #8b5cf6;
+  --violet-soft: rgba(139, 92, 246, 0.16);
   --teal: #2dd4bf;
   --amber: #e8a820;
   --gold: #c9a84c;
@@ -32,6 +34,7 @@
   --map-wash: #0c1a38;
   --overlay: rgba(8, 13, 26, 0.72);
   --focus-ring: rgba(56, 189, 248, 0.45);
+  --glass: rgba(16, 52, 102, 0.72);
 }
 
 @theme inline {
@@ -52,9 +55,10 @@ body {
   min-height: 100%;
   background: var(--bg);
   background-image:
-    radial-gradient(80% 50% at 50% -10%, rgba(56, 189, 248, 0.12), transparent 55%),
-    radial-gradient(60% 40% at 100% 0%, rgba(45, 212, 191, 0.08), transparent 50%),
-    linear-gradient(180deg, var(--void) 0%, var(--bg) 40%, var(--bg-deep) 100%);
+    radial-gradient(70% 45% at 12% -8%, rgba(56, 189, 248, 0.16), transparent 55%),
+    radial-gradient(55% 40% at 92% 4%, rgba(139, 92, 246, 0.14), transparent 52%),
+    radial-gradient(50% 35% at 70% 100%, rgba(45, 212, 191, 0.1), transparent 55%),
+    linear-gradient(180deg, var(--void) 0%, var(--bg) 38%, var(--bg-deep) 100%);
   background-attachment: fixed;
   color: var(--ink);
   font-family: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
@@ -85,6 +89,172 @@ textarea {
 ::selection {
   background: rgba(56, 189, 248, 0.35);
   color: var(--ink);
+}
+
+/* Spectrum UI primitives */
+.et-glass {
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+}
+
+.et-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: linear-gradient(
+    165deg,
+    rgba(16, 52, 102, 0.95) 0%,
+    rgba(12, 45, 92, 0.92) 55%,
+    rgba(10, 31, 74, 0.98) 100%
+  );
+  box-shadow: 0 18px 40px rgba(8, 13, 26, 0.28);
+  transition:
+    border-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.et-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(56, 189, 248, 0.55),
+    rgba(139, 92, 246, 0.65),
+    rgba(45, 212, 191, 0.45),
+    transparent
+  );
+  opacity: 0.9;
+}
+
+.et-card:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 22px 48px rgba(8, 13, 26, 0.4);
+}
+
+.et-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #38bdf8 0%, #5eead4 100%);
+  color: var(--void);
+  padding: 0.65rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 650;
+  box-shadow: 0 10px 28px rgba(56, 189, 248, 0.25);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    filter 160ms ease;
+}
+
+.et-btn-primary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(56, 189, 248, 0.35);
+}
+
+.et-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-strong);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ink);
+  padding: 0.65rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 650;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.et-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(56, 189, 248, 0.4);
+  transform: translateY(-1px);
+}
+
+.et-stat {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: rgba(16, 52, 102, 0.65);
+  padding: 1.25rem 1.1rem;
+}
+
+.et-stat strong {
+  display: block;
+  font-family: var(--font-outfit), "Outfit", system-ui, sans-serif;
+  font-size: clamp(1.75rem, 3vw, 2.35rem);
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  color: var(--yellow);
+  line-height: 1.1;
+}
+
+.et-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.12);
+  padding: 0.3rem 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c4b5fd;
+}
+
+@keyframes et-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.et-marquee {
+  animation: et-marquee 38s linear infinite;
+}
+
+@keyframes et-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.et-fade-up {
+  animation: et-fade-up 560ms ease both;
+}
+
+.et-fade-up-delay-1 {
+  animation-delay: 80ms;
+}
+.et-fade-up-delay-2 {
+  animation-delay: 160ms;
+}
+.et-fade-up-delay-3 {
+  animation-delay: 240ms;
 }
 
 .maplibregl-map {
@@ -136,6 +306,17 @@ textarea {
 
 .maplibregl-ctrl button .maplibregl-ctrl-icon {
   filter: invert(1) brightness(1.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .et-marquee,
+  .et-fade-up,
+  .et-card,
+  .et-btn-primary,
+  .et-btn-ghost {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 @media print {

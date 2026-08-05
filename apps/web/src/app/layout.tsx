@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Outfit } from "next/font/google";
 import { SiteHeader } from "@/components/SiteHeader";
+import { SpectrumRule } from "@/components/BrandMotif";
 import "./globals.css";
 
 const display = Outfit({
@@ -33,10 +34,38 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`${display.variable} ${sans.variable} antialiased`}>
         <SiteHeader />
-        <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
-        <footer className="no-print border-t border-[var(--border)] py-6 text-center text-sm text-[var(--ink-muted)]">
-          OpenCity Transit Lab · Community and open government data · Not an official live
-          MTC/CMRL operational feed unless an agency connector is plugged in
+        <main className="mx-auto max-w-7xl px-4 py-8">{children}</main>
+        <footer className="no-print relative mt-4 border-t border-[var(--border)] bg-[rgba(8,13,26,0.55)]">
+          <SpectrumRule />
+          <div className="mx-auto grid max-w-7xl gap-6 px-4 py-10 sm:grid-cols-3">
+            <div>
+              <p className="font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--yellow)]">
+                OpenCity Transit Lab
+              </p>
+              <p className="mt-2 text-sm text-[var(--ink-muted)]">
+                We map. We measure. We recommend. Civic decision support from verified open
+                layers only.
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--ink-muted)]">
+                Integrity
+              </p>
+              <p className="mt-2 text-sm text-[var(--ink-muted)]">
+                No fabricated equity scores. Unavailable or Not connected when a dataset or
+                feed is missing.
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--ink-muted)]">
+                Scope
+              </p>
+              <p className="mt-2 text-sm text-[var(--ink-muted)]">
+                Not an official live MTC/CMRL operational feed unless an agency connector is
+                plugged in.
+              </p>
+            </div>
+          </div>
         </footer>
       </body>
     </html>

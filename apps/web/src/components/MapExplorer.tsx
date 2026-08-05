@@ -23,6 +23,8 @@ const MAP_HEIGHT = 680;
 
 const CORE_LAYERS: MapLayerKey[] = [
   "walk_distance_bands",
+  "omr_corridor",
+  "metro_area_boundaries",
   "connectivity_need",
   "mrts_lines",
   "mrts_stations",

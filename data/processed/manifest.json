@@ -279,7 +279,7 @@
       "status": "loaded",
       "file": "walk_distance_bands.geojson",
       "feature_count": 3,
-      "notes": "Walk-distance bands from GTFS stops: <500m, 500\u20131000m, >1km (red). Crow-flies buffers clipped to GCC wards \u2014 not population-weighted.",
+      "notes": "Crow-flies from existing GTFS stops + MRTS/metro hubs. Study = GCC wards + OMR corridor buffer + Tambaram/Chengalpattu/Mahabalipuram. Proposed metro stations not included (no verified open station points). Not street-network walk; not population-weighted.",
       "attributes": [
         "band",
         "label",
@@ -326,6 +326,15 @@
       "status": "unavailable",
       "reason": "Requires a validated population surface joined to wards. Geometry catchments are available without population weights.",
       "needed": "Ward-level population table with acceptable join rate to GCC 2022 wards."
+    },
+    {
+      "id": "proposed_metro_stations",
+      "name": "CMRL proposed / Phase-II metro stations",
+      "status": "unavailable",
+      "reason": "OpenCity hosts Phase-II EIA PDFs, not machine-readable station points. Walk-distance access currently uses existing GTFS stops + MRTS/metro-named hubs only.",
+      "needed": "Verified GeoJSON/KML of proposed CMRL station locations (with corridor/phase tags)."
     }
-  ]
+  ],
+  "unavailable": [],
+  "gaps": []
 }

@@ -1,0 +1,142 @@
+"use client";
+
+import type { ChoroplethMode, MapLayerKey } from "@/lib/map-layers";
+
+type Swatch =
+  | { kind: "fill"; color: string; label: string }
+  | { kind: "line"; color: string; label: string; dashed?: boolean }
+  | { kind: "dot"; color: string; label: string };
+
+function SwatchRow({ item }: { item: Swatch }) {
+  return (
+    <li className="flex items-center gap-2 text-[10px] leading-tight text-slate-700">
+      {item.kind === "fill" ? (
+        <span
+          className="h-3 w-3 shrink-0 rounded-sm border border-slate-400/60"
+          style={{ background: item.color }}
+        />
+      ) : item.kind === "line" ? (
+        <span
+          className="h-0 w-4 shrink-0 border-t-2"
+          style={{
+            borderColor: item.color,
+            borderStyle: item.dashed ? "dashed" : "solid",
+          }}
+        />
+      ) : (
+        <span
+          className="h-2.5 w-2.5 shrink-0 rounded-full border border-white shadow-sm"
+          style={{ background: item.color }}
+        />
+      )}
+      <span>{item.label}</span>
+    </li>
+  );
+}
+
+export function MapLegend({
+  visibility,
+  choropleth,
+}: {
+  visibility: Record<string, boolean>;
+  choropleth: ChoroplethMode;
+}) {
+  const sections: { title: string; items: Swatch[] }[] = [];
+
+  if (visibility.walk_distance_bands) {
+    sections.push({
+      title: "Walk to stop / hub",
+      items: [
+        { kind: "fill", color: "#86efac", label: "Within 500m" },
+        { kind: "fill", color: "#fde047", label: "500m – 1km" },
+        { kind: "fill", color: "#dc2626", label: "Over 1km (priority)" },
+      ],
+    });
+  }
+
+  if (visibility.wards) {
+    if (choropleth === "sec") {
+      sections.push({
+        title: "Ward SEC proxy",
+        items: [
+          { kind: "fill", color: "#38bdf8", label: "Higher amenity" },
+          { kind: "fill", color: "#eab308", label: "Middle" },
+          { kind: "fill", color: "#e11d48", label: "Lower amenity" },
+          { kind: "fill", color: "#94a3b8", label: "Unavailable" },
+        ],
+      });
+    } else if (choropleth === "gap") {
+      sections.push({
+        title: "Ward Gap Index",
+        items: [
+          { kind: "fill", color: "#14b8a6", label: "Lower gap" },
+          { kind: "fill", color: "#eab308", label: "Moderate" },
+          { kind: "fill", color: "#e11d48", label: "Higher gap" },
+        ],
+      });
+    } else {
+      sections.push({
+        title: "Ward stop count",
+        items: [
+          { kind: "fill", color: "#bfdbfe", label: "Fewer stops" },
+          { kind: "fill", color: "#0369a1", label: "More stops" },
+        ],
+      });
+    }
+  }
+
+  if (visibility.connectivity_need) {
+    sections.push({
+      title: "Need lines",
+      items: [
+        { kind: "line", color: "#e11d48", label: "Urgent", dashed: true },
+        { kind: "line", color: "#f97316", label: "Priority", dashed: true },
+        { kind: "line", color: "#ca8a04", label: "Watch", dashed: true },
+      ],
+    });
+  }
+
+  const points: Swatch[] = [];
+  if (visibility.stops) points.push({ kind: "dot", color: "#0369a1", label: "GTFS stops" });
+  if (visibility.mrts_stations) points.push({ kind: "dot", color: "#ea580c", label: "MRTS stations" });
+  if (visibility.hubs) points.push({ kind: "dot", color: "#ca8a04", label: "Rail / metro hubs" });
+  if (visibility.mrts_lines) points.push({ kind: "line", color: "#ea580c", label: "MRTS lines" });
+  if (visibility.omr_corridor) points.push({ kind: "line", color: "#7c3aed", label: "OMR → Mahabs" });
+  if (visibility.metro_area_boundaries) {
+    points.push({ kind: "fill", color: "rgba(219,39,119,0.35)", label: "South town areas" });
+  }
+  if (points.length) {
+    sections.push({ title: "Network", items: points });
+  }
+
+  if (!sections.length) return null;
+
+  return (
+    <div className="pointer-events-none absolute bottom-3 left-3 z-20 max-w-[220px] rounded-md border border-slate-300 bg-white/95 px-2.5 py-2 shadow-sm">
+      <p className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+        Legend
+      </p>
+      <div className="space-y-2">
+        {sections.map((section) => (
+          <div key={section.title}>
+            <p className="mb-0.5 text-[9px] font-semibold text-slate-800">{section.title}</p>
+            <ul className="space-y-0.5">
+              {section.items.map((item) => (
+                <SwatchRow key={`${section.title}-${item.label}`} item={item} />
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      {visibility.walk_distance_bands ? (
+        <p className="mt-2 border-t border-slate-200 pt-1.5 text-[9px] leading-snug text-slate-500">
+          Crow-flies to existing stops/hubs. Includes OMR south of GCC. Proposed metro
+          stations not in data.
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+/** Keep MapLayerKey referenced for callers that pass visibility records. */
+export type MapLegendVisibility = Partial<Record<MapLayerKey, boolean>>;

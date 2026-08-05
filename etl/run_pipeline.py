@@ -1431,10 +1431,20 @@ def main() -> int:
             print(f"[fail] catchments: {exc}", file=sys.stderr)
 
     # Walk-distance bands: <500m, 500–1000m, >1km (red)
+    # Study extends south along OMR / Tambaram / Chengalpattu / Mahabalipuram.
+    # Access = GTFS stops + existing MRTS/metro hubs (proposed metro Unavailable).
     walk_analysis: dict[str, Any] | None = None
     if layers.get("stops") is not None and layers.get("wards") is not None:
         try:
-            walk = build_walk_distance_bands(layers["stops"], layers["wards"])
+            walk = build_walk_distance_bands(
+                layers["stops"],
+                layers["wards"],
+                hubs=layers.get("hubs"),
+                mrts=layers.get("mrts_stations"),
+                omr=layers.get("omr_corridor"),
+                metro_areas=layers.get("metro_area_boundaries"),
+                corridor_aois=layers.get("corridor_aois"),
+            )
             walk_analysis = walk.get("analysis")
             for key, meta in walk.get("layers", {}).items():
                 manifest["layers"][key] = meta

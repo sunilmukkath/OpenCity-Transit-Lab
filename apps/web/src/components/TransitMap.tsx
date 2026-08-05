@@ -16,6 +16,7 @@ import {
   type LayerData,
   type MapLayerKey,
 } from "@/lib/map-layers";
+import { MapLegend } from "@/components/MapLegend";
 import {
   RASTER_BASEMAP,
   VECTOR_BASEMAPS,
@@ -186,6 +187,28 @@ const LAYER_STACK: {
   sourceId: string;
   layers: { id: string; type: "fill" | "line" | "circle"; paint: Record<string, unknown> }[];
 }[] = [
+  {
+    key: "metro_area_boundaries",
+    sourceId: "tm-metro-boundaries",
+    layers: [
+      { id: "tm-metro-boundaries-fill", type: "fill", paint: { "fill-color": "#db2777", "fill-opacity": 0.1 } },
+      { id: "tm-metro-boundaries-line", type: "line", paint: { "line-color": "#be185d", "line-width": 2 } },
+    ],
+  },
+  {
+    key: "omr_corridor",
+    sourceId: "tm-omr",
+    layers: [
+      {
+        id: "tm-omr-line",
+        type: "line",
+        paint: {
+          "line-color": "#7c3aed",
+          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 3, 14, 6],
+        },
+      },
+    ],
+  },
   {
     key: "connectivity_need",
     sourceId: "tm-connectivity-need",
@@ -733,23 +756,7 @@ export function TransitMap({
 
       <div ref={containerRef} className="absolute inset-0 h-full w-full" />
 
-      <div className="pointer-events-none absolute bottom-3 left-3 z-20 max-w-[260px] rounded-md border border-slate-300 bg-white/90 px-2.5 py-2 text-[10px] text-slate-700 shadow-sm">
-        {visibility.walk_distance_bands ? (
-          <span>
-            <strong style={{ color: "#dc2626" }}>Red = over 1km</strong> to nearest GTFS stop ·
-            light green &lt;500m · yellow 500m–1km (crow-flies).
-          </span>
-        ) : choropleth === "sec" ? (
-          <span>
-            Ward colour = SEC proxy (blue higher amenity → red lower). Not income. Grey =
-            unavailable.
-          </span>
-        ) : choropleth === "gap" ? (
-          <span>Ward colour = Gap Index (teal → red). Dashed lines = connectivity need.</span>
-        ) : (
-          <span>Ward colour = GTFS stop count. Toggle Walk km for distance bands.</span>
-        )}
-      </div>
+      <MapLegend visibility={visibility} choropleth={choropleth} />
     </div>
   );
 }

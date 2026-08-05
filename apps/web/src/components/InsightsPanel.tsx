@@ -726,7 +726,7 @@ export function InsightsPanel() {
         <section className="space-y-4">
           <div className="et-card border-[rgba(239,68,68,0.35)] p-4 text-sm text-[var(--ink-muted)]">
             {data.walk_distance_bands?.note ??
-              "Crow-flies distance to nearest GTFS stop inside GCC wards. Red = over 1km."}
+              "Crow-flies to existing stops/hubs. Study includes GCC + OMR south (Kelambakkam → Mahabs). Red = over 1km. Proposed metro Unavailable."}
           </div>
           {!data.walk_distance_bands || data.walk_distance_bands.status !== "loaded" ? (
             <div className="et-card p-5 text-sm text-[var(--ink-muted)]">

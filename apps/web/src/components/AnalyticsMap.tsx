@@ -13,6 +13,8 @@ import type { LayerData, MapLayerKey } from "@/lib/map-layers";
 const MAP_HEIGHT = 560;
 const CORE: MapLayerKey[] = [
   "walk_distance_bands",
+  "omr_corridor",
+  "metro_area_boundaries",
   "connectivity_need",
   "mrts_lines",
   "mrts_stations",

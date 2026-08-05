@@ -46,6 +46,8 @@ const LAYER_CATEGORY: Record<string, CategoryFilter> = {
   hubs: "rail",
   connectivity_need: "gap",
   walk_distance_bands: "catchment",
+  omr_corridor: "transit",
+  metro_area_boundaries: "admin",
 };
 
 const DEFAULT_MAP_LAYERS: Record<string, boolean> = {
@@ -56,6 +58,8 @@ const DEFAULT_MAP_LAYERS: Record<string, boolean> = {
   hubs: true,
   connectivity_need: false,
   walk_distance_bands: true,
+  omr_corridor: true,
+  metro_area_boundaries: true,
 };
 
 const SOURCE_CATEGORY: Record<string, CategoryFilter> = {

@@ -25,6 +25,7 @@ const LIGHT_LAYERS: MapLayerKey[] = [
   "metro_area_boundaries",
   "omr_corridor",
   "connectivity_need",
+  "slums",
   "mrts_lines",
   "mrts_stations",
   "hubs",
@@ -217,6 +218,8 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
               [
                 ["stops", "Stops"],
                 ["gap", "Gap"],
+                ["sec", "SEC"],
+                ["slum", "Slum %"],
               ] as const
             ).map(([mode, label]) => (
               <button
@@ -276,9 +279,13 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
         <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] text-[var(--ink-muted)]">
           <span>
             {loadedCount} layers ready
-            {choropleth === "gap"
-              ? " · Gap colour is inventory-based, not census equity"
-              : " · Stop colour uses GTFS × ward joins"}
+            {choropleth === "sec"
+              ? " · SEC colour is Census 2011 amenity + slum share — not income"
+              : choropleth === "slum"
+                ? " · Slum % is mapped polygon area share (OpenCity)"
+                : choropleth === "gap"
+                  ? " · Gap colour is inventory-based, not census equity"
+                  : " · Stop colour uses GTFS × ward joins"}
             {loadingCore || loadingHeavy ? " · Loading…" : null}
           </span>
           {manifest ? (

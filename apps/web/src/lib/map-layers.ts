@@ -13,7 +13,8 @@ export type MapLayerKey =
   | "omr_corridor"
   | "metro_area_boundaries"
   | "corridor_aois"
-  | "connectivity_need";
+  | "connectivity_need"
+  | "slums";
 
 export const MAP_LAYER_META: {
   key: MapLayerKey;
@@ -29,7 +30,7 @@ export const MAP_LAYER_META: {
     key: "metro_area_boundaries",
     label: "Tambaram / Chengalpattu / Mahabalipuram",
     short: "South towns",
-    defaultOn: true,
+    defaultOn: false,
   },
   { key: "corridor_aois", label: "South corridor AOIs", short: "AOIs", defaultOn: false },
   { key: "omr_corridor", label: "OMR → Mahabalipuram", short: "OMR", defaultOn: true },
@@ -39,6 +40,7 @@ export const MAP_LAYER_META: {
     short: "Need lines",
     defaultOn: true,
   },
+  { key: "slums", label: "Slum boundaries (OpenCity)", short: "Slums", defaultOn: false },
   { key: "stops", label: "Transit stops (GTFS)", short: "Stops", defaultOn: true },
   { key: "shelters", label: "Bus shelters", short: "Shelters", defaultOn: false },
   { key: "mrts_lines", label: "MRTS lines", short: "MRTS", defaultOn: true },
@@ -54,7 +56,7 @@ export const CHENNAI_VIEW = {
   zoom: 9.6,
 };
 
-export type ChoroplethMode = "stops" | "gap";
+export type ChoroplethMode = "stops" | "gap" | "sec" | "slum";
 
 export type LayerData = Partial<Record<MapLayerKey, FeatureCollection<Geometry>>>;
 
@@ -91,6 +93,7 @@ export const LAYER_PRESETS: Record<
       metro_area_boundaries: true,
       corridor_aois: false,
       connectivity_need: false,
+      slums: false,
     },
   },
   gaps: {
@@ -111,6 +114,7 @@ export const LAYER_PRESETS: Record<
       metro_area_boundaries: true,
       corridor_aois: false,
       connectivity_need: true,
+      slums: false,
     },
   },
   hubs: {
@@ -131,6 +135,7 @@ export const LAYER_PRESETS: Record<
       metro_area_boundaries: true,
       corridor_aois: false,
       connectivity_need: true,
+      slums: false,
     },
   },
   walk: {
@@ -151,6 +156,7 @@ export const LAYER_PRESETS: Record<
       metro_area_boundaries: false,
       corridor_aois: false,
       connectivity_need: false,
+      slums: false,
     },
   },
   south: {
@@ -171,6 +177,7 @@ export const LAYER_PRESETS: Record<
       metro_area_boundaries: true,
       corridor_aois: true,
       connectivity_need: true,
+      slums: false,
     },
   },
   connect: {
@@ -191,6 +198,28 @@ export const LAYER_PRESETS: Record<
       metro_area_boundaries: false,
       corridor_aois: false,
       connectivity_need: true,
+      slums: false,
+    },
+  },
+  sec: {
+    label: "SEC / Slum",
+    blurb: "Amenity proxy + slum share",
+    choropleth: "sec",
+    layers: {
+      wards: true,
+      zones: false,
+      stops: false,
+      shelters: false,
+      mrts_lines: false,
+      mrts_stations: false,
+      hubs: true,
+      catchment_400m: false,
+      catchment_800m: false,
+      omr_corridor: false,
+      metro_area_boundaries: false,
+      corridor_aois: false,
+      connectivity_need: false,
+      slums: true,
     },
   },
 };

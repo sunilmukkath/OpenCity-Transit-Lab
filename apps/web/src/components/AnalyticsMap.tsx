@@ -16,6 +16,7 @@ const LIGHT: MapLayerKey[] = [
   "metro_area_boundaries",
   "omr_corridor",
   "connectivity_need",
+  "slums",
   "mrts_lines",
   "mrts_stations",
   "hubs",

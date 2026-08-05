@@ -12,7 +12,7 @@ import { MetricCard } from "@/components/MetricCard";
 import { StatusBadge } from "@/components/StatusBadge";
 import { SectionEyebrow } from "@/components/BrandMotif";
 
-type InsightView = "hubs" | "shelters" | "coverage" | "corridors" | "needlines";
+type InsightView = "hubs" | "shelters" | "coverage" | "corridors" | "needlines" | "sec";
 
 function fmt(n: number | null | undefined, digits = 0): string {
   if (n === null || n === undefined || Number.isNaN(n)) return "—";
@@ -162,6 +162,7 @@ export function InsightsPanel() {
               ["coverage", "Catchment coverage"],
               ["corridors", "OMR / South"],
               ["needlines", "Need lines"],
+              ["sec", "SEC / Slum"],
             ] as const
           ).map(([id, label]) => (
             <button
@@ -632,6 +633,83 @@ export function InsightsPanel() {
             className="inline-flex text-sm font-semibold text-[var(--accent)]"
           >
             Open map with Need lines preset →
+          </a>
+        </section>
+      ) : null}
+
+      {view === "sec" ? (
+        <section className="space-y-4">
+          <div className="et-card border-[rgba(251,113,133,0.35)] p-4 text-sm text-[var(--ink-muted)]">
+            {data.sec_proxy?.note ??
+              "Census 2011 amenity/asset proxy + OpenCity slum area share. Not household income."}
+          </div>
+          {!data.sec_proxy?.wards?.length ? (
+            <div className="et-card p-5 text-sm text-[var(--ink-muted)]">
+              SEC / slum proxy unavailable. Place Census HH-14 + slum KML under{" "}
+              <code>data/raw/census_sec/</code> and run{" "}
+              <code>etl/build_sec_proxy.py</code>.
+            </div>
+          ) : (
+            <>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <MetricCard
+                  label="Lower proxy wards"
+                  value={data.sec_proxy.counts?.lower_proxy}
+                  subtext="Lower amenity and/or high slum share"
+                />
+                <MetricCard
+                  label="Amenity joined"
+                  value={data.sec_proxy.counts?.wards_amenity_joined}
+                  subtext="HH-14 wards 1–155 by number"
+                />
+                <MetricCard
+                  label="Wards with slums"
+                  value={data.sec_proxy.counts?.wards_with_slum}
+                  subtext="Intersect OpenCity slum polygons"
+                />
+                <MetricCard
+                  label="Amenity unavailable"
+                  value={data.sec_proxy.counts?.wards_amenity_unavailable}
+                  subtext="Mostly wards 156–200"
+                />
+              </div>
+              <div className="overflow-hidden rounded-xl border border-[var(--border)]">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-white/[0.04] text-[10px] uppercase tracking-wide text-[var(--ink-muted)]">
+                    <tr>
+                      <th className="px-3 py-2">Ward</th>
+                      <th className="px-3 py-2">SEC proxy</th>
+                      <th className="px-3 py-2">Slum %</th>
+                      <th className="px-3 py-2">Deprivation</th>
+                      <th className="px-3 py-2">Banking %</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(data.sec_proxy.priority_lower_proxy ?? data.sec_proxy.wards.filter((w) => w.sec_proxy_band === "lower_proxy"))
+                      .slice(0, 25)
+                      .map((w) => (
+                        <tr key={w.label} className="border-t border-[var(--border)]">
+                          <td className="px-3 py-2 font-medium text-[var(--ink)]">{w.label}</td>
+                          <td className="px-3 py-2">
+                            <BandChip label={w.sec_proxy_band ?? "—"} tone="weak" />
+                          </td>
+                          <td className="px-3 py-2 text-[var(--yellow)]">
+                            {fmt(w.pct_slum_area, 1)}%
+                          </td>
+                          <td className="px-3 py-2">{fmt(w.amenity_deprivation, 0)}</td>
+                          <td className="px-3 py-2">{fmt(w.banking_pct, 0)}</td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+          <a
+            href="/map"
+            className="inline-flex text-sm font-semibold text-[var(--accent)]"
+          >
+            Open map with SEC / Slum preset →
           </a>
         </section>
       ) : null}

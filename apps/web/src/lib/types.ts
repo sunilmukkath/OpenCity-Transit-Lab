@@ -217,6 +217,35 @@ export interface AdvancedAnalyses {
     }[];
     counts?: Record<string, number>;
   };
+  sec_proxy?: {
+    status: string;
+    note?: string;
+    reason?: string;
+    method?: Record<string, unknown>;
+    wards: {
+      label: string;
+      pct_slum_area: number;
+      has_slum: boolean;
+      slum_band?: string | null;
+      amenity_deprivation: number | null;
+      amenity_band?: string | null;
+      amenity_join?: string;
+      sec_proxy_band?: string | null;
+      banking_pct?: number | null;
+      car_pct?: number | null;
+      scooter_pct?: number | null;
+      sc_pct_2011?: number | null;
+    }[];
+    priority_lower_proxy?: {
+      label: string;
+      pct_slum_area: number;
+      amenity_deprivation: number | null;
+      sec_proxy_band?: string | null;
+      banking_pct?: number | null;
+      car_pct?: number | null;
+    }[];
+    counts?: Record<string, number>;
+  };
 }
 
 export type AudienceId = "local" | "traffic" | "public";

@@ -27,6 +27,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_metro_extension import build_metro_extension  # noqa: E402
 from build_connectivity_need import build_connectivity_need  # noqa: E402
+from build_sec_proxy import build_sec_proxy  # noqa: E402
 
 RAW = ROOT / "data" / "raw"
 PROCESSED = ROOT / "data" / "processed"
@@ -118,10 +119,16 @@ REALTIME_SLOTS = [
 UNAVAILABLE_ANALYTICS = [
     {
         "id": "equity_sec",
-        "name": "Equity / SEC gap scores",
-        "status": "unavailable",
-        "reason": "Census→2022 ward joins not validated in this pipeline. No invented equity scores are shown.",
-        "needed": "Validated Census 2011 (or newer) attributes joined to GCC 2022 ward geometries.",
+        "name": "SEC / slum amenity proxy (not income)",
+        "status": "partial",
+        "reason": (
+            "Census 2011 HH-14 amenities join by ward number (1–155) plus OpenCity slum "
+            "polygon area share on 2022 wards. Not household income; amenity join is indicative "
+            "after ward expansion."
+        ),
+        "needed": (
+            "Official ward-level income/SEC or a validated crosswalk from 2011→2022 ward geometries."
+        ),
     },
     {
         "id": "pop_weighted_access",
@@ -1561,6 +1568,59 @@ def main() -> int:
             "status": "unavailable",
             "reason": str(exc),
             "corridors": [],
+        }
+
+    # SEC / slum amenity proxy (Census HH-14 + OpenCity slum polygons)
+    try:
+        sec_raw = RAW / "census_sec"
+        housing = sec_raw / "housing_houselisting_2011.xlsx"
+        census_csv = sec_raw / "census_ward_2011.csv"
+        slum_kml = sec_raw / "slum_boundaries.kml"
+        if housing.exists() and census_csv.exists() and slum_kml.exists() and layers.get("wards") is not None:
+            # Reload wards from disk if already written
+            wards_for_sec = layers["wards"]
+            if (PROCESSED / "wards.geojson").exists():
+                wards_for_sec = gpd.read_file(PROCESSED / "wards.geojson")
+            sec = build_sec_proxy(
+                wards_for_sec,
+                housing_xlsx=housing,
+                census_csv=census_csv,
+                slum_kml=slum_kml,
+            )
+            analyses["sec_proxy"] = sec.get("analysis") or {}
+            for key, meta in sec.get("layers", {}).items():
+                if key == "slums":
+                    manifest["layers"]["slums"] = meta
+                elif key == "wards" and "wards" in manifest["layers"]:
+                    manifest["layers"]["wards"]["notes"] = meta.get("notes")
+                    attrs = list(
+                        dict.fromkeys(
+                            (manifest["layers"]["wards"].get("attributes") or [])
+                            + (meta.get("attributes") or [])
+                        )
+                    )
+                    manifest["layers"]["wards"]["attributes"] = attrs
+            # Refresh wards layer in memory
+            if (PROCESSED / "wards.geojson").exists():
+                layers["wards"] = gpd.read_file(PROCESSED / "wards.geojson")
+            print(
+                f"[ok] sec/slum proxy "
+                f"(amenity_joined={analyses['sec_proxy'].get('counts', {}).get('wards_amenity_joined')}, "
+                f"slum_wards={analyses['sec_proxy'].get('counts', {}).get('wards_with_slum')})"
+            )
+        else:
+            analyses["sec_proxy"] = {
+                "status": "unavailable",
+                "reason": "Census/slum source files missing under data/raw/census_sec/",
+                "wards": [],
+            }
+            print("[warn] sec proxy skipped — raw census_sec files missing", file=sys.stderr)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[fail] sec proxy: {exc}", file=sys.stderr)
+        analyses["sec_proxy"] = {
+            "status": "unavailable",
+            "reason": str(exc),
+            "wards": [],
         }
 
     (PROCESSED / "analyses.json").write_text(json.dumps(analyses, indent=2))

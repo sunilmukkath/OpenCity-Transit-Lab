@@ -111,8 +111,15 @@
         "stop_count",
         "shelter_count",
         "hub_count",
-        "area_km2"
-      ]
+        "area_km2",
+        "pct_slum_area",
+        "slum_band",
+        "amenity_deprivation",
+        "amenity_band",
+        "sec_proxy_band",
+        "amenity_join"
+      ],
+      "notes": "Enriched with slum area share + Census 2011 HH-14 amenity proxy (155/200 wards joined by number)."
     },
     "zones": {
       "status": "loaded",
@@ -260,6 +267,13 @@
         "rank",
         "source_kind"
       ]
+    },
+    "slums": {
+      "status": "loaded",
+      "file": "slums.geojson",
+      "feature_count": 887,
+      "notes": "OpenCity Chennai Slum Boundaries Map (KML). Presence polygons \u2014 not income.",
+      "derived_from": "opencity_chennai_slums"
     }
   },
   "realtime": [
@@ -288,9 +302,9 @@
   "unavailable_analytics": [
     {
       "id": "equity_sec",
-      "name": "Equity / SEC gap scores",
-      "status": "unavailable",
-      "reason": "Census\u21922022 ward joins not validated in this pipeline. No invented equity scores are shown.",
+      "name": "SEC / slum amenity proxy (not income)",
+      "status": "partial",
+      "reason": "SEC proxy combines Census 2011 houselisting amenity/asset percentages (wards 1\u2013155 by number) with OpenCity slum polygon area share on 2022 wards. This is NOT household income or official poverty status. Ward renumbering/expansion means amenity joins are indicative \u2014 155 of 200 wards received HH-14 attributes; 153 wards intersect mapped slum polygons.",
       "needed": "Validated Census 2011 (or newer) attributes joined to GCC 2022 ward geometries."
     },
     {

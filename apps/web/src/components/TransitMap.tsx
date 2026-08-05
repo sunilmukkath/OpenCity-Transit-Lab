@@ -65,6 +65,13 @@ function formatPopupProps(props: Record<string, unknown>): string {
   const prefer = [
     "gap_index",
     "gap_band",
+    "sec_proxy_band",
+    "amenity_band",
+    "amenity_deprivation",
+    "pct_slum_area",
+    "slum_band",
+    "banking_pct",
+    "car_pct",
     "need_band",
     "need_score",
     "unmet_length_m",
@@ -119,8 +126,37 @@ function setGeoJsonSource(
 function wardFillExpression(
   choropleth: ChoroplethMode,
   stopExtent: { min: number; max: number } | null,
-  gapExtent: { min: number; max: number } | null
+  gapExtent: { min: number; max: number } | null,
+  slumExtent: { min: number; max: number } | null
 ): ExpressionSpecification | string {
+  if (choropleth === "sec") {
+    return [
+      "match",
+      ["to-string", ["get", "sec_proxy_band"]],
+      "higher_proxy",
+      "#38bdf8",
+      "middle_proxy",
+      "#eab308",
+      "lower_proxy",
+      "#e11d48",
+      "#94a3b8",
+    ];
+  }
+  if (choropleth === "slum" && slumExtent) {
+    return [
+      "interpolate",
+      ["linear"],
+      ["coalesce", ["to-number", ["get", "pct_slum_area"]], 0],
+      0,
+      "#f8fafc",
+      Math.max(slumExtent.max * 0.25, 1),
+      "#fdba74",
+      Math.max(slumExtent.max * 0.55, 2),
+      "#ea580c",
+      Math.max(slumExtent.max, 5),
+      "#9f1239",
+    ];
+  }
   if (choropleth === "gap" && gapExtent) {
     const [a, b, c, d] = ascendingStops([
       gapExtent.min,
@@ -213,6 +249,22 @@ const LAYER_STACK: {
           "line-opacity": 0.92,
           "line-dasharray": [2, 1.2],
         },
+      },
+    ],
+  },
+  {
+    key: "slums",
+    sourceId: "tm-slums",
+    layers: [
+      {
+        id: "tm-slums-fill",
+        type: "fill",
+        paint: { "fill-color": "#be123c", "fill-opacity": 0.35 },
+      },
+      {
+        id: "tm-slums-line",
+        type: "line",
+        paint: { "line-color": "#9f1239", "line-width": 0.8, "line-opacity": 0.85 },
       },
     ],
   },
@@ -362,12 +414,14 @@ export function TransitMap({
 
   const stopExtent = useMemo(() => extentOf(data.wards, "stop_count"), [data.wards]);
   const gapExtent = useMemo(() => extentOf(data.wards, "gap_index"), [data.wards]);
+  const slumExtent = useMemo(() => extentOf(data.wards, "pct_slum_area"), [data.wards]);
 
   const dataRef = useRef(data);
   const visibilityRef = useRef(visibility);
   const choroplethRef = useRef(choropleth);
   const stopExtentRef = useRef(stopExtent);
   const gapExtentRef = useRef(gapExtent);
+  const slumExtentRef = useRef(slumExtent);
   const interactiveRef = useRef(interactive);
 
   dataRef.current = data;
@@ -375,6 +429,7 @@ export function TransitMap({
   choroplethRef.current = choropleth;
   stopExtentRef.current = stopExtent;
   gapExtentRef.current = gapExtent;
+  slumExtentRef.current = slumExtent;
   interactiveRef.current = interactive;
 
   const syncLayers = useCallback((map: MapLibreMap) => {
@@ -385,7 +440,8 @@ export function TransitMap({
     const fill = wardFillExpression(
       choroplethRef.current,
       stopExtentRef.current,
-      gapExtentRef.current
+      gapExtentRef.current,
+      slumExtentRef.current
     );
 
     for (const entry of LAYER_STACK) {
@@ -713,10 +769,17 @@ export function TransitMap({
       <div ref={containerRef} className="absolute inset-0 h-full w-full" />
 
       <div className="pointer-events-none absolute bottom-3 left-3 z-20 max-w-[260px] rounded-md border border-slate-300 bg-white/90 px-2.5 py-2 text-[10px] text-slate-700 shadow-sm">
-        {choropleth === "gap" ? (
-          <span>Ward colour = Gap Index (teal → red). Dashed lines = roads needing better connectivity.</span>
+        {choropleth === "sec" ? (
+          <span>
+            Ward colour = SEC proxy (blue higher amenity → red lower). Not income. Grey =
+            unavailable.
+          </span>
+        ) : choropleth === "slum" ? (
+          <span>Ward colour = % area in mapped slum polygons (OpenCity). Not poverty income.</span>
+        ) : choropleth === "gap" ? (
+          <span>Ward colour = Gap Index (teal → red). Dashed lines = connectivity need.</span>
         ) : (
-          <span>Ward colour = GTFS stop count. Dashed lines = roads outside 400m stop catchments.</span>
+          <span>Ward colour = GTFS stop count. Dashed lines = roads outside 400m catchments.</span>
         )}
       </div>
     </div>

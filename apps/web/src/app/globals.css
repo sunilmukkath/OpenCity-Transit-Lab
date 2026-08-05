@@ -132,6 +132,17 @@ textarea {
     background: white;
     color: #15202b;
   }
+
+  nav,
+  header,
+  aside,
+  .site-header {
+    display: none !important;
+  }
+
+  #spatial-report-print {
+    box-shadow: none !important;
+  }
 }
 
 .print-only {

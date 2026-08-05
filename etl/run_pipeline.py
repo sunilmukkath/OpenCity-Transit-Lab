@@ -285,6 +285,415 @@ def simplify_ward_attrs(wards: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     return out[keep]
 
 
+def clean_label(value: Any) -> str:
+    if value is None:
+        return ""
+    try:
+        import math
+
+        if isinstance(value, float) and math.isnan(value):
+            return ""
+    except Exception:
+        pass
+    text = " ".join(str(value).split()).strip()
+    if text.lower() in {"", "nan", "none", "null", "undefined"}:
+        return ""
+    return text
+
+
+def add_area_km2(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    out = gdf.copy()
+    projected = project_m(out)
+    out["area_km2"] = (projected.geometry.area / 1_000_000).round(3)
+    return out
+
+
+def build_recommendations(
+    *,
+    unit_type: str,
+    label: str,
+    stop_count: int | None,
+    shelter_count: int | None,
+    hub_count: int | None = None,
+    area_km2: float | None = None,
+    city_mean_stops: float | None = None,
+) -> list[dict[str, str]]:
+    """Rule-based prompts from verified inventory only — not equity scores."""
+    recs: list[dict[str, str]] = []
+    stops = stop_count if stop_count is not None else None
+    shelters = shelter_count if shelter_count is not None else None
+    hubs = hub_count if hub_count is not None else None
+
+    density = None
+    if stops is not None and area_km2 and area_km2 > 0:
+        density = round(stops / area_km2, 2)
+
+    if stops == 0:
+        recs.append(
+            {
+                "priority": "critical",
+                "title": "No GTFS stops inside boundary",
+                "detail": (
+                    f"{unit_type.title()} {label} contains zero community-GTFS stops. "
+                    "Field-verify against MTC stop lists before concluding service absence; "
+                    "if confirmed, prioritize feeder links to the nearest metro/MRTS hub."
+                ),
+            }
+        )
+    elif stops is not None and stops < 5:
+        recs.append(
+            {
+                "priority": "high",
+                "title": "Very low stop inventory",
+                "detail": (
+                    f"Only {stops} GTFS stops fall inside this {unit_type}. "
+                    "Review stop spacing and short feeder routes to nearby hubs "
+                    "(Helsinki-style last-mile access to trunk stations)."
+                ),
+            }
+        )
+    elif (
+        stops is not None
+        and city_mean_stops is not None
+        and stops < city_mean_stops * 0.5
+    ):
+        recs.append(
+            {
+                "priority": "medium",
+                "title": "Below city average stop count",
+                "detail": (
+                    f"{stops} stops vs city mean ~{city_mean_stops:.1f}. "
+                    "Compare with neighbouring wards/zones and check whether catchments "
+                    "leave residential pockets beyond 400–800m walk."
+                ),
+            }
+        )
+
+    if shelters == 0 and stops is not None and stops > 0:
+        recs.append(
+            {
+                "priority": "high",
+                "title": "Shelter gap relative to stops",
+                "detail": (
+                    "Stops are present but the shelter map shows none inside this boundary. "
+                    "Confirm with field audit (shelter layer is presence-only), then prioritise "
+                    "weather protection at high-boarding locations."
+                ),
+            }
+        )
+    elif shelters is not None and stops is not None and stops > 0 and shelters / max(stops, 1) < 0.15:
+        recs.append(
+            {
+                "priority": "medium",
+                "title": "Low shelter-to-stop ratio",
+                "detail": (
+                    f"{shelters} mapped shelters vs {stops} stops. "
+                    "Target shelters at transfer points and long-wait corridors first."
+                ),
+            }
+        )
+    elif shelters is None:
+        recs.append(
+            {
+                "priority": "info",
+                "title": "Shelter counts unavailable",
+                "detail": "Shelter layer was not joined for this unit — see Data Sources.",
+            }
+        )
+
+    if hubs == 0:
+        recs.append(
+            {
+                "priority": "medium",
+                "title": "No rail/metro hub inside boundary",
+                "detail": (
+                    "No MRTS/metro-tagged hub falls inside this unit. "
+                    "Map walk/feeder access to the nearest hub and improve last-mile links."
+                ),
+            }
+        )
+    elif hubs is not None and hubs > 0:
+        recs.append(
+            {
+                "priority": "info",
+                "title": "Hub present — strengthen last-mile",
+                "detail": (
+                    f"{hubs} hub(s) inside boundary. Prioritise clear walk paths, "
+                    "feeder stop clustering within ~100–300m of the hub, and passenger information."
+                ),
+            }
+        )
+
+    if density is not None and density < 5 and stops is not None and stops > 0:
+        recs.append(
+            {
+                "priority": "medium",
+                "title": "Low stop density for land area",
+                "detail": (
+                    f"About {density} stops per km² across {area_km2} km². "
+                    "Large blocks may need mid-block stops or shared mobility feeders."
+                ),
+            }
+        )
+
+    if not recs:
+        recs.append(
+            {
+                "priority": "info",
+                "title": "Inventory looks non-empty",
+                "detail": (
+                    "Loaded layers show coverage inside this boundary. "
+                    "Use 400m/800m catchments on the map for walk-access checks; "
+                    "equity scores remain withheld until census joins are validated."
+                ),
+            }
+        )
+
+    return recs
+
+
+def build_gap_index(
+    *,
+    stop_count: int | None,
+    shelter_count: int | None,
+    hub_count: int | None,
+    area_km2: float | None,
+    city_mean_stops: float | None,
+) -> dict[str, Any]:
+    """
+    Inventory Gap Index 0–100 (higher = larger gap).
+    Built only from verified point-in-polygon counts — not census equity.
+    """
+    stops = stop_count
+    shelters = shelter_count
+    hubs = hub_count
+    density = None
+    if stops is not None and area_km2 and area_km2 > 0:
+        density = stops / area_km2
+
+    # Stop access gap — max 40
+    stop_gap = 0
+    if stops is None:
+        stop_gap = 0
+    elif stops == 0:
+        stop_gap = 40
+    elif stops < 5:
+        stop_gap = 30
+    elif city_mean_stops and stops < city_mean_stops * 0.35:
+        stop_gap = 26
+    elif city_mean_stops and stops < city_mean_stops * 0.5:
+        stop_gap = 18
+    elif city_mean_stops and stops < city_mean_stops * 0.75:
+        stop_gap = 10
+    elif city_mean_stops and stops < city_mean_stops:
+        stop_gap = 4
+
+    # Shelter gap — max 30
+    shelter_gap = 0
+    if shelters is None:
+        shelter_gap = 0
+    elif stops is not None and stops > 0:
+        ratio = shelters / max(stops, 1)
+        if shelters == 0:
+            shelter_gap = 30
+        elif ratio < 0.08:
+            shelter_gap = 24
+        elif ratio < 0.15:
+            shelter_gap = 16
+        elif ratio < 0.25:
+            shelter_gap = 8
+    elif stops == 0 and shelters == 0:
+        shelter_gap = 10  # no amenities either
+
+    # Hub / last-mile trunk access — max 20
+    hub_gap = 0
+    if hubs is None:
+        hub_gap = 0
+    elif hubs == 0:
+        hub_gap = 20
+    elif hubs == 1:
+        hub_gap = 6
+
+    # Density gap — max 10
+    density_gap = 0
+    if density is not None and stops is not None and stops > 0:
+        if density < 3:
+            density_gap = 10
+        elif density < 5:
+            density_gap = 7
+        elif density < 8:
+            density_gap = 4
+        elif density < 12:
+            density_gap = 2
+
+    components = {
+        "stop_gap": stop_gap,
+        "shelter_gap": shelter_gap,
+        "hub_gap": hub_gap,
+        "density_gap": density_gap,
+    }
+    total = int(sum(components.values()))
+    total = max(0, min(100, total))
+
+    if total >= 70:
+        band = "severe"
+    elif total >= 45:
+        band = "high"
+    elif total >= 25:
+        band = "moderate"
+    else:
+        band = "low"
+
+    return {
+        "gap_index": total,
+        "gap_band": band,
+        "gap_components": components,
+        "gap_max": {
+            "stop_gap": 40,
+            "shelter_gap": 30,
+            "hub_gap": 20,
+            "density_gap": 10,
+        },
+    }
+
+
+def build_unit_report(
+    row: dict[str, Any],
+    unit_type: str,
+    city_mean_stops: float | None,
+) -> dict[str, Any]:
+    label = clean_label(row.get("label") or row.get("ward_label") or row.get("zone_label") or "")
+    if not label:
+        label = f"Unnamed {unit_type}"
+    stop_count = row.get("stop_count")
+    shelter_count = row.get("shelter_count")
+    hub_count = row.get("hub_count")
+    area_km2 = row.get("area_km2")
+    stops_i = int(stop_count) if stop_count is not None and str(stop_count) != "nan" else None
+    shelters_i = (
+        int(shelter_count) if shelter_count is not None and str(shelter_count) != "nan" else None
+    )
+    hubs_i = int(hub_count) if hub_count is not None and str(hub_count) != "nan" else None
+    area_f = float(area_km2) if area_km2 is not None and str(area_km2) != "nan" else None
+
+    gap = build_gap_index(
+        stop_count=stops_i,
+        shelter_count=shelters_i,
+        hub_count=hubs_i,
+        area_km2=area_f,
+        city_mean_stops=city_mean_stops,
+    )
+
+    # Keep priority_score as alias of gap_index for older UI consumers
+    priority_score = gap["gap_index"]
+
+    return {
+        "id": label,
+        "label": label,
+        "unit_type": unit_type,
+        "stop_count": stops_i,
+        "shelter_count": shelters_i,
+        "hub_count": hubs_i,
+        "area_km2": area_f,
+        "stops_per_km2": round(stops_i / area_f, 2) if stops_i is not None and area_f else None,
+        "priority_score": priority_score,
+        "gap_index": gap["gap_index"],
+        "gap_band": gap["gap_band"],
+        "gap_components": gap["gap_components"],
+        "recommendations": build_recommendations(
+            unit_type=unit_type,
+            label=label,
+            stop_count=stops_i,
+            shelter_count=shelters_i,
+            hub_count=hubs_i,
+            area_km2=area_f,
+            city_mean_stops=city_mean_stops,
+        ),
+    }
+
+
+def build_spatial_reports(
+    wards: gpd.GeoDataFrame | None,
+    zones: gpd.GeoDataFrame | None,
+) -> dict[str, Any]:
+    city_mean = None
+    ward_reports: list[dict[str, Any]] = []
+    zone_reports: list[dict[str, Any]] = []
+
+    if wards is not None and not wards.empty and "stop_count" in wards.columns:
+        city_mean = float(wards["stop_count"].mean())
+        for _, row in wards.iterrows():
+            ward_reports.append(
+                build_unit_report(
+                    {
+                        "label": row.get("ward_label"),
+                        "stop_count": row.get("stop_count"),
+                        "shelter_count": row.get("shelter_count"),
+                        "hub_count": row.get("hub_count"),
+                        "area_km2": row.get("area_km2"),
+                    },
+                    "ward",
+                    city_mean,
+                )
+            )
+
+    if zones is not None and not zones.empty:
+        for _, row in zones.iterrows():
+            zone_reports.append(
+                build_unit_report(
+                    {
+                        "label": row.get("zone_label"),
+                        "stop_count": row.get("stop_count"),
+                        "shelter_count": row.get("shelter_count"),
+                        "hub_count": row.get("hub_count"),
+                        "area_km2": row.get("area_km2"),
+                    },
+                    "zone",
+                    city_mean,
+                )
+            )
+
+    ward_reports.sort(key=lambda r: (-r["gap_index"], r["label"]))
+    zone_reports.sort(key=lambda r: (-r["gap_index"], r["label"]))
+
+    ward_gaps = [w["gap_index"] for w in ward_reports]
+    city_gap = round(sum(ward_gaps) / len(ward_gaps), 1) if ward_gaps else None
+
+    return {
+        "generated_at": utc_now(),
+        "note": (
+            "Reports use verified spatial joins only (stops/shelters/hubs inside polygons). "
+            "Gap Index and recommendations are inventory rules — not census equity scores."
+        ),
+        "gap_index_method": {
+            "scale": "0–100 (higher = larger inventory gap)",
+            "bands": {
+                "severe": "≥70",
+                "high": "45–69",
+                "moderate": "25–44",
+                "low": "<25",
+            },
+            "components": {
+                "stop_gap": "max 40 — zero / very low / below city-mean stop counts",
+                "shelter_gap": "max 30 — shelter presence vs stops",
+                "hub_gap": "max 20 — no MRTS/metro hub inside boundary",
+                "density_gap": "max 10 — low stops per km²",
+            },
+            "disclaimer": (
+                "Not a population-weighted equity score. Field-verify before capital works. "
+                "Community GTFS may under-count official MTC stops."
+            ),
+        },
+        "city_mean_stops_per_ward": round(city_mean, 2) if city_mean is not None else None,
+        "city_mean_gap_index": city_gap,
+        "wards": ward_reports,
+        "zones": zone_reports,
+        "priority_wards": [w for w in ward_reports if w["gap_index"] >= 45][:25],
+        "priority_zones": [z for z in zone_reports if z["gap_index"] >= 35][:16],
+        "severe_gap_wards": [w for w in ward_reports if w["gap_band"] == "severe"][:25],
+    }
+
+
 def build_metrics(
     wards: gpd.GeoDataFrame | None,
     stops: gpd.GeoDataFrame | None,
@@ -581,34 +990,99 @@ def main() -> int:
             manifest["layers"]["catchment_400m"] = {"status": "unavailable", "error": str(exc)}
             print(f"[fail] catchments: {exc}", file=sys.stderr)
 
-    # --- Ward stop counts (verified spatial join) ---
-    if layers["wards"] is not None and layers["stops"] is not None:
+    # --- Ward / zone inventory joins (verified spatial counts) ---
+    if layers["wards"] is not None:
         try:
-            wards_enriched = count_points_in_polygons(layers["wards"], layers["stops"], "stop_count")
+            wards_enriched = layers["wards"].copy()
+            wards_enriched["ward_label"] = wards_enriched["ward_label"].map(clean_label)
+            wards_enriched = add_area_km2(wards_enriched)
+            if layers["stops"] is not None:
+                wards_enriched = count_points_in_polygons(
+                    wards_enriched, layers["stops"], "stop_count"
+                )
+            else:
+                wards_enriched["stop_count"] = None
             if layers["shelters"] is not None:
                 wards_enriched = count_points_in_polygons(
                     wards_enriched, layers["shelters"], "shelter_count"
                 )
             else:
-                wards_enriched["shelter_count"] = None  # unavailable join
+                wards_enriched["shelter_count"] = None
+            if layers["hubs"] is not None:
+                wards_enriched = count_points_in_polygons(
+                    wards_enriched, layers["hubs"], "hub_count"
+                )
+            else:
+                wards_enriched["hub_count"] = None
             layers["wards"] = wards_enriched
             n = write_geojson(wards_enriched, PROCESSED / "wards.geojson")
             manifest["layers"]["wards"]["feature_count"] = n
             manifest["layers"]["wards"]["attributes"] = [
-                "ward_label",
-                "stop_count",
-                "shelter_count" if layers["shelters"] is not None else None,
+                a
+                for a in ["ward_label", "stop_count", "shelter_count", "hub_count", "area_km2"]
+                if a in wards_enriched.columns
             ]
-            manifest["layers"]["wards"]["attributes"] = [
-                a for a in manifest["layers"]["wards"]["attributes"] if a
-            ]
-            print(f"[ok] wards enriched with stop_count")
+            print(f"[ok] wards enriched with inventory counts ({n})")
         except Exception as exc:  # noqa: BLE001
-            print(f"[fail] ward stop counts: {exc}", file=sys.stderr)
+            print(f"[fail] ward enrichment: {exc}", file=sys.stderr)
+
+    if layers["zones"] is not None:
+        try:
+            zones_enriched = layers["zones"].copy()
+            zones_enriched["zone_label"] = zones_enriched["zone_label"].map(clean_label)
+            zones_enriched = add_area_km2(zones_enriched)
+            if layers["stops"] is not None:
+                zones_enriched = count_points_in_polygons(
+                    zones_enriched, layers["stops"], "stop_count"
+                )
+            else:
+                zones_enriched["stop_count"] = None
+            if layers["shelters"] is not None:
+                zones_enriched = count_points_in_polygons(
+                    zones_enriched, layers["shelters"], "shelter_count"
+                )
+            else:
+                zones_enriched["shelter_count"] = None
+            if layers["hubs"] is not None:
+                zones_enriched = count_points_in_polygons(
+                    zones_enriched, layers["hubs"], "hub_count"
+                )
+            else:
+                zones_enriched["hub_count"] = None
+            layers["zones"] = zones_enriched
+            n = write_geojson(zones_enriched, PROCESSED / "zones.geojson")
+            if "zones" in manifest["layers"]:
+                manifest["layers"]["zones"]["feature_count"] = n
+                manifest["layers"]["zones"]["attributes"] = [
+                    a
+                    for a in ["zone_label", "stop_count", "shelter_count", "hub_count", "area_km2"]
+                    if a in zones_enriched.columns
+                ]
+            print(f"[ok] zones enriched with inventory counts ({n})")
+        except Exception as exc:  # noqa: BLE001
+            print(f"[fail] zone enrichment: {exc}", file=sys.stderr)
+
+    reports = build_spatial_reports(layers["wards"], layers["zones"])
+    (PROCESSED / "reports.json").write_text(json.dumps(reports, indent=2))
+    print(
+        f"[ok] reports.json ({len(reports.get('wards', []))} wards, {len(reports.get('zones', []))} zones)"
+    )
 
     metrics = build_metrics(
         layers["wards"], layers["stops"], layers["shelters"], layers["hubs"]
     )
+    if reports.get("city_mean_stops_per_ward") is not None:
+        metrics["counts"]["city_mean_stops_per_ward"] = reports["city_mean_stops_per_ward"]
+    if reports.get("city_mean_gap_index") is not None:
+        metrics["counts"]["city_mean_gap_index"] = reports["city_mean_gap_index"]
+    if reports.get("priority_wards") is not None:
+        metrics["counts"]["high_gap_wards"] = len(reports["priority_wards"])
+        metrics["counts"]["priority_wards"] = len(reports["priority_wards"])
+    if reports.get("severe_gap_wards") is not None:
+        metrics["counts"]["severe_gap_wards"] = len(reports["severe_gap_wards"])
+    if reports.get("priority_zones") is not None:
+        metrics["counts"]["priority_zones"] = len(reports["priority_zones"])
+        metrics["counts"]["high_gap_zones"] = len(reports["priority_zones"])
     (PROCESSED / "metrics.json").write_text(json.dumps(metrics, indent=2))
     (PROCESSED / "manifest.json").write_text(json.dumps(manifest, indent=2))
     print("[ok] metrics.json + manifest.json")

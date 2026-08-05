@@ -60,6 +60,59 @@ export interface Metrics {
   unavailable: string[];
 }
 
+export type RecommendationPriority = "critical" | "high" | "medium" | "info";
+
+export type GapBand = "severe" | "high" | "moderate" | "low";
+
+export interface GapComponents {
+  stop_gap: number;
+  shelter_gap: number;
+  hub_gap: number;
+  density_gap: number;
+}
+
+export interface UnitRecommendation {
+  priority: RecommendationPriority | string;
+  title: string;
+  detail: string;
+}
+
+export interface SpatialUnitReport {
+  id: string;
+  label: string;
+  unit_type: "ward" | "zone" | string;
+  stop_count: number | null;
+  shelter_count: number | null;
+  hub_count: number | null;
+  area_km2: number | null;
+  stops_per_km2: number | null;
+  priority_score: number;
+  gap_index: number;
+  gap_band: GapBand | string;
+  gap_components: GapComponents;
+  recommendations: UnitRecommendation[];
+}
+
+export interface GapIndexMethod {
+  scale: string;
+  bands: Record<string, string>;
+  components: Record<string, string>;
+  disclaimer: string;
+}
+
+export interface SpatialReports {
+  generated_at: string;
+  note: string;
+  gap_index_method?: GapIndexMethod;
+  city_mean_stops_per_ward: number | null;
+  city_mean_gap_index?: number | null;
+  wards: SpatialUnitReport[];
+  zones: SpatialUnitReport[];
+  priority_wards: SpatialUnitReport[];
+  priority_zones: SpatialUnitReport[];
+  severe_gap_wards?: SpatialUnitReport[];
+}
+
 export type AudienceId = "local" | "traffic" | "public";
 
 export const AUDIENCES: {
@@ -70,9 +123,9 @@ export const AUDIENCES: {
 }[] = [
   {
     id: "local",
-    label: "Ward / zone",
-    blurb: "For GCC local bodies — ward inventory and printable brief from real layers.",
-    href: "/wards",
+    label: "Ward / zone reports",
+    blurb: "For GCC local bodies — Gap Index, inventory counts, and recommendations by ward or zone.",
+    href: "/analytics?tab=spatial",
   },
   {
     id: "traffic",
@@ -82,9 +135,9 @@ export const AUDIENCES: {
   },
   {
     id: "public",
-    label: "Explore Chennai",
-    blurb: "Public explorer — same evidence, plain language, full source transparency.",
-    href: "/explore",
+    label: "Analytics & Gap Index",
+    blurb: "City inventory, ward/zone Gap Index, and transparent data sources.",
+    href: "/analytics",
   },
 ];
 

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-05T07:22:19.759171+00:00",
+  "generated_at": "2026-08-05T08:31:02.906229+00:00",
   "platform": "OpenCity Transit Lab \u2014 Chennai Last-Mile Decision Support",
   "integrity_rule": "No fabricated metrics. Unavailable or not_connected when data is missing.",
   "sources": {
@@ -15,7 +15,7 @@
       "status": "loaded",
       "bytes": 2815875,
       "sha256": "be48ef7eb4320279e790f59da1691ece9efc92b34459ca73c492957943c347e0",
-      "fetched_at": "2026-08-05T07:22:20.297721+00:00",
+      "fetched_at": "2026-08-05T08:31:03.442934+00:00",
       "path": "data/raw/gcc_wards_2022.kml"
     },
     "gcc_zones_2022": {
@@ -30,7 +30,7 @@
       "status": "loaded",
       "bytes": 758272,
       "sha256": "5939657bf539b4c708758232cf8c77129a67928df3f74699d5b8c3660aef951d",
-      "fetched_at": "2026-08-05T07:22:20.602037+00:00",
+      "fetched_at": "2026-08-05T08:31:03.784779+00:00",
       "path": "data/raw/gcc_zones_2022.kml"
     },
     "bus_shelters": {
@@ -45,7 +45,7 @@
       "status": "loaded",
       "bytes": 779902,
       "sha256": "bf8b97b772f050da4052a8b3e7367f2297f30109afa7632e3d98c67d07fde039",
-      "fetched_at": "2026-08-05T07:22:20.799284+00:00",
+      "fetched_at": "2026-08-05T08:31:03.995747+00:00",
       "path": "data/raw/chennai_bus_shelters.kml"
     },
     "mrts_stations": {
@@ -60,7 +60,7 @@
       "status": "loaded",
       "bytes": 53161,
       "sha256": "306bd6abbe359131bb35581bd036a1e7433373f90078e1ba616e9f11b7821ce0",
-      "fetched_at": "2026-08-05T07:22:21.037384+00:00",
+      "fetched_at": "2026-08-05T08:31:04.125174+00:00",
       "path": "data/raw/mrts_stations.kml"
     },
     "mrts_lines": {
@@ -75,7 +75,7 @@
       "status": "loaded",
       "bytes": 58771,
       "sha256": "2f0a6de504bb990025af388654642fe68e097905878027244ee5e1485382b1fb",
-      "fetched_at": "2026-08-05T07:22:21.161243+00:00",
+      "fetched_at": "2026-08-05T08:31:04.368543+00:00",
       "path": "data/raw/mrts_lines.kml"
     },
     "chennai_gtfs_unified": {
@@ -90,7 +90,7 @@
       "status": "loaded",
       "bytes": 9091816,
       "sha256": "db1da880f9ad93e352f6658df0e94a8b2d71cd1dc8bdfbb60fa3968a9b0ad3e6",
-      "fetched_at": "2026-08-05T07:23:37.627581+00:00",
+      "fetched_at": "2026-08-05T08:32:21.732987+00:00",
       "path": "data/raw/chennai-unified-gtfs.zip"
     }
   },
@@ -109,7 +109,9 @@
       "attributes": [
         "ward_label",
         "stop_count",
-        "shelter_count"
+        "shelter_count",
+        "hub_count",
+        "area_km2"
       ]
     },
     "zones": {
@@ -122,7 +124,14 @@
         13.23504905520032
       ],
       "file": "zones.geojson",
-      "derived_from": "gcc_zones_2022"
+      "derived_from": "gcc_zones_2022",
+      "attributes": [
+        "zone_label",
+        "stop_count",
+        "shelter_count",
+        "hub_count",
+        "area_km2"
+      ]
     },
     "shelters": {
       "status": "loaded",

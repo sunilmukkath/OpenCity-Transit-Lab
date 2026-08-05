@@ -28,10 +28,16 @@ export default async function HomePage() {
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
-            href="/analytics"
+            href="/analytics?tab=spatial"
             className="rounded-md bg-[var(--accent)] px-4 py-2.5 text-sm font-semibold text-[var(--void)]"
           >
-            Open analytics dashboard
+            Ward &amp; zone reports
+          </Link>
+          <Link
+            href="/analytics"
+            className="rounded-md border border-[var(--border-strong)] bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-[var(--ink)] hover:bg-white/[0.08]"
+          >
+            Analytics overview
           </Link>
           <Link
             href="/map"

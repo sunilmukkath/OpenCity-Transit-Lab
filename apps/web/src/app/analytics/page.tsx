@@ -8,12 +8,12 @@ export default function AnalyticsPage() {
           Analytics
         </p>
         <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)]">
-          Data sources dashboard
+          Transit analytics &amp; area reports
         </h1>
         <p className="mt-2 max-w-3xl text-[var(--ink-muted)]">
-          Map and filter every ingested dataset — administrative boundaries, transit stops,
-          shelters, rail hubs, catchments, realtime plugs, and known gaps. Only verified
-          layers are drawn.
+          City inventory map, ward / zone / area reports with inventory-based recommendations,
+          and a filterable catalog of every verified source. Equity scores stay withheld until
+          census joins are validated.
         </p>
       </header>
       <AnalyticsDashboard />

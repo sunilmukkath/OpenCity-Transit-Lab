@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-05T07:23:46.363317+00:00",
+  "generated_at": "2026-08-05T08:32:25.576978+00:00",
   "note": "Only counts derived from successfully loaded geometries. No equity or population-weighted access scores.",
   "counts": {
     "transit_stops": 5580,
@@ -7,7 +7,14 @@
     "rail_hubs": 143,
     "wards": 200,
     "wards_with_zero_stops": 3,
-    "mean_stops_per_ward": 12.91
+    "mean_stops_per_ward": 12.91,
+    "city_mean_stops_per_ward": 12.91,
+    "priority_wards": 25,
+    "priority_zones": 1,
+    "city_mean_gap_index": 38.9,
+    "high_gap_wards": 25,
+    "severe_gap_wards": 17,
+    "high_gap_zones": 1
   },
   "unavailable": [
     "equity_sec",

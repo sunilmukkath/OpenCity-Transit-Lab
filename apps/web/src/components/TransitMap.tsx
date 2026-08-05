@@ -9,8 +9,10 @@ import Map, {
   type MapRef,
 } from "react-map-gl/maplibre";
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
+import type { ExpressionSpecification } from "maplibre-gl";
 import type { FeatureCollection, Geometry } from "geojson";
 import {
+  BASEMAP_LABELS,
   BASEMAP_STYLES,
   CHENNAI_VIEW,
   type ChoroplethMode,
@@ -18,7 +20,10 @@ import {
   type MapLayerKey,
 } from "@/lib/map-layers";
 
-const MAP_HEIGHT_DEFAULT = 620;
+// Ensure MapLibre CSS is present even if global @import is stripped.
+import "maplibre-gl/dist/maplibre-gl.css";
+
+const MAP_HEIGHT_DEFAULT = 640;
 
 type PopupState = {
   lng: number;
@@ -40,6 +45,17 @@ function extentOf(
   const max = Math.max(...values);
   if (min === max) return { min, max: max + 1 };
   return { min, max };
+}
+
+function ascendingStops(stops: number[]): number[] {
+  const out: number[] = [];
+  for (const n of stops) {
+    const v = Number(n);
+    if (!Number.isFinite(v)) continue;
+    if (!out.length || v > out[out.length - 1]) out.push(v);
+    else if (v <= out[out.length - 1]) out.push(out[out.length - 1] + 0.01);
+  }
+  return out;
 }
 
 function formatPopupProps(props: Record<string, unknown>): string {
@@ -91,10 +107,7 @@ export function TransitMap({
   const [basemapReady, setBasemapReady] = useState(false);
   const [popup, setPopup] = useState<PopupState | null>(null);
 
-  const stopExtent = useMemo(
-    () => extentOf(data.wards, "stop_count"),
-    [data.wards]
-  );
+  const stopExtent = useMemo(() => extentOf(data.wards, "stop_count"), [data.wards]);
   const gapExtent = useMemo(() => extentOf(data.wards, "gap_index"), [data.wards]);
 
   const interactiveLayerIds = useMemo(() => {
@@ -104,8 +117,7 @@ export function TransitMap({
     if (visibility.zones && data.zones) ids.push("tm-zones-fill");
     if (visibility.stops && data.stops) ids.push("tm-stops-circle");
     if (visibility.shelters && data.shelters) ids.push("tm-shelters-circle");
-    if (visibility.mrts_stations && data.mrts_stations)
-      ids.push("tm-mrts-stations-circle");
+    if (visibility.mrts_stations && data.mrts_stations) ids.push("tm-mrts-stations-circle");
     if (visibility.hubs && data.hubs) ids.push("tm-hubs-circle");
     return ids;
   }, [visibility, data, interactive]);
@@ -141,116 +153,146 @@ export function TransitMap({
   );
 
   const forceResize = useCallback(() => {
-    const map = mapRef.current?.getMap();
-    if (!map) return;
-    requestAnimationFrame(() => {
-      map.resize();
-    });
+    try {
+      mapRef.current?.getMap()?.resize();
+    } catch {
+      /* ignore */
+    }
   }, []);
 
   useEffect(() => {
     forceResize();
     const onWin = () => forceResize();
     window.addEventListener("resize", onWin);
-    const t1 = window.setTimeout(forceResize, 120);
-    const t2 = window.setTimeout(forceResize, 500);
+    const timers = [80, 250, 800, 1600].map((ms) => window.setTimeout(forceResize, ms));
+    // Never leave the UI stuck on "Drawing basemap…"
+    const readyFallback = window.setTimeout(() => setBasemapReady(true), 3500);
     return () => {
       window.removeEventListener("resize", onWin);
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
+      timers.forEach((t) => window.clearTimeout(t));
+      window.clearTimeout(readyFallback);
     };
-  }, [forceResize, height, visibility, data]);
+  }, [forceResize, height, styleIndex]);
 
-  const wardFillColor = useMemo(() => {
+  // High-contrast fills — previous navy (#103466) vanished on Dark Matter
+  const wardFillColor = useMemo((): ExpressionSpecification | string => {
     if (choropleth === "gap" && gapExtent) {
+      const [a, b, c, d] = ascendingStops([
+        gapExtent.min,
+        Math.min(gapExtent.max, Math.max(gapExtent.min + 1, 25)),
+        Math.min(gapExtent.max, Math.max(gapExtent.min + 2, 45)),
+        Math.max(gapExtent.max, 70),
+      ]);
       return [
         "interpolate",
         ["linear"],
-        ["coalesce", ["get", "gap_index"], 0],
-        gapExtent.min,
-        "#0f766e",
-        Math.max(gapExtent.min + 1, 25),
-        "#e8a820",
-        Math.max(45, gapExtent.min + 2),
-        "#fb923c",
-        Math.max(70, gapExtent.max),
-        "#fb7185",
-      ] as unknown as string;
+        ["coalesce", ["to-number", ["get", "gap_index"]], 0],
+        a,
+        "#14b8a6",
+        b,
+        "#eab308",
+        c,
+        "#f97316",
+        d,
+        "#f43f5e",
+      ];
     }
     if (stopExtent) {
       return [
         "interpolate",
         ["linear"],
-        ["coalesce", ["get", "stop_count"], 0],
+        ["coalesce", ["to-number", ["get", "stop_count"]], 0],
         stopExtent.min,
-        "#103466",
+        "#bfdbfe",
         stopExtent.max,
-        "#38bdf8",
-      ] as unknown as string;
+        "#0369a1",
+      ];
     }
-    return "#1a3a6e";
+    return "#7dd3fc";
   }, [choropleth, gapExtent, stopExtent]);
 
   const styleUrl = BASEMAP_STYLES[Math.min(styleIndex, BASEMAP_STYLES.length - 1)];
 
+  const markReady = useCallback(() => {
+    setBasemapReady(true);
+    setMapError(null);
+    forceResize();
+  }, [forceResize]);
+
   return (
     <div
-      className="relative w-full overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--map-wash)] shadow-sm"
-      style={{ height }}
+      className="relative w-full overflow-hidden rounded-xl border border-[var(--border)] bg-[#dbe4ee] shadow-sm"
+      style={{ height, minHeight: height }}
     >
       {loading ? (
-        <div className="pointer-events-none absolute left-3 top-3 z-20 rounded-md border border-[var(--border)] bg-[var(--overlay)] px-3 py-1.5 text-xs text-[var(--ink-muted)]">
+        <div className="pointer-events-none absolute left-3 top-3 z-20 rounded-md border border-[var(--border)] bg-[rgba(8,13,26,0.82)] px-3 py-1.5 text-xs text-[var(--ink)]">
           Loading layers…
         </div>
       ) : null}
 
+      <div className="absolute bottom-3 right-3 z-20 flex flex-wrap gap-1">
+        {BASEMAP_STYLES.map((_, i) => (
+          <button
+            key={BASEMAP_LABELS[i]}
+            type="button"
+            onClick={() => {
+              setBasemapReady(false);
+              setMapError(null);
+              setStyleIndex(i);
+            }}
+            className={`rounded-md border px-2 py-1 text-[10px] font-semibold ${
+              styleIndex === i
+                ? "border-[var(--yellow)] bg-[rgba(8,13,26,0.88)] text-[var(--yellow)]"
+                : "border-[var(--border)] bg-[rgba(8,13,26,0.72)] text-[var(--ink-muted)]"
+            }`}
+          >
+            {BASEMAP_LABELS[i]}
+          </button>
+        ))}
+      </div>
+
       {mapError ? (
-        <div className="absolute inset-x-3 top-3 z-30 rounded-lg border border-[var(--danger)] bg-[var(--overlay)] p-3 text-sm text-[var(--danger)]">
+        <div className="absolute inset-x-3 top-3 z-30 rounded-lg border border-[var(--danger)] bg-[rgba(8,13,26,0.92)] p-3 text-sm text-[var(--danger)]">
           <p>{mapError}</p>
           {styleIndex < BASEMAP_STYLES.length - 1 ? (
             <button
               type="button"
-              className="mt-2 rounded-md border border-[var(--border)] px-2 py-1 text-xs text-[var(--ink)] hover:border-[var(--accent)]"
+              className="mt-2 rounded-md border border-[var(--border)] px-2 py-1 text-xs text-[var(--ink)]"
               onClick={() => {
                 setMapError(null);
                 setBasemapReady(false);
                 setStyleIndex((i) => i + 1);
               }}
             >
-              Try fallback basemap
+              Try next basemap
             </button>
           ) : null}
         </div>
       ) : null}
 
       {!basemapReady && !mapError ? (
-        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-[var(--map-wash)] text-sm text-[var(--ink-muted)]">
+        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-[rgba(219,228,238,0.55)] text-sm font-medium text-slate-700">
           Drawing basemap…
         </div>
       ) : null}
 
       <Map
-        key={styleUrl}
+        key={`basemap-${styleIndex}`}
         ref={mapRef}
         initialViewState={CHENNAI_VIEW}
         mapStyle={styleUrl}
-        style={{ width: "100%", height }}
+        style={{ width: "100%", height: "100%", position: "absolute", inset: 0 }}
         interactiveLayerIds={interactiveLayerIds}
         onClick={onClick}
-        onLoad={() => {
-          setBasemapReady(true);
-          setMapError(null);
-          forceResize();
-        }}
+        onLoad={markReady}
+        onIdle={markReady}
         onError={(e) => {
           const msg = e.error?.message || "Basemap failed to load";
-          // Ignore benign tile/sprite noise once style is up
-          if (basemapReady && /tile|image|sprite/i.test(msg)) return;
+          if (/tile|image|sprite|glyph|favicon/i.test(msg)) return;
           setMapError(msg);
         }}
         cursor={interactiveLayerIds.length ? "pointer" : "grab"}
         attributionControl={{ compact: true }}
-        reuseMaps
       >
         <NavigationControl position="top-right" showCompass={false} />
 
@@ -259,7 +301,7 @@ export function TransitMap({
             <Layer
               id="tm-catchment-800-fill"
               type="fill"
-              paint={{ "fill-color": "#38bdf8", "fill-opacity": 0.07 }}
+              paint={{ "fill-color": "#0284c7", "fill-opacity": 0.12 }}
             />
           </Source>
         ) : null}
@@ -269,7 +311,7 @@ export function TransitMap({
             <Layer
               id="tm-catchment-400-fill"
               type="fill"
-              paint={{ "fill-color": "#2dd4bf", "fill-opacity": 0.12 }}
+              paint={{ "fill-color": "#0d9488", "fill-opacity": 0.18 }}
             />
           </Source>
         ) : null}
@@ -281,16 +323,16 @@ export function TransitMap({
               type="fill"
               paint={{
                 "fill-color": wardFillColor,
-                "fill-opacity": 0.58,
+                "fill-opacity": 0.55,
               }}
             />
             <Layer
               id="tm-wards-line"
               type="line"
               paint={{
-                "line-color": "#cbd5e1",
-                "line-width": 0.8,
-                "line-opacity": 0.75,
+                "line-color": "#0f172a",
+                "line-width": 1.1,
+                "line-opacity": 0.9,
               }}
             />
           </Source>
@@ -301,12 +343,12 @@ export function TransitMap({
             <Layer
               id="tm-zones-fill"
               type="fill"
-              paint={{ "fill-color": "#e8a820", "fill-opacity": 0.06 }}
+              paint={{ "fill-color": "#f59e0b", "fill-opacity": 0.08 }}
             />
             <Layer
               id="tm-zones-line"
               type="line"
-              paint={{ "line-color": "#e8a820", "line-width": 1.6 }}
+              paint={{ "line-color": "#b45309", "line-width": 2 }}
             />
           </Source>
         ) : null}
@@ -317,8 +359,8 @@ export function TransitMap({
               id="tm-mrts-lines-line"
               type="line"
               paint={{
-                "line-color": "#fb923c",
-                "line-width": ["interpolate", ["linear"], ["zoom"], 9, 2, 14, 4],
+                "line-color": "#ea580c",
+                "line-width": ["interpolate", ["linear"], ["zoom"], 9, 2.5, 14, 5],
               }}
             />
           </Source>
@@ -335,16 +377,16 @@ export function TransitMap({
                   ["linear"],
                   ["zoom"],
                   9,
-                  1.2,
+                  1.6,
                   12,
-                  2.4,
+                  3,
                   15,
-                  4.5,
+                  5.5,
                 ],
-                "circle-color": "#38bdf8",
-                "circle-opacity": 0.82,
-                "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 11, 0, 14, 1],
-                "circle-stroke-color": "#0a1f4a",
+                "circle-color": "#0369a1",
+                "circle-opacity": 0.9,
+                "circle-stroke-width": 1,
+                "circle-stroke-color": "#ffffff",
               }}
             />
           </Source>
@@ -356,18 +398,10 @@ export function TransitMap({
               id="tm-shelters-circle"
               type="circle"
               paint={{
-                "circle-radius": [
-                  "interpolate",
-                  ["linear"],
-                  ["zoom"],
-                  10,
-                  2,
-                  14,
-                  4,
-                ],
-                "circle-color": "#2dd4bf",
+                "circle-radius": ["interpolate", ["linear"], ["zoom"], 10, 2.5, 14, 5],
+                "circle-color": "#0f766e",
                 "circle-stroke-width": 1,
-                "circle-stroke-color": "#0a1f4a",
+                "circle-stroke-color": "#ffffff",
               }}
             />
           </Source>
@@ -379,18 +413,10 @@ export function TransitMap({
               id="tm-mrts-stations-circle"
               type="circle"
               paint={{
-                "circle-radius": [
-                  "interpolate",
-                  ["linear"],
-                  ["zoom"],
-                  9,
-                  3.5,
-                  14,
-                  7,
-                ],
-                "circle-color": "#fb923c",
-                "circle-stroke-width": 1.5,
-                "circle-stroke-color": "#0a1f4a",
+                "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 4.5, 14, 8],
+                "circle-color": "#ea580c",
+                "circle-stroke-width": 2,
+                "circle-stroke-color": "#ffffff",
               }}
             />
           </Source>
@@ -402,18 +428,10 @@ export function TransitMap({
               id="tm-hubs-circle"
               type="circle"
               paint={{
-                "circle-radius": [
-                  "interpolate",
-                  ["linear"],
-                  ["zoom"],
-                  9,
-                  4,
-                  14,
-                  8,
-                ],
-                "circle-color": "#e8a820",
+                "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 5, 14, 9],
+                "circle-color": "#ca8a04",
                 "circle-stroke-width": 2,
-                "circle-stroke-color": "#0a1f4a",
+                "circle-stroke-color": "#ffffff",
               }}
             />
           </Source>
@@ -428,19 +446,19 @@ export function TransitMap({
             closeOnClick={false}
             maxWidth="280px"
           >
-            <strong className="text-[var(--ink)]">{popup.title}</strong>
-            <pre className="mt-1 max-w-xs whitespace-pre-wrap text-[11px] text-[var(--ink-muted)]">
+            <strong className="text-slate-900">{popup.title}</strong>
+            <pre className="mt-1 max-w-xs whitespace-pre-wrap text-[11px] text-slate-600">
               {popup.body}
             </pre>
           </Popup>
         ) : null}
       </Map>
 
-      <div className="pointer-events-none absolute bottom-3 left-3 z-20 max-w-[220px] rounded-md border border-[var(--border)] bg-[var(--overlay)] px-2.5 py-2 text-[10px] text-[var(--ink-muted)]">
+      <div className="pointer-events-none absolute bottom-3 left-3 z-20 max-w-[240px] rounded-md border border-slate-300 bg-white/90 px-2.5 py-2 text-[10px] text-slate-700 shadow-sm">
         {choropleth === "gap" ? (
           <span>Ward colour = Gap Index (teal → red). Not census equity.</span>
         ) : (
-          <span>Ward colour = GTFS stop count. Click a feature for details.</span>
+          <span>Ward colour = GTFS stop count (light → deep blue). Click for details.</span>
         )}
       </div>
     </div>

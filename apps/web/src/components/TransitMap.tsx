@@ -642,8 +642,8 @@ export function TransitMap({
     }
 
     const el = document.createElement("div");
-    el.innerHTML = `<strong style="display:block;color:#0f172a;font-size:14px;line-height:1.3">${escapeHtml(popup.title)}</strong>
-      <pre style="margin:6px 0 0;max-width:16rem;white-space:pre-wrap;font-size:12px;line-height:1.45;color:#334155;font-family:ui-monospace,SFMono-Regular,Menlo,monospace">${escapeHtml(popup.body)}</pre>`;
+    el.innerHTML = `<strong style="display:block;color:#ffffff !important;font-size:14px;line-height:1.3">${escapeHtml(popup.title)}</strong>
+      <pre style="margin:6px 0 0;max-width:16rem;white-space:pre-wrap;font-size:12px;line-height:1.45;color:#ffffff !important;font-family:ui-monospace,SFMono-Regular,Menlo,monospace">${escapeHtml(popup.body)}</pre>`;
 
     popupRef.current
       .setLngLat([popup.lng, popup.lat])

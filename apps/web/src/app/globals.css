@@ -288,16 +288,34 @@ textarea {
   font-family: var(--font-dm-sans), system-ui, sans-serif;
   border-radius: 8px;
   padding: 10px 12px;
-  /* Light card on map — dark theme tokens make popup text unreadable */
-  background: #ffffff !important;
-  color: #0f172a !important;
-  border: 1px solid #cbd5e1;
-  box-shadow: 0 12px 32px rgba(8, 13, 26, 0.35);
+  background: #0b1f3a !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 12px 32px rgba(8, 13, 26, 0.55);
+}
+
+.maplibregl-popup-content strong,
+.maplibregl-popup-content pre,
+.maplibregl-popup-content span,
+.maplibregl-popup-content p,
+.maplibregl-popup-content div {
+  color: #ffffff !important;
+}
+
+.maplibregl-popup-tip {
+  border-top-color: #0b1f3a !important;
 }
 
 .maplibregl-popup-close-button {
-  color: #64748b !important;
-  font-size: 16px !important;
+  color: #ffffff !important;
+  font-size: 18px !important;
+  opacity: 0.85;
+}
+
+.maplibregl-popup-close-button:hover {
+  color: #ffffff !important;
+  opacity: 1;
+  background: transparent !important;
 }
 
 .maplibregl-ctrl-group {

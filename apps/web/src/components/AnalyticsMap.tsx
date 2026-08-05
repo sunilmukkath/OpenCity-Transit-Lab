@@ -15,6 +15,7 @@ const MAP_HEIGHT = 560;
 const LIGHT: MapLayerKey[] = [
   "metro_area_boundaries",
   "omr_corridor",
+  "connectivity_need",
   "mrts_lines",
   "mrts_stations",
   "hubs",

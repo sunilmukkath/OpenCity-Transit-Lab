@@ -12,7 +12,7 @@ import { MetricCard } from "@/components/MetricCard";
 import { StatusBadge } from "@/components/StatusBadge";
 import { SectionEyebrow } from "@/components/BrandMotif";
 
-type InsightView = "hubs" | "shelters" | "coverage" | "corridors";
+type InsightView = "hubs" | "shelters" | "coverage" | "corridors" | "needlines";
 
 function fmt(n: number | null | undefined, digits = 0): string {
   if (n === null || n === undefined || Number.isNaN(n)) return "—";
@@ -161,6 +161,7 @@ export function InsightsPanel() {
               ["shelters", "Shelter mismatch"],
               ["coverage", "Catchment coverage"],
               ["corridors", "OMR / South"],
+              ["needlines", "Need lines"],
             ] as const
           ).map(([id, label]) => (
             <button
@@ -559,6 +560,78 @@ export function InsightsPanel() {
             className="inline-flex text-sm font-semibold text-[var(--accent)]"
           >
             Open map with OMR / South preset →
+          </a>
+        </section>
+      ) : null}
+
+      {view === "needlines" ? (
+        <section className="space-y-4">
+          <div className="et-card p-4 text-sm text-[var(--ink-muted)]">
+            {data.connectivity_need?.note ??
+              "OSM roads intersecting high Gap Index wards, ranked by length outside 400m stop catchments."}
+          </div>
+          {!data.connectivity_need?.corridors?.length ? (
+            <div className="et-card p-5 text-sm text-[var(--ink-muted)]">
+              Connectivity-need roads unavailable. Run the ETL connectivity step.
+            </div>
+          ) : (
+            <>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <MetricCard
+                  label="Corridors mapped"
+                  value={data.connectivity_need.counts?.corridors_mapped}
+                  subtext="Top unmet OSM roads"
+                />
+                <MetricCard
+                  label="Urgent"
+                  value={data.connectivity_need.counts?.urgent}
+                  subtext="Highest unmet length"
+                />
+                <MetricCard
+                  label="High-gap wards used"
+                  value={data.connectivity_need.counts?.high_gap_wards}
+                  subtext="Severe / high Gap Index"
+                />
+              </div>
+              <div className="overflow-hidden rounded-xl border border-[var(--border)]">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-white/[0.04] text-[10px] uppercase tracking-wide text-[var(--ink-muted)]">
+                    <tr>
+                      <th className="px-3 py-2">#</th>
+                      <th className="px-3 py-2">Road</th>
+                      <th className="px-3 py-2">Band</th>
+                      <th className="px-3 py-2">Outside 400m</th>
+                      <th className="px-3 py-2">Unmet m</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.connectivity_need.corridors.slice(0, 25).map((c) => (
+                      <tr key={`${c.rank}-${c.road_name}`} className="border-t border-[var(--border)]">
+                        <td className="px-3 py-2 text-[var(--ink-muted)]">{c.rank}</td>
+                        <td className="px-3 py-2 font-medium text-[var(--ink)]">
+                          {c.road_name}
+                          <span className="mt-0.5 block text-[10px] font-normal text-[var(--ink-muted)]">
+                            {c.highway}
+                            {c.in_high_gap_ward ? " · high-gap ward" : ""}
+                          </span>
+                        </td>
+                        <td className="px-3 py-2">
+                          <BandChip label={c.need_band} tone={c.need_band === "urgent" ? "weak" : c.need_band === "priority" ? "moderate" : "strong"} />
+                        </td>
+                        <td className="px-3 py-2 text-[var(--yellow)]">{fmt(c.pct_outside_400m, 0)}%</td>
+                        <td className="px-3 py-2">{fmt(Math.round(c.unmet_length_m))}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+          <a
+            href="/map"
+            className="inline-flex text-sm font-semibold text-[var(--accent)]"
+          >
+            Open map with Need lines preset →
           </a>
         </section>
       ) : null}

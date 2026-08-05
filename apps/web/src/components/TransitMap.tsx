@@ -65,6 +65,11 @@ function formatPopupProps(props: Record<string, unknown>): string {
   const prefer = [
     "gap_index",
     "gap_band",
+    "need_band",
+    "need_score",
+    "unmet_length_m",
+    "pct_outside_400m",
+    "recommendation",
     "stop_count",
     "shelter_count",
     "hub_count",
@@ -72,6 +77,7 @@ function formatPopupProps(props: Record<string, unknown>): string {
     "stops_per_km2",
     "hub_type",
     "mode",
+    "highway",
   ];
   const lines: string[] = [];
   for (const key of prefer) {
@@ -182,6 +188,30 @@ const LAYER_STACK: {
         paint: {
           "line-color": "#7c3aed",
           "line-width": ["interpolate", ["linear"], ["zoom"], 9, 3, 14, 6],
+        },
+      },
+    ],
+  },
+  {
+    key: "connectivity_need",
+    sourceId: "tm-connectivity-need",
+    layers: [
+      {
+        id: "tm-connectivity-need-line",
+        type: "line",
+        paint: {
+          "line-color": [
+            "match",
+            ["get", "need_band"],
+            "urgent",
+            "#e11d48",
+            "priority",
+            "#f97316",
+            "#ca8a04",
+          ],
+          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 2.5, 13, 5.5],
+          "line-opacity": 0.92,
+          "line-dasharray": [2, 1.2],
         },
       },
     ],
@@ -304,6 +334,7 @@ const INTERACTIVE_LAYER_IDS = [
   "tm-shelters-circle",
   "tm-mrts-stations-circle",
   "tm-hubs-circle",
+  "tm-connectivity-need-line",
 ];
 
 export function TransitMap({
@@ -478,6 +509,7 @@ export function TransitMap({
       const title = String(
         props.ward_label ||
           props.zone_label ||
+          props.road_name ||
           props.stop_name ||
           props.hub_name ||
           props.station_name ||
@@ -680,11 +712,11 @@ export function TransitMap({
 
       <div ref={containerRef} className="absolute inset-0 h-full w-full" />
 
-      <div className="pointer-events-none absolute bottom-3 left-3 z-20 max-w-[240px] rounded-md border border-slate-300 bg-white/90 px-2.5 py-2 text-[10px] text-slate-700 shadow-sm">
+      <div className="pointer-events-none absolute bottom-3 left-3 z-20 max-w-[260px] rounded-md border border-slate-300 bg-white/90 px-2.5 py-2 text-[10px] text-slate-700 shadow-sm">
         {choropleth === "gap" ? (
-          <span>Ward colour = Gap Index (teal → red). Not census equity.</span>
+          <span>Ward colour = Gap Index (teal → red). Dashed lines = roads needing better connectivity.</span>
         ) : (
-          <span>Ward colour = GTFS stop count (light → deep blue). Click for details.</span>
+          <span>Ward colour = GTFS stop count. Dashed lines = roads outside 400m stop catchments.</span>
         )}
       </div>
     </div>

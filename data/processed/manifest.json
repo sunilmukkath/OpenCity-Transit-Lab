@@ -242,6 +242,24 @@
       "file": "corridor_aois.geojson",
       "feature_count": 3,
       "notes": "Study AOIs for OMR, Tambaram, Chengalpattu \u2014 not official wards."
+    },
+    "connectivity_need": {
+      "status": "loaded",
+      "file": "connectivity_need_roads.geojson",
+      "feature_count": 45,
+      "notes": "OSM major roads intersecting high Gap Index wards, ranked by length outside the 400m GTFS stop catchment. Not ridership or equity.",
+      "attributes": [
+        "road_name",
+        "highway",
+        "need_band",
+        "need_score",
+        "unmet_length_m",
+        "pct_outside_400m",
+        "in_high_gap_ward",
+        "recommendation",
+        "rank",
+        "source_kind"
+      ]
     }
   },
   "realtime": [

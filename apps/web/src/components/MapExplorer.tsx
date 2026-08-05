@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { FeatureCollection, Geometry } from "geojson";
 import {
   fetchGeoJSONClient,
   fetchManifestClient,
@@ -9,7 +8,6 @@ import {
   layerIsReady,
   type Manifest,
 } from "@/lib/data-client";
-import { StatusBadge } from "@/components/StatusBadge";
 import { ProvenanceStrip } from "@/components/ProvenanceStrip";
 import { TransitMap, joinWardGapIndex } from "@/components/TransitMap";
 import {
@@ -21,11 +19,12 @@ import {
   type MapLayerKey,
 } from "@/lib/map-layers";
 
-const MAP_HEIGHT = 640;
+const MAP_HEIGHT = 680;
 /** Small corridor / rail layers — paint first so the map is useful immediately. */
 const LIGHT_LAYERS: MapLayerKey[] = [
   "metro_area_boundaries",
   "omr_corridor",
+  "connectivity_need",
   "mrts_lines",
   "mrts_stations",
   "hubs",
@@ -54,6 +53,13 @@ async function loadLayerBatch(
   );
   return next;
 }
+
+const chipBase =
+  "rounded-md border px-2 py-1 text-[11px] font-semibold leading-none transition disabled:cursor-not-allowed disabled:opacity-35";
+const chipOn =
+  "border-[var(--yellow)] bg-[rgba(255,229,102,0.14)] text-[var(--yellow)]";
+const chipOff =
+  "border-[var(--border)] bg-white/[0.03] text-[var(--ink-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]";
 
 export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
   const [manifest, setManifest] = useState<Manifest | null>(null);
@@ -91,17 +97,14 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
           return;
         }
 
-        // Wave 1 — light layers (map useful immediately)
         const light = await loadLayerBatch(m, LIGHT_LAYERS, gapByLabel);
         if (cancelled) return;
         setData((prev) => ({ ...prev, ...light }));
 
-        // Wave 2 — wards / zones
         const medium = await loadLayerBatch(m, MEDIUM_LAYERS, gapByLabel);
         if (cancelled) return;
         setData((prev) => ({ ...prev, ...medium }));
 
-        // Wave 3 — dense stops / shelters
         const points = await loadLayerBatch(m, POINT_LAYERS, gapByLabel);
         if (cancelled) return;
         setData((prev) => ({ ...prev, ...points }));
@@ -118,7 +121,6 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
     };
   }, []);
 
-  // Fetch heavy catchments only when toggled on
   useEffect(() => {
     let cancelled = false;
     const want400 = visibility.catchment_400m;
@@ -176,57 +178,45 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
   const loadedCount = useMemo(() => Object.keys(data).length, [data]);
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
-      <aside className="no-print space-y-4 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
-        <div>
-          <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--yellow)]">
-            Map layers
-          </h2>
-          <p className="mt-1 text-sm text-[var(--ink-muted)]">
-            Basemap draws first; heavy catchments load only when you turn them on.
+    <div className="space-y-3">
+      <div className="no-print space-y-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-3 py-3 shadow-sm sm:px-4">
+        {audienceNote ? (
+          <p className="rounded-md bg-[var(--accent-soft)] px-2 py-1 text-xs text-[var(--accent)]">
+            {audienceNote}
           </p>
-          {audienceNote ? (
-            <p className="mt-2 rounded-md bg-[var(--accent-soft)] px-2 py-1.5 text-sm text-[var(--accent)]">
-              {audienceNote}
-            </p>
-          ) : null}
-          {loadError ? (
-            <p className="mt-2 text-sm text-[var(--danger)]">{loadError}</p>
-          ) : null}
-        </div>
+        ) : null}
+        {loadError ? (
+          <p className="text-xs text-[var(--danger)]">{loadError}</p>
+        ) : null}
 
-        <div>
-          <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-            Presets
-          </p>
-          <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-muted)]">
+            Preset
+          </span>
+          <div className="flex flex-wrap gap-1">
             {Object.entries(LAYER_PRESETS).map(([id, preset]) => (
               <button
                 key={id}
                 type="button"
                 onClick={() => applyPreset(id)}
-                className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition ${
-                  activePreset === id
-                    ? "border-[var(--yellow)] bg-[rgba(255,229,102,0.12)] text-[var(--yellow)]"
-                    : "border-[var(--border)] text-[var(--ink-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
-                }`}
                 title={preset.blurb}
+                className={`${chipBase} ${activePreset === id ? chipOn : chipOff}`}
               >
                 {preset.label}
               </button>
             ))}
           </div>
-        </div>
 
-        <div>
-          <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-            Ward colour
-          </p>
-          <div className="flex gap-1.5">
+          <span className="hidden h-4 w-px bg-[var(--border)] sm:block" aria-hidden />
+
+          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-muted)]">
+            Colour
+          </span>
+          <div className="flex flex-wrap gap-1">
             {(
               [
-                ["stops", "Stop count"],
-                ["gap", "Gap Index"],
+                ["stops", "Stops"],
+                ["gap", "Gap"],
               ] as const
             ).map(([mode, label]) => (
               <button
@@ -236,11 +226,7 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
                   setChoropleth(mode);
                   setActivePreset("custom");
                 }}
-                className={`flex-1 rounded-md border px-2 py-1.5 text-xs font-semibold ${
-                  choropleth === mode
-                    ? "border-[var(--yellow)] text-[var(--yellow)]"
-                    : "border-[var(--border)] text-[var(--ink-muted)]"
-                }`}
+                className={`${chipBase} ${choropleth === mode ? chipOn : chipOff}`}
               >
                 {label}
               </button>
@@ -248,70 +234,61 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
           </div>
         </div>
 
-        <ul className="space-y-2">
-          {MAP_LAYER_META.map(({ key, label, heavy }) => {
-            const layer = manifest?.layers[key];
-            const ready = Boolean(data[key]);
-            const pendingHeavy = Boolean(heavy && visibility[key] && !ready && loadingHeavy);
-            const canEnable = layerIsReady(layer) || ready;
-            return (
-              <li
-                key={key}
-                className="flex items-start justify-between gap-2 rounded-lg border border-[var(--border)] px-2 py-2"
-              >
-                <label className="flex cursor-pointer items-start gap-2 text-sm text-[var(--ink)]">
-                  <input
-                    type="checkbox"
-                    className="mt-1"
-                    disabled={!canEnable && !pendingHeavy}
-                    checked={Boolean(visibility[key] && (ready || pendingHeavy))}
-                    onChange={() => toggle(key)}
-                  />
-                  <span>
-                    <span className="font-medium">{label}</span>
-                    <span className="mt-0.5 block text-xs text-[var(--ink-muted)]">
-                      {pendingHeavy
-                        ? "Loading…"
-                        : ready
-                          ? `${layer?.feature_count ?? (data[key] as FeatureCollection<Geometry>)?.features.length ?? 0} features`
-                          : layer?.status === "unavailable"
-                            ? layer.error || "Unavailable"
-                            : heavy
-                              ? "On demand"
-                              : loadingCore
-                                ? "Loading…"
-                                : "Not loaded"}
-                    </span>
-                  </span>
-                </label>
-                <StatusBadge
-                  status={
-                    ready
-                      ? "loaded"
-                      : pendingHeavy
-                        ? "partial"
-                        : (layer?.status as "unavailable") || "unavailable"
-                  }
-                />
-              </li>
-            );
-          })}
-        </ul>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-[var(--border)] pt-2.5">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-muted)]">
+            Layers
+          </span>
+          <div className="flex flex-wrap gap-1">
+            {MAP_LAYER_META.map(({ key, label, short, heavy }) => {
+              const layer = manifest?.layers[key];
+              const ready = Boolean(data[key]);
+              const pendingHeavy = Boolean(heavy && visibility[key] && !ready && loadingHeavy);
+              const canEnable = layerIsReady(layer) || ready || pendingHeavy;
+              const active = Boolean(visibility[key] && (ready || pendingHeavy));
+              const tip = pendingHeavy
+                ? `${label} — loading…`
+                : ready
+                  ? `${label} · ${layer?.feature_count ?? data[key]?.features.length ?? 0} features`
+                  : heavy
+                    ? `${label} — on demand`
+                    : loadingCore
+                      ? `${label} — loading…`
+                      : `${label} — not loaded`;
 
-        <div className="rounded-lg bg-white/[0.05] p-3 text-xs text-[var(--ink-muted)]">
-          {loadedCount} layers in memory
-          {choropleth === "gap"
-            ? " · Gap Index colour is inventory-based, not census equity."
-            : " · Stop-count colour uses GTFS × ward joins."}
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  disabled={!canEnable}
+                  aria-pressed={active}
+                  title={tip}
+                  onClick={() => toggle(key)}
+                  className={`${chipBase} ${active ? chipOn : chipOff}`}
+                >
+                  {short}
+                  {pendingHeavy ? "…" : null}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {manifest ? (
-          <ProvenanceStrip
-            source="OpenCity CKAN + ChennaiGTFS + GCC MRTS"
-            fetchedAt={manifest.generated_at}
-          />
-        ) : null}
-      </aside>
+        <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] text-[var(--ink-muted)]">
+          <span>
+            {loadedCount} layers ready
+            {choropleth === "gap"
+              ? " · Gap colour is inventory-based, not census equity"
+              : " · Stop colour uses GTFS × ward joins"}
+            {loadingCore || loadingHeavy ? " · Loading…" : null}
+          </span>
+          {manifest ? (
+            <ProvenanceStrip
+              source="OpenCity CKAN + ChennaiGTFS + GCC MRTS"
+              fetchedAt={manifest.generated_at}
+            />
+          ) : null}
+        </div>
+      </div>
 
       <TransitMap
         data={data}

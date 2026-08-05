@@ -199,6 +199,24 @@ export interface AdvancedAnalyses {
       bbox?: number[] | null;
     }[];
   };
+  connectivity_need?: {
+    status: string;
+    note?: string;
+    reason?: string;
+    method?: Record<string, unknown>;
+    corridors: {
+      rank: number;
+      road_name: string;
+      highway: string;
+      need_band: string;
+      need_score: number;
+      unmet_length_m: number;
+      pct_outside_400m: number;
+      in_high_gap_ward: boolean;
+      recommendation: string;
+    }[];
+    counts?: Record<string, number>;
+  };
 }
 
 export type AudienceId = "local" | "traffic" | "public";

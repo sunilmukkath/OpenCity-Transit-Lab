@@ -12,26 +12,40 @@ export type MapLayerKey =
   | "catchment_800m"
   | "omr_corridor"
   | "metro_area_boundaries"
-  | "corridor_aois";
+  | "corridor_aois"
+  | "connectivity_need";
 
 export const MAP_LAYER_META: {
   key: MapLayerKey;
   label: string;
+  /** Compact label for toolbar buttons */
+  short: string;
   defaultOn: boolean;
   heavy?: boolean;
 }[] = [
-  { key: "wards", label: "GCC wards", defaultOn: true },
-  { key: "zones", label: "GCC zones", defaultOn: false },
-  { key: "metro_area_boundaries", label: "Tambaram / Chengalpattu / Mahabalipuram", defaultOn: true },
-  { key: "corridor_aois", label: "South corridor AOIs", defaultOn: false },
-  { key: "omr_corridor", label: "OMR → Mahabalipuram", defaultOn: true },
-  { key: "stops", label: "Transit stops (GTFS)", defaultOn: true },
-  { key: "shelters", label: "Bus shelters", defaultOn: false },
-  { key: "mrts_lines", label: "MRTS lines", defaultOn: true },
-  { key: "mrts_stations", label: "MRTS stations", defaultOn: true },
-  { key: "hubs", label: "Rail / metro hubs", defaultOn: true },
-  { key: "catchment_400m", label: "400m walk catchment", defaultOn: false, heavy: true },
-  { key: "catchment_800m", label: "800m walk catchment", defaultOn: false, heavy: true },
+  { key: "wards", label: "GCC wards", short: "Wards", defaultOn: true },
+  { key: "zones", label: "GCC zones", short: "Zones", defaultOn: false },
+  {
+    key: "metro_area_boundaries",
+    label: "Tambaram / Chengalpattu / Mahabalipuram",
+    short: "South towns",
+    defaultOn: true,
+  },
+  { key: "corridor_aois", label: "South corridor AOIs", short: "AOIs", defaultOn: false },
+  { key: "omr_corridor", label: "OMR → Mahabalipuram", short: "OMR", defaultOn: true },
+  {
+    key: "connectivity_need",
+    label: "Roads needing better connectivity",
+    short: "Need lines",
+    defaultOn: true,
+  },
+  { key: "stops", label: "Transit stops (GTFS)", short: "Stops", defaultOn: true },
+  { key: "shelters", label: "Bus shelters", short: "Shelters", defaultOn: false },
+  { key: "mrts_lines", label: "MRTS lines", short: "MRTS", defaultOn: true },
+  { key: "mrts_stations", label: "MRTS stations", short: "Stations", defaultOn: true },
+  { key: "hubs", label: "Rail / metro hubs", short: "Hubs", defaultOn: true },
+  { key: "catchment_400m", label: "400m walk catchment", short: "400m", defaultOn: false, heavy: true },
+  { key: "catchment_800m", label: "800m walk catchment", short: "800m", defaultOn: false, heavy: true },
 ];
 
 export const CHENNAI_VIEW = {
@@ -76,6 +90,7 @@ export const LAYER_PRESETS: Record<
       omr_corridor: true,
       metro_area_boundaries: true,
       corridor_aois: false,
+      connectivity_need: false,
     },
   },
   gaps: {
@@ -95,6 +110,7 @@ export const LAYER_PRESETS: Record<
       omr_corridor: false,
       metro_area_boundaries: true,
       corridor_aois: false,
+      connectivity_need: true,
     },
   },
   hubs: {
@@ -114,6 +130,7 @@ export const LAYER_PRESETS: Record<
       omr_corridor: true,
       metro_area_boundaries: true,
       corridor_aois: false,
+      connectivity_need: true,
     },
   },
   walk: {
@@ -133,6 +150,7 @@ export const LAYER_PRESETS: Record<
       omr_corridor: false,
       metro_area_boundaries: false,
       corridor_aois: false,
+      connectivity_need: false,
     },
   },
   south: {
@@ -152,6 +170,27 @@ export const LAYER_PRESETS: Record<
       omr_corridor: true,
       metro_area_boundaries: true,
       corridor_aois: true,
+      connectivity_need: true,
+    },
+  },
+  connect: {
+    label: "Need lines",
+    blurb: "Roads outside stop catchments",
+    choropleth: "gap",
+    layers: {
+      wards: true,
+      zones: false,
+      stops: false,
+      shelters: false,
+      mrts_lines: true,
+      mrts_stations: true,
+      hubs: true,
+      catchment_400m: false,
+      catchment_800m: false,
+      omr_corridor: false,
+      metro_area_boundaries: false,
+      corridor_aois: false,
+      connectivity_need: true,
     },
   },
 };

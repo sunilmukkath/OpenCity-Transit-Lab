@@ -26,6 +26,7 @@ from shapely.ops import unary_union
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_metro_extension import build_metro_extension  # noqa: E402
+from build_connectivity_need import build_connectivity_need  # noqa: E402
 
 RAW = ROOT / "data" / "raw"
 PROCESSED = ROOT / "data" / "processed"
@@ -1533,6 +1534,33 @@ def main() -> int:
             "status": "unavailable",
             "reason": str(exc),
             "areas": [],
+        }
+
+    # Roads that need better feeder / mid-block connectivity
+    try:
+        conn = build_connectivity_need(
+            wards=layers.get("wards"),
+            stops=layers.get("stops"),
+            catchment_400=layers.get("catchment_400m"),
+            reports=reports,
+            hubs=layers.get("hubs"),
+        )
+        for key, meta in conn.get("layers", {}).items():
+            manifest["layers"][key] = meta
+            if meta.get("status") == "loaded" and meta.get("file"):
+                print(f"[ok] {meta['file']} ({meta.get('feature_count')} corridors)")
+        analyses["connectivity_need"] = conn.get("analysis") or {
+            "status": "unavailable",
+            "corridors": [],
+        }
+        for err in conn.get("errors") or []:
+            print(f"[warn] connectivity need: {err}", file=sys.stderr)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[fail] connectivity need: {exc}", file=sys.stderr)
+        analyses["connectivity_need"] = {
+            "status": "unavailable",
+            "reason": str(exc),
+            "corridors": [],
         }
 
     (PROCESSED / "analyses.json").write_text(json.dumps(analyses, indent=2))

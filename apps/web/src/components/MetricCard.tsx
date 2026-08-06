@@ -1,17 +1,15 @@
-import { StatusBadge } from "@/components/StatusBadge";
-
 export function MetricCard({
   label,
   value,
   subtext,
-  unavailableReason,
 }: {
   label: string;
   value?: string | number | null;
   subtext?: string;
+  /** @deprecated Empty cards are omitted; kept for call-site compatibility. */
   unavailableReason?: string;
 }) {
-  const unavailable = value === null || value === undefined || value === "";
+  if (value === null || value === undefined || value === "") return null;
 
   return (
     <div className="et-card p-4">
@@ -19,27 +17,11 @@ export function MetricCard({
         <p className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-muted)]">
           {label}
         </p>
-        {unavailable && <StatusBadge status="unavailable" />}
       </div>
-      {unavailable ? (
-        <>
-          <p className="font-[family-name:var(--font-display)] text-2xl text-[var(--ink-muted)]">
-            —
-          </p>
-          <p className="mt-2 text-sm text-[var(--ink-muted)]">
-            {unavailableReason ?? "Not shown — backing data not loaded. See Data Sources."}
-          </p>
-        </>
-      ) : (
-        <>
-          <p className="font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow)]">
-            {value}
-          </p>
-          {subtext ? (
-            <p className="mt-2 text-sm text-[var(--ink-muted)]">{subtext}</p>
-          ) : null}
-        </>
-      )}
+      <p className="font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow)]">
+        {value}
+      </p>
+      {subtext ? <p className="mt-2 text-sm text-[var(--ink-muted)]">{subtext}</p> : null}
     </div>
   );
 }

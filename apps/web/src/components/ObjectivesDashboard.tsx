@@ -11,7 +11,9 @@ import {
   FilterImpactStrip,
   useFilteredUniverse,
 } from "@/components/DashboardFilterBar";
+import { NextFlowLink } from "@/components/LabFlow";
 import { DEFAULT_FILTERS, type DashboardFilters } from "@/lib/dashboard-filters";
+import { LAB_FLOW } from "@/lib/lab-flow";
 import type { ObjectiveBlock, ObjectivesAnalysis } from "@/lib/objectives-types";
 import { fetchJson } from "@/lib/data-client";
 
@@ -48,6 +50,7 @@ function ObjectiveCard({ obj }: { obj: ObjectiveBlock }) {
       {obj.metrics && Object.keys(obj.metrics).length ? (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {Object.entries(obj.metrics)
+            .filter(([, v]) => v !== null && v !== undefined)
             .slice(0, 8)
             .map(([k, v]) => {
               let display: number | string | null = v as number | null;
@@ -78,11 +81,13 @@ function ObjectiveCard({ obj }: { obj: ObjectiveBlock }) {
             label: `${c.band} (n=${c.ward_count})`,
             count: c.mean_pt_index,
             color:
-              c.band === "lower_proxy"
+              c.band === "slum"
                 ? "#e11d48"
-                : c.band === "higher_proxy"
-                  ? "#38bdf8"
-                  : "#eab308",
+                : c.band === "non_slum"
+                  ? "#64748b"
+                  : String(c.band).startsWith("EC:")
+                    ? "#38bdf8"
+                    : "#eab308",
           }))}
           maxValue={100}
           formatValue={(n) => `mean PT index ${n}`}
@@ -147,7 +152,7 @@ function ObjectiveCard({ obj }: { obj: ObjectiveBlock }) {
               <tr>
                 <th className="px-3 py-2">Ward</th>
                 <th className="px-3 py-2">PT index</th>
-                <th className="px-3 py-2">SEC proxy</th>
+                <th className="px-3 py-2">Slum vs non-slum</th>
                 <th className="px-3 py-2">Slum %</th>
               </tr>
             </thead>
@@ -156,7 +161,9 @@ function ObjectiveCard({ obj }: { obj: ObjectiveBlock }) {
                 <tr key={w.label} className="border-t border-[var(--border)]">
                   <td className="px-3 py-2 font-medium text-[var(--ink)]">{w.label}</td>
                   <td className="px-3 py-2 text-[var(--yellow)]">{w.pt_index}</td>
-                  <td className="px-3 py-2">{w.sec_proxy_band ?? "—"}</td>
+                  <td className="px-3 py-2">
+                    {w.pct_slum_area != null && w.pct_slum_area > 0 ? "Slum" : "Non-slum"}
+                  </td>
                   <td className="px-3 py-2">
                     {w.pct_slum_area != null ? `${Number(w.pct_slum_area).toFixed(1)}%` : "—"}
                   </td>
@@ -347,14 +354,13 @@ export function ObjectivesDashboard() {
   return (
     <div className="space-y-6">
       <header className="rounded-2xl border border-[var(--border)] bg-[linear-gradient(145deg,rgba(16,52,102,0.9),rgba(10,31,74,0.96))] px-6 py-7">
-        <SectionEyebrow>Datajam objectives</SectionEyebrow>
+        <SectionEyebrow>Step 2 · Objectives</SectionEyebrow>
         <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)] sm:text-4xl">
           Problem statements — analysis &amp; charts
         </h1>
         <p className="mt-2 max-w-3xl text-sm text-[var(--ink-muted)]">{data.note}</p>
         <p className="mt-3 text-xs text-[var(--yellow)]">
-          Use filters below to slice by ward, zone, SEC proxy, slum vs non-slum, Economic Census
-          activity, gap band, and PT index — then jump into each objective.
+          Filter the city here, read the charts, then continue to the Map.
         </p>
         <p className="mt-3 text-xs text-[var(--ink-muted)]">
           Generated {new Date(data.generated_at).toLocaleString()}
@@ -363,31 +369,27 @@ export function ObjectivesDashboard() {
           aria-label="Objective flow"
           className="mt-4 flex flex-wrap items-center gap-2 text-xs text-[var(--ink-muted)]"
         >
-          <span className="font-semibold text-[var(--yellow)]">Flow:</span>
-          <span className="rounded-full border border-[var(--yellow)] bg-[rgba(255,229,102,0.12)] px-2.5 py-1 text-[var(--yellow)]">
-            1 · Charts (here)
-          </span>
-          <span aria-hidden>→</span>
-          <Link href="/map" className="rounded-full border border-[var(--border)] px-2.5 py-1 hover:border-[var(--accent)] hover:text-[var(--accent)]">
-            2 · Map
-          </Link>
-          <span aria-hidden>→</span>
-          <Link
-            href="/recommendations"
-            className="rounded-full border border-[var(--border)] px-2.5 py-1 hover:border-[var(--accent)] hover:text-[var(--accent)]"
-          >
-            3 · Actions
-          </Link>
-          <span aria-hidden>→</span>
-          <Link
-            href="/analytics?tab=spatial"
-            className="rounded-full border border-[var(--border)] px-2.5 py-1 hover:border-[var(--accent)] hover:text-[var(--accent)]"
-          >
-            4 · Ward reports
-          </Link>
+          <span className="font-semibold text-[var(--yellow)]">Path:</span>
+          {LAB_FLOW.map((f, i) => (
+            <span key={f.href} className="flex items-center gap-2">
+              {i > 0 ? <span aria-hidden>→</span> : null}
+              <Link
+                href={f.href}
+                className={
+                  f.step === 2
+                    ? "rounded-full border border-[var(--yellow)] bg-[rgba(255,229,102,0.12)] px-2.5 py-1 text-[var(--yellow)]"
+                    : "rounded-full border border-[var(--border)] px-2.5 py-1 hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                }
+              >
+                {f.step} · {f.label}
+              </Link>
+            </span>
+          ))}
         </nav>
         <div className="mt-4 flex flex-wrap gap-2">
-          {data.objectives.map((o) => (
+          {data.objectives
+            .filter((o) => o.status === "loaded" || o.status === "partial")
+            .map((o) => (
             <a
               key={o.id}
               href={`#${o.id}`}
@@ -396,12 +398,9 @@ export function ObjectivesDashboard() {
               {o.title.length > 42 ? `${o.title.slice(0, 40)}…` : o.title}
             </a>
           ))}
-          <Link
-            href="/recommendations"
-            className="rounded-full border border-[var(--yellow)] bg-[rgba(255,229,102,0.12)] px-3 py-1 text-xs font-semibold text-[var(--yellow)]"
-          >
-            Final actions →
-          </Link>
+        </div>
+        <div className="mt-5">
+          <NextFlowLink />
         </div>
       </header>
 
@@ -425,7 +424,7 @@ export function ObjectivesDashboard() {
               Filtered ward table
             </p>
             <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--ink)]">
-              Slice by SEC, slum, activity, gap &amp; PT index
+              Slice by slum vs non-slum, activity, gap &amp; PT index
             </h2>
           </div>
           <Link href="/analytics?tab=spatial" className="text-sm font-semibold text-[var(--accent)]">
@@ -439,7 +438,6 @@ export function ObjectivesDashboard() {
                 <th className="px-3 py-2">Ward</th>
                 <th className="px-3 py-2">Gap</th>
                 <th className="px-3 py-2">PT</th>
-                <th className="px-3 py-2">SEC</th>
                 <th className="px-3 py-2">Slum</th>
                 <th className="px-3 py-2">EC est.</th>
                 <th className="px-3 py-2">Stops</th>
@@ -452,14 +450,11 @@ export function ObjectivesDashboard() {
                   <td className="px-3 py-2 text-[var(--yellow)]">{w.gap_index ?? "—"}</td>
                   <td className="px-3 py-2">{w.pt_index ?? "—"}</td>
                   <td className="px-3 py-2 text-[var(--ink-muted)]">
-                    {w.sec_proxy_band?.replace("_proxy", "") ?? "—"}
-                  </td>
-                  <td className="px-3 py-2 text-[var(--ink-muted)]">
                     {w.has_slum
                       ? w.pct_slum_area != null
-                        ? `${w.pct_slum_area.toFixed(1)}%`
-                        : "yes"
-                      : "no"}
+                        ? `Slum ${w.pct_slum_area.toFixed(1)}%`
+                        : "Slum"
+                      : "Non-slum"}
                   </td>
                   <td className="px-3 py-2">{w.establishments?.toLocaleString() ?? "—"}</td>
                   <td className="px-3 py-2">{w.stop_count ?? "—"}</td>
@@ -467,7 +462,7 @@ export function ObjectivesDashboard() {
               ))}
               {!filteredWards.length ? (
                 <tr>
-                  <td colSpan={7} className="px-3 py-6 text-center text-[var(--ink-muted)]">
+                  <td colSpan={6} className="px-3 py-6 text-center text-[var(--ink-muted)]">
                     No wards match these filters.
                   </td>
                 </tr>
@@ -477,9 +472,18 @@ export function ObjectivesDashboard() {
         </div>
       </section>
 
-      {data.objectives.map((obj) => (
-        <ObjectiveCard key={obj.id} obj={obj} />
-      ))}
+      {data.objectives
+        .filter((o) => o.status === "loaded" || o.status === "partial")
+        .map((obj) => (
+          <ObjectiveCard key={obj.id} obj={obj} />
+        ))}
+
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-5 py-4">
+        <p className="text-sm text-[var(--ink-muted)]">
+          Charts done? Continue the path — Map next, then Actions.
+        </p>
+        <NextFlowLink />
+      </div>
     </div>
   );
 }

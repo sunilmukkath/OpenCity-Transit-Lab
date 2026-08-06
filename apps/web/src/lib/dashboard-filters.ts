@@ -2,12 +2,6 @@ import type { SpatialUnitReport } from "@/lib/types";
 
 export type UnitKind = "all" | "ward" | "zone";
 export type GapBandFilter = "all" | "severe" | "high" | "moderate" | "low";
-export type SecFilter =
-  | "all"
-  | "higher_proxy"
-  | "middle_proxy"
-  | "lower_proxy"
-  | "unknown";
 export type SlumFilter = "all" | "has_slum" | "no_slum" | "high_slum";
 export type ActivityFilter = "all" | "higher" | "middle" | "lower" | "unknown";
 export type PtBandFilter = "all" | "low" | "moderate" | "high" | "very_high";
@@ -16,7 +10,6 @@ export interface DashboardFilters {
   query: string;
   unit: UnitKind;
   gapBand: GapBandFilter;
-  sec: SecFilter;
   slum: SlumFilter;
   activity: ActivityFilter;
   ptBand: PtBandFilter;
@@ -28,7 +21,6 @@ export const DEFAULT_FILTERS: DashboardFilters = {
   query: "",
   unit: "all",
   gapBand: "all",
-  sec: "all",
   slum: "all",
   activity: "all",
   ptBand: "all",
@@ -38,7 +30,6 @@ export const DEFAULT_FILTERS: DashboardFilters = {
 
 export interface EnrichedWard extends SpatialUnitReport {
   pt_index: number | null;
-  sec_proxy_band: string | null;
   pct_slum_area: number | null;
   has_slum: boolean;
   slum_band: string | null;
@@ -71,7 +62,6 @@ export function filtersActive(f: DashboardFilters): number {
   if (f.query.trim()) n++;
   if (f.unit !== "all") n++;
   if (f.gapBand !== "all") n++;
-  if (f.sec !== "all") n++;
   if (f.slum !== "all") n++;
   if (f.activity !== "all") n++;
   if (f.ptBand !== "all") n++;
@@ -98,12 +88,9 @@ export function applyUnitFilters(
     if (f.gapBand !== "all" && band !== f.gapBand) return false;
 
     const socioActive =
-      f.sec !== "all" || f.slum !== "all" || f.activity !== "all" || f.ptBand !== "all";
+      f.slum !== "all" || f.activity !== "all" || f.ptBand !== "all";
 
     if (u.unit_type === "ward") {
-      const sec = u.sec_proxy_band || "unknown";
-      if (f.sec !== "all" && sec !== f.sec) return false;
-
       if (f.slum === "has_slum" && !u.has_slum) return false;
       if (f.slum === "no_slum" && u.has_slum) return false;
       if (f.slum === "high_slum" && (u.pct_slum_area ?? 0) < 10) return false;
@@ -121,8 +108,8 @@ export function applyUnitFilters(
       u.label,
       u.unit_type,
       band,
-      u.sec_proxy_band,
       u.slum_band,
+      u.has_slum ? "slum" : "non-slum",
       u.activity_band,
     ]
       .filter(Boolean)
@@ -153,7 +140,8 @@ export function summarizeFiltered(units: EnrichedWard[]) {
       : null;
   const severe = wards.filter((w) => String(w.gap_band) === "severe").length;
   const withSlum = wards.filter((w) => w.has_slum).length;
-  const lowerSec = wards.filter((w) => w.sec_proxy_band === "lower_proxy").length;
+  const nonSlum = wards.filter((w) => !w.has_slum).length;
+  const highSlum = wards.filter((w) => (w.pct_slum_area ?? 0) >= 10).length;
   const lowPt = wards.filter((w) => (w.pt_index ?? 100) < 40).length;
   const estSum = wards.reduce((s, w) => s + (w.establishments ?? 0), 0);
   return {
@@ -163,7 +151,8 @@ export function summarizeFiltered(units: EnrichedWard[]) {
     meanPt,
     severe,
     withSlum,
-    lowerSec,
+    nonSlum,
+    highSlum,
     lowPt,
     establishments: estSum,
   };

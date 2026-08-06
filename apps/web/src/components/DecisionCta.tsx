@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SpectrumOrbs, SpectrumRule } from "@/components/BrandMotif";
+import { NextFlowLink } from "@/components/LabFlow";
 
 export function DecisionCta() {
   return (
@@ -8,24 +9,19 @@ export function DecisionCta() {
       <SpectrumRule className="absolute inset-x-0 top-0" />
       <div className="relative z-10 max-w-2xl">
         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--yellow)]">
-          From objectives to action
+          Stay on the path
         </p>
         <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-semibold tracking-tight text-[var(--yellow-bright)] sm:text-4xl">
-          Done reading the charts?
+          Home → Objectives → Map → Actions → Reports
         </h2>
         <p className="mt-3 text-[var(--ink-muted)]">
-          Jump to prioritised recommendations, then verify on the map — including schools and
-          hospitals outside the 100m stop standard.
+          Finish the charts, then open the Map before Actions so recommendations are grounded
+          in space.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/recommendations" className="et-btn-primary">
-            Final recommendations
-          </Link>
-          <Link href="/map" className="et-btn-ghost">
-            Destinations on map
-          </Link>
-          <Link href="/analytics?tab=spatial" className="et-btn-ghost">
-            Ward Gap Index
+          <NextFlowLink />
+          <Link href="/objectives" className="et-btn-ghost">
+            Back to objectives
           </Link>
         </div>
       </div>

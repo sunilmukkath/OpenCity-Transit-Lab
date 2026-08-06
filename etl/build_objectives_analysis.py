@@ -110,8 +110,9 @@ def ward_pt_index(reports: dict[str, Any], sec: dict[str, Any] | None) -> dict[s
                 "stop_count": w.get("stop_count"),
                 "shelter_count": w.get("shelter_count"),
                 "hub_count": w.get("hub_count"),
-                "sec_proxy_band": s.get("sec_proxy_band"),
+                "has_slum": bool(s.get("has_slum")),
                 "pct_slum_area": s.get("pct_slum_area"),
+                "slum_band": s.get("slum_band"),
             }
         )
 
@@ -158,8 +159,8 @@ def equity_access(pt: dict[str, Any]) -> dict[str, Any]:
     return {
         "status": "partial" if pt.get("status") == "loaded" else "unavailable",
         "note": (
-            "Cross-tab of Ward PT Index with Census amenity SEC proxy + slum area share. "
-            "SEC is NOT household income. Equity claim limited to amenity/slum proxies."
+            "Cross-tab of Ward PT Index with OpenCity slum vs non-slum wards. "
+            "Not household income. Equity claim limited to slum polygon area share."
         ),
         "reason": None,
     }
@@ -199,7 +200,8 @@ def build_objectives_analysis() -> dict[str, Any]:
     if walk.get("counts"):
         c = walk["counts"]
         walk_obj["chart"] = [
-            {"label": "Within 500m", "km2": c.get("within_500m_km2"), "color": "#86efac"},
+            {"label": "Within 100m", "km2": c.get("within_100m_km2"), "color": "#2dd4bf"},
+            {"label": "100–500m", "km2": c.get("band_100_500m_km2"), "color": "#86efac"},
             {"label": "500m–1km", "km2": c.get("band_500_1000m_km2"), "color": "#fde047"},
             {"label": "Over 1km", "km2": c.get("over_1000m_km2"), "color": "#dc2626"},
         ]
@@ -262,16 +264,15 @@ def build_objectives_analysis() -> dict[str, Any]:
                 "label": label,
                 "pt_index": round(max(0.0, min(100.0, 100.0 - float(gap))), 1),
                 "gap_index": round(float(gap), 1),
-                "sec_proxy_band": s.get("sec_proxy_band"),
+                "has_slum": bool(s.get("has_slum")),
                 "pct_slum_area": s.get("pct_slum_area"),
+                "slum_band": s.get("slum_band"),
             }
         )
 
-    cross = {"higher_proxy": [], "middle_proxy": [], "lower_proxy": [], "unknown": []}
+    cross = {"slum": [], "non_slum": []}
     for r in full_rows:
-        band = r.get("sec_proxy_band") or "unknown"
-        if band not in cross:
-            band = "unknown"
+        band = "slum" if r.get("has_slum") else "non_slum"
         cross[band].append(r["pt_index"])
 
     equity_chart = []
@@ -289,25 +290,31 @@ def build_objectives_analysis() -> dict[str, Any]:
 
     equity: dict[str, Any] = {
         "id": "equal_access",
-        "title": "Equal access across neighbourhoods (SEC / slum proxy)",
+        "title": "Equal access across neighbourhoods (slum vs non-slum)",
         "status": "partial" if full_rows and sec.get("status") == "loaded" else (
             "loaded" if full_rows else "unavailable"
         ),
         "summary": (
-            "Compares Ward PT Index across SEC amenity proxy bands and slum area share. "
-            "This is NOT household income or official poverty status."
+            "Compares Ward PT Index for slum vs non-slum wards using OpenCity slum polygon "
+            "area share. This is NOT household income or official poverty status."
         ),
-        "sec_counts": sec.get("counts") or {},
+        "slum_counts": {
+            "slum_wards": sum(1 for r in full_rows if r.get("has_slum")),
+            "non_slum_wards": sum(1 for r in full_rows if not r.get("has_slum")),
+            "high_slum_share": sum(1 for r in full_rows if (r.get("pct_slum_area") or 0) >= 10),
+        },
         "chart": equity_chart,
         "underserved_examples": [
             r
-            for r in sorted(full_rows, key=lambda x: (x.get("pt_index") or 0, -(x.get("pct_slum_area") or 0)))
-            if (r.get("sec_proxy_band") == "lower_proxy" or (r.get("pct_slum_area") or 0) >= 10)
-            and (r.get("pt_index") or 100) < 45
+            for r in sorted(
+                full_rows,
+                key=lambda x: (x.get("pt_index") or 0, -(x.get("pct_slum_area") or 0)),
+            )
+            if r.get("has_slum") and (r.get("pt_index") or 100) < 45
         ][:15],
         "limitations": [
             "No verified income surface at ward level.",
-            "SEC proxy from Census 2011 amenities (wards 1–155) + OpenCity slum polygons.",
+            "Slum flag = OpenCity slum polygon intersection with GCC wards (area share).",
         ],
     }
 
@@ -457,8 +464,8 @@ def build_objectives_analysis() -> dict[str, Any]:
         if ec.get("status") == "loaded":
             equity["status"] = "loaded"
             equity["summary"] = (
-                "Ward PT Index cross-tabbed with Census amenity SEC proxy / slum share, "
-                "plus Economic Census establishment & worker activity by ward code."
+                "Ward PT Index by slum vs non-slum, plus Economic Census establishment "
+                "& worker activity by ward code."
             )
             equity["economic_census"] = {
                 "status": "loaded",
@@ -480,7 +487,7 @@ def build_objectives_analysis() -> dict[str, Any]:
             equity["limitations"] = [
                 "Economic Census WC→GCC ward_label join is best-effort (District=2 / State=33).",
                 "EC measures establishments/workers — not household income.",
-                "SEC proxy from Census 2011 amenities + OpenCity slum polygons.",
+                "Slum flag = OpenCity slum polygon intersection with GCC wards.",
             ]
 
     # Recommendations synthesized from loaded objectives
@@ -517,10 +524,10 @@ def build_objectives_analysis() -> dict[str, Any]:
             {
                 "priority": "high",
                 "objective": "equal_access",
-                "title": "Target lower-SEC / higher-slum wards with weak PT index",
+                "title": "Target slum wards with weak PT index",
                 "detail": (
-                    f"{len(equity['underserved_examples'])} example wards combine lower amenity proxy "
-                    "or elevated slum share with weak Ward PT Index. Treat as indicative — verify on ground."
+                    f"{len(equity['underserved_examples'])} example slum wards also show weak "
+                    "Ward PT Index. Treat as indicative — verify on ground."
                 ),
                 "map_href": "/map",
             }

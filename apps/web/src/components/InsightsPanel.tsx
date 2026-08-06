@@ -28,7 +28,7 @@ type InsightView =
   | "coverage"
   | "corridors"
   | "needlines"
-  | "sec"
+  | "slum"
   | "walkkm";
 
 function fmt(n: number | null | undefined, digits = 0): string {
@@ -160,9 +160,9 @@ export function InsightsPanel() {
     );
   }, [data, query, wardFilterOn, filteredWardSet]);
 
-  const secWards = useMemo(() => {
+  const slumWards = useMemo(() => {
     const list = [...(data?.sec_proxy?.wards ?? [])].sort(
-      (a, b) => (b.amenity_deprivation ?? 0) - (a.amenity_deprivation ?? 0)
+      (a, b) => (b.pct_slum_area ?? 0) - (a.pct_slum_area ?? 0)
     );
     if (!wardFilterOn) return list;
     return list.filter((w) => filteredWardSet.has(String(w.label)));
@@ -206,7 +206,7 @@ export function InsightsPanel() {
           ["coverage", "Catchment coverage", cov?.status === "loaded"],
           ["corridors", "OMR / South", data.metro_corridors?.status === "loaded" || data.metro_extension?.status === "loaded"],
           ["needlines", "Need lines", data.connectivity_need?.status === "loaded"],
-          ["sec", "SEC / Slum", data.sec_proxy?.status === "loaded"],
+          ["slum", "Slum vs non-slum", data.sec_proxy?.status === "loaded"],
           ["walkkm", "Walk km", data.walk_distance_bands?.status === "loaded"],
         ] as const
       ).filter((row) => row[2]) as [InsightView, string, boolean][],
@@ -715,15 +715,15 @@ export function InsightsPanel() {
         </section>
       ) : null}
 
-      {view === "sec" ? (
+      {view === "slum" ? (
         <section className="space-y-4">
           <div className="et-card border-[rgba(251,113,133,0.35)] p-4 text-sm text-[var(--ink-muted)]">
-            {data.sec_proxy?.note ??
-              "Census 2011 amenity/asset proxy + OpenCity slum area share. Not household income."}
+            Slum vs non-slum from OpenCity slum polygon intersection with GCC wards. Share of
+            ward area in slum polygons — not household income.
           </div>
           {!data.sec_proxy?.wards?.length ? (
             <div className="et-card p-5 text-sm text-[var(--ink-muted)]">
-              SEC / slum proxy unavailable. Place Census HH-14 + slum KML under{" "}
+              Slum join unavailable. Place OpenCity slum KML under{" "}
               <code>data/raw/census_sec/</code> and run{" "}
               <code>etl/build_sec_proxy.py</code>.
             </div>
@@ -731,24 +731,28 @@ export function InsightsPanel() {
             <>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <MetricCard
-                  label="Lower proxy wards"
-                  value={data.sec_proxy.counts?.lower_proxy}
-                  subtext="Lower amenity and/or high slum share"
-                />
-                <MetricCard
-                  label="Amenity joined"
-                  value={data.sec_proxy.counts?.wards_amenity_joined}
-                  subtext="HH-14 wards 1–155 by number"
-                />
-                <MetricCard
-                  label="Wards with slums"
+                  label="Slum wards"
                   value={data.sec_proxy.counts?.wards_with_slum}
                   subtext="Intersect OpenCity slum polygons"
                 />
                 <MetricCard
-                  label="Amenity unavailable"
-                  value={data.sec_proxy.counts?.wards_amenity_unavailable}
-                  subtext="Mostly wards 156–200"
+                  label="Non-slum wards"
+                  value={
+                    data.sec_proxy.wards.filter((w) => !w.has_slum).length
+                  }
+                  subtext="No slum polygon intersection"
+                />
+                <MetricCard
+                  label="High slum share"
+                  value={
+                    data.sec_proxy.wards.filter((w) => (w.pct_slum_area ?? 0) >= 10).length
+                  }
+                  subtext="≥10% of ward area"
+                />
+                <MetricCard
+                  label="In current filter"
+                  value={slumWards.length}
+                  subtext="Respects dashboard filters"
                 />
               </div>
               <div className="overflow-hidden rounded-xl border border-[var(--border)]">
@@ -756,30 +760,34 @@ export function InsightsPanel() {
                   <thead className="bg-white/[0.04] text-[10px] uppercase tracking-wide text-[var(--ink-muted)]">
                     <tr>
                       <th className="px-3 py-2">Ward</th>
-                      <th className="px-3 py-2">SEC proxy</th>
+                      <th className="px-3 py-2">Slum vs non-slum</th>
                       <th className="px-3 py-2">Slum %</th>
-                      <th className="px-3 py-2">Deprivation</th>
-                      <th className="px-3 py-2">Banking %</th>
+                      <th className="px-3 py-2">Band</th>
                     </tr>
                   </thead>
                   <tbody>
                     {(wardFilterOn
-                      ? secWards
-                      : data.sec_proxy.priority_lower_proxy ??
-                        data.sec_proxy.wards.filter((w) => w.sec_proxy_band === "lower_proxy")
+                      ? slumWards
+                      : [...data.sec_proxy.wards].sort(
+                          (a, b) => (b.pct_slum_area ?? 0) - (a.pct_slum_area ?? 0)
+                        )
                     )
                       .slice(0, 40)
                       .map((w) => (
                         <tr key={w.label} className="border-t border-[var(--border)]">
                           <td className="px-3 py-2 font-semibold text-[var(--ink)]">{w.label}</td>
                           <td className="px-3 py-2">
-                            <BandChip label={w.sec_proxy_band ?? "—"} tone="weak" />
+                            <BandChip
+                              label={w.has_slum ? "slum" : "non-slum"}
+                              tone={w.has_slum ? "high" : "strong"}
+                            />
                           </td>
                           <td className="px-3 py-2 text-[var(--yellow)]">
                             {fmt(w.pct_slum_area, 1)}%
                           </td>
-                          <td className="px-3 py-2">{fmt(w.amenity_deprivation, 0)}</td>
-                          <td className="px-3 py-2">{fmt(w.banking_pct, 0)}</td>
+                          <td className="px-3 py-2 text-[var(--ink-muted)]">
+                            {w.slum_band ?? "—"}
+                          </td>
                         </tr>
                       ))}
                   </tbody>
@@ -791,7 +799,7 @@ export function InsightsPanel() {
             href="/map"
             className="inline-flex text-sm font-semibold text-[var(--accent)]"
           >
-            Open map with SEC / Slum preset →
+            Open map with Slum preset →
           </a>
         </section>
       ) : null}
@@ -800,7 +808,7 @@ export function InsightsPanel() {
         <section className="space-y-4">
           <div className="et-card border-[rgba(239,68,68,0.35)] p-4 text-sm text-[var(--ink-muted)]">
             {data.walk_distance_bands?.note ??
-              "Crow-flies to existing stops/hubs. Study includes GCC + OMR south (Kelambakkam → Mahabs). Red = over 1km. Proposed metro Unavailable."}
+              "Crow-flies to existing stops/hubs. Bands: ≤100m, 100–500m, 500m–1km, >1km. Study includes GCC + OMR south. Red = over 1km."}
           </div>
           {!data.walk_distance_bands || data.walk_distance_bands.status !== "loaded" ? (
             <div className="et-card p-5 text-sm text-[var(--ink-muted)]">
@@ -808,12 +816,21 @@ export function InsightsPanel() {
               <code>etl/build_walk_distance_bands.py</code> after stops are loaded.
             </div>
           ) : (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
               <MetricCard
-                label="Within 500m"
+                label="Within 100m"
                 value={
-                  data.walk_distance_bands.counts?.within_500m_km2 != null
-                    ? `${fmt(data.walk_distance_bands.counts.within_500m_km2, 1)} km²`
+                  data.walk_distance_bands.counts?.within_100m_km2 != null
+                    ? `${fmt(data.walk_distance_bands.counts.within_100m_km2, 1)} km²`
+                    : null
+                }
+                subtext={`${fmt(data.walk_distance_bands.counts?.pct_within_100m, 1)}% of study · teal`}
+              />
+              <MetricCard
+                label="100m–500m"
+                value={
+                  data.walk_distance_bands.counts?.band_100_500m_km2 != null
+                    ? `${fmt(data.walk_distance_bands.counts.band_100_500m_km2, 1)} km²`
                     : null
                 }
                 subtext="Green on map"
@@ -843,7 +860,7 @@ export function InsightsPanel() {
                     ? `${fmt(data.walk_distance_bands.counts.study_area_km2, 1)} km²`
                     : null
                 }
-                subtext="GCC ward union"
+                subtext="GCC + OMR south"
               />
             </div>
           )}

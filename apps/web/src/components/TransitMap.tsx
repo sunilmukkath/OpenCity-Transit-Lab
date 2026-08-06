@@ -71,13 +71,9 @@ function formatPopupProps(props: Record<string, unknown>): string {
     "note",
     "gap_index",
     "gap_band",
-    "sec_proxy_band",
-    "amenity_band",
-    "amenity_deprivation",
+    "has_slum",
     "pct_slum_area",
     "slum_band",
-    "banking_pct",
-    "car_pct",
     "need_band",
     "need_score",
     "unmet_length_m",
@@ -134,17 +130,28 @@ function wardFillExpression(
   stopExtent: { min: number; max: number } | null,
   gapExtent: { min: number; max: number } | null
 ): ExpressionSpecification | string {
-  if (choropleth === "sec") {
+  if (choropleth === "slum") {
     return [
-      "match",
-      ["to-string", ["get", "sec_proxy_band"]],
-      "higher_proxy",
-      "#38bdf8",
-      "middle_proxy",
-      "#eab308",
-      "lower_proxy",
-      "#e11d48",
-      "#94a3b8",
+      "case",
+      [
+        "any",
+        ["==", ["get", "has_slum"], true],
+        [">", ["coalesce", ["to-number", ["get", "pct_slum_area"]], 0], 0],
+      ],
+      [
+        "interpolate",
+        ["linear"],
+        ["coalesce", ["to-number", ["get", "pct_slum_area"]], 0],
+        0,
+        "#fca5a5",
+        5,
+        "#f87171",
+        10,
+        "#ef4444",
+        25,
+        "#b91c1c",
+      ],
+      "#64748b",
     ];
   }
   if (choropleth === "gap" && gapExtent) {
@@ -273,6 +280,10 @@ const LAYER_STACK: {
           "fill-color": [
             "match",
             ["get", "band"],
+            "within_100m",
+            "#2dd4bf",
+            "band_100_500m",
+            "#86efac",
             "within_500m",
             "#86efac",
             "band_500_1000m",
@@ -288,7 +299,9 @@ const LAYER_STACK: {
             0.78,
             "band_500_1000m",
             0.32,
-            0.18,
+            "within_100m",
+            0.55,
+            0.22,
           ],
         },
       },
@@ -303,6 +316,8 @@ const LAYER_STACK: {
             "#7f1d1d",
             "band_500_1000m",
             "#a16207",
+            "within_100m",
+            "#0f766e",
             "#166534",
           ],
           "line-width": [
@@ -310,6 +325,8 @@ const LAYER_STACK: {
             ["get", "band"],
             "over_1000m",
             1.8,
+            "within_100m",
+            1.2,
             0.5,
           ],
           "line-opacity": [
@@ -317,6 +334,8 @@ const LAYER_STACK: {
             ["get", "band"],
             "over_1000m",
             0.95,
+            "within_100m",
+            0.85,
             0.45,
           ],
         },

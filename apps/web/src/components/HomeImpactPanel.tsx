@@ -28,7 +28,7 @@ export function HomeImpactPanel() {
             Filter the city before you decide
           </h2>
           <p className="mt-1 max-w-2xl text-sm text-[var(--ink-muted)]">
-            Ward · zone · gap · SEC proxy · slum · Economic Census activity · PT index — same
+            Ward · zone · gap · slum vs non-slum · Economic Census activity · PT index — same
             controls as Objectives and Reports.
           </p>
         </div>

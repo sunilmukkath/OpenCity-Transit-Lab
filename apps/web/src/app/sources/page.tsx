@@ -1,5 +1,4 @@
 import { StatusBadge } from "@/components/StatusBadge";
-import { RealtimePanel } from "@/components/RealtimePanel";
 import { ProvenanceStrip } from "@/components/ProvenanceStrip";
 import { fetchManifest } from "@/lib/data";
 import type { ManifestSource } from "@/lib/types";
@@ -105,16 +104,24 @@ export default async function SourcesPage() {
         </p>
       </section>
 
-      {grouped.map(({ category, items }) => (
+      {grouped.map(({ category, items }) => {
+        const visible = items.filter(
+          (src) =>
+            src.status === "loaded" ||
+            src.status === "partial" ||
+            Boolean(src.portal || src.url)
+        );
+        if (!visible.length) return null;
+        return (
         <section key={category}>
           <h2 className="mb-3 font-[family-name:var(--font-display)] text-xl font-semibold">
             {category}
             <span className="ml-2 text-sm font-normal text-[var(--ink-muted)]">
-              ({items.length})
+              ({visible.length})
             </span>
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
-            {items.map((src) => (
+            {visible.map((src) => (
               <article
                 key={src.id}
                 className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm"
@@ -182,7 +189,8 @@ export default async function SourcesPage() {
             ))}
           </div>
         </section>
-      ))}
+        );
+      })}
 
       {skipped.length ? (
         <details className="rounded-xl border border-dashed border-[var(--border)] bg-[var(--bg-card)] p-4">
@@ -243,34 +251,6 @@ export default async function SourcesPage() {
           </table>
         </div>
       </section>
-
-      {(manifest?.unavailable_analytics ?? []).length ? (
-      <section>
-        <h2 className="mb-3 font-[family-name:var(--font-display)] text-xl font-semibold">
-          Analytics intentionally withheld
-        </h2>
-        <div className="grid gap-3 md:grid-cols-2">
-          {(manifest?.unavailable_analytics ?? []).map((item) => (
-            <article
-              key={item.id}
-              className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4"
-            >
-              <div className="mb-2 flex items-center justify-between gap-2">
-                <h3 className="font-semibold">{item.name}</h3>
-                <StatusBadge status={item.status} />
-              </div>
-              <p className="text-sm text-[var(--ink-muted)]">{item.reason}</p>
-              <p className="mt-2 text-sm">
-                <span className="font-semibold">Needed: </span>
-                {item.needed}
-              </p>
-            </article>
-          ))}
-        </div>
-      </section>
-      ) : null}
-
-      <RealtimePanel />
 
       <section className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5">
         <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">

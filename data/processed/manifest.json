@@ -978,8 +978,8 @@
     "walk_distance_bands": {
       "status": "loaded",
       "file": "walk_distance_bands.geojson",
-      "feature_count": 3,
-      "notes": "Crow-flies from existing GTFS stops + MRTS/metro hubs. Study = GCC wards + OMR corridor buffer + Tambaram/Chengalpattu/Mahabalipuram. Proposed metro stations not included (no verified open station points). Not street-network walk; not population-weighted.",
+      "feature_count": 4,
+      "notes": "Crow-flies from existing GTFS stops + MRTS/metro hubs. Bands: \u2264100m, 100\u2013500m, 500m\u20131km, >1km. Study = GCC wards + OMR corridor buffer + Tambaram/Chengalpattu/Mahabalipuram. Proposed metro stations not included (no verified open station points). Not street-network walk; not population-weighted.",
       "attributes": [
         "band",
         "label",

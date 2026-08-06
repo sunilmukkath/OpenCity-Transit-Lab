@@ -234,7 +234,11 @@ export function AnalyticsDashboard() {
   const filteredSources = useMemo(() => {
     const q = query.trim().toLowerCase();
     return sources.filter((s) => {
-      if (statusFilter !== "all" && s.status !== statusFilter) return false;
+      if (statusFilter === "all") {
+        if (s.status === "unavailable" || s.status === "not_connected") return false;
+      } else if (s.status !== statusFilter) {
+        return false;
+      }
       const cat = SOURCE_CATEGORY[s.id] ?? "gap";
       if (categoryFilter !== "all" && categoryFilter !== "realtime" && categoryFilter !== "gap") {
         if (cat !== categoryFilter) return false;
@@ -254,7 +258,11 @@ export function AnalyticsDashboard() {
   const filteredLayers = useMemo(() => {
     const q = query.trim().toLowerCase();
     return layers.filter((l) => {
-      if (statusFilter !== "all" && l.status !== statusFilter) return false;
+      if (statusFilter === "all") {
+        if (l.status === "unavailable" || l.status === "not_connected") return false;
+      } else if (l.status !== statusFilter) {
+        return false;
+      }
       const cat = LAYER_CATEGORY[l.id] ?? "gap";
       if (categoryFilter !== "all" && categoryFilter !== "realtime" && categoryFilter !== "gap") {
         if (cat !== categoryFilter) return false;
@@ -274,21 +282,11 @@ export function AnalyticsDashboard() {
     if (categoryFilter !== "all" && categoryFilter !== "realtime") return [];
     const q = query.trim().toLowerCase();
     return manifest.realtime.filter((r) => {
+      if (r.status === "unavailable" || r.status === "not_connected") {
+        if (statusFilter === "all") return false;
+      }
       if (statusFilter !== "all" && r.status !== statusFilter) return false;
       if (q && ![r.name, r.would_unlock, r.id].join(" ").toLowerCase().includes(q)) {
-        return false;
-      }
-      return true;
-    });
-  }, [manifest, categoryFilter, statusFilter, query]);
-
-  const filteredGaps = useMemo(() => {
-    if (!manifest) return [];
-    if (categoryFilter !== "all" && categoryFilter !== "gap") return [];
-    const q = query.trim().toLowerCase();
-    return manifest.unavailable_analytics.filter((g) => {
-      if (statusFilter !== "all" && g.status !== statusFilter) return false;
-      if (q && ![g.name, g.reason, g.needed].join(" ").toLowerCase().includes(q)) {
         return false;
       }
       return true;
@@ -527,24 +525,24 @@ export function AnalyticsDashboard() {
               </div>
               <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
                 <ul className="space-y-2">
-                  {Object.keys(mapLayers).map((id) => {
+                  {Object.keys(mapLayers)
+                    .filter((id) => layerIsReady(manifest.layers[id]))
+                    .map((id) => {
                     const layer = manifest.layers[id];
-                    const ready = layerIsReady(layer);
                     return (
                       <li key={id}>
                         <label className="flex cursor-pointer items-center justify-between gap-2 rounded-lg border border-[var(--border)] px-2 py-2 text-sm">
                           <span className="flex min-w-0 items-center gap-2 text-[var(--ink)]">
                             <input
                               type="checkbox"
-                              disabled={!ready}
-                              checked={Boolean(mapLayers[id] && ready)}
+                              checked={Boolean(mapLayers[id])}
                               onChange={() => toggleMapLayer(id)}
                             />
                             <span className="truncate" title={id}>
                               {id === "connectivity_need" ? "need_lines (service gaps)" : id}
                             </span>
                           </span>
-                          <StatusBadge status={ready ? "loaded" : layer?.status || "unavailable"} />
+                          <StatusBadge status={layer?.status || "loaded"} />
                         </label>
                       </li>
                     );
@@ -735,8 +733,7 @@ export function AnalyticsDashboard() {
                 Filtered catalog
               </h3>
               <p className="text-sm text-[var(--ink-muted)]">
-                {filteredSources.length} sources · {filteredLayers.length} layers ·{" "}
-                {filteredRealtime.length} realtime · {filteredGaps.length} gaps
+                {filteredSources.length} sources · {filteredLayers.length} layers
               </p>
             </div>
 
@@ -815,9 +812,12 @@ export function AnalyticsDashboard() {
               </table>
             </div>
 
-            {(filteredRealtime.length > 0 || filteredGaps.length > 0) && (
+            {(filteredRealtime.filter((r) => r.status === "loaded" || r.status === "partial")
+              .length > 0) && (
               <div className="grid gap-3 md:grid-cols-2">
-                {filteredRealtime.map((r) => (
+                {filteredRealtime
+                  .filter((r) => r.status === "loaded" || r.status === "partial")
+                  .map((r) => (
                   <article
                     key={r.id}
                     className="rounded-xl border border-dashed border-[var(--border)] bg-white/[0.03] p-4"
@@ -828,22 +828,6 @@ export function AnalyticsDashboard() {
                     </div>
                     <p className="text-sm text-[var(--ink-muted)]">{r.would_unlock}</p>
                     <p className="mt-2 text-xs text-[var(--ink-muted)]">{r.how_to_plug}</p>
-                  </article>
-                ))}
-                {filteredGaps.map((g) => (
-                  <article
-                    key={g.id}
-                    className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4"
-                  >
-                    <div className="mb-2 flex items-center justify-between gap-2">
-                      <h4 className="font-semibold text-[var(--ink)]">{g.name}</h4>
-                      <StatusBadge status={g.status} />
-                    </div>
-                    <p className="text-sm text-[var(--ink-muted)]">{g.reason}</p>
-                    <p className="mt-2 text-sm">
-                      <span className="font-semibold text-[var(--yellow)]">Needed: </span>
-                      <span className="text-[var(--ink-muted)]">{g.needed}</span>
-                    </p>
                   </article>
                 ))}
               </div>

@@ -10,7 +10,6 @@ import {
   type DashboardFilters,
   type EnrichedWard,
   type GapBandFilter,
-  type SecFilter,
   type SlumFilter,
   type ActivityFilter,
   type PtBandFilter,
@@ -71,7 +70,6 @@ export function useEnrichedUniverse() {
           return {
             ...u,
             pt_index: pt,
-            sec_proxy_band: null,
             pct_slum_area: null,
             has_slum: false,
             slum_band: null,
@@ -80,16 +78,15 @@ export function useEnrichedUniverse() {
             activity_band: "unknown",
           };
         }
-        const sec = secBy.get(String(u.label));
+        const slum = secBy.get(String(u.label));
         const e = ecBy.get(String(u.label));
         const establishments = e?.establishments ?? null;
         return {
           ...u,
           pt_index: pt,
-          sec_proxy_band: sec?.sec_proxy_band ?? null,
-          pct_slum_area: sec?.pct_slum_area ?? null,
-          has_slum: Boolean(sec?.has_slum),
-          slum_band: sec?.slum_band ?? null,
+          pct_slum_area: slum?.pct_slum_area ?? null,
+          has_slum: Boolean(slum?.has_slum),
+          slum_band: slum?.slum_band ?? null,
           establishments,
           total_workers: e?.total_workers ?? null,
           activity_band: activityBandOf(establishments, q33, q66),
@@ -142,7 +139,7 @@ export function DashboardFilterBar({
             Filters
           </p>
           <p className="mt-0.5 text-sm text-[var(--ink-muted)]">
-            Ward · zone · gap band · SEC proxy · slum · economic activity · PT index
+            Ward · zone · gap band · slum vs non-slum · economic activity · PT index
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -247,30 +244,16 @@ export function DashboardFilterBar({
           </select>
         </label>
         <label className="block text-xs">
-          <span className="mb-1 block text-[var(--ink-muted)]">SEC proxy</span>
-          <select
-            className={`w-full ${selectCls}`}
-            value={filters.sec}
-            onChange={(e) => set("sec", e.target.value as SecFilter)}
-          >
-            <option value="all">All SEC bands</option>
-            <option value="lower_proxy">Lower amenity</option>
-            <option value="middle_proxy">Middle</option>
-            <option value="higher_proxy">Higher amenity</option>
-            <option value="unknown">Unknown / no join</option>
-          </select>
-        </label>
-        <label className="block text-xs">
-          <span className="mb-1 block text-[var(--ink-muted)]">Slum</span>
+          <span className="mb-1 block text-[var(--ink-muted)]">Slum vs non-slum</span>
           <select
             className={`w-full ${selectCls}`}
             value={filters.slum}
             onChange={(e) => set("slum", e.target.value as SlumFilter)}
           >
             <option value="all">Slum + non-slum</option>
-            <option value="has_slum">Has slum polygons</option>
-            <option value="no_slum">No slum polygons</option>
-            <option value="high_slum">Slum area ≥10%</option>
+            <option value="has_slum">Slum wards</option>
+            <option value="no_slum">Non-slum wards</option>
+            <option value="high_slum">High slum share (≥10%)</option>
           </select>
         </label>
         <label className="block text-xs">
@@ -315,22 +298,25 @@ export function FilterImpactStrip({
 }) {
   const s = summarizeFiltered(units);
   const cards = [
-    { label: "Wards in view", value: s.wards.toLocaleString() },
+    { label: "Wards in view", value: String(s.wards) },
     {
       label: "Mean Gap Index",
-      value: s.meanGap != null ? String(s.meanGap) : "—",
+      value: s.meanGap != null ? String(s.meanGap) : null,
       sub: cityMeanGap != null ? `City ${cityMeanGap}` : undefined,
     },
-    { label: "Mean PT index", value: s.meanPt != null ? String(s.meanPt) : "—" },
-    { label: "Severe gap", value: s.severe.toLocaleString() },
-    { label: "With slum area", value: s.withSlum.toLocaleString() },
-    { label: "Lower SEC proxy", value: s.lowerSec.toLocaleString() },
-    { label: "PT index <40", value: s.lowPt.toLocaleString() },
+    { label: "Mean PT index", value: s.meanPt != null ? String(s.meanPt) : null },
+    { label: "Severe gap", value: String(s.severe) },
+    { label: "Slum wards", value: String(s.withSlum) },
+    { label: "Non-slum wards", value: String(s.nonSlum) },
+    { label: "PT index <40", value: String(s.lowPt) },
     {
       label: "EC establishments",
-      value: s.establishments ? s.establishments.toLocaleString() : "—",
+      value: s.establishments ? s.establishments.toLocaleString() : null,
     },
-  ];
+  ].filter((c) => c.value != null);
+
+  if (!cards.length) return null;
+
   return (
     <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8">
       {cards.map((c) => (

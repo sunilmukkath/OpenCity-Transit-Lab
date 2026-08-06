@@ -9,6 +9,7 @@ import {
   FilterImpactStrip,
   useFilteredUniverse,
 } from "@/components/DashboardFilterBar";
+import { NextFlowLink } from "@/components/LabFlow";
 import { DEFAULT_FILTERS, type DashboardFilters } from "@/lib/dashboard-filters";
 import type { ObjectivesAnalysis } from "@/lib/objectives-types";
 import { fetchJson } from "@/lib/data-client";
@@ -72,18 +73,17 @@ export function RecommendationsPanel() {
   }
 
   const loaded = data.objectives.filter((o) => o.status === "loaded" || o.status === "partial");
-  const gaps = data.objectives.filter((o) => o.status === "unavailable");
 
   return (
     <div className="space-y-6">
       <header className="rounded-2xl border border-[var(--border)] bg-[linear-gradient(145deg,rgba(16,52,102,0.9),rgba(10,31,74,0.96))] px-6 py-7">
-        <SectionEyebrow>Decision support</SectionEyebrow>
+        <SectionEyebrow>Step 4 · Actions</SectionEyebrow>
         <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)]">
           Final actions &amp; insights
         </h1>
         <p className="mt-2 max-w-3xl text-sm text-[var(--ink-muted)]">
-          Prioritised moves from Objectives evidence. Filter by ward, zone, SEC, slum, or
-          economic activity to focus where to act first — then verify on the Map.
+          Prioritised moves from Objectives evidence. Filter the slice, then continue to Reports
+          for ward briefs — or go back to the Map to verify.
         </p>
         <div className="mt-4 flex flex-wrap gap-2 text-xs">
           <span className="rounded-full border border-[var(--border)] px-3 py-1 text-[var(--ink-muted)]">
@@ -93,8 +93,17 @@ export function RecommendationsPanel() {
             href="/objectives"
             className="rounded-full border border-[var(--accent)] px-3 py-1 font-semibold text-[var(--accent)]"
           >
-            Full objective charts →
+            ← Objectives
           </Link>
+          <Link
+            href="/map"
+            className="rounded-full border border-[var(--border)] px-3 py-1 font-semibold text-[var(--ink-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
+          >
+            ← Map
+          </Link>
+        </div>
+        <div className="mt-5">
+          <NextFlowLink />
         </div>
       </header>
 
@@ -125,7 +134,6 @@ export function RecommendationsPanel() {
                 <th className="px-3 py-2">Ward</th>
                 <th className="px-3 py-2">Gap</th>
                 <th className="px-3 py-2">PT</th>
-                <th className="px-3 py-2">SEC</th>
                 <th className="px-3 py-2">Slum</th>
                 <th className="px-3 py-2">EC est.</th>
               </tr>
@@ -137,21 +145,18 @@ export function RecommendationsPanel() {
                   <td className="px-3 py-2 text-[var(--yellow)]">{w.gap_index ?? "—"}</td>
                   <td className="px-3 py-2">{w.pt_index ?? "—"}</td>
                   <td className="px-3 py-2 text-[var(--ink-muted)]">
-                    {w.sec_proxy_band?.replace("_proxy", "") ?? "—"}
-                  </td>
-                  <td className="px-3 py-2 text-[var(--ink-muted)]">
                     {w.has_slum
                       ? w.pct_slum_area != null
-                        ? `${w.pct_slum_area.toFixed(1)}%`
-                        : "yes"
-                      : "no"}
+                        ? `Slum ${w.pct_slum_area.toFixed(1)}%`
+                        : "Slum"
+                      : "Non-slum"}
                   </td>
                   <td className="px-3 py-2">{w.establishments?.toLocaleString() ?? "—"}</td>
                 </tr>
               ))}
               {!priorityWards.length ? (
                 <tr>
-                  <td colSpan={6} className="px-3 py-6 text-center text-[var(--ink-muted)]">
+                  <td colSpan={5} className="px-3 py-6 text-center text-[var(--ink-muted)]">
                     No wards match — loosen filters.
                   </td>
                 </tr>
@@ -214,7 +219,7 @@ export function RecommendationsPanel() {
         </ul>
       </section>
 
-      {gaps.length || data.objectives.some((o) => o.status === "partial") ? (
+      {data.objectives.some((o) => o.status === "partial") ? (
         <section className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5">
           <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">
             Partial coverage notes
@@ -236,14 +241,15 @@ export function RecommendationsPanel() {
       ) : null}
 
       <div className="flex flex-wrap gap-3">
-        <Link href="/objectives" className="et-btn-primary">
-          Objective charts
-        </Link>
+        <NextFlowLink />
         <Link href="/map" className="et-btn-ghost">
-          Map
+          ← Map
+        </Link>
+        <Link href="/objectives" className="et-btn-ghost">
+          ← Objectives
         </Link>
         <Link href="/sources" className="et-btn-ghost">
-          Data sources
+          Sources
         </Link>
       </div>
     </div>

@@ -47,7 +47,8 @@ export function MapLegend({
     sections.push({
       title: "Walk to stop / hub",
       items: [
-        { kind: "fill", color: "#86efac", label: "Within 500m" },
+        { kind: "fill", color: "#2dd4bf", label: "Within 100m" },
+        { kind: "fill", color: "#86efac", label: "100m – 500m" },
         { kind: "fill", color: "#fde047", label: "500m – 1km" },
         { kind: "fill", color: "#dc2626", label: "Over 1km (priority)" },
       ],
@@ -55,14 +56,14 @@ export function MapLegend({
   }
 
   if (visibility.wards) {
-    if (choropleth === "sec") {
+    if (choropleth === "slum") {
       sections.push({
-        title: "Ward SEC proxy",
+        title: "Slum vs non-slum",
         items: [
-          { kind: "fill", color: "#38bdf8", label: "Higher amenity" },
-          { kind: "fill", color: "#eab308", label: "Middle" },
-          { kind: "fill", color: "#e11d48", label: "Lower amenity" },
-          { kind: "fill", color: "#94a3b8", label: "Unavailable" },
+          { kind: "fill", color: "#64748b", label: "Non-slum" },
+          { kind: "fill", color: "#fca5a5", label: "Slum (low share)" },
+          { kind: "fill", color: "#ef4444", label: "Slum ≥10%" },
+          { kind: "fill", color: "#b91c1c", label: "Slum ≥25%" },
         ],
       });
     } else if (choropleth === "gap") {

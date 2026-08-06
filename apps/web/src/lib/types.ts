@@ -263,9 +263,12 @@ export interface AdvancedAnalyses {
     method?: Record<string, string>;
     counts?: {
       study_area_km2?: number;
+      within_100m_km2?: number;
+      band_100_500m_km2?: number;
       within_500m_km2?: number;
       band_500_1000m_km2?: number;
       over_1000m_km2?: number;
+      pct_within_100m?: number;
       pct_over_1000m?: number;
     };
   };

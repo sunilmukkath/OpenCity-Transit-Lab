@@ -11797,11 +11797,12 @@
   },
   "walk_distance_bands": {
     "status": "loaded",
-    "note": "Crow-flies from existing GTFS stops + MRTS/metro hubs. Study = GCC wards + OMR corridor buffer + Tambaram/Chengalpattu/Mahabalipuram. Proposed metro stations not included (no verified open station points). Not street-network walk; not population-weighted.",
+    "note": "Crow-flies from existing GTFS stops + MRTS/metro hubs. Bands: \u2264100m, 100\u2013500m, 500m\u20131km, >1km. Study = GCC wards + OMR corridor buffer + Tambaram/Chengalpattu/Mahabalipuram. Proposed metro stations not included (no verified open station points). Not street-network walk; not population-weighted.",
     "method": {
       "access_points": "GTFS stops \u222a hubs \u222a MRTS stations (existing only)",
       "study_area": "GCC wards \u222a OMR buffer \u222a metro town polygons",
-      "within_500m": "union of 500m access buffers \u2229 study",
+      "within_100m": "union of 100m access buffers \u2229 study",
+      "band_100_500m": "(500m buffer \u2212 100m buffer) \u2229 study",
       "band_500_1000m": "(1000m buffer \u2212 500m buffer) \u2229 study",
       "over_1000m": "study \u2212 1000m access buffer (rendered red)",
       "proposed_metro": "unavailable \u2014 no verified open proposed-station points"
@@ -11836,16 +11837,19 @@
     },
     "counts": {
       "study_area_km2": 1564.12,
+      "within_100m_km2": 71.56,
+      "band_100_500m_km2": 551.07,
       "within_500m_km2": 622.63,
       "band_500_1000m_km2": 355.59,
       "over_1000m_km2": 585.9,
+      "pct_within_100m": 4.6,
       "pct_over_1000m": 37.5
     }
   },
   "objectives": {
     "status": "loaded",
     "file": "objectives_analysis.json",
-    "generated_at": "2026-08-06T17:00:18.714638+00:00"
+    "generated_at": "2026-08-06T17:32:35.335738+00:00"
   },
   "economic_census": {
     "status": "loaded",

@@ -3,9 +3,8 @@ import { promises as fs } from "fs";
 import path from "path";
 import { fetchManifest, fetchMetrics, layerIsReady } from "@/lib/data";
 import { MetricCard } from "@/components/MetricCard";
-import { DecisionCta } from "@/components/DecisionCta";
 import { SectionEyebrow, SpectrumOrbs, SpectrumRule } from "@/components/BrandMotif";
-import { HomeImpactPanel } from "@/components/HomeImpactPanel";
+import { LAB_FLOW } from "@/lib/lab-flow";
 import type { ObjectivesAnalysis } from "@/lib/objectives-types";
 
 async function loadObjectives(): Promise<ObjectivesAnalysis | null> {
@@ -18,13 +17,6 @@ async function loadObjectives(): Promise<ObjectivesAnalysis | null> {
   }
 }
 
-const FLOW = [
-  { step: "1", label: "Objectives", href: "/objectives", blurb: "Charts for each problem statement" },
-  { step: "2", label: "Map", href: "/map", blurb: "See gaps spatially" },
-  { step: "3", label: "Actions", href: "/recommendations", blurb: "Prioritised recommendations" },
-  { step: "4", label: "Evidence", href: "/analytics", blurb: "Ward reports & inventory" },
-];
-
 export default async function HomePage() {
   const [manifest, metrics, objectives] = await Promise.all([
     fetchManifest(),
@@ -35,7 +27,9 @@ export default async function HomePage() {
   const loadedLayers = manifest
     ? Object.values(manifest.layers).filter((l) => layerIsReady(l)).length
     : 0;
-  const objList = objectives?.objectives ?? [];
+  const objList = (objectives?.objectives ?? []).filter(
+    (o) => o.status === "loaded" || o.status === "partial"
+  );
 
   return (
     <div className="space-y-10">
@@ -43,7 +37,7 @@ export default async function HomePage() {
         <SpectrumOrbs />
         <SpectrumRule className="absolute inset-x-0 top-0" />
         <div className="relative z-10">
-          <span className="et-pill et-fade-up">Datajam objectives · verified layers only</span>
+          <span className="et-pill et-fade-up">Step 1 of 5 · Home</span>
           <p className="et-fade-up et-fade-up-delay-1 mt-5 text-sm font-semibold uppercase tracking-[0.16em] text-[var(--yellow)]">
             OpenCity Transit Lab
           </p>
@@ -51,18 +45,15 @@ export default async function HomePage() {
             Answer Chennai PT questions with evidence
           </h1>
           <p className="et-fade-up et-fade-up-delay-2 mt-4 max-w-2xl text-lg text-[var(--ink-muted)]">
-            Walk gaps, interchanges, equity, ward PT index, schools &amp; hospitals (≤100m),
-            CMP congestion corridors, and fleet trends — then act from the recommendations.
+            Follow one path: Objectives charts → Map gaps → Actions → Ward reports. Sources
+            stay available for provenance.
           </p>
           <div className="et-fade-up et-fade-up-delay-3 mt-7 flex flex-wrap gap-3">
             <Link href="/objectives" className="et-btn-primary">
-              Start with objectives
+              Next: 2. Objectives →
             </Link>
             <Link href="/map" className="et-btn-ghost">
-              Open map
-            </Link>
-            <Link href="/recommendations" className="et-btn-ghost">
-              Final actions
+              Skip to map
             </Link>
           </div>
           {manifest ? (
@@ -78,17 +69,24 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <HomeImpactPanel />
-
       <section>
         <SectionEyebrow>Recommended path</SectionEyebrow>
         <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-semibold text-[var(--ink)]">
-          How to use this lab
+          Home → Objectives → Map → Actions → Reports
         </h2>
-        <ol className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {FLOW.map((f) => (
+        <p className="mt-1 max-w-2xl text-sm text-[var(--ink-muted)]">
+          Use the steps in order. Filters live on Objectives, Map, Actions, and Reports — not
+          before you start.
+        </p>
+        <ol className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {LAB_FLOW.map((f) => (
             <li key={f.href}>
-              <Link href={f.href} className="et-card block h-full p-4 transition hover:border-[var(--accent)]">
+              <Link
+                href={f.href}
+                className={`et-card block h-full p-4 transition hover:border-[var(--accent)] ${
+                  f.step === 1 ? "border-[var(--yellow)] bg-[rgba(255,229,102,0.06)]" : ""
+                }`}
+              >
                 <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--yellow)]">
                   Step {f.step}
                 </span>
@@ -103,13 +101,13 @@ export default async function HomePage() {
       <section>
         <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
           <div>
-            <SectionEyebrow>Problem statements</SectionEyebrow>
+            <SectionEyebrow>Step 2 preview</SectionEyebrow>
             <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-semibold text-[var(--ink)]">
-              Jump to an objective
+              Jump into an objective
             </h2>
           </div>
           <Link href="/objectives" className="text-sm font-semibold text-[var(--accent)]">
-            All charts →
+            All objective charts →
           </Link>
         </div>
         {objList.length ? (
@@ -140,55 +138,56 @@ export default async function HomePage() {
       </section>
 
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="et-stat">
-          <strong>{counts.wards?.toLocaleString() ?? "—"}</strong>
-          <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-            GCC wards
-          </p>
-        </div>
-        <div className="et-stat">
-          <strong>{counts.transit_stops?.toLocaleString() ?? "—"}</strong>
-          <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-            GTFS stops
-          </p>
-        </div>
-        <div className="et-stat">
-          <strong>
-            {counts.city_mean_gap_index != null
-              ? Number(counts.city_mean_gap_index).toFixed(1)
-              : "—"}
-          </strong>
-          <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-            Mean Gap Index
-          </p>
-        </div>
-        <div className="et-stat">
-          <strong>{objList.length || "—"}</strong>
-          <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-            Objectives with data
-          </p>
-        </div>
+        {[
+          { label: "GCC wards", value: counts.wards?.toLocaleString() },
+          { label: "GTFS stops", value: counts.transit_stops?.toLocaleString() },
+          {
+            label: "Mean Gap Index",
+            value:
+              counts.city_mean_gap_index != null
+                ? Number(counts.city_mean_gap_index).toFixed(1)
+                : null,
+          },
+          {
+            label: "Objectives with data",
+            value: objList.length ? String(objList.length) : null,
+          },
+        ]
+          .filter((s) => s.value != null && s.value !== "")
+          .map((s) => (
+            <div key={s.label} className="et-stat">
+              <strong>{s.value}</strong>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
+                {s.label}
+              </p>
+            </div>
+          ))}
       </section>
 
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <MetricCard label="Schools mapped" value={counts.schools ?? manifest?.layers?.schools?.feature_count} />
+        <MetricCard
+          label="Schools mapped"
+          value={counts.schools ?? manifest?.layers?.schools?.feature_count}
+        />
         <MetricCard
           label="Healthcare mapped"
           value={counts.healthcare ?? manifest?.layers?.healthcare?.feature_count}
         />
-        <MetricCard
-          label="Weak last-mile hubs"
-          value={counts.weak_last_mile_hubs}
-          unavailableReason="Run ETL hub analysis"
-        />
+        <MetricCard label="Weak last-mile hubs" value={counts.weak_last_mile_hubs} />
         <MetricCard
           label="High gap wards"
           value={counts.high_gap_wards ?? counts.severe_gap_wards}
-          unavailableReason="Run spatial reports"
         />
       </section>
 
-      <DecisionCta />
+      <div className="flex flex-wrap gap-3">
+        <Link href="/objectives" className="et-btn-primary">
+          Next: 2. Objectives →
+        </Link>
+        <Link href="/sources" className="et-btn-ghost">
+          Data sources
+        </Link>
+      </div>
     </div>
   );
 }

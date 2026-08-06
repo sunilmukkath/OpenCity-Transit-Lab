@@ -213,17 +213,12 @@ function UnitListItem({
       </p>
       {unit.unit_type === "ward" ? (
         <p className="mt-1 flex flex-wrap gap-1 text-[10px] text-[var(--ink-muted)]">
-          {enriched.sec_proxy_band ? (
-            <span className="rounded border border-[var(--border)] px-1.5 py-0.5">
-              SEC {enriched.sec_proxy_band.replace("_proxy", "")}
-            </span>
-          ) : null}
           {enriched.has_slum ? (
             <span className="rounded border border-[var(--border)] px-1.5 py-0.5">
-              slum {enriched.pct_slum_area != null ? `${enriched.pct_slum_area.toFixed(0)}%` : ""}
+              Slum{enriched.pct_slum_area != null ? ` ${enriched.pct_slum_area.toFixed(0)}%` : ""}
             </span>
           ) : (
-            <span className="rounded border border-[var(--border)] px-1.5 py-0.5">non-slum</span>
+            <span className="rounded border border-[var(--border)] px-1.5 py-0.5">Non-slum</span>
           )}
           {enriched.activity_band && enriched.activity_band !== "unknown" ? (
             <span className="rounded border border-[var(--border)] px-1.5 py-0.5">
@@ -285,7 +280,7 @@ function ReportDetail({
       </div>
 
       {unit.unit_type === "ward" ? (
-        <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
             <p className="text-[10px] uppercase text-[var(--ink-muted)]">PT index</p>
             <p className="text-lg font-semibold text-[var(--yellow)]">
@@ -293,18 +288,12 @@ function ReportDetail({
             </p>
           </div>
           <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
-            <p className="text-[10px] uppercase text-[var(--ink-muted)]">SEC proxy</p>
-            <p className="text-lg font-semibold text-[var(--ink)]">
-              {enriched.sec_proxy_band?.replace("_proxy", "") ?? "—"}
-            </p>
-          </div>
-          <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
-            <p className="text-[10px] uppercase text-[var(--ink-muted)]">Slum</p>
+            <p className="text-[10px] uppercase text-[var(--ink-muted)]">Slum vs non-slum</p>
             <p className="text-lg font-semibold text-[var(--ink)]">
               {enriched.has_slum
                 ? enriched.pct_slum_area != null
-                  ? `${enriched.pct_slum_area.toFixed(1)}%`
-                  : "Yes"
+                  ? `Slum · ${enriched.pct_slum_area.toFixed(1)}%`
+                  : "Slum"
                 : "Non-slum"}
             </p>
           </div>

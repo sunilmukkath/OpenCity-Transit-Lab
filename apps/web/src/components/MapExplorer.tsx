@@ -240,7 +240,7 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
               [
                 ["stops", "Stops"],
                 ["gap", "Gap"],
-                ["sec", "SEC"],
+                ["slum", "Slum"],
               ] as const
             ).map(([mode, label]) => (
               <button
@@ -263,24 +263,22 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
             Layers
           </span>
           <div className="flex flex-wrap gap-1">
-            {MAP_LAYER_META.filter((l) => (l.group ?? "core") === "core").map(
-              ({ key, label, short }) => {
-                const ready = layerIsReady(manifest?.layers[key]);
+            {MAP_LAYER_META.filter((l) => (l.group ?? "core") === "core")
+              .filter(({ key }) => layerIsReady(manifest?.layers[key]))
+              .map(({ key, label, short }) => {
                 const on = visibility[key];
                 return (
                   <button
                     key={key}
                     type="button"
                     title={label}
-                    disabled={!ready}
                     onClick={() => toggle(key)}
                     className={`${chipBase} ${on ? chipOn : chipOff}`}
                   >
                     {short}
                   </button>
                 );
-              }
-            )}
+              })}
           </div>
           {visibility.connectivity_need ? (
             <span className="w-full text-[10px] leading-snug text-[var(--ink-muted)] sm:w-auto">
@@ -295,24 +293,22 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
             Amenities
           </span>
           <div className="flex flex-wrap gap-1">
-            {MAP_LAYER_META.filter((l) => l.group === "amenities").map(
-              ({ key, label, short }) => {
-                const ready = layerIsReady(manifest?.layers[key]);
+            {MAP_LAYER_META.filter((l) => l.group === "amenities")
+              .filter(({ key }) => layerIsReady(manifest?.layers[key]))
+              .map(({ key, label, short }) => {
                 const on = visibility[key];
                 return (
                   <button
                     key={key}
                     type="button"
                     title={label}
-                    disabled={!ready}
                     onClick={() => toggle(key)}
                     className={`${chipBase} ${on ? chipOn : chipOff}`}
                   >
                     {short}
                   </button>
                 );
-              }
-            )}
+              })}
           </div>
           <span className="ml-auto text-[10px] text-[var(--ink-muted)]">
             {loadingCore ? "Loading…" : `${loadedCount} layers`}

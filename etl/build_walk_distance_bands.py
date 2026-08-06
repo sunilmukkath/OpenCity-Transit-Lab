@@ -7,8 +7,9 @@ Access points = GTFS stops ∪ MRTS/metro hubs (existing only — no proposed st
 Study area = GCC wards ∪ OMR corridor buffer ∪ Tambaram / Chengalpattu /
 Mahabalipuram study polygons (so Kelambakkam → Mahabs are included).
 
-Bands:
-  - within_500m
+Bands (mutually exclusive):
+  - within_100m
+  - band_100_500m
   - band_500_1000m
   - over_1000m (map as red)
 
@@ -180,15 +181,18 @@ def build_walk_distance_bands(
     access_m = access.to_crs(3857)
     study_union = study_geom.buffer(0)
 
+    buf100 = _union(access_m.geometry.buffer(100).values).buffer(0)
     buf500 = _union(access_m.geometry.buffer(500).values).buffer(0)
     buf1000 = _union(access_m.geometry.buffer(1000).values).buffer(0)
 
-    within_500 = study_union.intersection(buf500)
+    within_100 = study_union.intersection(buf100)
+    ring_100_500 = study_union.intersection(buf500.difference(buf100))
     ring_500_1000 = study_union.intersection(buf1000.difference(buf500))
     over_1000 = study_union.difference(buf1000)
 
     note = (
         "Crow-flies from existing GTFS stops + MRTS/metro hubs. "
+        "Bands: ≤100m, 100–500m, 500m–1km, >1km. "
         "Study = GCC wards + OMR corridor buffer + Tambaram/Chengalpattu/Mahabalipuram. "
         "Proposed metro stations not included (no verified open station points). "
         "Not street-network walk; not population-weighted."
@@ -196,7 +200,8 @@ def build_walk_distance_bands(
 
     rows = []
     for band, label, color_hint, geom in [
-        ("within_500m", "Within 500m of a transit stop/hub", "green", within_500),
+        ("within_100m", "Within 100m of a transit stop/hub", "teal", within_100),
+        ("band_100_500m", "100m–500m from nearest stop/hub", "green", ring_100_500),
         ("band_500_1000m", "500m–1000m from nearest stop/hub", "amber", ring_500_1000),
         ("over_1000m", "Over 1km from any stop/hub", "red", over_1000),
     ]:
@@ -229,6 +234,9 @@ def build_walk_distance_bands(
 
     study_km2 = float(study_union.area) / 1e6
     areas = {r["band"]: r["area_km2"] for r in rows}
+    within_500_km2 = round(
+        areas.get("within_100m", 0) + areas.get("band_100_500m", 0), 2
+    )
     result["layers"]["walk_distance_bands"] = {
         "status": "loaded",
         "file": "walk_distance_bands.geojson",
@@ -242,7 +250,8 @@ def build_walk_distance_bands(
         "method": {
             "access_points": "GTFS stops ∪ hubs ∪ MRTS stations (existing only)",
             "study_area": "GCC wards ∪ OMR buffer ∪ metro town polygons",
-            "within_500m": "union of 500m access buffers ∩ study",
+            "within_100m": "union of 100m access buffers ∩ study",
+            "band_100_500m": "(500m buffer − 100m buffer) ∩ study",
             "band_500_1000m": "(1000m buffer − 500m buffer) ∩ study",
             "over_1000m": "study − 1000m access buffer (rendered red)",
             "proposed_metro": "unavailable — no verified open proposed-station points",
@@ -251,9 +260,14 @@ def build_walk_distance_bands(
         "study": study_meta,
         "counts": {
             "study_area_km2": round(study_km2, 2),
-            "within_500m_km2": areas.get("within_500m", 0),
+            "within_100m_km2": areas.get("within_100m", 0),
+            "band_100_500m_km2": areas.get("band_100_500m", 0),
+            "within_500m_km2": within_500_km2,
             "band_500_1000m_km2": areas.get("band_500_1000m", 0),
             "over_1000m_km2": areas.get("over_1000m", 0),
+            "pct_within_100m": round(100 * areas.get("within_100m", 0) / study_km2, 1)
+            if study_km2
+            else None,
             "pct_over_1000m": round(100 * areas.get("over_1000m", 0) / study_km2, 1)
             if study_km2
             else None,
@@ -301,17 +315,6 @@ if __name__ == "__main__":
     if manifest_path.exists() and out["layers"].get("walk_distance_bands"):
         manifest = json.loads(manifest_path.read_text())
         manifest["layers"]["walk_distance_bands"] = out["layers"]["walk_distance_bands"]
-        # Mark proposed metro as unavailable until a verified point layer exists
-        manifest.setdefault("unavailable", [])
-        # keep list of dict gaps if present
-        if isinstance(manifest.get("unavailable"), list):
-            pass
-        manifest.setdefault("gaps", [])
-        gaps = manifest.get("gaps") if isinstance(manifest.get("gaps"), list) else []
-        # Prefer analyses / realtime style if used
-        if "unavailable_analyses" in manifest or "realtime" in manifest:
-            # add under a known structure if run_pipeline uses something else
-            pass
         manifest_path.write_text(json.dumps(manifest, indent=2))
 
     WEB.mkdir(parents=True, exist_ok=True)

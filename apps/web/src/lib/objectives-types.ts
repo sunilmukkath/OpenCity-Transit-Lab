@@ -48,16 +48,16 @@ export interface ObjectiveBlock {
   underserved_examples?: {
     label?: string;
     pt_index?: number;
-    sec_proxy_band?: string | null;
+    has_slum?: boolean;
     pct_slum_area?: number | null;
   }[];
-  sec_counts?: Record<string, number>;
+  slum_counts?: Record<string, number>;
   lowest_wards?: {
     label?: string;
     pt_index?: number;
     gap_index?: number;
     stop_count?: number;
-    sec_proxy_band?: string | null;
+    has_slum?: boolean;
   }[];
   highest_wards?: {
     label?: string;

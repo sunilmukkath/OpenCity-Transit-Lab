@@ -112,7 +112,7 @@ export const CHENNAI_VIEW = {
   zoom: 9.2,
 };
 
-export type ChoroplethMode = "stops" | "gap" | "sec";
+export type ChoroplethMode = "stops" | "gap" | "slum";
 
 export type LayerData = Partial<Record<MapLayerKey, FeatureCollection<Geometry>>>;
 
@@ -143,7 +143,7 @@ export const LAYER_PRESETS: Record<
 > = {
   walkkm: {
     label: "Walk km",
-    blurb: "Red = over 1km — includes OMR / Mahabs",
+    blurb: "≤100m teal · 100–500m green · >1km red — includes OMR / Mahabs",
     choropleth: "stops",
     layers: {
       ...CORE_OFF_AMENITIES,
@@ -232,10 +232,10 @@ export const LAYER_PRESETS: Record<
       metro_area_boundaries: false,
     },
   },
-  sec: {
-    label: "SEC",
-    blurb: "Amenity proxy on wards (not income)",
-    choropleth: "sec",
+  slum: {
+    label: "Slum",
+    blurb: "Slum vs non-slum wards (OpenCity polygons)",
+    choropleth: "slum",
     layers: {
       ...CORE_OFF_AMENITIES,
       wards: true,

@@ -177,6 +177,34 @@ export function InsightsPanel() {
   const coverageDetail: CatchmentCoverageRow | null =
     coverage.find((c) => c.label === selectedCoverage) ?? coverage[0] ?? null;
 
+  const insightTabs = useMemo(
+    () =>
+      (
+        [
+          ["hubs", "Hub last-mile", data?.hub_last_mile?.status === "loaded"],
+          ["shelters", "Shelter mismatch", data?.shelter_mismatch?.status === "loaded"],
+          ["coverage", "Catchment coverage", data?.catchment_coverage?.status === "loaded"],
+          [
+            "corridors",
+            "OMR / South",
+            data?.metro_corridors?.status === "loaded" ||
+              data?.metro_extension?.status === "loaded",
+          ],
+          ["needlines", "Need lines", data?.connectivity_need?.status === "loaded"],
+          ["slum", "Slum vs non-slum", data?.sec_proxy?.status === "loaded"],
+          ["walkkm", "Walk km", data?.walk_distance_bands?.status === "loaded"],
+        ] as const
+      ).filter((row) => row[2]) as [InsightView, string, boolean][],
+    [data]
+  );
+
+  useEffect(() => {
+    if (!insightTabs.length) return;
+    if (!insightTabs.some(([id]) => id === view)) {
+      setView(insightTabs[0][0]);
+    }
+  }, [insightTabs, view]);
+
   if (loading) {
     return <p className="text-sm text-[var(--ink-muted)]">Loading advanced analyses…</p>;
   }
@@ -196,29 +224,6 @@ export function InsightsPanel() {
   const hlm = data.hub_last_mile;
   const smm = data.shelter_mismatch;
   const cov = data.catchment_coverage;
-
-  const insightTabs = useMemo(
-    () =>
-      (
-        [
-          ["hubs", "Hub last-mile", hlm?.status === "loaded"],
-          ["shelters", "Shelter mismatch", smm?.status === "loaded"],
-          ["coverage", "Catchment coverage", cov?.status === "loaded"],
-          ["corridors", "OMR / South", data.metro_corridors?.status === "loaded" || data.metro_extension?.status === "loaded"],
-          ["needlines", "Need lines", data.connectivity_need?.status === "loaded"],
-          ["slum", "Slum vs non-slum", data.sec_proxy?.status === "loaded"],
-          ["walkkm", "Walk km", data.walk_distance_bands?.status === "loaded"],
-        ] as const
-      ).filter((row) => row[2]) as [InsightView, string, boolean][],
-    [data, hlm?.status, smm?.status, cov?.status]
-  );
-
-  useEffect(() => {
-    if (!insightTabs.length) return;
-    if (!insightTabs.some(([id]) => id === view)) {
-      setView(insightTabs[0][0]);
-    }
-  }, [insightTabs, view]);
 
   return (
     <div className="space-y-6">

@@ -29,6 +29,8 @@ from build_metro_extension import build_metro_extension  # noqa: E402
 from build_connectivity_need import build_connectivity_need  # noqa: E402
 from build_sec_proxy import build_sec_proxy  # noqa: E402
 from build_walk_distance_bands import build_walk_distance_bands  # noqa: E402
+from ingest_jam_catalog import ingest_jam_catalog  # noqa: E402
+from build_objectives_analysis import build_objectives_analysis  # noqa: E402
 
 RAW = ROOT / "data" / "raw"
 PROCESSED = ROOT / "data" / "processed"
@@ -1702,6 +1704,26 @@ def main() -> int:
     (PROCESSED / "metrics.json").write_text(json.dumps(metrics, indent=2))
     (PROCESSED / "manifest.json").write_text(json.dumps(manifest, indent=2))
     print("[ok] metrics.json + manifest.json")
+
+    # Datajam Sheet 2 catalog → sources + amenity layers
+    try:
+        jam = ingest_jam_catalog(manifest)
+        print(
+            f"[ok] jam catalog sources={jam.get('sources_upserted')} "
+            f"amenities={[k for k,v in (jam.get('layers') or {}).items() if (v or {}).get('status')=='loaded']}"
+        )
+        # reload manifest after jam upsert
+        manifest = json.loads((PROCESSED / "manifest.json").read_text())
+    except Exception as exc:  # noqa: BLE001
+        print(f"[fail] jam catalog ingest: {exc}", file=sys.stderr)
+
+    # Datajam problem-statement objectives + recommendations JSON
+    try:
+        obj = build_objectives_analysis()
+        statuses = [f"{o['id']}:{o.get('status')}" for o in obj.get("objectives", [])]
+        print(f"[ok] objectives_analysis ({', '.join(statuses)})")
+    except Exception as exc:  # noqa: BLE001
+        print(f"[fail] objectives analysis: {exc}", file=sys.stderr)
 
     copy_to_web(PROCESSED, WEB_PUBLIC)
     print(f"[ok] copied processed data → {WEB_PUBLIC}")

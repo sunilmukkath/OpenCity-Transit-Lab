@@ -19,7 +19,13 @@
     "shelter_mismatch_wards": 124,
     "zero_shelter_with_stops_wards": 46,
     "high_catchment_gap_wards": 14,
-    "city_mean_pct_outside_400m": 21.3
+    "city_mean_pct_outside_400m": 21.3,
+    "bus_stop_audit": 209,
+    "public_toilets": 613,
+    "schools": 2227,
+    "healthcare": 140,
+    "parks": 544,
+    "anganwadis": 1806
   },
   "unavailable": [
     "equity_sec",

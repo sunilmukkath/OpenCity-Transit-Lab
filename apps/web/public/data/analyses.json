@@ -11841,5 +11841,10 @@
       "over_1000m_km2": 585.9,
       "pct_over_1000m": 37.5
     }
+  },
+  "objectives": {
+    "status": "loaded",
+    "file": "objectives_analysis.json",
+    "generated_at": "2026-08-06T15:48:08.400101+00:00"
   }
 }

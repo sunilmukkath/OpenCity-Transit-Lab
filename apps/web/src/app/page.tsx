@@ -33,14 +33,14 @@ export default async function HomePage() {
             simulated live buses.
           </p>
           <div className="et-fade-up et-fade-up-delay-3 mt-7 flex flex-wrap gap-3">
-            <Link href="/analytics?tab=spatial" className="et-btn-primary">
-              Ward &amp; zone reports
+            <Link href="/objectives" className="et-btn-primary">
+              Objectives &amp; charts
+            </Link>
+            <Link href="/recommendations" className="et-btn-ghost">
+              Final insights
             </Link>
             <Link href="/analytics" className="et-btn-ghost">
-              Analytics overview
-            </Link>
-            <Link href="/map" className="et-btn-ghost">
-              Network map
+              Analytics
             </Link>
             <Link href="/sources" className="et-btn-ghost">
               Data Sources

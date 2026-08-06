@@ -31,6 +31,12 @@ const CORE_LAYERS: MapLayerKey[] = [
   "hubs",
   "wards",
   "stops",
+  "schools",
+  "healthcare",
+  "parks",
+  "public_toilets",
+  "anganwadis",
+  "bus_stop_audit",
 ];
 
 async function loadLayerBatch(
@@ -194,22 +200,56 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
             Layers
           </span>
           <div className="flex flex-wrap gap-1">
-            {MAP_LAYER_META.map(({ key, label, short }) => {
-              const ready = layerIsReady(manifest?.layers[key]);
-              const on = visibility[key];
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  title={label}
-                  disabled={!ready}
-                  onClick={() => toggle(key)}
-                  className={`${chipBase} ${on ? chipOn : chipOff}`}
-                >
-                  {short}
-                </button>
-              );
-            })}
+            {MAP_LAYER_META.filter((l) => (l.group ?? "core") === "core").map(
+              ({ key, label, short }) => {
+                const ready = layerIsReady(manifest?.layers[key]);
+                const on = visibility[key];
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    title={label}
+                    disabled={!ready}
+                    onClick={() => toggle(key)}
+                    className={`${chipBase} ${on ? chipOn : chipOff}`}
+                  >
+                    {short}
+                  </button>
+                );
+              }
+            )}
+          </div>
+          {visibility.connectivity_need ? (
+            <span className="w-full text-[10px] leading-snug text-[var(--ink-muted)] sm:w-auto">
+              Need lines = roads with long stretches &gt;400m from a stop (urgent / priority /
+              watch).
+            </span>
+          ) : null}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-[var(--border)] pt-2.5">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-muted)]">
+            Amenities
+          </span>
+          <div className="flex flex-wrap gap-1">
+            {MAP_LAYER_META.filter((l) => l.group === "amenities").map(
+              ({ key, label, short }) => {
+                const ready = layerIsReady(manifest?.layers[key]);
+                const on = visibility[key];
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    title={label}
+                    disabled={!ready}
+                    onClick={() => toggle(key)}
+                    className={`${chipBase} ${on ? chipOn : chipOff}`}
+                  >
+                    {short}
+                  </button>
+                );
+              }
+            )}
           </div>
           <span className="ml-auto text-[10px] text-[var(--ink-muted)]">
             {loadingCore ? "Loading…" : `${loadedCount} layers`}

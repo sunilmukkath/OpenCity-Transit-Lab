@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-05T08:31:02.906229+00:00",
+  "generated_at": "2026-08-06T15:20:43.183126+00:00",
   "platform": "OpenCity Transit Lab \u2014 Chennai Last-Mile Decision Support",
   "integrity_rule": "No fabricated metrics. Unavailable or not_connected when data is missing.",
   "sources": {
@@ -92,6 +92,644 @@
       "sha256": "db1da880f9ad93e352f6658df0e94a8b2d71cd1dc8bdfbb60fa3968a9b0ad3e6",
       "fetched_at": "2026-08-05T08:32:21.732987+00:00",
       "path": "data/raw/chennai-unified-gtfs.zip"
+    },
+    "jam_chennai-election-boundaries": {
+      "id": "jam_chennai-election-boundaries",
+      "name": "Constituencies map for Chennai",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/chennai-election-boundaries",
+      "portal": "https://data.opencity.in/dataset/chennai-election-boundaries",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Basic Maps",
+      "notes": "Constituencies map for Chennai \u2014 AC boundaries already used for SIR electors",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T15:20:35.920431+00:00",
+      "jam_catalog": true
+    },
+    "jam_gcc-ward-information": {
+      "id": "jam_gcc-ward-information",
+      "name": "wards and zones map",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/gcc-ward-information",
+      "portal": "https://data.opencity.in/dataset/gcc-ward-information",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Basic Maps",
+      "notes": "wards and zones map",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T15:20:35.920709+00:00",
+      "jam_catalog": true
+    },
+    "jam_india-pincode-maps-2025": {
+      "id": "jam_india-pincode-maps-2025",
+      "name": "Pin codes map",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/india-pincode-maps-2025",
+      "portal": "https://data.opencity.in/dataset/india-pincode-maps-2025",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Basic Maps",
+      "notes": "Pin codes map",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_chennai-master-plan-2026": {
+      "id": "jam_chennai-master-plan-2026",
+      "name": "Master Plan 2026",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/chennai-master-plan-2026",
+      "portal": "https://data.opencity.in/dataset/chennai-master-plan-2026",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Basic Maps",
+      "notes": "Master Plan 2026",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_chennai-mrts-data": {
+      "id": "jam_chennai-mrts-data",
+      "name": "MRTS line maps",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/chennai-mrts-data",
+      "portal": "https://data.opencity.in/dataset/chennai-mrts-data",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Public transport",
+      "notes": "MRTS line maps",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T15:20:35.920722+00:00",
+      "jam_catalog": true
+    },
+    "jam_chennai-bus-shelters": {
+      "id": "jam_chennai-bus-shelters",
+      "name": "Bus shelters map for Chennai",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/chennai-bus-shelters",
+      "portal": "https://data.opencity.in/dataset/chennai-bus-shelters",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Public transport",
+      "notes": "Bus shelters map for Chennai",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T15:20:35.920727+00:00",
+      "jam_catalog": true
+    },
+    "jam_chennai-comprehensive-mobility-plan": {
+      "id": "jam_chennai-comprehensive-mobility-plan",
+      "name": "Chennai CMP",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/chennai-comprehensive-mobility-plan",
+      "portal": "https://data.opencity.in/dataset/chennai-comprehensive-mobility-plan",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Public transport",
+      "notes": "Chennai CMP",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_chennai-mtc-performance-data": {
+      "id": "jam_chennai-mtc-performance-data",
+      "name": "MTC performance data, including fleet size, usage etc over the years",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/chennai-mtc-performance-data",
+      "portal": "https://data.opencity.in/dataset/chennai-mtc-performance-data",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Public transport",
+      "notes": "MTC performance data, including fleet size, usage etc over the years",
+      "status": "partial",
+      "fetched_at": "2026-08-06T15:20:36.313917+00:00",
+      "jam_catalog": true,
+      "bytes": 859
+    },
+    "jam_chennai-metro-monthly-usage-data": {
+      "id": "jam_chennai-metro-monthly-usage-data",
+      "name": "Metro monthly usage data from 2023 to 2026",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/chennai-metro-monthly-usage-data",
+      "portal": "https://data.opencity.in/dataset/chennai-metro-monthly-usage-data",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Public transport",
+      "notes": "Metro monthly usage data from 2023 to 2026",
+      "status": "partial",
+      "fetched_at": "2026-08-06T15:20:36.474190+00:00",
+      "jam_catalog": true,
+      "bytes": 3045
+    },
+    "jam_locations_of_metro_stations_mrts_and_bus_stops_as_per_osm": {
+      "id": "jam_locations_of_metro_stations_mrts_and_bus_stops_as_per_osm",
+      "name": "Locations of metro stations, MRTS and bus stops as per OSM",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://drive.google.com/drive/folders/1D7H3KZSAQb8AiBbEgVHvzVTr5XvIQyOb?usp=drive_link",
+      "portal": "https://drive.google.com/drive/folders/1D7H3KZSAQb8AiBbEgVHvzVTr5XvIQyOb?usp=drive_link",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Public transport",
+      "notes": "Locations of metro stations, MRTS and bus stops as per OSM \u2014 Drive folder has no machine-downloadable public file URL.",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_feeder_bus_availability_in_cmrl_website": {
+      "id": "jam_feeder_bus_availability_in_cmrl_website",
+      "name": "Feeder bus availability in CMRL website",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://chennaimetrorail.org/feeder-service/",
+      "portal": "https://chennaimetrorail.org/feeder-service/",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Public transport",
+      "notes": "Feeder bus availability in CMRL website \u2014 External link (not a local layer).",
+      "status": "not_connected",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_live_mtc_bus_information_can_be_exported_to_csv_and_used": {
+      "id": "jam_live_mtc_bus_information_can_be_exported_to_csv_and_used",
+      "name": "Live MTC bus information, can be exported to CSV and used.",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://ithuungalsoththu.vercel.app/",
+      "portal": "https://ithuungalsoththu.vercel.app/",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Public transport",
+      "notes": "Live MTC bus information, can be exported to CSV and used. \u2014 External link (not a local layer).",
+      "status": "not_connected",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_gtfs_for_mtc_and_cmrl_unofficial": {
+      "id": "jam_gtfs_for_mtc_and_cmrl_unofficial",
+      "name": "GTFS for MTC and CMRL (Unofficial)",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://github.com/ungalsoththu/ChennaiGTFS",
+      "portal": "https://github.com/ungalsoththu/ChennaiGTFS",
+      "license": "See OpenCity / source portal",
+      "kind": "gtfs",
+      "category": "Public transport",
+      "notes": "GTFS for MTC and CMRL (Unofficial)",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T15:20:36.474281+00:00",
+      "jam_catalog": true
+    },
+    "jam_chennai-bus-stop-audit-data": {
+      "id": "jam_chennai-bus-stop-audit-data",
+      "name": "CSV for bus shelter data (oorvani/nagariyal as well as ITDP)",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/chennai-bus-stop-audit-data",
+      "portal": "https://data.opencity.in/dataset/chennai-bus-stop-audit-data",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Public transport",
+      "notes": "CSV for bus shelter data (oorvani/nagariyal as well as ITDP)",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T15:20:37.310165+00:00",
+      "jam_catalog": true,
+      "bytes": 181833
+    },
+    "jam_daily_ridership_data_passenger_flow_data_and_parking_data_for_cmrl": {
+      "id": "jam_daily_ridership_data_passenger_flow_data_and_parking_data_for_cmrl",
+      "name": "Daily ridership data, passenger flow data and parking data for CMRL",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://chennai-transit-data.vercel.app/passenger",
+      "portal": "https://chennai-transit-data.vercel.app/passenger",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Public transport",
+      "notes": "Daily ridership data, passenger flow data and parking data for CMRL \u2014 External link (not a local layer).",
+      "status": "not_connected",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_chennai-parks": {
+      "id": "jam_chennai-parks",
+      "name": "Parks",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/chennai-parks",
+      "portal": "https://data.opencity.in/dataset/chennai-parks",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Amenities and Destinations",
+      "notes": "Parks",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T15:20:38.261683+00:00",
+      "jam_catalog": true,
+      "bytes": 190448
+    },
+    "jam_chennai-public-toilets": {
+      "id": "jam_chennai-public-toilets",
+      "name": "public toilets",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/chennai-public-toilets",
+      "portal": "https://data.opencity.in/dataset/chennai-public-toilets",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Amenities and Destinations",
+      "notes": "public toilets",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T15:20:38.707458+00:00",
+      "jam_catalog": true,
+      "bytes": 260652
+    },
+    "jam_chennai-schools": {
+      "id": "jam_chennai-schools",
+      "name": "schools and colleges",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/chennai-schools",
+      "portal": "https://data.opencity.in/dataset/chennai-schools",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Amenities and Destinations",
+      "notes": "schools and colleges",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T15:20:40.715352+00:00",
+      "jam_catalog": true,
+      "bytes": 770131
+    },
+    "jam_chennai-healthcare-uphcs-and-uchcs": {
+      "id": "jam_chennai-healthcare-uphcs-and-uchcs",
+      "name": "Healthcare facilities",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/chennai-healthcare-uphcs-and-uchcs",
+      "portal": "https://data.opencity.in/dataset/chennai-healthcare-uphcs-and-uchcs",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Amenities and Destinations",
+      "notes": "Healthcare facilities",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T15:20:41.042974+00:00",
+      "jam_catalog": true,
+      "bytes": 50164
+    },
+    "jam_chennai-anganwadis-icds-centres": {
+      "id": "jam_chennai-anganwadis-icds-centres",
+      "name": "Anganwadis",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/chennai-anganwadis-icds-centres",
+      "portal": "https://data.opencity.in/dataset/chennai-anganwadis-icds-centres",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Amenities and Destinations",
+      "notes": "Anganwadis",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T15:20:43.182847+00:00",
+      "jam_catalog": true,
+      "bytes": 660971
+    },
+    "jam_chennai-slums": {
+      "id": "jam_chennai-slums",
+      "name": "Slums map",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/chennai-slums",
+      "portal": "https://data.opencity.in/dataset/chennai-slums",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Socio-economic",
+      "notes": "Slums map",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T15:20:43.183086+00:00",
+      "jam_catalog": true
+    },
+    "jam_chennai-census-2011-data": {
+      "id": "jam_chennai-census-2011-data",
+      "name": "census 2011 data",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/chennai-census-2011-data",
+      "portal": "https://data.opencity.in/dataset/chennai-census-2011-data",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Socio-economic",
+      "notes": "census 2011 data \u2014 HH-14 / SEC proxy on wards",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T15:20:43.183091+00:00",
+      "jam_catalog": true
+    },
+    "jam_chennai-economic-census": {
+      "id": "jam_chennai-economic-census",
+      "name": "Economic census data",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.opencity.in/dataset/chennai-economic-census",
+      "portal": "https://data.opencity.in/dataset/chennai-economic-census",
+      "license": "See OpenCity / source portal",
+      "kind": "opencity",
+      "category": "Socio-economic",
+      "notes": "Economic census data",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_bus_shelter_dashboard": {
+      "id": "jam_bus_shelter_dashboard",
+      "name": "Bus shelter dashboard",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://alsanthosh.github.io/Bus_Stop_Audit_Site/",
+      "portal": "https://alsanthosh.github.io/Bus_Stop_Audit_Site/",
+      "license": "See OpenCity / source portal",
+      "kind": "dashboard",
+      "category": "Dashboards",
+      "notes": "Bus shelter dashboard \u2014 External link (not a local layer).",
+      "status": "not_connected",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_wri_dashboard_for_mobility_related_data_and_analysis": {
+      "id": "jam_wri_dashboard_for_mobility_related_data_and_analysis",
+      "name": "WRI dashboard for mobility related data and analysis",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://shift-transport.org",
+      "portal": "https://shift-transport.org",
+      "license": "See OpenCity / source portal",
+      "kind": "dashboard",
+      "category": "Dashboards",
+      "notes": "WRI dashboard for mobility related data and analysis \u2014 External link (not a local layer).",
+      "status": "not_connected",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_urbanuru_dashboard_for_transit_affinity_for_different_parts_of_a_city_select_che": {
+      "id": "jam_urbanuru_dashboard_for_transit_affinity_for_different_parts_of_a_city_select_che",
+      "name": "Urbanuru dashboard for transit affinity for different parts of a city. Select Chennai at the top right.",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://transit-affinity.urbanuru.in",
+      "portal": "https://transit-affinity.urbanuru.in",
+      "license": "See OpenCity / source portal",
+      "kind": "dashboard",
+      "category": "Dashboards",
+      "notes": "Urbanuru dashboard for transit affinity for different parts of a city. Select Chennai at the top right. \u2014 External link (not a local layer).",
+      "status": "not_connected",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_live_mtc_bus_information_can_be_exported_to_csv_and_used_2": {
+      "id": "jam_live_mtc_bus_information_can_be_exported_to_csv_and_used_2",
+      "name": "Live MTC bus information, can be exported to CSV and used.",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://ithuungalsoththu.vercel.app/",
+      "portal": "https://ithuungalsoththu.vercel.app/",
+      "license": "See OpenCity / source portal",
+      "kind": "dashboard",
+      "category": "Dashboards",
+      "notes": "Live MTC bus information, can be exported to CSV and used. \u2014 External link (not a local layer).",
+      "status": "not_connected",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_traffic_cost_computation": {
+      "id": "jam_traffic_cost_computation",
+      "name": "Traffic cost computation",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://commuteimpact.com/",
+      "portal": "https://commuteimpact.com/",
+      "license": "See OpenCity / source portal",
+      "kind": "dashboard",
+      "category": "Dashboards",
+      "notes": "Traffic cost computation \u2014 External link (not a local layer).",
+      "status": "not_connected",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_masterplan_viewer_for_chennai_city_and_chennai_region": {
+      "id": "jam_masterplan_viewer_for_chennai_city_and_chennai_region",
+      "name": "Masterplan viewer, for Chennai city and Chennai region",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://datsvarun.github.io/master-plan-viewer/",
+      "portal": "https://datsvarun.github.io/master-plan-viewer/",
+      "license": "See OpenCity / source portal",
+      "kind": "dashboard",
+      "category": "Dashboards",
+      "notes": "Masterplan viewer, for Chennai city and Chennai region \u2014 External link (not a local layer).",
+      "status": "not_connected",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_daily_ridership_data_passenger_flow_data_and_parking_data_for_cmrl_2": {
+      "id": "jam_daily_ridership_data_passenger_flow_data_and_parking_data_for_cmrl_2",
+      "name": "Daily ridership data, passenger flow data and parking data for CMRL",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://chennai-transit-data.vercel.app/passenger",
+      "portal": "https://chennai-transit-data.vercel.app/passenger",
+      "license": "See OpenCity / source portal",
+      "kind": "dashboard",
+      "category": "Dashboards",
+      "notes": "Daily ridership data, passenger flow data and parking data for CMRL \u2014 External link (not a local layer).",
+      "status": "not_connected",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_tngis_server": {
+      "id": "jam_tngis_server",
+      "name": "TNGIS server",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://tngis.tn.gov.in/tngismaps/wfs",
+      "portal": "https://tngis.tn.gov.in/tngismaps/wfs",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Servers",
+      "notes": "TNGIS server \u2014 WFS connector not wired.",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_dynamic_world_v1": {
+      "id": "jam_dynamic_world_v1",
+      "name": "Dynamic World V1",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_DYNAMICWORLD_V1",
+      "portal": "https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_DYNAMICWORLD_V1",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Satellite data",
+      "notes": "Dynamic World V1 \u2014 Satellite/raster; not ingested as local map layer.",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_nasa_modis_ndvi": {
+      "id": "jam_nasa_modis_ndvi",
+      "name": "NASA MODIS NDVI",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13A3",
+      "portal": "https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13A3",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Satellite data",
+      "notes": "NASA MODIS NDVI \u2014 Satellite/raster; not ingested as local map layer.",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_high_resolution_1m_global_canopy_height_maps": {
+      "id": "jam_high_resolution_1m_global_canopy_height_maps",
+      "name": "High Resolution 1m Global Canopy Height Maps",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://gee-community-catalog.org/projects/meta_trees/",
+      "portal": "https://gee-community-catalog.org/projects/meta_trees/",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Satellite data",
+      "notes": "High Resolution 1m Global Canopy Height Maps \u2014 Satellite/raster; not ingested as local map layer.",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_global_30m_landsat_tree_canopy_cover_v4": {
+      "id": "jam_global_30m_landsat_tree_canopy_cover_v4",
+      "name": "Global 30m Landsat Tree Canopy Cover v4",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://gee-community-catalog.org/projects/global_tcc/",
+      "portal": "https://gee-community-catalog.org/projects/global_tcc/",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Satellite data",
+      "notes": "Global 30m Landsat Tree Canopy Cover v4 \u2014 Satellite/raster; not ingested as local map layer.",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_global_forest_canopy_height_from_gedi_landsat": {
+      "id": "jam_global_forest_canopy_height_from_gedi_landsat",
+      "name": "Global Forest Canopy Height from GEDI & Landsat",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://gee-community-catalog.org/projects/gfch/",
+      "portal": "https://gee-community-catalog.org/projects/gfch/",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Satellite data",
+      "notes": "Global Forest Canopy Height from GEDI & Landsat \u2014 Satellite/raster; not ingested as local map layer.",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_global_impervious_surface_area_gisa_can_be_used_to_derive_permeable_surface": {
+      "id": "jam_global_impervious_surface_area_gisa_can_be_used_to_derive_permeable_surface",
+      "name": "Global Impervious Surface Area (GISA) - can be used to derive permeable surface",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://doi.org/10.5281/zenodo.14848113",
+      "portal": "https://doi.org/10.5281/zenodo.14848113",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Satellite data",
+      "notes": "Global Impervious Surface Area (GISA) - can be used to derive permeable surface \u2014 Satellite/raster; not ingested as local map layer.",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_zenodo_5791855": {
+      "id": "jam_zenodo_5791855",
+      "name": "Zenodo 5791855",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://doi.org/10.5281/zenodo.5791855",
+      "portal": "https://doi.org/10.5281/zenodo.5791855",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Satellite data",
+      "notes": "Satellite/raster; not ingested as local map layer.",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_temporal_trends_of_surface_water_across_indian_rivers_basins": {
+      "id": "jam_temporal_trends_of_surface_water_across_indian_rivers_basins",
+      "name": "Temporal trends of Surface water across\nIndian Rivers & Basins",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://gee-community-catalog.org/projects/india_river_trends/",
+      "portal": "https://gee-community-catalog.org/projects/india_river_trends/",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Satellite data",
+      "notes": "Temporal trends of Surface water across\nIndian Rivers & Basins \u2014 Satellite/raster; not ingested as local map layer.",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_global_surface_water_explorer": {
+      "id": "jam_global_surface_water_explorer",
+      "name": "Global surface water explorer",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://global-surface-water.appspot.com/download",
+      "portal": "https://global-surface-water.appspot.com/download",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Satellite data",
+      "notes": "Global surface water explorer \u2014 Satellite/raster; not ingested as local map layer.",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_global_forest_watch_open_data_portal_this_platform_while_focused_on_forests_also": {
+      "id": "jam_global_forest_watch_open_data_portal_this_platform_while_focused_on_forests_also",
+      "name": "Global Forest Watch Open Data Portal: This platform, while focused on forests, also provides data on wetlands and water bodies.",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://data.globalforestwatch.org/documents/927b81b1885247cf9a05ab1b9a859a6d/about",
+      "portal": "https://data.globalforestwatch.org/documents/927b81b1885247cf9a05ab1b9a859a6d/about",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Satellite data",
+      "notes": "Global Forest Watch Open Data Portal: This platform, while focused on forests, also provides data on wetlands and water bodies. \u2014 Satellite/raster; not ingested as local map layer.",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_bhuvan_portal_managed_by_the_indian_space_research_organisation_isro_this_portal": {
+      "id": "jam_bhuvan_portal_managed_by_the_indian_space_research_organisation_isro_this_portal",
+      "name": "Bhuvan Portal: Managed by the Indian Space Research Organisation (ISRO), this portal offers thematic data from satellite imagery. You can access and download layers such as \"Water Bodies\" and \"Water Bodies Fraction\" which are derived from satellites like Resourcesat.",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://bhuvan-app3.nrsc.gov.in/data/download/index.php?c=p&s=NICES&g=TS&p=wbf",
+      "portal": "https://bhuvan-app3.nrsc.gov.in/data/download/index.php?c=p&s=NICES&g=TS&p=wbf",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Satellite data",
+      "notes": "Bhuvan Portal: Managed by the Indian Space Research Organisation (ISRO), this portal offers thematic data from satellite imagery. You can access and download layers such as \"Water Bodies\" and \"Water Bodies Fraction\" which are derived from satellites like Resourcesat. \u2014 Satellite/raster; not ingested as local map layer.",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_national_wetland_atlas_this_atlas_prepared_by_the_space_applications_centre_isro": {
+      "id": "jam_national_wetland_atlas_this_atlas_prepared_by_the_space_applications_centre_isro",
+      "name": "National Wetland Atlas: This atlas, prepared by the Space Applications Centre (ISRO), inventories and assesses wetlands across India. While the main atlases are in PDF format, the data is derived from satellite\nimagery and provides detailed information on wetland types and areas.",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://vedas.sac.gov.in/en/National_Wetland_Inventory_and_Assessment_(NWIA)_Atlas.html",
+      "portal": "https://vedas.sac.gov.in/en/National_Wetland_Inventory_and_Assessment_(NWIA)_Atlas.html",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Satellite data",
+      "notes": "National Wetland Atlas: This atlas, prepared by the Space Applications Centre (ISRO), inventories and assesses wetlands across India. While the main atlases are in PDF format, the data is derived from satellite\nimagery and provides detailed information on wetland types and areas. \u2014 Satellite/raster; not ingested as local map layer.",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_bhuvan_portal_isro": {
+      "id": "jam_bhuvan_portal_isro",
+      "name": "Bhuvan Portal (ISRO)",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://bhuvan-app1.nrsc.gov.in/thematic/",
+      "portal": "https://bhuvan-app1.nrsc.gov.in/thematic/",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Satellite data",
+      "notes": "Bhuvan Portal (ISRO) \u2014 Satellite/raster; not ingested as local map layer.",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
+    },
+    "jam_open_government_data_ogd_platform_india_this_portal_has_a_greenery_tag_that_prov": {
+      "id": "jam_open_government_data_ogd_platform_india_this_portal_has_a_greenery_tag_that_prov",
+      "name": "Open Government Data (OGD) Platform India: This portal has a \"greenery\" tag that provides links to datasets on open spaces, parks, and natural landscapes, often for individual cities. You can search for specific cities to find relevant data.",
+      "publisher": "OpenCity Datajam Aug 2026 catalog",
+      "url": "https://www.data.gov.in/keywords/greenery",
+      "portal": "https://www.data.gov.in/keywords/greenery",
+      "license": "See OpenCity / source portal",
+      "kind": "external",
+      "category": "Satellite data",
+      "notes": "Open Government Data (OGD) Platform India: This portal has a \"greenery\" tag that provides links to datasets on open spaces, parks, and natural landscapes, often for individual cities. You can search for specific cities to find relevant data. \u2014 Satellite/raster; not ingested as local map layer.",
+      "status": "unavailable",
+      "fetched_at": null,
+      "jam_catalog": true
     }
   },
   "layers": {
@@ -287,6 +925,48 @@
         "area_km2",
         "note"
       ]
+    },
+    "bus_stop_audit": {
+      "status": "loaded",
+      "file": "bus_stop_audit.geojson",
+      "feature_count": 209,
+      "notes": "CSV for bus shelter data (oorvani/nagariyal as well as ITDP)",
+      "derived_from": "jam_chennai-bus-stop-audit-data"
+    },
+    "parks": {
+      "status": "loaded",
+      "file": "parks.geojson",
+      "feature_count": 544,
+      "notes": "Parks",
+      "derived_from": "jam_chennai-parks"
+    },
+    "public_toilets": {
+      "status": "loaded",
+      "file": "public_toilets.geojson",
+      "feature_count": 613,
+      "notes": "public toilets",
+      "derived_from": "jam_chennai-public-toilets"
+    },
+    "schools": {
+      "status": "loaded",
+      "file": "schools.geojson",
+      "feature_count": 2227,
+      "notes": "schools and colleges",
+      "derived_from": "jam_chennai-schools"
+    },
+    "healthcare": {
+      "status": "loaded",
+      "file": "healthcare.geojson",
+      "feature_count": 140,
+      "notes": "Healthcare facilities",
+      "derived_from": "jam_chennai-healthcare-uphcs-and-uchcs"
+    },
+    "anganwadis": {
+      "status": "loaded",
+      "file": "anganwadis.geojson",
+      "feature_count": 1806,
+      "notes": "Anganwadis",
+      "derived_from": "jam_chennai-anganwadis-icds-centres"
     }
   },
   "realtime": [
@@ -336,5 +1016,282 @@
     }
   ],
   "unavailable": [],
-  "gaps": []
+  "gaps": [],
+  "jam_catalog": {
+    "generated_from": "2026 Aug- Datasets and Problem Statements Chennai Public Transport.xlsx",
+    "count": 45,
+    "note": "Catalog from Datajam Aug 2026 workbook (Sheet 2 \u2014 Datasets).",
+    "entries": [
+      {
+        "id": "jam_chennai-election-boundaries",
+        "category": "Basic Maps",
+        "status": "loaded",
+        "layer_key": null
+      },
+      {
+        "id": "jam_gcc-ward-information",
+        "category": "Basic Maps",
+        "status": "loaded",
+        "layer_key": null
+      },
+      {
+        "id": "jam_india-pincode-maps-2025",
+        "category": "Basic Maps",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_chennai-master-plan-2026",
+        "category": "Basic Maps",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_chennai-mrts-data",
+        "category": "Public transport",
+        "status": "loaded",
+        "layer_key": null
+      },
+      {
+        "id": "jam_chennai-bus-shelters",
+        "category": "Public transport",
+        "status": "loaded",
+        "layer_key": null
+      },
+      {
+        "id": "jam_chennai-comprehensive-mobility-plan",
+        "category": "Public transport",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_chennai-mtc-performance-data",
+        "category": "Public transport",
+        "status": "partial",
+        "layer_key": null
+      },
+      {
+        "id": "jam_chennai-metro-monthly-usage-data",
+        "category": "Public transport",
+        "status": "partial",
+        "layer_key": null
+      },
+      {
+        "id": "jam_locations_of_metro_stations_mrts_and_bus_stops_as_per_osm",
+        "category": "Public transport",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_feeder_bus_availability_in_cmrl_website",
+        "category": "Public transport",
+        "status": "not_connected",
+        "layer_key": null
+      },
+      {
+        "id": "jam_live_mtc_bus_information_can_be_exported_to_csv_and_used",
+        "category": "Public transport",
+        "status": "not_connected",
+        "layer_key": null
+      },
+      {
+        "id": "jam_gtfs_for_mtc_and_cmrl_unofficial",
+        "category": "Public transport",
+        "status": "loaded",
+        "layer_key": null
+      },
+      {
+        "id": "jam_chennai-bus-stop-audit-data",
+        "category": "Public transport",
+        "status": "loaded",
+        "layer_key": "bus_stop_audit"
+      },
+      {
+        "id": "jam_daily_ridership_data_passenger_flow_data_and_parking_data_for_cmrl",
+        "category": "Public transport",
+        "status": "not_connected",
+        "layer_key": null
+      },
+      {
+        "id": "jam_chennai-parks",
+        "category": "Amenities and Destinations",
+        "status": "loaded",
+        "layer_key": "parks"
+      },
+      {
+        "id": "jam_chennai-public-toilets",
+        "category": "Amenities and Destinations",
+        "status": "loaded",
+        "layer_key": "public_toilets"
+      },
+      {
+        "id": "jam_chennai-schools",
+        "category": "Amenities and Destinations",
+        "status": "loaded",
+        "layer_key": "schools"
+      },
+      {
+        "id": "jam_chennai-healthcare-uphcs-and-uchcs",
+        "category": "Amenities and Destinations",
+        "status": "loaded",
+        "layer_key": "healthcare"
+      },
+      {
+        "id": "jam_chennai-anganwadis-icds-centres",
+        "category": "Amenities and Destinations",
+        "status": "loaded",
+        "layer_key": "anganwadis"
+      },
+      {
+        "id": "jam_chennai-slums",
+        "category": "Socio-economic",
+        "status": "loaded",
+        "layer_key": null
+      },
+      {
+        "id": "jam_chennai-census-2011-data",
+        "category": "Socio-economic",
+        "status": "loaded",
+        "layer_key": null
+      },
+      {
+        "id": "jam_chennai-economic-census",
+        "category": "Socio-economic",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_bus_shelter_dashboard",
+        "category": "Dashboards",
+        "status": "not_connected",
+        "layer_key": null
+      },
+      {
+        "id": "jam_wri_dashboard_for_mobility_related_data_and_analysis",
+        "category": "Dashboards",
+        "status": "not_connected",
+        "layer_key": null
+      },
+      {
+        "id": "jam_urbanuru_dashboard_for_transit_affinity_for_different_parts_of_a_city_select_che",
+        "category": "Dashboards",
+        "status": "not_connected",
+        "layer_key": null
+      },
+      {
+        "id": "jam_live_mtc_bus_information_can_be_exported_to_csv_and_used_2",
+        "category": "Dashboards",
+        "status": "not_connected",
+        "layer_key": null
+      },
+      {
+        "id": "jam_traffic_cost_computation",
+        "category": "Dashboards",
+        "status": "not_connected",
+        "layer_key": null
+      },
+      {
+        "id": "jam_masterplan_viewer_for_chennai_city_and_chennai_region",
+        "category": "Dashboards",
+        "status": "not_connected",
+        "layer_key": null
+      },
+      {
+        "id": "jam_daily_ridership_data_passenger_flow_data_and_parking_data_for_cmrl_2",
+        "category": "Dashboards",
+        "status": "not_connected",
+        "layer_key": null
+      },
+      {
+        "id": "jam_tngis_server",
+        "category": "Servers",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_dynamic_world_v1",
+        "category": "Satellite data",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_nasa_modis_ndvi",
+        "category": "Satellite data",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_high_resolution_1m_global_canopy_height_maps",
+        "category": "Satellite data",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_global_30m_landsat_tree_canopy_cover_v4",
+        "category": "Satellite data",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_global_forest_canopy_height_from_gedi_landsat",
+        "category": "Satellite data",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_global_impervious_surface_area_gisa_can_be_used_to_derive_permeable_surface",
+        "category": "Satellite data",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_zenodo_5791855",
+        "category": "Satellite data",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_temporal_trends_of_surface_water_across_indian_rivers_basins",
+        "category": "Satellite data",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_global_surface_water_explorer",
+        "category": "Satellite data",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_global_forest_watch_open_data_portal_this_platform_while_focused_on_forests_also",
+        "category": "Satellite data",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_bhuvan_portal_managed_by_the_indian_space_research_organisation_isro_this_portal",
+        "category": "Satellite data",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_national_wetland_atlas_this_atlas_prepared_by_the_space_applications_centre_isro",
+        "category": "Satellite data",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_bhuvan_portal_isro",
+        "category": "Satellite data",
+        "status": "unavailable",
+        "layer_key": null
+      },
+      {
+        "id": "jam_open_government_data_ogd_platform_india_this_portal_has_a_greenery_tag_that_prov",
+        "category": "Satellite data",
+        "status": "unavailable",
+        "layer_key": null
+      }
+    ]
+  }
 }

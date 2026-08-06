@@ -87,11 +87,23 @@ export function MapLegend({
 
   if (visibility.connectivity_need) {
     sections.push({
-      title: "Need lines",
+      title: "Need lines (service gaps)",
       items: [
-        { kind: "line", color: "#e11d48", label: "Urgent", dashed: true },
-        { kind: "line", color: "#f97316", label: "Priority", dashed: true },
-        { kind: "line", color: "#ca8a04", label: "Watch", dashed: true },
+        {
+          kind: "line",
+          color: "#ff2d55",
+          label: "Urgent — long road stretches >400m from a stop",
+        },
+        {
+          kind: "line",
+          color: "#ff8a1f",
+          label: "Priority — medium unmet length",
+        },
+        {
+          kind: "line",
+          color: "#facc15",
+          label: "Watch — shorter gaps to monitor",
+        },
       ],
     });
   }
@@ -105,18 +117,24 @@ export function MapLegend({
   if (visibility.metro_area_boundaries) {
     points.push({ kind: "fill", color: "rgba(219,39,119,0.35)", label: "South town areas" });
   }
+  if (visibility.schools) points.push({ kind: "dot", color: "#2563eb", label: "Schools" });
+  if (visibility.healthcare) points.push({ kind: "dot", color: "#e11d48", label: "Healthcare" });
+  if (visibility.parks) points.push({ kind: "dot", color: "#16a34a", label: "Parks" });
+  if (visibility.public_toilets) points.push({ kind: "dot", color: "#0d9488", label: "Public toilets" });
+  if (visibility.anganwadis) points.push({ kind: "dot", color: "#c026d3", label: "Anganwadis" });
+  if (visibility.bus_stop_audit) points.push({ kind: "dot", color: "#b45309", label: "Stop audit" });
   if (points.length) {
-    sections.push({ title: "Network", items: points });
+    sections.push({ title: "Network & destinations", items: points });
   }
 
   if (!sections.length) return null;
 
   return (
-    <div className="pointer-events-none absolute bottom-3 left-3 z-20 max-w-[220px] rounded-md border border-slate-300 bg-white/95 px-2.5 py-2 shadow-sm">
+    <div className="pointer-events-none absolute bottom-3 left-3 z-20 max-w-[260px] rounded-md border border-slate-300 bg-white/95 px-2.5 py-2 shadow-sm">
       <p className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-500">
         Legend
       </p>
-      <div className="space-y-2">
+      <div className="max-h-[42vh] space-y-2 overflow-y-auto pr-0.5">
         {sections.map((section) => (
           <div key={section.title}>
             <p className="mb-0.5 text-[9px] font-semibold text-slate-800">{section.title}</p>
@@ -132,6 +150,12 @@ export function MapLegend({
         <p className="mt-2 border-t border-slate-200 pt-1.5 text-[9px] leading-snug text-slate-500">
           Crow-flies to existing stops/hubs. Includes OMR south of GCC. Proposed metro
           stations not in data.
+        </p>
+      ) : null}
+      {visibility.connectivity_need ? (
+        <p className="mt-2 border-t border-slate-200 pt-1.5 text-[9px] leading-snug text-slate-500">
+          Need lines = OSM roads (plus a few feeder desire lines) with long stretches outside
+          400m of a GTFS stop — where mid-block stops or feeders may help.
         </p>
       ) : null}
     </div>

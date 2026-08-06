@@ -48,6 +48,12 @@ const LAYER_CATEGORY: Record<string, CategoryFilter> = {
   walk_distance_bands: "catchment",
   omr_corridor: "transit",
   metro_area_boundaries: "admin",
+  schools: "transit",
+  healthcare: "transit",
+  parks: "transit",
+  public_toilets: "transit",
+  anganwadis: "transit",
+  bus_stop_audit: "shelter",
 };
 
 const DEFAULT_MAP_LAYERS: Record<string, boolean> = {
@@ -60,6 +66,12 @@ const DEFAULT_MAP_LAYERS: Record<string, boolean> = {
   walk_distance_bands: true,
   omr_corridor: true,
   metro_area_boundaries: true,
+  schools: false,
+  healthcare: false,
+  parks: false,
+  public_toilets: false,
+  anganwadis: false,
+  bus_stop_audit: false,
 };
 
 const SOURCE_CATEGORY: Record<string, CategoryFilter> = {
@@ -145,6 +157,33 @@ export function AnalyticsDashboard() {
   const [query, setQuery] = useState("");
   const [minFeatures, setMinFeatures] = useState(0);
   const [mapLayers, setMapLayers] = useState<Record<string, boolean>>(DEFAULT_MAP_LAYERS);
+  const [mapExpanded, setMapExpanded] = useState(false);
+  const [mapHeight, setMapHeight] = useState(560);
+
+  useEffect(() => {
+    if (!mapExpanded) {
+      setMapHeight(560);
+      return;
+    }
+    const update = () => setMapHeight(Math.max(640, window.innerHeight - 140));
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [mapExpanded]);
+
+  useEffect(() => {
+    if (!mapExpanded) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMapExpanded(false);
+    };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [mapExpanded]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -388,6 +427,44 @@ export function AnalyticsDashboard() {
             />
           </div>
 
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <MetricCard
+              label="Schools"
+              value={metrics?.counts?.schools ?? manifest.layers.schools?.feature_count}
+              subtext="OpenCity schools map"
+            />
+            <MetricCard
+              label="Healthcare"
+              value={metrics?.counts?.healthcare ?? manifest.layers.healthcare?.feature_count}
+              subtext="UPHC / UCHC points"
+            />
+            <MetricCard
+              label="Parks"
+              value={metrics?.counts?.parks ?? manifest.layers.parks?.feature_count}
+              subtext="OpenCity parks"
+            />
+            <MetricCard
+              label="Public toilets"
+              value={
+                metrics?.counts?.public_toilets ?? manifest.layers.public_toilets?.feature_count
+              }
+              subtext="OpenCity toilets"
+            />
+            <MetricCard
+              label="Anganwadis"
+              value={metrics?.counts?.anganwadis ?? manifest.layers.anganwadis?.feature_count}
+              subtext="ICDS centres"
+            />
+            <MetricCard
+              label="Bus stop audit"
+              value={
+                metrics?.counts?.bus_stop_audit ??
+                manifest.layers.bus_stop_audit?.feature_count
+              }
+              subtext="Audit CSV points with coordinates"
+            />
+          </div>
+
           <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="text-sm text-[var(--ink-muted)]">
@@ -411,63 +488,114 @@ export function AnalyticsDashboard() {
             </div>
           </div>
 
-          <section className="grid gap-4 lg:grid-cols-[260px_minmax(0,1fr)]">
-            <aside className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
-              <h3 className="font-[family-name:var(--font-display)] text-base font-semibold text-[var(--yellow)]">
-                Map layer filters
-              </h3>
-              <p className="mt-1 text-xs text-[var(--ink-muted)]">
-                Toggle which verified layers draw on the map.
-              </p>
-              <ul className="mt-3 space-y-2">
-                {Object.keys(mapLayers).map((id) => {
-                  const layer = manifest.layers[id];
-                  const ready = layerIsReady(layer);
-                  return (
-                    <li key={id}>
-                      <label className="flex cursor-pointer items-center justify-between gap-2 rounded-lg border border-[var(--border)] px-2 py-2 text-sm">
-                        <span className="flex items-center gap-2 text-[var(--ink)]">
-                          <input
-                            type="checkbox"
-                            disabled={!ready}
-                            checked={Boolean(mapLayers[id] && ready)}
-                            onChange={() => toggleMapLayer(id)}
-                          />
-                          {id}
-                        </span>
-                        <StatusBadge status={ready ? "loaded" : layer?.status || "unavailable"} />
-                      </label>
-                    </li>
-                  );
-                })}
-              </ul>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {(
-                  [
-                    ["all", "All"],
-                    ["admin", "Admin"],
-                    ["transit", "Transit"],
-                    ["rail", "Rail"],
-                    ["shelter", "Shelters"],
-                    ["catchment", "Catchments"],
-                  ] as const
-                ).map(([key, label]) => (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => showOnlyCategoryOnMap(key)}
-                    className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide transition ${
-                      categoryFilter === key
-                        ? "border-[var(--yellow)] bg-[rgba(255,229,102,0.12)] text-[var(--yellow)]"
-                        : "border-[var(--border)] text-[var(--ink-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
-                    }`}
-                  >
-                    {label}
-                  </button>
-                ))}
+          <section
+            className={`grid gap-4 ${
+              mapExpanded
+                ? "fixed inset-0 z-[60] grid-cols-1 bg-[rgba(8,13,26,0.96)] p-3 sm:p-4 lg:grid-cols-[300px_minmax(0,1fr)]"
+                : "lg:grid-cols-[260px_minmax(0,1fr)]"
+            }`}
+          >
+            <aside
+              className={`flex flex-col overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg-card)] ${
+                mapExpanded
+                  ? "max-h-[40vh] lg:max-h-none"
+                  : "max-h-[min(72vh,720px)] lg:sticky lg:top-24 lg:max-h-[calc(100vh-7.5rem)]"
+              }`}
+            >
+              <div className="shrink-0 border-b border-[var(--border)] px-4 py-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h3 className="font-[family-name:var(--font-display)] text-base font-semibold text-[var(--yellow)]">
+                      Map layer filters
+                    </h3>
+                    <p className="mt-1 text-xs text-[var(--ink-muted)]">
+                      Toggle verified layers. Scroll inside this panel — it stays fixed while
+                      you pan the map.
+                    </p>
+                  </div>
+                  {mapExpanded ? (
+                    <button
+                      type="button"
+                      onClick={() => setMapExpanded(false)}
+                      className="shrink-0 rounded-md border border-[var(--border)] px-2 py-1 text-xs font-semibold text-[var(--ink-muted)]"
+                    >
+                      Close
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+              <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
+                <ul className="space-y-2">
+                  {Object.keys(mapLayers).map((id) => {
+                    const layer = manifest.layers[id];
+                    const ready = layerIsReady(layer);
+                    return (
+                      <li key={id}>
+                        <label className="flex cursor-pointer items-center justify-between gap-2 rounded-lg border border-[var(--border)] px-2 py-2 text-sm">
+                          <span className="flex min-w-0 items-center gap-2 text-[var(--ink)]">
+                            <input
+                              type="checkbox"
+                              disabled={!ready}
+                              checked={Boolean(mapLayers[id] && ready)}
+                              onChange={() => toggleMapLayer(id)}
+                            />
+                            <span className="truncate" title={id}>
+                              {id === "connectivity_need" ? "need_lines (service gaps)" : id}
+                            </span>
+                          </span>
+                          <StatusBadge status={ready ? "loaded" : layer?.status || "unavailable"} />
+                        </label>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <div className="mt-4 flex flex-wrap gap-2 pb-1">
+                  {(
+                    [
+                      ["all", "All"],
+                      ["admin", "Admin"],
+                      ["transit", "Transit"],
+                      ["rail", "Rail"],
+                      ["shelter", "Shelters"],
+                      ["catchment", "Catchments"],
+                      ["gap", "Gaps"],
+                    ] as const
+                  ).map(([key, label]) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => showOnlyCategoryOnMap(key)}
+                      className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide transition ${
+                        categoryFilter === key
+                          ? "border-[var(--yellow)] bg-[rgba(255,229,102,0.12)] text-[var(--yellow)]"
+                          : "border-[var(--border)] text-[var(--ink-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </aside>
-            <AnalyticsMap visibility={mapLayers} />
+
+            <div className="flex min-h-0 min-w-0 flex-col gap-2">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs text-[var(--ink-muted)]">
+                  Drag to pan · scroll to zoom · click features for details.
+                  {mapLayers.connectivity_need
+                    ? " Need lines = roads far from stops (see legend)."
+                    : ""}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setMapExpanded((v) => !v)}
+                  className="rounded-md border border-[var(--yellow)] bg-[rgba(255,229,102,0.1)] px-3 py-1.5 text-xs font-semibold text-[var(--yellow)]"
+                >
+                  {mapExpanded ? "Exit enlarged map (Esc)" : "Enlarge map"}
+                </button>
+              </div>
+              <AnalyticsMap visibility={mapLayers} height={mapHeight} />
+            </div>
           </section>
 
           <section className="grid gap-4 lg:grid-cols-2">

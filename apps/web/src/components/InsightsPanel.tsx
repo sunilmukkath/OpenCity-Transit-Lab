@@ -577,7 +577,7 @@ export function InsightsPanel() {
         <section className="space-y-4">
           <div className="et-card p-4 text-sm text-[var(--ink-muted)]">
             {data.connectivity_need?.note ??
-              "OSM roads intersecting high Gap Index wards, ranked by length outside 400m stop catchments."}
+              "Need lines = OSM roads (and a few feeder desire lines) with long stretches outside 400m of a GTFS stop, focused on high Gap Index wards. Urgent / Priority / Watch = unmet length bands — places mid-block stops or feeders may help."}
           </div>
           {!data.connectivity_need?.corridors?.length ? (
             <div className="et-card p-5 text-sm text-[var(--ink-muted)]">

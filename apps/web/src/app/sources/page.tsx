@@ -2,9 +2,42 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { RealtimePanel } from "@/components/RealtimePanel";
 import { ProvenanceStrip } from "@/components/ProvenanceStrip";
 import { fetchManifest } from "@/lib/data";
+import type { ManifestSource } from "@/lib/types";
+
+const CATEGORY_ORDER = [
+  "Basic Maps",
+  "Public transport",
+  "Amenities and Destinations",
+  "Socio-economic",
+  "Dashboards",
+  "Servers",
+  "Satellite data",
+  "Uncategorized",
+  "Platform (core pipeline)",
+];
+
+function groupSources(sources: ManifestSource[]) {
+  const groups = new Map<string, ManifestSource[]>();
+  for (const src of sources) {
+    const cat = src.jam_catalog
+      ? src.category || "Uncategorized"
+      : "Platform (core pipeline)";
+    const list = groups.get(cat) ?? [];
+    list.push(src);
+    groups.set(cat, list);
+  }
+  return CATEGORY_ORDER.filter((c) => groups.has(c)).map((c) => ({
+    category: c,
+    items: groups.get(c)!,
+  }));
+}
 
 export default async function SourcesPage() {
   const manifest = await fetchManifest();
+  const allSources = manifest ? Object.values(manifest.sources) : [];
+  const grouped = groupSources(allSources);
+  const jamNote = manifest?.jam_catalog?.note;
+  const jamCount = manifest?.jam_catalog?.count;
 
   return (
     <div className="space-y-8">
@@ -24,6 +57,12 @@ export default async function SourcesPage() {
           what the ETL actually loaded — not aspirational coverage. Real-time connectors
           stay Not connected until an agency feed is plugged in.
         </p>
+        {jamNote ? (
+          <p className="max-w-3xl text-sm text-[var(--accent)]">
+            {jamNote}
+            {jamCount != null ? ` · ${jamCount} Sheet 2 entries.` : null}
+          </p>
+        ) : null}
         {manifest ? (
           <ProvenanceStrip
             source={manifest.platform}
@@ -44,67 +83,76 @@ export default async function SourcesPage() {
           {manifest?.integrity_rule ??
             "No fabricated metrics. Unavailable or not_connected when data is missing."}
         </p>
+        <p className="mt-2 text-xs text-[var(--ink-muted)]">
+          Dashboards and external tools are listed as Not connected (open the Portal link).
+          Satellite / Drive / WFS entries stay Unavailable until a local file or connector
+          exists.
+        </p>
       </section>
 
-      <section>
-        <h2 className="mb-3 font-[family-name:var(--font-display)] text-xl font-semibold">
-          Static / open sources
-        </h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          {manifest
-            ? Object.values(manifest.sources).map((src) => (
-                <article
-                  key={src.id}
-                  className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm"
-                >
-                  <div className="mb-2 flex items-start justify-between gap-2">
-                    <h3 className="font-semibold">{src.name}</h3>
-                    <StatusBadge status={src.status} />
+      {grouped.map(({ category, items }) => (
+        <section key={category}>
+          <h2 className="mb-3 font-[family-name:var(--font-display)] text-xl font-semibold">
+            {category}
+            <span className="ml-2 text-sm font-normal text-[var(--ink-muted)]">
+              ({items.length})
+            </span>
+          </h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            {items.map((src) => (
+              <article
+                key={src.id}
+                className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm"
+              >
+                <div className="mb-2 flex items-start justify-between gap-2">
+                  <h3 className="font-semibold">{src.name}</h3>
+                  <StatusBadge status={src.status} />
+                </div>
+                <p className="text-sm text-[var(--ink-muted)]">{src.publisher}</p>
+                {src.notes ? (
+                  <p className="mt-2 text-sm text-[var(--ink-muted)]">{src.notes}</p>
+                ) : null}
+                {src.error ? (
+                  <p className="mt-2 text-sm text-[var(--danger)]">Error: {src.error}</p>
+                ) : null}
+                <dl className="mt-3 space-y-1 text-xs text-[var(--ink-muted)]">
+                  <div>
+                    <dt className="inline font-semibold">License: </dt>
+                    <dd className="inline">{src.license ?? "See portal"}</dd>
                   </div>
-                  <p className="text-sm text-[var(--ink-muted)]">{src.publisher}</p>
-                  {src.notes ? (
-                    <p className="mt-2 text-sm text-[var(--ink-muted)]">{src.notes}</p>
-                  ) : null}
-                  {src.error ? (
-                    <p className="mt-2 text-sm text-[var(--danger)]">Error: {src.error}</p>
-                  ) : null}
-                  <dl className="mt-3 space-y-1 text-xs text-[var(--ink-muted)]">
+                  {src.kind ? (
                     <div>
-                      <dt className="inline font-semibold">License: </dt>
-                      <dd className="inline">{src.license ?? "See portal"}</dd>
+                      <dt className="inline font-semibold">Kind: </dt>
+                      <dd className="inline">{src.kind}</dd>
                     </div>
-                    {src.fetched_at ? (
-                      <div>
-                        <dt className="inline font-semibold">Fetched: </dt>
-                        <dd className="inline">
-                          {new Date(src.fetched_at).toLocaleString()}
-                        </dd>
-                      </div>
-                    ) : null}
-                    {src.bytes ? (
-                      <div>
-                        <dt className="inline font-semibold">Bytes: </dt>
-                        <dd className="inline">{src.bytes.toLocaleString()}</dd>
-                      </div>
-                    ) : null}
-                    {src.sha256 ? (
-                      <div className="break-all">
-                        <dt className="inline font-semibold">SHA-256: </dt>
-                        <dd className="inline font-mono">{src.sha256.slice(0, 16)}…</dd>
-                      </div>
-                    ) : null}
-                  </dl>
-                  <div className="mt-3 flex flex-wrap gap-3 text-sm">
-                    {src.portal ? (
-                      <a
-                        href={src.portal}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="font-medium text-[var(--accent)]"
-                      >
-                        Portal
-                      </a>
-                    ) : null}
+                  ) : null}
+                  {src.fetched_at ? (
+                    <div>
+                      <dt className="inline font-semibold">Fetched: </dt>
+                      <dd className="inline">
+                        {new Date(src.fetched_at).toLocaleString()}
+                      </dd>
+                    </div>
+                  ) : null}
+                  {src.bytes ? (
+                    <div>
+                      <dt className="inline font-semibold">Bytes: </dt>
+                      <dd className="inline">{src.bytes.toLocaleString()}</dd>
+                    </div>
+                  ) : null}
+                </dl>
+                <div className="mt-3 flex flex-wrap gap-3 text-sm">
+                  {src.portal ? (
+                    <a
+                      href={src.portal}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-medium text-[var(--accent)]"
+                    >
+                      Portal
+                    </a>
+                  ) : null}
+                  {src.url && src.url !== src.portal ? (
                     <a
                       href={src.url}
                       target="_blank"
@@ -113,12 +161,13 @@ export default async function SourcesPage() {
                     >
                       Download URL
                     </a>
-                  </div>
-                </article>
-              ))
-            : null}
-        </div>
-      </section>
+                  ) : null}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ))}
 
       <section>
         <h2 className="mb-3 font-[family-name:var(--font-display)] text-xl font-semibold">

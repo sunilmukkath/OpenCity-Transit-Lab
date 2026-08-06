@@ -1,0 +1,1006 @@
+{
+  "generated_at": "2026-08-06T15:48:08.400101+00:00",
+  "note": "Objectives analysis for OpenCity Datajam problem statements. Integrity rule: Unavailable / Partial when data is missing \u2014 no fabricated equity or ridership.",
+  "objectives": [
+    {
+      "id": "first_last_mile",
+      "title": "First / last-mile walk connectivity gaps",
+      "status": "loaded",
+      "summary": "Crow-flies from existing GTFS stops + MRTS/metro hubs. Study = GCC wards + OMR corridor buffer + Tambaram/Chengalpattu/Mahabalipuram. Proposed metro stations not included (no verified open station points). Not street-network walk; not population-weighted.",
+      "chart": [
+        {
+          "label": "Within 500m",
+          "km2": 622.63,
+          "color": "#86efac"
+        },
+        {
+          "label": "500m\u20131km",
+          "km2": 355.59,
+          "color": "#fde047"
+        },
+        {
+          "label": "Over 1km",
+          "km2": 585.9,
+          "color": "#dc2626"
+        }
+      ],
+      "metrics": {
+        "study_area_km2": 1564.12,
+        "within_500m_km2": 622.63,
+        "band_500_1000m_km2": 355.59,
+        "over_1000m_km2": 585.9,
+        "pct_over_1000m": 37.5
+      },
+      "method": {
+        "access_points": "GTFS stops \u222a hubs \u222a MRTS stations (existing only)",
+        "study_area": "GCC wards \u222a OMR buffer \u222a metro town polygons",
+        "within_500m": "union of 500m access buffers \u2229 study",
+        "band_500_1000m": "(1000m buffer \u2212 500m buffer) \u2229 study",
+        "over_1000m": "study \u2212 1000m access buffer (rendered red)",
+        "proposed_metro": "unavailable \u2014 no verified open proposed-station points"
+      },
+      "limitations": [
+        "Crow-flies buffers, not street-network walks.",
+        "NMT (footways/cycle) layer Unavailable \u2014 no verified citywide NMT network ingest.",
+        "IPT (auto/share) layer Unavailable \u2014 no verified IPT stop inventory."
+      ]
+    },
+    {
+      "id": "interchange_integration",
+      "title": "Poorly integrated interchanges (bus \u2194 metro / MRTS / rail)",
+      "status": "loaded",
+      "summary": "Last-mile score uses verified stop/shelter distances to hubs only. Not ridership or equity. Higher score = weaker feeder access. Priority list prefers hubs inside the Chennai urban box.",
+      "metrics": {
+        "hubs_scored": 143,
+        "hubs_in_chennai_core": 103,
+        "weak_hubs": 66,
+        "weak_hubs_chennai_core": 28,
+        "moderate_hubs": 35,
+        "strong_hubs": 42
+      },
+      "chart": [
+        {
+          "label": "Weak hubs (core)",
+          "count": 28
+        },
+        {
+          "label": "Moderate",
+          "count": 35
+        },
+        {
+          "label": "Strong",
+          "count": 42
+        }
+      ],
+      "need_lines": {
+        "status": "loaded",
+        "urgent": 32,
+        "priority": 7,
+        "top_corridors": [
+          {
+            "rank": 1,
+            "road_name": "Unnamed road",
+            "highway": "tertiary",
+            "need_band": "urgent",
+            "need_score": 14984.0,
+            "unmet_length_m": 8557.5,
+            "pct_outside_400m": 55.9,
+            "in_high_gap_ward": true,
+            "recommendation": "Long stretches outside 400m of a GTFS stop \u2014 consider mid-block stops or a short feeder / trunk parallel service.",
+            "source_kind": "osm_roads"
+          },
+          {
+            "rank": 2,
+            "road_name": "Chennai Bypass Expressway",
+            "highway": "trunk",
+            "need_band": "urgent",
+            "need_score": 5380.1,
+            "unmet_length_m": 3408.5,
+            "pct_outside_400m": 63.3,
+            "in_high_gap_ward": true,
+            "recommendation": "Long stretches outside 400m of a GTFS stop \u2014 consider mid-block stops or a short feeder / trunk parallel service.",
+            "source_kind": "osm_roads"
+          },
+          {
+            "rank": 3,
+            "road_name": "TNHB Main Road",
+            "highway": "tertiary",
+            "need_band": "urgent",
+            "need_score": 5172.0,
+            "unmet_length_m": 2554.1,
+            "pct_outside_400m": 100.0,
+            "in_high_gap_ward": true,
+            "recommendation": "Long stretches outside 400m of a GTFS stop \u2014 consider mid-block stops or a short feeder / trunk parallel service.",
+            "source_kind": "osm_roads"
+          },
+          {
+            "rank": 4,
+            "road_name": "Sadayankuppam Road (O7189)",
+            "highway": "tertiary",
+            "need_band": "urgent",
+            "need_score": 4557.8,
+            "unmet_length_m": 2383.3,
+            "pct_outside_400m": 83.3,
+            "in_high_gap_ward": true,
+            "recommendation": "Long stretches outside 400m of a GTFS stop \u2014 consider mid-block stops or a short feeder / trunk parallel service.",
+            "source_kind": "osm_roads"
+          },
+          {
+            "rank": 5,
+            "road_name": "Inner Ring Road (SH2)",
+            "highway": "primary",
+            "need_band": "priority",
+            "need_score": 3567.6,
+            "unmet_length_m": 2036.5,
+            "pct_outside_400m": 54.9,
+            "in_high_gap_ward": true,
+            "recommendation": "Long stretches outside 400m of a GTFS stop \u2014 consider mid-block stops or a short feeder / trunk parallel service.",
+            "source_kind": "osm_roads"
+          },
+          {
+            "rank": 6,
+            "road_name": "Perungudi Station Road",
+            "highway": "tertiary",
+            "need_band": "urgent",
+            "need_score": 3241.0,
+            "unmet_length_m": 2160.7,
+            "pct_outside_400m": 100.0,
+            "in_high_gap_ward": false,
+            "recommendation": "Long stretches outside 400m of a GTFS stop \u2014 consider mid-block stops or a short feeder / trunk parallel service.",
+            "source_kind": "osm_roads"
+          },
+          {
+            "rank": 7,
+            "road_name": "Kalaingar Karunanidhi Salai (SHN14)",
+            "highway": "primary",
+            "need_band": "urgent",
+            "need_score": 3046.2,
+            "unmet_length_m": 1601.8,
+            "pct_outside_400m": 75.7,
+            "in_high_gap_ward": true,
+            "recommendation": "Long stretches outside 400m of a GTFS stop \u2014 consider mid-block stops or a short feeder / trunk parallel service.",
+            "source_kind": "osm_roads"
+          },
+          {
+            "rank": 8,
+            "road_name": "Chennai Bypass",
+            "highway": "trunk",
+            "need_band": "urgent",
+            "need_score": 2644.3,
+            "unmet_length_m": 1628.4,
+            "pct_outside_400m": 70.2,
+            "in_high_gap_ward": true,
+            "recommendation": "Long stretches outside 400m of a GTFS stop \u2014 consider mid-block stops or a short feeder / trunk parallel service.",
+            "source_kind": "osm_roads"
+          },
+          {
+            "rank": 9,
+            "road_name": "Grand Northern Trunk Road (NH16)",
+            "highway": "trunk",
+            "need_band": "urgent",
+            "need_score": 2519.3,
+            "unmet_length_m": 1446.0,
+            "pct_outside_400m": 58.1,
+            "in_high_gap_ward": true,
+            "recommendation": "Long stretches outside 400m of a GTFS stop \u2014 consider mid-block stops or a short feeder / trunk parallel service.",
+            "source_kind": "osm_roads"
+          },
+          {
+            "rank": 10,
+            "road_name": "Madha Nagar Main Road",
+            "highway": "tertiary",
+            "need_band": "urgent",
+            "need_score": 2402.8,
+            "unmet_length_m": 1325.1,
+            "pct_outside_400m": 68.6,
+            "in_high_gap_ward": true,
+            "recommendation": "Long stretches outside 400m of a GTFS stop \u2014 consider mid-block stops or a short feeder / trunk parallel service.",
+            "source_kind": "osm_roads"
+          }
+        ]
+      },
+      "weak_hubs": [
+        {
+          "label": "Annanur",
+          "hub_type": "MRTS",
+          "last_mile_score": 95,
+          "nearest_stop_m": 516.9,
+          "stops_within_300m": 0
+        },
+        {
+          "label": "Attipattu",
+          "hub_type": "MRTS",
+          "last_mile_score": 95,
+          "nearest_stop_m": 991.0,
+          "stops_within_300m": 0
+        },
+        {
+          "label": "Perungudi",
+          "hub_type": "MRTS",
+          "last_mile_score": 95,
+          "nearest_stop_m": 646.9,
+          "stops_within_300m": 0
+        },
+        {
+          "label": "Thirumullaivoil",
+          "hub_type": "MRTS",
+          "last_mile_score": 95,
+          "nearest_stop_m": 618.7,
+          "stops_within_300m": 0
+        },
+        {
+          "label": "Attipattu Pudunagar",
+          "hub_type": "MRTS",
+          "last_mile_score": 85,
+          "nearest_stop_m": 481.8,
+          "stops_within_300m": 0
+        },
+        {
+          "label": "Loco Works",
+          "hub_type": "MRTS",
+          "last_mile_score": 85,
+          "nearest_stop_m": 390.4,
+          "stops_within_300m": 0
+        },
+        {
+          "label": "Charrjage Works",
+          "hub_type": "MRTS",
+          "last_mile_score": 78,
+          "nearest_stop_m": 404.8,
+          "stops_within_300m": 0
+        },
+        {
+          "label": "Chetpet",
+          "hub_type": "MRTS",
+          "last_mile_score": 78,
+          "nearest_stop_m": 398.6,
+          "stops_within_300m": 0
+        },
+        {
+          "label": "Mambalam",
+          "hub_type": "MRTS",
+          "last_mile_score": 78,
+          "nearest_stop_m": 419.4,
+          "stops_within_300m": 0
+        },
+        {
+          "label": "V.O.C. Nagar",
+          "hub_type": "MRTS",
+          "last_mile_score": 78,
+          "nearest_stop_m": 300.4,
+          "stops_within_300m": 0
+        },
+        {
+          "label": "Villivakkam",
+          "hub_type": "MRTS",
+          "last_mile_score": 78,
+          "nearest_stop_m": 371.1,
+          "stops_within_300m": 0
+        },
+        {
+          "label": "Greenways Road",
+          "hub_type": "MRTS",
+          "last_mile_score": 70,
+          "nearest_stop_m": 262.6,
+          "stops_within_300m": 2
+        },
+        {
+          "label": "Ambattur",
+          "hub_type": "MRTS",
+          "last_mile_score": 63,
+          "nearest_stop_m": 194.0,
+          "stops_within_300m": 1
+        },
+        {
+          "label": "Ennore",
+          "hub_type": "MRTS",
+          "last_mile_score": 63,
+          "nearest_stop_m": 189.7,
+          "stops_within_300m": 2
+        },
+        {
+          "label": "Kotturpuram",
+          "hub_type": "MRTS",
+          "last_mile_score": 63,
+          "nearest_stop_m": 173.5,
+          "stops_within_300m": 2
+        }
+      ],
+      "limitations": [
+        "Suburban rail vs MRTS typing is name/geometry based from available hubs.",
+        "Does not measure timed transfers or fare integration."
+      ]
+    },
+    {
+      "id": "equal_access",
+      "title": "Equal access across neighbourhoods (SEC / slum proxy)",
+      "status": "loaded",
+      "summary": "Compares Ward PT Index across SEC amenity proxy bands and slum area share. This is NOT household income or official poverty status.",
+      "sec_counts": {
+        "wards_total": 200,
+        "wards_with_slum": 153,
+        "wards_amenity_joined": 155,
+        "wards_with_sec_proxy": 194,
+        "wards_amenity_unavailable": 45,
+        "lower_proxy": 64,
+        "middle_proxy": 101,
+        "higher_proxy": 29,
+        "slum_polygons": 887
+      },
+      "chart": [
+        {
+          "band": "higher_proxy",
+          "ward_count": 29,
+          "mean_pt_index": 58.9,
+          "pct_low_pt": 10.3
+        },
+        {
+          "band": "middle_proxy",
+          "ward_count": 101,
+          "mean_pt_index": 63.4,
+          "pct_low_pt": 14.9
+        },
+        {
+          "band": "lower_proxy",
+          "ward_count": 64,
+          "mean_pt_index": 59.7,
+          "pct_low_pt": 9.4
+        },
+        {
+          "band": "unknown",
+          "ward_count": 6,
+          "mean_pt_index": 48.0,
+          "pct_low_pt": 33.3
+        }
+      ],
+      "underserved_examples": [
+        {
+          "label": "22",
+          "pt_index": 22.0,
+          "gap_index": 78.0,
+          "sec_proxy_band": "lower_proxy",
+          "pct_slum_area": 4.18
+        },
+        {
+          "label": "184",
+          "pt_index": 30.0,
+          "gap_index": 70.0,
+          "sec_proxy_band": "lower_proxy",
+          "pct_slum_area": 8.514
+        },
+        {
+          "label": "31",
+          "pt_index": 30.0,
+          "gap_index": 70.0,
+          "sec_proxy_band": "lower_proxy",
+          "pct_slum_area": 5.488
+        },
+        {
+          "label": "12",
+          "pt_index": 30.0,
+          "gap_index": 70.0,
+          "sec_proxy_band": "lower_proxy",
+          "pct_slum_area": 0.003
+        },
+        {
+          "label": "146",
+          "pt_index": 36.0,
+          "gap_index": 64.0,
+          "sec_proxy_band": "lower_proxy",
+          "pct_slum_area": 14.631
+        },
+        {
+          "label": "33",
+          "pt_index": 38.0,
+          "gap_index": 62.0,
+          "sec_proxy_band": "lower_proxy",
+          "pct_slum_area": 0.0
+        },
+        {
+          "label": "51",
+          "pt_index": 40.0,
+          "gap_index": 60.0,
+          "sec_proxy_band": "lower_proxy",
+          "pct_slum_area": 12.354
+        },
+        {
+          "label": "6",
+          "pt_index": 40.0,
+          "gap_index": 60.0,
+          "sec_proxy_band": "lower_proxy",
+          "pct_slum_area": 6.736
+        },
+        {
+          "label": "98",
+          "pt_index": 40.0,
+          "gap_index": 60.0,
+          "sec_proxy_band": "lower_proxy",
+          "pct_slum_area": 4.502
+        },
+        {
+          "label": "17",
+          "pt_index": 40.0,
+          "gap_index": 60.0,
+          "sec_proxy_band": "lower_proxy",
+          "pct_slum_area": 3.786
+        },
+        {
+          "label": "44",
+          "pt_index": 40.0,
+          "gap_index": 60.0,
+          "sec_proxy_band": "lower_proxy",
+          "pct_slum_area": 2.822
+        },
+        {
+          "label": "13",
+          "pt_index": 40.0,
+          "gap_index": 60.0,
+          "sec_proxy_band": "lower_proxy",
+          "pct_slum_area": 0.0
+        },
+        {
+          "label": "80",
+          "pt_index": 40.0,
+          "gap_index": 60.0,
+          "sec_proxy_band": "lower_proxy",
+          "pct_slum_area": 0.0
+        },
+        {
+          "label": "74",
+          "pt_index": 42.0,
+          "gap_index": 58.0,
+          "sec_proxy_band": "lower_proxy",
+          "pct_slum_area": 17.693
+        },
+        {
+          "label": "48",
+          "pt_index": 43.0,
+          "gap_index": 57.0,
+          "sec_proxy_band": "lower_proxy",
+          "pct_slum_area": 2.302
+        }
+      ],
+      "limitations": [
+        "No verified income surface at ward level.",
+        "SEC proxy from Census 2011 amenities (wards 1\u2013155) + OpenCity slum polygons."
+      ]
+    },
+    {
+      "id": "ward_pt_index",
+      "title": "Ward-level public transport index",
+      "status": "loaded",
+      "summary": "Ward Public Transport Index = 100 \u2212 Gap Index (inventory of stops, shelters, hubs, density). Not ridership or income. Lower index = weaker inventory access.",
+      "metrics": {
+        "wards_scored": 200,
+        "mean_pt_index": 61.1,
+        "band_low": 26,
+        "band_moderate": 48,
+        "band_high": 51,
+        "band_very_high": 75
+      },
+      "chart": [
+        {
+          "band": "low (<40)",
+          "count": 26
+        },
+        {
+          "band": "moderate (40\u201355)",
+          "count": 48
+        },
+        {
+          "band": "high (55\u201370)",
+          "count": 51
+        },
+        {
+          "band": "very high (\u226570)",
+          "count": 75
+        }
+      ],
+      "lowest_wards": [
+        {
+          "label": "181",
+          "pt_index": 10.0,
+          "gap_index": 90.0,
+          "gap_band": "severe",
+          "stop_count": 3,
+          "shelter_count": 0,
+          "hub_count": 0,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "183",
+          "pt_index": 10.0,
+          "gap_index": 90.0,
+          "gap_band": "severe",
+          "stop_count": 4,
+          "shelter_count": 0,
+          "hub_count": 0,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "191",
+          "pt_index": 10.0,
+          "gap_index": 90.0,
+          "gap_band": "severe",
+          "stop_count": 2,
+          "shelter_count": 0,
+          "hub_count": 0,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "158",
+          "pt_index": 22.0,
+          "gap_index": 78.0,
+          "gap_band": "severe",
+          "stop_count": 5,
+          "shelter_count": 0,
+          "hub_count": 0,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "192",
+          "pt_index": 22.0,
+          "gap_index": 78.0,
+          "gap_band": "severe",
+          "stop_count": 6,
+          "shelter_count": 0,
+          "hub_count": 0,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "22",
+          "pt_index": 22.0,
+          "gap_index": 78.0,
+          "gap_band": "severe",
+          "stop_count": 6,
+          "shelter_count": 0,
+          "hub_count": 0,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "144",
+          "pt_index": 25.0,
+          "gap_index": 75.0,
+          "gap_band": "severe",
+          "stop_count": 6,
+          "shelter_count": 0,
+          "hub_count": 0,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "149",
+          "pt_index": 25.0,
+          "gap_index": 75.0,
+          "gap_band": "severe",
+          "stop_count": 6,
+          "shelter_count": 0,
+          "hub_count": 0,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "154",
+          "pt_index": 25.0,
+          "gap_index": 75.0,
+          "gap_band": "severe",
+          "stop_count": 5,
+          "shelter_count": 0,
+          "hub_count": 0,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "112",
+          "pt_index": 27.0,
+          "gap_index": 73.0,
+          "gap_band": "severe",
+          "stop_count": 4,
+          "shelter_count": 0,
+          "hub_count": 1,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "12",
+          "pt_index": 30.0,
+          "gap_index": 70.0,
+          "gap_band": "severe",
+          "stop_count": 5,
+          "shelter_count": 0,
+          "hub_count": 0,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "143",
+          "pt_index": 30.0,
+          "gap_index": 70.0,
+          "gap_band": "severe",
+          "stop_count": 7,
+          "shelter_count": 0,
+          "hub_count": 0,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "159",
+          "pt_index": 30.0,
+          "gap_index": 70.0,
+          "gap_band": "severe",
+          "stop_count": 3,
+          "shelter_count": 0,
+          "hub_count": 2,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "164",
+          "pt_index": 30.0,
+          "gap_index": 70.0,
+          "gap_band": "severe",
+          "stop_count": 6,
+          "shelter_count": 0,
+          "hub_count": 0,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "166",
+          "pt_index": 30.0,
+          "gap_index": 70.0,
+          "gap_band": "severe",
+          "stop_count": 0,
+          "shelter_count": 0,
+          "hub_count": 0,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "184",
+          "pt_index": 30.0,
+          "gap_index": 70.0,
+          "gap_band": "severe",
+          "stop_count": 0,
+          "shelter_count": 0,
+          "hub_count": 0,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "31",
+          "pt_index": 30.0,
+          "gap_index": 70.0,
+          "gap_band": "severe",
+          "stop_count": 7,
+          "shelter_count": 0,
+          "hub_count": 0,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "160",
+          "pt_index": 33.0,
+          "gap_index": 67.0,
+          "gap_band": "high",
+          "stop_count": 3,
+          "shelter_count": 0,
+          "hub_count": 2,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "162",
+          "pt_index": 33.0,
+          "gap_index": 67.0,
+          "gap_band": "high",
+          "stop_count": 4,
+          "shelter_count": 0,
+          "hub_count": 2,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "107",
+          "pt_index": 36.0,
+          "gap_index": 64.0,
+          "gap_band": "high",
+          "stop_count": 7,
+          "shelter_count": 0,
+          "hub_count": 0,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        }
+      ],
+      "highest_wards": [
+        {
+          "label": "52",
+          "pt_index": 100.0,
+          "gap_index": 0.0,
+          "gap_band": "low",
+          "stop_count": 16,
+          "shelter_count": 6,
+          "hub_count": 2,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "102",
+          "pt_index": 100.0,
+          "gap_index": 0.0,
+          "gap_band": "low",
+          "stop_count": 32,
+          "shelter_count": 19,
+          "hub_count": 2,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "58",
+          "pt_index": 98.0,
+          "gap_index": 2.0,
+          "gap_band": "low",
+          "stop_count": 28,
+          "shelter_count": 17,
+          "hub_count": 4,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "123",
+          "pt_index": 98.0,
+          "gap_index": 2.0,
+          "gap_band": "low",
+          "stop_count": 25,
+          "shelter_count": 13,
+          "hub_count": 2,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "20",
+          "pt_index": 96.0,
+          "gap_index": 4.0,
+          "gap_band": "low",
+          "stop_count": 12,
+          "shelter_count": 3,
+          "hub_count": 2,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "178",
+          "pt_index": 96.0,
+          "gap_index": 4.0,
+          "gap_band": "low",
+          "stop_count": 19,
+          "shelter_count": 8,
+          "hub_count": 3,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "62",
+          "pt_index": 94.0,
+          "gap_index": 6.0,
+          "gap_band": "low",
+          "stop_count": 15,
+          "shelter_count": 8,
+          "hub_count": 1,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "59",
+          "pt_index": 94.0,
+          "gap_index": 6.0,
+          "gap_band": "low",
+          "stop_count": 42,
+          "shelter_count": 25,
+          "hub_count": 1,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "142",
+          "pt_index": 94.0,
+          "gap_index": 6.0,
+          "gap_band": "low",
+          "stop_count": 16,
+          "shelter_count": 8,
+          "hub_count": 1,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        },
+        {
+          "label": "116",
+          "pt_index": 94.0,
+          "gap_index": 6.0,
+          "gap_band": "low",
+          "stop_count": 18,
+          "shelter_count": 8,
+          "hub_count": 1,
+          "sec_proxy_band": null,
+          "pct_slum_area": null
+        }
+      ],
+      "limitations": [
+        "Inventory index only (stops/shelters/hubs/density).",
+        "Not schedule reliability or passenger load."
+      ]
+    },
+    {
+      "id": "destinations_access",
+      "title": "PT access to schools and healthcare",
+      "status": "loaded",
+      "schools": {
+        "status": "loaded",
+        "destination": "schools",
+        "total": 2227,
+        "within_500m": 2110,
+        "within_1000m": 2222,
+        "over_1000m": 5,
+        "pct_within_500m": 94.7,
+        "pct_within_1000m": 99.8,
+        "pct_over_1000m": 0.2,
+        "note": "Crow-flies distance from schools points to nearest GTFS stop buffer. Not street-network walk; not ridership-weighted."
+      },
+      "healthcare": {
+        "status": "loaded",
+        "destination": "healthcare",
+        "total": 140,
+        "within_500m": 136,
+        "within_1000m": 140,
+        "over_1000m": 0,
+        "pct_within_500m": 97.1,
+        "pct_within_1000m": 100.0,
+        "pct_over_1000m": 0.0,
+        "note": "Crow-flies distance from healthcare points to nearest GTFS stop buffer. Not street-network walk; not ridership-weighted."
+      },
+      "chart": [
+        {
+          "destination": "schools",
+          "pct_within_500m": 94.7,
+          "pct_within_1000m": 99.8,
+          "pct_over_1000m": 0.2,
+          "total": 2227
+        },
+        {
+          "destination": "healthcare",
+          "pct_within_500m": 97.1,
+          "pct_within_1000m": 100.0,
+          "pct_over_1000m": 0.0,
+          "total": 140
+        }
+      ],
+      "limitations": [
+        "OpenCity school/health points \u2014 public vs private not always tagged; treated as facility inventory.",
+        "Crow-flies to GTFS stops only."
+      ],
+      "summary": "Share of school and healthcare facility points within 500m / 1km crow-flies of a GTFS stop."
+    },
+    {
+      "id": "congestion_pt",
+      "title": "Congestion points vs public transport solutions",
+      "status": "unavailable",
+      "reason": "No verified citywide congestion-point inventory with coordinates was in the Datajam Sheet 2 downloads (OpenCity crash CSV may exist separately but was not ingested as a congestion layer).",
+      "needed": "Official congestion hotspot list or traffic-speed/delay layer joined to PT corridors.",
+      "chart": [],
+      "limitations": [
+        "Cannot list congestion points without a validated source."
+      ]
+    },
+    {
+      "id": "scheduling_optimisation",
+      "title": "PT scheduling from commute patterns",
+      "status": "partial",
+      "reason": "No origin\u2013destination or stop-level boarding time series suitable for a dynamic schedule model. MTC performance and metro monthly usage tables are aggregate only.",
+      "needed": "Stop/route ridership by time-of-day or GTFS-RT + validated OD sample.",
+      "chart": [
+        {
+          "label": "MTC performance (aggregate)",
+          "rows": 15
+        },
+        {
+          "label": "Metro monthly usage (aggregate)",
+          "rows": 39
+        }
+      ],
+      "partial_tables": [
+        {
+          "name": "MTC performance (aggregate)",
+          "rows": 15,
+          "columns": [
+            "Sl No.",
+            "Item",
+            "2020-21",
+            "2021-22",
+            "2022-23",
+            "2023-24",
+            "2024-25",
+            "2025-26"
+          ],
+          "file": "tabular_chennai_mtc_performance_data.json"
+        },
+        {
+          "name": "Metro monthly usage (aggregate)",
+          "rows": 39,
+          "columns": [
+            "Month",
+            "Closed Loop (Ridership)",
+            "Closed Loop %",
+            "QR Tickets (Ridership)",
+            "QR %",
+            "NCMC (Ridership)",
+            "NCMC %",
+            "Total Passenger Flow"
+          ],
+          "file": "tabular_chennai_metro_monthly_usage_data.json"
+        }
+      ],
+      "limitations": [
+        "Dynamic scheduling model not built \u2014 data gap."
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "critical",
+      "objective": "first_last_mile",
+      "title": "Prioritise service where walk-to-stop exceeds 1km",
+      "detail": "About 37.5% of the extended study area (585.9 km\u00b2) is crow-flies >1km from a stop/hub. Use the Walk km map (red) and Need lines for feeder placement.",
+      "map_href": "/map"
+    },
+    {
+      "priority": "high",
+      "objective": "interchange_integration",
+      "title": "Fix weak last-mile hubs in Chennai core",
+      "detail": "28 core hubs score weak on feeder access. Co-locate bus stops/shelters within ~300m of metro/MRTS/rail hubs.",
+      "map_href": "/map"
+    },
+    {
+      "priority": "high",
+      "objective": "equal_access",
+      "title": "Target lower-SEC / higher-slum wards with weak PT index",
+      "detail": "15 example wards combine lower amenity proxy or elevated slum share with weak Ward PT Index. Treat as indicative \u2014 verify on ground.",
+      "map_href": "/map"
+    },
+    {
+      "priority": "medium",
+      "objective": "destinations_access",
+      "title": "Close school / clinic gaps beyond 1km of stops",
+      "detail": "0.2% of mapped schools and 0.0% of healthcare points sit >1km crow-flies from a GTFS stop. Overlay Destinations preset on Walk km.",
+      "map_href": "/map"
+    },
+    {
+      "priority": "info",
+      "objective": "congestion_pt",
+      "title": "Congestion\u2013PT linkage still Unavailable",
+      "detail": "No verified citywide congestion-point inventory with coordinates was in the Datajam Sheet 2 downloads (OpenCity crash CSV may exist separately but was not ingested as a congestion layer).",
+      "map_href": "/sources"
+    },
+    {
+      "priority": "info",
+      "objective": "scheduling_optimisation",
+      "title": "Schedule optimisation needs time-of-day ridership",
+      "detail": "No origin\u2013destination or stop-level boarding time series suitable for a dynamic schedule model. MTC performance and metro monthly usage tables are aggregate only.",
+      "map_href": "/sources"
+    }
+  ],
+  "catchment_coverage": {
+    "status": "loaded",
+    "city_mean_pct_outside_400m": 21.3,
+    "counts": {
+      "wards_scored": 200,
+      "high_gap_wards": 14,
+      "moderate_gap_wards": 39,
+      "low_gap_wards": 147
+    }
+  }
+}

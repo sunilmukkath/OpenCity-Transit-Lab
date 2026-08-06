@@ -10,7 +10,6 @@ import {
 import { TransitMap, joinWardGapIndex } from "@/components/TransitMap";
 import type { LayerData, MapLayerKey } from "@/lib/map-layers";
 
-const MAP_HEIGHT = 560;
 const CORE: MapLayerKey[] = [
   "walk_distance_bands",
   "omr_corridor",
@@ -21,6 +20,12 @@ const CORE: MapLayerKey[] = [
   "hubs",
   "wards",
   "stops",
+  "schools",
+  "healthcare",
+  "parks",
+  "public_toilets",
+  "anganwadis",
+  "bus_stop_audit",
 ];
 
 async function loadBatch(
@@ -45,8 +50,12 @@ async function loadBatch(
 
 export function AnalyticsMap({
   visibility,
+  height = 560,
+  className,
 }: {
   visibility: Record<string, boolean>;
+  height?: number;
+  className?: string;
 }) {
   const [data, setData] = useState<LayerData>({});
   const [loading, setLoading] = useState(true);
@@ -90,9 +99,10 @@ export function AnalyticsMap({
       data={data}
       visibility={visibility}
       choropleth={choropleth}
-      height={MAP_HEIGHT}
+      height={height}
       loading={loading}
       interactive
+      className={className}
     />
   );
 }

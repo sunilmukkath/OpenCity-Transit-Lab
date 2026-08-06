@@ -269,10 +269,16 @@ textarea {
 .maplibregl-canvas-container {
   width: 100% !important;
   height: 100% !important;
+  touch-action: none;
 }
 
 .maplibregl-canvas {
   outline: none;
+  cursor: grab;
+}
+
+.maplibregl-canvas:active {
+  cursor: grabbing;
 }
 
 .maplibregl-ctrl-attrib {

@@ -1,0 +1,70 @@
+{
+  "id": "jam_chennai-metro-monthly-usage-data",
+  "slug": "chennai-metro-monthly-usage-data",
+  "rows": 39,
+  "columns": [
+    "Month",
+    "Closed Loop (Ridership)",
+    "Closed Loop %",
+    "QR Tickets (Ridership)",
+    "QR %",
+    "NCMC (Ridership)",
+    "NCMC %",
+    "Total Passenger Flow"
+  ],
+  "sample": [
+    {
+      "Month": "Apr-23",
+      "Closed Loop (Ridership)": "43,77,813",
+      "Closed Loop %": "65.15%",
+      "QR Tickets (Ridership)": "23,39,724",
+      "QR %": "34.82%",
+      "NCMC (Ridership)": "1,973",
+      "NCMC %": "0.03%",
+      "Total Passenger Flow": "67,19,510"
+    },
+    {
+      "Month": "May-23",
+      "Closed Loop (Ridership)": "46,17,409",
+      "Closed Loop %": "63.26%",
+      "QR Tickets (Ridership)": "26,76,546",
+      "QR %": "36.67%",
+      "NCMC (Ridership)": "5,138",
+      "NCMC %": "0.07%",
+      "Total Passenger Flow": "72,99,093"
+    },
+    {
+      "Month": "Jun-23",
+      "Closed Loop (Ridership)": "48,73,031",
+      "Closed Loop %": "65.90%",
+      "QR Tickets (Ridership)": "25,15,727",
+      "QR %": "34.02%",
+      "NCMC (Ridership)": "5,938",
+      "NCMC %": "0.08%",
+      "Total Passenger Flow": "73,94,696"
+    },
+    {
+      "Month": "Jul-23",
+      "Closed Loop (Ridership)": "51,89,442",
+      "Closed Loop %": "62.87%",
+      "QR Tickets (Ridership)": "29,10,875",
+      "QR %": "35.26%",
+      "NCMC (Ridership)": "1,54,244",
+      "NCMC %": "1.87%",
+      "Total Passenger Flow": "82,54,561"
+    },
+    {
+      "Month": "Aug-23",
+      "Closed Loop (Ridership)": "50,89,362",
+      "Closed Loop %": "59.25%",
+      "QR Tickets (Ridership)": "31,05,583",
+      "QR %": "36.15%",
+      "NCMC (Ridership)": "3,95,267",
+      "NCMC %": "4.60%",
+      "Total Passenger Flow": "85,90,212"
+    }
+  ],
+  "source_resource": "Chennai Metro Monthly Ridership Data from 2023 to June 2026",
+  "fetched_at": "2026-08-06T15:20:36.472676+00:00",
+  "file": "data/raw/jam/tabular/chennai-metro-monthly-usage-data.csv"
+}

@@ -65,6 +65,7 @@ function ascendingStops(stops: number[]): number[] {
 function formatPopupProps(props: Record<string, unknown>): string {
   const prefer = [
     "label",
+    "name",
     "band",
     "area_km2",
     "note",
@@ -214,6 +215,17 @@ const LAYER_STACK: {
     sourceId: "tm-connectivity-need",
     layers: [
       {
+        // Halo so need corridors read against dense basemap / walk bands
+        id: "tm-connectivity-need-halo",
+        type: "line",
+        paint: {
+          "line-color": "#0f172a",
+          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 5, 13, 11, 15, 14],
+          "line-opacity": 0.55,
+          "line-blur": 0.4,
+        },
+      },
+      {
         id: "tm-connectivity-need-line",
         type: "line",
         paint: {
@@ -221,14 +233,23 @@ const LAYER_STACK: {
             "match",
             ["get", "need_band"],
             "urgent",
-            "#e11d48",
+            "#ff2d55",
             "priority",
-            "#f97316",
-            "#ca8a04",
+            "#ff8a1f",
+            "#facc15",
           ],
-          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 2.5, 13, 5.5],
-          "line-opacity": 0.92,
-          "line-dasharray": [2, 1.2],
+          "line-width": [
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            9,
+            ["match", ["get", "need_band"], "urgent", 3.5, "priority", 2.8, 2],
+            13,
+            ["match", ["get", "need_band"], "urgent", 7.5, "priority", 6, 4.5],
+            15,
+            ["match", ["get", "need_band"], "urgent", 10, "priority", 8, 6],
+          ],
+          "line-opacity": 1,
         },
       },
     ],
@@ -365,6 +386,108 @@ const LAYER_STACK: {
       },
     ],
   },
+  {
+    key: "schools",
+    sourceId: "tm-schools",
+    layers: [
+      {
+        id: "tm-schools-circle",
+        type: "circle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 2, 14, 5],
+          "circle-color": "#2563eb",
+          "circle-opacity": 0.85,
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+      },
+    ],
+  },
+  {
+    key: "healthcare",
+    sourceId: "tm-healthcare",
+    layers: [
+      {
+        id: "tm-healthcare-circle",
+        type: "circle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 2.5, 14, 6],
+          "circle-color": "#e11d48",
+          "circle-opacity": 0.9,
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+      },
+    ],
+  },
+  {
+    key: "parks",
+    sourceId: "tm-parks",
+    layers: [
+      {
+        id: "tm-parks-circle",
+        type: "circle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 2, 14, 5],
+          "circle-color": "#16a34a",
+          "circle-opacity": 0.85,
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+      },
+    ],
+  },
+  {
+    key: "public_toilets",
+    sourceId: "tm-toilets",
+    layers: [
+      {
+        id: "tm-toilets-circle",
+        type: "circle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 10, 2, 14, 4.5],
+          "circle-color": "#0d9488",
+          "circle-opacity": 0.85,
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+      },
+    ],
+  },
+  {
+    key: "anganwadis",
+    sourceId: "tm-anganwadis",
+    layers: [
+      {
+        id: "tm-anganwadis-circle",
+        type: "circle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 10, 1.8, 14, 4.5],
+          "circle-color": "#c026d3",
+          "circle-opacity": 0.8,
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+      },
+    ],
+  },
+  {
+    key: "bus_stop_audit",
+    sourceId: "tm-bus-audit",
+    layers: [
+      {
+        id: "tm-bus-audit-circle",
+        type: "circle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 2.2, 14, 5.5],
+          "circle-color": "#b45309",
+          "circle-opacity": 0.9,
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+      },
+    ],
+  },
 ];
 
 const INTERACTIVE_LAYER_IDS = [
@@ -374,6 +497,12 @@ const INTERACTIVE_LAYER_IDS = [
   "tm-mrts-stations-circle",
   "tm-hubs-circle",
   "tm-connectivity-need-line",
+  "tm-schools-circle",
+  "tm-healthcare-circle",
+  "tm-parks-circle",
+  "tm-toilets-circle",
+  "tm-anganwadis-circle",
+  "tm-bus-audit-circle",
 ];
 
 export function TransitMap({
@@ -383,6 +512,7 @@ export function TransitMap({
   height = MAP_HEIGHT_DEFAULT,
   loading = false,
   interactive = true,
+  className,
 }: {
   data: LayerData;
   visibility: Record<string, boolean>;
@@ -390,6 +520,7 @@ export function TransitMap({
   height?: number;
   loading?: boolean;
   interactive?: boolean;
+  className?: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
@@ -507,6 +638,16 @@ export function TransitMap({
         center: [CHENNAI_VIEW.longitude, CHENNAI_VIEW.latitude],
         zoom: CHENNAI_VIEW.zoom,
         attributionControl: { compact: true },
+        dragPan: true,
+        dragRotate: false,
+        pitchWithRotate: false,
+        touchPitch: false,
+        keyboard: true,
+        doubleClickZoom: true,
+        scrollZoom: true,
+        boxZoom: true,
+        touchZoomRotate: true,
+        cooperativeGestures: false,
       });
     } catch (err) {
       setMapError(err instanceof Error ? err.message : "Failed to create map");
@@ -514,7 +655,18 @@ export function TransitMap({
     }
 
     mapRef.current = map;
+    map.dragPan.enable();
+    map.scrollZoom.enable();
+    map.touchZoomRotate.enable();
+    map.dragRotate.disable();
     map.addControl(new NavigationControl({ showCompass: false }), "top-right");
+    map.getCanvas().style.cursor = "grab";
+    map.on("dragstart", () => {
+      map.getCanvas().style.cursor = "grabbing";
+    });
+    map.on("dragend", () => {
+      map.getCanvas().style.cursor = "grab";
+    });
 
     const onLoad = () => {
       if (cancelled) return;
@@ -612,14 +764,31 @@ export function TransitMap({
     scheduleSync();
   }, [data, visibility, choropleth, basemapReady, scheduleSync]);
 
-  // Update interactive cursor / query targets
+  // Keep pan enabled; pointer cursor only when hovering a clickable feature
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !basemapReady) return;
+    map.dragPan.enable();
+    map.scrollZoom.enable();
+
     const ids = interactive
       ? INTERACTIVE_LAYER_IDS.filter((id) => map.getLayer(id))
       : [];
-    map.getCanvas().style.cursor = ids.length ? "pointer" : "grab";
+
+    const onMove = (e: MapMouseEvent) => {
+      if (!ids.length) {
+        map.getCanvas().style.cursor = "grab";
+        return;
+      }
+      const hits = map.queryRenderedFeatures(e.point, { layers: ids });
+      map.getCanvas().style.cursor = hits.length ? "pointer" : "grab";
+    };
+
+    map.on("mousemove", onMove);
+    map.getCanvas().style.cursor = "grab";
+    return () => {
+      map.off("mousemove", onMove);
+    };
   }, [data, visibility, basemapReady, interactive]);
 
   // Popup DOM
@@ -698,8 +867,8 @@ export function TransitMap({
 
   return (
     <div
-      className="relative w-full overflow-hidden rounded-xl border border-[var(--border)] bg-[#dbe4ee] shadow-sm"
-      style={{ height, minHeight: height }}
+      className={`relative w-full overflow-hidden rounded-xl border border-[var(--border)] bg-[#dbe4ee] shadow-sm ${className ?? ""}`}
+      style={{ height, minHeight: height, touchAction: "none" }}
     >
       {loading ? (
         <div className="pointer-events-none absolute left-3 top-3 z-20 rounded-md border border-[var(--border)] bg-[rgba(8,13,26,0.82)] px-3 py-1.5 text-xs text-[var(--ink)]">
@@ -754,7 +923,11 @@ export function TransitMap({
         </div>
       ) : null}
 
-      <div ref={containerRef} className="absolute inset-0 h-full w-full" />
+      <div
+        ref={containerRef}
+        className="absolute inset-0 z-0 h-full w-full [&_.maplibregl-canvas]:cursor-grab [&_.maplibregl-canvas]:active:cursor-grabbing"
+        style={{ touchAction: "none" }}
+      />
 
       <MapLegend visibility={visibility} choropleth={choropleth} />
     </div>

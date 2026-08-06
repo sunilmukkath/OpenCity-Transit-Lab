@@ -8,12 +8,32 @@ export interface ManifestSource {
   portal?: string;
   license?: string;
   kind: string;
+  category?: string;
   notes?: string;
   status: LayerStatus;
   fetched_at?: string;
   bytes?: number;
   sha256?: string;
   error?: string;
+  jam_catalog?: boolean;
+}
+
+export interface JamCatalogIndex {
+  generated_from?: string;
+  count?: number;
+  note?: string;
+  entries?: { id: string; category?: string; status: string; layer_key?: string | null }[];
+}
+
+export interface Manifest {
+  generated_at: string;
+  platform: string;
+  integrity_rule: string;
+  sources: Record<string, ManifestSource>;
+  layers: Record<string, ManifestLayer>;
+  realtime: RealtimeSlot[];
+  unavailable_analytics: UnavailableAnalytic[];
+  jam_catalog?: JamCatalogIndex;
 }
 
 export interface ManifestLayer {
@@ -41,16 +61,6 @@ export interface UnavailableAnalytic {
   status: LayerStatus;
   reason: string;
   needed: string;
-}
-
-export interface Manifest {
-  generated_at: string;
-  platform: string;
-  integrity_rule: string;
-  sources: Record<string, ManifestSource>;
-  layers: Record<string, ManifestLayer>;
-  realtime: RealtimeSlot[];
-  unavailable_analytics: UnavailableAnalytic[];
 }
 
 export interface Metrics {

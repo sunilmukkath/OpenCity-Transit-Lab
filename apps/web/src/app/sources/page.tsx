@@ -18,24 +18,40 @@ const CATEGORY_ORDER = [
 
 function groupSources(sources: ManifestSource[]) {
   const groups = new Map<string, ManifestSource[]>();
+  const skipped: ManifestSource[] = [];
   for (const src of sources) {
     const cat = src.jam_catalog
       ? src.category || "Uncategorized"
       : "Platform (core pipeline)";
+    // Hide satellite / greenery catalog noise from primary view
+    if (
+      cat === "Satellite data" ||
+      src.ui_group === "not_used_satellite" ||
+      /bhuvan|gee-community|earth-engine|globalforestwatch|modis|dynamic.?world/i.test(
+        `${src.url || ""} ${src.name || ""}`
+      )
+    ) {
+      skipped.push(src);
+      continue;
+    }
+    // Prefer loaded / partial / link / not_connected with portal; demote pure unavailable without portal
     const list = groups.get(cat) ?? [];
     list.push(src);
     groups.set(cat, list);
   }
-  return CATEGORY_ORDER.filter((c) => groups.has(c)).map((c) => ({
-    category: c,
-    items: groups.get(c)!,
-  }));
+  return {
+    grouped: CATEGORY_ORDER.filter((c) => groups.has(c)).map((c) => ({
+      category: c,
+      items: groups.get(c)!,
+    })),
+    skipped,
+  };
 }
 
 export default async function SourcesPage() {
   const manifest = await fetchManifest();
   const allSources = manifest ? Object.values(manifest.sources) : [];
-  const grouped = groupSources(allSources);
+  const { grouped, skipped } = groupSources(allSources);
   const jamNote = manifest?.jam_catalog?.note;
   const jamCount = manifest?.jam_catalog?.count;
 
@@ -84,9 +100,8 @@ export default async function SourcesPage() {
             "No fabricated metrics. Unavailable or not_connected when data is missing."}
         </p>
         <p className="mt-2 text-xs text-[var(--ink-muted)]">
-          Dashboards and external tools are listed as Not connected (open the Portal link).
-          Satellite / Drive / WFS entries stay Unavailable until a local file or connector
-          exists.
+          Dashboards are listed as Not connected (open the Portal link). Satellite / greenery
+          catalog rows are collapsed below — they are not used in PT analyses.
         </p>
       </section>
 
@@ -169,6 +184,30 @@ export default async function SourcesPage() {
         </section>
       ))}
 
+      {skipped.length ? (
+        <details className="rounded-xl border border-dashed border-[var(--border)] bg-[var(--bg-card)] p-4">
+          <summary className="cursor-pointer font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--ink-muted)]">
+            Not used in PT analyses ({skipped.length} satellite / greenery links)
+          </summary>
+          <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-[var(--ink-muted)]">
+            {skipped.map((s) => (
+              <li key={s.id}>
+                {s.name}
+                {s.portal ? (
+                  <>
+                    {" "}
+                    —{" "}
+                    <a href={s.portal} className="text-[var(--accent)]" target="_blank" rel="noreferrer">
+                      portal
+                    </a>
+                  </>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
+
       <section>
         <h2 className="mb-3 font-[family-name:var(--font-display)] text-xl font-semibold">
           Processed layers
@@ -185,7 +224,9 @@ export default async function SourcesPage() {
             </thead>
             <tbody>
               {manifest
-                ? Object.entries(manifest.layers).map(([key, layer]) => (
+                ? Object.entries(manifest.layers)
+                    .filter(([, layer]) => layer.status === "loaded" || layer.status === "partial")
+                    .map(([key, layer]) => (
                     <tr key={key} className="border-b border-[var(--border)]">
                       <td className="px-4 py-3 font-medium">{key}</td>
                       <td className="px-4 py-3">
@@ -203,6 +244,7 @@ export default async function SourcesPage() {
         </div>
       </section>
 
+      {(manifest?.unavailable_analytics ?? []).length ? (
       <section>
         <h2 className="mb-3 font-[family-name:var(--font-display)] text-xl font-semibold">
           Analytics intentionally withheld
@@ -226,6 +268,7 @@ export default async function SourcesPage() {
           ))}
         </div>
       </section>
+      ) : null}
 
       <RealtimePanel />
 

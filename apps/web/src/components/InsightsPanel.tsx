@@ -11,6 +11,16 @@ import { fetchAnalysesClient } from "@/lib/data-client";
 import { MetricCard } from "@/components/MetricCard";
 import { StatusBadge } from "@/components/StatusBadge";
 import { SectionEyebrow } from "@/components/BrandMotif";
+import {
+  DashboardFilterBar,
+  FilterImpactStrip,
+  useFilteredUniverse,
+} from "@/components/DashboardFilterBar";
+import {
+  DEFAULT_FILTERS,
+  filtersActive,
+  type DashboardFilters,
+} from "@/lib/dashboard-filters";
 
 type InsightView =
   | "hubs"
@@ -59,6 +69,24 @@ export function InsightsPanel() {
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<InsightView>("hubs");
   const [query, setQuery] = useState("");
+  const [filters, setFilters] = useState<DashboardFilters>({
+    ...DEFAULT_FILTERS,
+    unit: "ward",
+  });
+  const {
+    filtered,
+    wardOptions,
+    zoneOptions,
+    cityMeanGap,
+  } = useFilteredUniverse(filters);
+  const filteredWardSet = useMemo(
+    () =>
+      new Set(
+        filtered.filter((u) => u.unit_type === "ward").map((u) => String(u.label))
+      ),
+    [filtered]
+  );
+  const wardFilterOn = filtersActive(filters);
   const [selectedHub, setSelectedHub] = useState<string | null>(null);
   const [selectedMismatch, setSelectedMismatch] = useState<string | null>(null);
   const [selectedCoverage, setSelectedCoverage] = useState<string | null>(null);
@@ -103,26 +131,42 @@ export function InsightsPanel() {
 
   const mismatches = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const list = [
+    let list = [
       ...(data?.shelter_mismatch?.wards ?? []),
       ...(data?.shelter_mismatch?.zones ?? []),
     ].sort((a, b) => b.mismatch_score - a.mismatch_score);
+    if (wardFilterOn) {
+      list = list.filter(
+        (r) => r.unit_type !== "ward" || filteredWardSet.has(String(r.label))
+      );
+    }
     if (!q) return list;
     return list.filter(
       (r) => r.label.toLowerCase().includes(q) || r.unit_type.includes(q)
     );
-  }, [data, query]);
+  }, [data, query, wardFilterOn, filteredWardSet]);
 
   const coverage = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const list = [...(data?.catchment_coverage?.wards ?? [])].sort(
+    let list = [...(data?.catchment_coverage?.wards ?? [])].sort(
       (a, b) => (b.pct_area_outside_400m ?? -1) - (a.pct_area_outside_400m ?? -1)
     );
+    if (wardFilterOn) {
+      list = list.filter((r) => filteredWardSet.has(String(r.label)));
+    }
     if (!q) return list;
     return list.filter(
       (r) => r.label.toLowerCase().includes(q) || r.coverage_band.includes(q)
     );
-  }, [data, query]);
+  }, [data, query, wardFilterOn, filteredWardSet]);
+
+  const secWards = useMemo(() => {
+    const list = [...(data?.sec_proxy?.wards ?? [])].sort(
+      (a, b) => (b.amenity_deprivation ?? 0) - (a.amenity_deprivation ?? 0)
+    );
+    if (!wardFilterOn) return list;
+    return list.filter((w) => filteredWardSet.has(String(w.label)));
+  }, [data, wardFilterOn, filteredWardSet]);
 
   const hubDetail: HubLastMileRow | null =
     hubs.find((h) => h.label === selectedHub) ?? hubs[0] ?? null;
@@ -153,6 +197,29 @@ export function InsightsPanel() {
   const smm = data.shelter_mismatch;
   const cov = data.catchment_coverage;
 
+  const insightTabs = useMemo(
+    () =>
+      (
+        [
+          ["hubs", "Hub last-mile", hlm?.status === "loaded"],
+          ["shelters", "Shelter mismatch", smm?.status === "loaded"],
+          ["coverage", "Catchment coverage", cov?.status === "loaded"],
+          ["corridors", "OMR / South", data.metro_corridors?.status === "loaded" || data.metro_extension?.status === "loaded"],
+          ["needlines", "Need lines", data.connectivity_need?.status === "loaded"],
+          ["sec", "SEC / Slum", data.sec_proxy?.status === "loaded"],
+          ["walkkm", "Walk km", data.walk_distance_bands?.status === "loaded"],
+        ] as const
+      ).filter((row) => row[2]) as [InsightView, string, boolean][],
+    [data, hlm?.status, smm?.status, cov?.status]
+  );
+
+  useEffect(() => {
+    if (!insightTabs.length) return;
+    if (!insightTabs.some(([id]) => id === view)) {
+      setView(insightTabs[0][0]);
+    }
+  }, [insightTabs, view]);
+
   return (
     <div className="space-y-6">
       <div className="et-card p-5">
@@ -162,17 +229,7 @@ export function InsightsPanel() {
         </h3>
         <p className="mt-2 text-sm text-[var(--ink-muted)]">{data.note}</p>
         <div className="mt-4 flex flex-wrap gap-2">
-          {(
-            [
-              ["hubs", "Hub last-mile"],
-              ["shelters", "Shelter mismatch"],
-              ["coverage", "Catchment coverage"],
-              ["corridors", "OMR / South"],
-              ["needlines", "Need lines"],
-              ["sec", "SEC / Slum"],
-              ["walkkm", "Walk km"],
-            ] as const
-          ).map(([id, label]) => (
+          {insightTabs.map(([id, label]) => (
             <button
               key={id}
               type="button"
@@ -186,6 +243,9 @@ export function InsightsPanel() {
               {label}
             </button>
           ))}
+          {!insightTabs.length ? (
+            <p className="text-sm text-[var(--ink-muted)]">No loaded insight modules yet.</p>
+          ) : null}
         </div>
       </div>
 
@@ -217,9 +277,19 @@ export function InsightsPanel() {
         />
       </div>
 
+      <DashboardFilterBar
+        filters={filters}
+        onChange={setFilters}
+        wardOptions={wardOptions}
+        zoneOptions={zoneOptions}
+        resultCount={filteredWardSet.size}
+        compact
+      />
+      <FilterImpactStrip units={filtered} cityMeanGap={cityMeanGap} />
+
       <label className="block text-sm">
         <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-          Search
+          Quick search (hubs / lists)
         </span>
         <input
           value={query}
@@ -693,11 +763,15 @@ export function InsightsPanel() {
                     </tr>
                   </thead>
                   <tbody>
-                    {(data.sec_proxy.priority_lower_proxy ?? data.sec_proxy.wards.filter((w) => w.sec_proxy_band === "lower_proxy"))
-                      .slice(0, 25)
+                    {(wardFilterOn
+                      ? secWards
+                      : data.sec_proxy.priority_lower_proxy ??
+                        data.sec_proxy.wards.filter((w) => w.sec_proxy_band === "lower_proxy")
+                    )
+                      .slice(0, 40)
                       .map((w) => (
                         <tr key={w.label} className="border-t border-[var(--border)]">
-                          <td className="px-3 py-2 font-medium text-[var(--ink)]">{w.label}</td>
+                          <td className="px-3 py-2 font-semibold text-[var(--ink)]">{w.label}</td>
                           <td className="px-3 py-2">
                             <BandChip label={w.sec_proxy_band ?? "—"} tone="weak" />
                           </td>

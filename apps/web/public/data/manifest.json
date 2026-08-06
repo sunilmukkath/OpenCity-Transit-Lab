@@ -547,7 +547,8 @@
       "notes": "Dynamic World V1 \u2014 Satellite/raster; not ingested as local map layer.",
       "status": "unavailable",
       "fetched_at": null,
-      "jam_catalog": true
+      "jam_catalog": true,
+      "ui_group": "not_used_satellite"
     },
     "jam_nasa_modis_ndvi": {
       "id": "jam_nasa_modis_ndvi",
@@ -561,7 +562,8 @@
       "notes": "NASA MODIS NDVI \u2014 Satellite/raster; not ingested as local map layer.",
       "status": "unavailable",
       "fetched_at": null,
-      "jam_catalog": true
+      "jam_catalog": true,
+      "ui_group": "not_used_satellite"
     },
     "jam_high_resolution_1m_global_canopy_height_maps": {
       "id": "jam_high_resolution_1m_global_canopy_height_maps",
@@ -575,7 +577,8 @@
       "notes": "High Resolution 1m Global Canopy Height Maps \u2014 Satellite/raster; not ingested as local map layer.",
       "status": "unavailable",
       "fetched_at": null,
-      "jam_catalog": true
+      "jam_catalog": true,
+      "ui_group": "not_used_satellite"
     },
     "jam_global_30m_landsat_tree_canopy_cover_v4": {
       "id": "jam_global_30m_landsat_tree_canopy_cover_v4",
@@ -589,7 +592,8 @@
       "notes": "Global 30m Landsat Tree Canopy Cover v4 \u2014 Satellite/raster; not ingested as local map layer.",
       "status": "unavailable",
       "fetched_at": null,
-      "jam_catalog": true
+      "jam_catalog": true,
+      "ui_group": "not_used_satellite"
     },
     "jam_global_forest_canopy_height_from_gedi_landsat": {
       "id": "jam_global_forest_canopy_height_from_gedi_landsat",
@@ -603,7 +607,8 @@
       "notes": "Global Forest Canopy Height from GEDI & Landsat \u2014 Satellite/raster; not ingested as local map layer.",
       "status": "unavailable",
       "fetched_at": null,
-      "jam_catalog": true
+      "jam_catalog": true,
+      "ui_group": "not_used_satellite"
     },
     "jam_global_impervious_surface_area_gisa_can_be_used_to_derive_permeable_surface": {
       "id": "jam_global_impervious_surface_area_gisa_can_be_used_to_derive_permeable_surface",
@@ -617,7 +622,8 @@
       "notes": "Global Impervious Surface Area (GISA) - can be used to derive permeable surface \u2014 Satellite/raster; not ingested as local map layer.",
       "status": "unavailable",
       "fetched_at": null,
-      "jam_catalog": true
+      "jam_catalog": true,
+      "ui_group": "not_used_satellite"
     },
     "jam_zenodo_5791855": {
       "id": "jam_zenodo_5791855",
@@ -631,7 +637,8 @@
       "notes": "Satellite/raster; not ingested as local map layer.",
       "status": "unavailable",
       "fetched_at": null,
-      "jam_catalog": true
+      "jam_catalog": true,
+      "ui_group": "not_used_satellite"
     },
     "jam_temporal_trends_of_surface_water_across_indian_rivers_basins": {
       "id": "jam_temporal_trends_of_surface_water_across_indian_rivers_basins",
@@ -645,7 +652,8 @@
       "notes": "Temporal trends of Surface water across\nIndian Rivers & Basins \u2014 Satellite/raster; not ingested as local map layer.",
       "status": "unavailable",
       "fetched_at": null,
-      "jam_catalog": true
+      "jam_catalog": true,
+      "ui_group": "not_used_satellite"
     },
     "jam_global_surface_water_explorer": {
       "id": "jam_global_surface_water_explorer",
@@ -659,7 +667,8 @@
       "notes": "Global surface water explorer \u2014 Satellite/raster; not ingested as local map layer.",
       "status": "unavailable",
       "fetched_at": null,
-      "jam_catalog": true
+      "jam_catalog": true,
+      "ui_group": "not_used_satellite"
     },
     "jam_global_forest_watch_open_data_portal_this_platform_while_focused_on_forests_also": {
       "id": "jam_global_forest_watch_open_data_portal_this_platform_while_focused_on_forests_also",
@@ -673,7 +682,8 @@
       "notes": "Global Forest Watch Open Data Portal: This platform, while focused on forests, also provides data on wetlands and water bodies. \u2014 Satellite/raster; not ingested as local map layer.",
       "status": "unavailable",
       "fetched_at": null,
-      "jam_catalog": true
+      "jam_catalog": true,
+      "ui_group": "not_used_satellite"
     },
     "jam_bhuvan_portal_managed_by_the_indian_space_research_organisation_isro_this_portal": {
       "id": "jam_bhuvan_portal_managed_by_the_indian_space_research_organisation_isro_this_portal",
@@ -687,7 +697,8 @@
       "notes": "Bhuvan Portal: Managed by the Indian Space Research Organisation (ISRO), this portal offers thematic data from satellite imagery. You can access and download layers such as \"Water Bodies\" and \"Water Bodies Fraction\" which are derived from satellites like Resourcesat. \u2014 Satellite/raster; not ingested as local map layer.",
       "status": "unavailable",
       "fetched_at": null,
-      "jam_catalog": true
+      "jam_catalog": true,
+      "ui_group": "not_used_satellite"
     },
     "jam_national_wetland_atlas_this_atlas_prepared_by_the_space_applications_centre_isro": {
       "id": "jam_national_wetland_atlas_this_atlas_prepared_by_the_space_applications_centre_isro",
@@ -701,7 +712,8 @@
       "notes": "National Wetland Atlas: This atlas, prepared by the Space Applications Centre (ISRO), inventories and assesses wetlands across India. While the main atlases are in PDF format, the data is derived from satellite\nimagery and provides detailed information on wetland types and areas. \u2014 Satellite/raster; not ingested as local map layer.",
       "status": "unavailable",
       "fetched_at": null,
-      "jam_catalog": true
+      "jam_catalog": true,
+      "ui_group": "not_used_satellite"
     },
     "jam_bhuvan_portal_isro": {
       "id": "jam_bhuvan_portal_isro",
@@ -715,7 +727,8 @@
       "notes": "Bhuvan Portal (ISRO) \u2014 Satellite/raster; not ingested as local map layer.",
       "status": "unavailable",
       "fetched_at": null,
-      "jam_catalog": true
+      "jam_catalog": true,
+      "ui_group": "not_used_satellite"
     },
     "jam_open_government_data_ogd_platform_india_this_portal_has_a_greenery_tag_that_prov": {
       "id": "jam_open_government_data_ogd_platform_india_this_portal_has_a_greenery_tag_that_prov",
@@ -729,7 +742,56 @@
       "notes": "Open Government Data (OGD) Platform India: This portal has a \"greenery\" tag that provides links to datasets on open spaces, parks, and natural landscapes, often for individual cities. You can search for specific cities to find relevant data. \u2014 Satellite/raster; not ingested as local map layer.",
       "status": "unavailable",
       "fetched_at": null,
-      "jam_catalog": true
+      "jam_catalog": true,
+      "ui_group": "not_used_satellite"
+    },
+    "manual_chennai_railway": {
+      "id": "manual_chennai_railway",
+      "name": "Chennai railway stations (OSM GeoJSON)",
+      "publisher": "Manual download (data/downloaded)",
+      "url": "file://data/downloaded/",
+      "portal": "",
+      "license": "See original publisher",
+      "kind": "manual_download",
+      "notes": "OSM railway stations from manual download \u2014 existing inventory enrichment.",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T16:56:16.032762+00:00"
+    },
+    "manual_pincodes_2025": {
+      "id": "manual_pincodes_2025",
+      "name": "India pin codes 2025 (Chennai clip)",
+      "publisher": "Manual download (data/downloaded)",
+      "url": "file://data/downloaded/",
+      "portal": "",
+      "license": "See original publisher",
+      "kind": "manual_download",
+      "notes": "India pin-code KMZ clipped to Chennai 600xxx / CMA bbox.",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T16:56:16.032770+00:00"
+    },
+    "manual_economic_census": {
+      "id": "manual_economic_census",
+      "name": "Economic census microdata (ward aggregate)",
+      "publisher": "Manual download (data/downloaded)",
+      "url": "file://data/downloaded/",
+      "portal": "",
+      "license": "See original publisher",
+      "kind": "manual_download",
+      "notes": "Economic Census microdata aggregated by WC (ward code) for TN State=33 District=2. Proxy for economic activity \u2014 not household income. Join to GCC ward_label is best-effort.",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T16:56:16.032775+00:00"
+    },
+    "manual_cmp_2019": {
+      "id": "manual_cmp_2019",
+      "name": "Chennai CMP Final Report / Exec Summary (PDF)",
+      "publisher": "Manual download (data/downloaded)",
+      "url": "file://data/downloaded/",
+      "portal": "",
+      "license": "See original publisher",
+      "kind": "manual_download",
+      "notes": "Insights extracted from CMP PDF text (executive-summary window). Not a geocoded congestion hotspot inventory \u2014 corridor names are document mentions.",
+      "status": "loaded",
+      "fetched_at": "2026-08-06T16:56:16.032778+00:00"
     }
   },
   "layers": {
@@ -967,6 +1029,37 @@
       "feature_count": 1806,
       "notes": "Anganwadis",
       "derived_from": "jam_chennai-anganwadis-icds-centres"
+    },
+    "railway_stations": {
+      "status": "loaded",
+      "feature_count": 77,
+      "file": "railway_stations.geojson",
+      "notes": "OSM railway stations from manual download \u2014 existing inventory enrichment.",
+      "attributes": [
+        "label",
+        "hub_type",
+        "railway",
+        "network",
+        "operator",
+        "ref"
+      ]
+    },
+    "pincodes_chennai": {
+      "status": "loaded",
+      "feature_count": 120,
+      "file": "pincodes_chennai.geojson",
+      "notes": "India pin-code KMZ clipped to Chennai 600xxx / CMA bbox."
+    },
+    "economic_census_wards": {
+      "status": "loaded",
+      "feature_count": 155,
+      "file": "economic_census_wards.json",
+      "notes": "Economic Census microdata aggregated by WC (ward code) for TN State=33 District=2. Proxy for economic activity \u2014 not household income. Join to GCC ward_label is best-effort."
+    },
+    "cmp_mobility_insights": {
+      "status": "loaded",
+      "file": "cmp_mobility_insights.json",
+      "notes": "Insights extracted from CMP PDF text (executive-summary window). Not a geocoded congestion hotspot inventory \u2014 corridor names are document mentions."
     }
   },
   "realtime": [

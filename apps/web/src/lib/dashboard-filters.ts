@@ -1,0 +1,170 @@
+import type { SpatialUnitReport } from "@/lib/types";
+
+export type UnitKind = "all" | "ward" | "zone";
+export type GapBandFilter = "all" | "severe" | "high" | "moderate" | "low";
+export type SecFilter =
+  | "all"
+  | "higher_proxy"
+  | "middle_proxy"
+  | "lower_proxy"
+  | "unknown";
+export type SlumFilter = "all" | "has_slum" | "no_slum" | "high_slum";
+export type ActivityFilter = "all" | "higher" | "middle" | "lower" | "unknown";
+export type PtBandFilter = "all" | "low" | "moderate" | "high" | "very_high";
+
+export interface DashboardFilters {
+  query: string;
+  unit: UnitKind;
+  gapBand: GapBandFilter;
+  sec: SecFilter;
+  slum: SlumFilter;
+  activity: ActivityFilter;
+  ptBand: PtBandFilter;
+  ward: string; // "" = all
+  zone: string; // "" = all
+}
+
+export const DEFAULT_FILTERS: DashboardFilters = {
+  query: "",
+  unit: "all",
+  gapBand: "all",
+  sec: "all",
+  slum: "all",
+  activity: "all",
+  ptBand: "all",
+  ward: "",
+  zone: "",
+};
+
+export interface EnrichedWard extends SpatialUnitReport {
+  pt_index: number | null;
+  sec_proxy_band: string | null;
+  pct_slum_area: number | null;
+  has_slum: boolean;
+  slum_band: string | null;
+  establishments: number | null;
+  total_workers: number | null;
+  activity_band: "higher" | "middle" | "lower" | "unknown";
+}
+
+export function ptBandOf(pt: number | null): PtBandFilter | "unknown" {
+  if (pt == null) return "unknown";
+  if (pt < 40) return "low";
+  if (pt < 55) return "moderate";
+  if (pt < 70) return "high";
+  return "very_high";
+}
+
+export function activityBandOf(
+  establishments: number | null,
+  q33: number,
+  q66: number
+): EnrichedWard["activity_band"] {
+  if (establishments == null) return "unknown";
+  if (establishments <= q33) return "lower";
+  if (establishments <= q66) return "middle";
+  return "higher";
+}
+
+export function filtersActive(f: DashboardFilters): number {
+  let n = 0;
+  if (f.query.trim()) n++;
+  if (f.unit !== "all") n++;
+  if (f.gapBand !== "all") n++;
+  if (f.sec !== "all") n++;
+  if (f.slum !== "all") n++;
+  if (f.activity !== "all") n++;
+  if (f.ptBand !== "all") n++;
+  if (f.ward) n++;
+  if (f.zone) n++;
+  return n;
+}
+
+export function applyUnitFilters(
+  units: EnrichedWard[],
+  f: DashboardFilters
+): EnrichedWard[] {
+  const q = f.query.trim().toLowerCase();
+  return units.filter((u) => {
+    if (f.ward) {
+      return u.unit_type === "ward" && u.label === f.ward;
+    }
+    if (f.zone) {
+      return u.unit_type === "zone" && u.label === f.zone;
+    }
+    if (f.unit !== "all" && u.unit_type !== f.unit) return false;
+
+    const band = String(u.gap_band ?? "moderate");
+    if (f.gapBand !== "all" && band !== f.gapBand) return false;
+
+    const socioActive =
+      f.sec !== "all" || f.slum !== "all" || f.activity !== "all" || f.ptBand !== "all";
+
+    if (u.unit_type === "ward") {
+      const sec = u.sec_proxy_band || "unknown";
+      if (f.sec !== "all" && sec !== f.sec) return false;
+
+      if (f.slum === "has_slum" && !u.has_slum) return false;
+      if (f.slum === "no_slum" && u.has_slum) return false;
+      if (f.slum === "high_slum" && (u.pct_slum_area ?? 0) < 10) return false;
+
+      if (f.activity !== "all" && u.activity_band !== f.activity) return false;
+
+      const ptB = ptBandOf(u.pt_index);
+      if (f.ptBand !== "all" && ptB !== f.ptBand) return false;
+    } else if (socioActive) {
+      return false;
+    }
+
+    if (!q) return true;
+    const hay = [
+      u.label,
+      u.unit_type,
+      band,
+      u.sec_proxy_band,
+      u.slum_band,
+      u.activity_band,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+    return hay.includes(q);
+  });
+}
+
+export function summarizeFiltered(units: EnrichedWard[]) {
+  const wards = units.filter((u) => u.unit_type === "ward");
+  const n = wards.length;
+  const meanGap =
+    n > 0
+      ? Math.round(
+          (wards.reduce((s, w) => s + (w.gap_index ?? w.priority_score ?? 0), 0) / n) * 10
+        ) / 10
+      : null;
+  const meanPt =
+    n > 0
+      ? Math.round(
+          (wards
+            .filter((w) => w.pt_index != null)
+            .reduce((s, w) => s + (w.pt_index as number), 0) /
+            Math.max(1, wards.filter((w) => w.pt_index != null).length)) *
+            10
+        ) / 10
+      : null;
+  const severe = wards.filter((w) => String(w.gap_band) === "severe").length;
+  const withSlum = wards.filter((w) => w.has_slum).length;
+  const lowerSec = wards.filter((w) => w.sec_proxy_band === "lower_proxy").length;
+  const lowPt = wards.filter((w) => (w.pt_index ?? 100) < 40).length;
+  const estSum = wards.reduce((s, w) => s + (w.establishments ?? 0), 0);
+  return {
+    wards: n,
+    zones: units.filter((u) => u.unit_type === "zone").length,
+    meanGap,
+    meanPt,
+    severe,
+    withSlum,
+    lowerSec,
+    lowPt,
+    establishments: estSum,
+  };
+}

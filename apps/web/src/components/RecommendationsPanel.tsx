@@ -1,9 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { StatusBadge } from "@/components/StatusBadge";
 import { SectionEyebrow } from "@/components/BrandMotif";
+import {
+  DashboardFilterBar,
+  FilterImpactStrip,
+  useFilteredUniverse,
+} from "@/components/DashboardFilterBar";
+import { DEFAULT_FILTERS, type DashboardFilters } from "@/lib/dashboard-filters";
 import type { ObjectivesAnalysis } from "@/lib/objectives-types";
 import { fetchJson } from "@/lib/data-client";
 
@@ -17,6 +23,27 @@ const PRIORITY_TONE: Record<string, string> = {
 export function RecommendationsPanel() {
   const [data, setData] = useState<ObjectivesAnalysis | null>(null);
   const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState<DashboardFilters>({
+    ...DEFAULT_FILTERS,
+    unit: "ward",
+    gapBand: "severe",
+  });
+  const {
+    loading: loadingFilters,
+    filtered,
+    wardOptions,
+    zoneOptions,
+    cityMeanGap,
+  } = useFilteredUniverse(filters);
+
+  const priorityWards = useMemo(
+    () =>
+      [...filtered]
+        .filter((u) => u.unit_type === "ward")
+        .sort((a, b) => (b.gap_index ?? 0) - (a.gap_index ?? 0))
+        .slice(0, 12),
+    [filtered]
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -52,19 +79,15 @@ export function RecommendationsPanel() {
       <header className="rounded-2xl border border-[var(--border)] bg-[linear-gradient(145deg,rgba(16,52,102,0.9),rgba(10,31,74,0.96))] px-6 py-7">
         <SectionEyebrow>Decision support</SectionEyebrow>
         <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)]">
-          Final recommendations &amp; insights
+          Final actions &amp; insights
         </h1>
         <p className="mt-2 max-w-3xl text-sm text-[var(--ink-muted)]">
-          Synthesized from verified OpenCity / GTFS / MRTS layers for the Datajam problem
-          statements. Where data is missing, we say Unavailable — we do not invent ridership,
-          income, congestion, or schedules.
+          Prioritised moves from Objectives evidence. Filter by ward, zone, SEC, slum, or
+          economic activity to focus where to act first — then verify on the Map.
         </p>
         <div className="mt-4 flex flex-wrap gap-2 text-xs">
           <span className="rounded-full border border-[var(--border)] px-3 py-1 text-[var(--ink-muted)]">
             {loaded.length} objectives with evidence
-          </span>
-          <span className="rounded-full border border-[var(--border)] px-3 py-1 text-[var(--ink-muted)]">
-            {gaps.length} still Unavailable
           </span>
           <Link
             href="/objectives"
@@ -74,6 +97,69 @@ export function RecommendationsPanel() {
           </Link>
         </div>
       </header>
+
+      <DashboardFilterBar
+        filters={filters}
+        onChange={setFilters}
+        wardOptions={wardOptions}
+        zoneOptions={zoneOptions}
+        resultCount={priorityWards.length}
+      />
+      {!loadingFilters ? (
+        <FilterImpactStrip units={filtered} cityMeanGap={cityMeanGap} />
+      ) : null}
+
+      <section className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-card)]">
+        <div className="border-b border-[var(--border)] px-4 py-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--yellow)]">
+            Filtered priority wards
+          </p>
+          <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--ink)]">
+            Where the slice points first
+          </h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-white/[0.04] text-[10px] uppercase tracking-wide text-[var(--ink-muted)]">
+              <tr>
+                <th className="px-3 py-2">Ward</th>
+                <th className="px-3 py-2">Gap</th>
+                <th className="px-3 py-2">PT</th>
+                <th className="px-3 py-2">SEC</th>
+                <th className="px-3 py-2">Slum</th>
+                <th className="px-3 py-2">EC est.</th>
+              </tr>
+            </thead>
+            <tbody>
+              {priorityWards.map((w) => (
+                <tr key={w.label} className="border-t border-[var(--border)]">
+                  <td className="px-3 py-2 font-medium text-[var(--ink)]">{w.label}</td>
+                  <td className="px-3 py-2 text-[var(--yellow)]">{w.gap_index ?? "—"}</td>
+                  <td className="px-3 py-2">{w.pt_index ?? "—"}</td>
+                  <td className="px-3 py-2 text-[var(--ink-muted)]">
+                    {w.sec_proxy_band?.replace("_proxy", "") ?? "—"}
+                  </td>
+                  <td className="px-3 py-2 text-[var(--ink-muted)]">
+                    {w.has_slum
+                      ? w.pct_slum_area != null
+                        ? `${w.pct_slum_area.toFixed(1)}%`
+                        : "yes"
+                      : "no"}
+                  </td>
+                  <td className="px-3 py-2">{w.establishments?.toLocaleString() ?? "—"}</td>
+                </tr>
+              ))}
+              {!priorityWards.length ? (
+                <tr>
+                  <td colSpan={6} className="px-3 py-6 text-center text-[var(--ink-muted)]">
+                    No wards match — loosen filters.
+                  </td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <section className="space-y-3">
         <h2 className="font-[family-name:var(--font-display)] text-xl font-semibold text-[var(--ink)]">
@@ -128,38 +214,26 @@ export function RecommendationsPanel() {
         </ul>
       </section>
 
-      <section className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5">
-        <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">
-          Data gaps to close next
-        </h2>
-        <ul className="mt-3 space-y-3">
-          {gaps.map((o) => (
-            <li key={o.id} className="text-sm text-[var(--ink-muted)]">
-              <div className="flex items-center gap-2">
-                <StatusBadge status="unavailable" />
-                <strong className="text-[var(--ink)]">{o.title}</strong>
-              </div>
-              <p className="mt-1">{o.reason}</p>
-              {o.needed ? (
-                <p className="mt-1">
-                  <span className="font-semibold text-[var(--ink)]">Needed:</span> {o.needed}
-                </p>
-              ) : null}
-            </li>
-          ))}
-          {data.objectives
-            .filter((o) => o.status === "partial")
-            .map((o) => (
-              <li key={`partial-${o.id}`} className="text-sm text-[var(--ink-muted)]">
-                <div className="flex items-center gap-2">
-                  <StatusBadge status="partial" />
-                  <strong className="text-[var(--ink)]">{o.title}</strong>
-                </div>
-                <p className="mt-1">{o.summary ?? o.reason}</p>
-              </li>
-            ))}
-        </ul>
-      </section>
+      {gaps.length || data.objectives.some((o) => o.status === "partial") ? (
+        <section className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5">
+          <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">
+            Partial coverage notes
+          </h2>
+          <ul className="mt-3 space-y-3">
+            {data.objectives
+              .filter((o) => o.status === "partial")
+              .map((o) => (
+                <li key={`partial-${o.id}`} className="text-sm text-[var(--ink-muted)]">
+                  <div className="flex items-center gap-2">
+                    <StatusBadge status="partial" />
+                    <strong className="text-[var(--ink)]">{o.title}</strong>
+                  </div>
+                  <p className="mt-1">{o.summary ?? o.reason}</p>
+                </li>
+              ))}
+          </ul>
+        </section>
+      ) : null}
 
       <div className="flex flex-wrap gap-3">
         <Link href="/objectives" className="et-btn-primary">

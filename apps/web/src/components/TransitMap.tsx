@@ -387,6 +387,22 @@ const LAYER_STACK: {
     ],
   },
   {
+    key: "railway_stations",
+    sourceId: "tm-railway",
+    layers: [
+      {
+        id: "tm-railway-circle",
+        type: "circle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 4, 14, 8],
+          "circle-color": "#7c3aed",
+          "circle-stroke-width": 1.5,
+          "circle-stroke-color": "#ffffff",
+        },
+      },
+    ],
+  },
+  {
     key: "schools",
     sourceId: "tm-schools",
     layers: [
@@ -496,6 +512,7 @@ const INTERACTIVE_LAYER_IDS = [
   "tm-stops-circle",
   "tm-mrts-stations-circle",
   "tm-hubs-circle",
+  "tm-railway-circle",
   "tm-connectivity-need-line",
   "tm-schools-circle",
   "tm-healthcare-circle",

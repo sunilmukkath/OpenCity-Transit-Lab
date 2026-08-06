@@ -1,0 +1,1749 @@
+{
+  "status": "loaded",
+  "generated_at": "2026-08-06T16:56:10.297323+00:00",
+  "source_file": "9acdf52e-9d99-480c-bacd-a06892ada652.csv",
+  "note": "Economic Census microdata aggregated by WC (ward code) for TN State=33 District=2. Proxy for economic activity \u2014 not household income. Join to GCC ward_label is best-effort.",
+  "counts": {
+    "rows_raw": 333049,
+    "wards_aggregated": 155,
+    "wards_joined_pt": 155,
+    "total_establishments": 333049,
+    "total_workers": 779532
+  },
+  "chart": [
+    {
+      "band": "lower_activity",
+      "ward_count": 51,
+      "mean_pt_index": 61.9,
+      "pct_low_pt": 11.8
+    },
+    {
+      "band": "middle_activity",
+      "ward_count": 51,
+      "mean_pt_index": 65.6,
+      "pct_low_pt": 5.9
+    },
+    {
+      "band": "higher_activity",
+      "ward_count": 53,
+      "mean_pt_index": 60.4,
+      "pct_low_pt": 5.7
+    }
+  ],
+  "top_activity_wards": [
+    {
+      "ward_label": "65",
+      "establishments": 29088,
+      "total_workers": 59500,
+      "workers_per_est": 2.05,
+      "pt_index": 78.0,
+      "gap_index": 22,
+      "stop_count": 17
+    },
+    {
+      "ward_label": "62",
+      "establishments": 14735,
+      "total_workers": 32198,
+      "workers_per_est": 2.19,
+      "pt_index": 94.0,
+      "gap_index": 6,
+      "stop_count": 15
+    },
+    {
+      "ward_label": "153",
+      "establishments": 9127,
+      "total_workers": 18587,
+      "workers_per_est": 2.04,
+      "pt_index": 52.0,
+      "gap_index": 48,
+      "stop_count": 6
+    },
+    {
+      "ward_label": "30",
+      "establishments": 6949,
+      "total_workers": 12764,
+      "workers_per_est": 1.84,
+      "pt_index": 76.0,
+      "gap_index": 24,
+      "stop_count": 21
+    },
+    {
+      "ward_label": "28",
+      "establishments": 5686,
+      "total_workers": 10554,
+      "workers_per_est": 1.86,
+      "pt_index": 80.0,
+      "gap_index": 20,
+      "stop_count": 20
+    },
+    {
+      "ward_label": "72",
+      "establishments": 5094,
+      "total_workers": 11515,
+      "workers_per_est": 2.26,
+      "pt_index": 50.0,
+      "gap_index": 50,
+      "stop_count": 9
+    },
+    {
+      "ward_label": "2",
+      "establishments": 4944,
+      "total_workers": 10734,
+      "workers_per_est": 2.17,
+      "pt_index": 82.0,
+      "gap_index": 18,
+      "stop_count": 17
+    },
+    {
+      "ward_label": "3",
+      "establishments": 4883,
+      "total_workers": 9149,
+      "workers_per_est": 1.87,
+      "pt_index": 60.0,
+      "gap_index": 40,
+      "stop_count": 17
+    },
+    {
+      "ward_label": "31",
+      "establishments": 4189,
+      "total_workers": 7732,
+      "workers_per_est": 1.85,
+      "pt_index": 30.0,
+      "gap_index": 70,
+      "stop_count": 7
+    },
+    {
+      "ward_label": "1",
+      "establishments": 4169,
+      "total_workers": 9890,
+      "workers_per_est": 2.37,
+      "pt_index": 78.0,
+      "gap_index": 22,
+      "stop_count": 14
+    },
+    {
+      "ward_label": "155",
+      "establishments": 4153,
+      "total_workers": 8610,
+      "workers_per_est": 2.07,
+      "pt_index": 48.0,
+      "gap_index": 52,
+      "stop_count": 17
+    },
+    {
+      "ward_label": "7",
+      "establishments": 3985,
+      "total_workers": 8596,
+      "workers_per_est": 2.16,
+      "pt_index": 76.0,
+      "gap_index": 24,
+      "stop_count": 13
+    },
+    {
+      "ward_label": "117",
+      "establishments": 3554,
+      "total_workers": 7376,
+      "workers_per_est": 2.08,
+      "pt_index": 48.0,
+      "gap_index": 52,
+      "stop_count": 14
+    },
+    {
+      "ward_label": "60",
+      "establishments": 3459,
+      "total_workers": 7480,
+      "workers_per_est": 2.16,
+      "pt_index": 72.0,
+      "gap_index": 28,
+      "stop_count": 28
+    },
+    {
+      "ward_label": "129",
+      "establishments": 3446,
+      "total_workers": 7150,
+      "workers_per_est": 2.07,
+      "pt_index": 72.0,
+      "gap_index": 28,
+      "stop_count": 12
+    }
+  ],
+  "high_activity_low_pt": [
+    {
+      "ward_label": "31",
+      "establishments": 4189,
+      "total_workers": 7732,
+      "workers_per_est": 1.85,
+      "pt_index": 30.0,
+      "gap_index": 70,
+      "stop_count": 7
+    },
+    {
+      "ward_label": "131",
+      "establishments": 2862,
+      "total_workers": 5803,
+      "workers_per_est": 2.03,
+      "pt_index": 43.0,
+      "gap_index": 57,
+      "stop_count": 4
+    },
+    {
+      "ward_label": "48",
+      "establishments": 2791,
+      "total_workers": 7627,
+      "workers_per_est": 2.73,
+      "pt_index": 43.0,
+      "gap_index": 57,
+      "stop_count": 2
+    },
+    {
+      "ward_label": "64",
+      "establishments": 2777,
+      "total_workers": 8930,
+      "workers_per_est": 3.22,
+      "pt_index": 42.0,
+      "gap_index": 58,
+      "stop_count": 11
+    },
+    {
+      "ward_label": "89",
+      "establishments": 2645,
+      "total_workers": 7829,
+      "workers_per_est": 2.96,
+      "pt_index": 44.0,
+      "gap_index": 56,
+      "stop_count": 10
+    },
+    {
+      "ward_label": "80",
+      "establishments": 2465,
+      "total_workers": 5699,
+      "workers_per_est": 2.31,
+      "pt_index": 40.0,
+      "gap_index": 60,
+      "stop_count": 4
+    },
+    {
+      "ward_label": "154",
+      "establishments": 2449,
+      "total_workers": 5103,
+      "workers_per_est": 2.08,
+      "pt_index": 25.0,
+      "gap_index": 75,
+      "stop_count": 5
+    },
+    {
+      "ward_label": "12",
+      "establishments": 2300,
+      "total_workers": 4635,
+      "workers_per_est": 2.02,
+      "pt_index": 30.0,
+      "gap_index": 70,
+      "stop_count": 5
+    },
+    {
+      "ward_label": "13",
+      "establishments": 2222,
+      "total_workers": 4614,
+      "workers_per_est": 2.08,
+      "pt_index": 40.0,
+      "gap_index": 60,
+      "stop_count": 0
+    },
+    {
+      "ward_label": "109",
+      "establishments": 2191,
+      "total_workers": 17986,
+      "workers_per_est": 8.21,
+      "pt_index": 43.0,
+      "gap_index": 57,
+      "stop_count": 4
+    },
+    {
+      "ward_label": "74",
+      "establishments": 2159,
+      "total_workers": 5398,
+      "workers_per_est": 2.5,
+      "pt_index": 42.0,
+      "gap_index": 58,
+      "stop_count": 6
+    },
+    {
+      "ward_label": "120",
+      "establishments": 2046,
+      "total_workers": 4084,
+      "workers_per_est": 2.0,
+      "pt_index": 43.0,
+      "gap_index": 57,
+      "stop_count": 2
+    },
+    {
+      "ward_label": "18",
+      "establishments": 2044,
+      "total_workers": 3584,
+      "workers_per_est": 1.75,
+      "pt_index": 40.0,
+      "gap_index": 60,
+      "stop_count": 20
+    },
+    {
+      "ward_label": "6",
+      "establishments": 2025,
+      "total_workers": 3911,
+      "workers_per_est": 1.93,
+      "pt_index": 40.0,
+      "gap_index": 60,
+      "stop_count": 3
+    },
+    {
+      "ward_label": "149",
+      "establishments": 1827,
+      "total_workers": 3888,
+      "workers_per_est": 2.13,
+      "pt_index": 25.0,
+      "gap_index": 75,
+      "stop_count": 6
+    },
+    {
+      "ward_label": "51",
+      "establishments": 1821,
+      "total_workers": 3739,
+      "workers_per_est": 2.05,
+      "pt_index": 40.0,
+      "gap_index": 60,
+      "stop_count": 1
+    },
+    {
+      "ward_label": "33",
+      "establishments": 1768,
+      "total_workers": 3956,
+      "workers_per_est": 2.24,
+      "pt_index": 38.0,
+      "gap_index": 62,
+      "stop_count": 7
+    },
+    {
+      "ward_label": "29",
+      "establishments": 1612,
+      "total_workers": 3305,
+      "workers_per_est": 2.05,
+      "pt_index": 44.0,
+      "gap_index": 56,
+      "stop_count": 5
+    },
+    {
+      "ward_label": "19",
+      "establishments": 1471,
+      "total_workers": 3254,
+      "workers_per_est": 2.21,
+      "pt_index": 43.0,
+      "gap_index": 57,
+      "stop_count": 19
+    },
+    {
+      "ward_label": "143",
+      "establishments": 1398,
+      "total_workers": 3684,
+      "workers_per_est": 2.64,
+      "pt_index": 30.0,
+      "gap_index": 70,
+      "stop_count": 7
+    }
+  ],
+  "wards": [
+    {
+      "ward_label": "65",
+      "establishments": 29088,
+      "total_workers": 59500,
+      "workers_per_est": 2.05,
+      "pt_index": 78.0,
+      "gap_index": 22,
+      "stop_count": 17
+    },
+    {
+      "ward_label": "62",
+      "establishments": 14735,
+      "total_workers": 32198,
+      "workers_per_est": 2.19,
+      "pt_index": 94.0,
+      "gap_index": 6,
+      "stop_count": 15
+    },
+    {
+      "ward_label": "153",
+      "establishments": 9127,
+      "total_workers": 18587,
+      "workers_per_est": 2.04,
+      "pt_index": 52.0,
+      "gap_index": 48,
+      "stop_count": 6
+    },
+    {
+      "ward_label": "30",
+      "establishments": 6949,
+      "total_workers": 12764,
+      "workers_per_est": 1.84,
+      "pt_index": 76.0,
+      "gap_index": 24,
+      "stop_count": 21
+    },
+    {
+      "ward_label": "28",
+      "establishments": 5686,
+      "total_workers": 10554,
+      "workers_per_est": 1.86,
+      "pt_index": 80.0,
+      "gap_index": 20,
+      "stop_count": 20
+    },
+    {
+      "ward_label": "72",
+      "establishments": 5094,
+      "total_workers": 11515,
+      "workers_per_est": 2.26,
+      "pt_index": 50.0,
+      "gap_index": 50,
+      "stop_count": 9
+    },
+    {
+      "ward_label": "2",
+      "establishments": 4944,
+      "total_workers": 10734,
+      "workers_per_est": 2.17,
+      "pt_index": 82.0,
+      "gap_index": 18,
+      "stop_count": 17
+    },
+    {
+      "ward_label": "3",
+      "establishments": 4883,
+      "total_workers": 9149,
+      "workers_per_est": 1.87,
+      "pt_index": 60.0,
+      "gap_index": 40,
+      "stop_count": 17
+    },
+    {
+      "ward_label": "31",
+      "establishments": 4189,
+      "total_workers": 7732,
+      "workers_per_est": 1.85,
+      "pt_index": 30.0,
+      "gap_index": 70,
+      "stop_count": 7
+    },
+    {
+      "ward_label": "1",
+      "establishments": 4169,
+      "total_workers": 9890,
+      "workers_per_est": 2.37,
+      "pt_index": 78.0,
+      "gap_index": 22,
+      "stop_count": 14
+    },
+    {
+      "ward_label": "155",
+      "establishments": 4153,
+      "total_workers": 8610,
+      "workers_per_est": 2.07,
+      "pt_index": 48.0,
+      "gap_index": 52,
+      "stop_count": 17
+    },
+    {
+      "ward_label": "7",
+      "establishments": 3985,
+      "total_workers": 8596,
+      "workers_per_est": 2.16,
+      "pt_index": 76.0,
+      "gap_index": 24,
+      "stop_count": 13
+    },
+    {
+      "ward_label": "117",
+      "establishments": 3554,
+      "total_workers": 7376,
+      "workers_per_est": 2.08,
+      "pt_index": 48.0,
+      "gap_index": 52,
+      "stop_count": 14
+    },
+    {
+      "ward_label": "60",
+      "establishments": 3459,
+      "total_workers": 7480,
+      "workers_per_est": 2.16,
+      "pt_index": 72.0,
+      "gap_index": 28,
+      "stop_count": 28
+    },
+    {
+      "ward_label": "129",
+      "establishments": 3446,
+      "total_workers": 7150,
+      "workers_per_est": 2.07,
+      "pt_index": 72.0,
+      "gap_index": 28,
+      "stop_count": 12
+    },
+    {
+      "ward_label": "27",
+      "establishments": 3436,
+      "total_workers": 7135,
+      "workers_per_est": 2.08,
+      "pt_index": 73.0,
+      "gap_index": 27,
+      "stop_count": 14
+    },
+    {
+      "ward_label": "130",
+      "establishments": 3434,
+      "total_workers": 6620,
+      "workers_per_est": 1.93,
+      "pt_index": 74.0,
+      "gap_index": 26,
+      "stop_count": 10
+    },
+    {
+      "ward_label": "49",
+      "establishments": 3248,
+      "total_workers": 9230,
+      "workers_per_est": 2.84,
+      "pt_index": 76.0,
+      "gap_index": 24,
+      "stop_count": 11
+    },
+    {
+      "ward_label": "86",
+      "establishments": 3101,
+      "total_workers": 6743,
+      "workers_per_est": 2.17,
+      "pt_index": 52.0,
+      "gap_index": 48,
+      "stop_count": 37
+    },
+    {
+      "ward_label": "140",
+      "establishments": 3094,
+      "total_workers": 20430,
+      "workers_per_est": 6.6,
+      "pt_index": 68.0,
+      "gap_index": 32,
+      "stop_count": 8
+    },
+    {
+      "ward_label": "10",
+      "establishments": 2972,
+      "total_workers": 7235,
+      "workers_per_est": 2.43,
+      "pt_index": 52.0,
+      "gap_index": 48,
+      "stop_count": 5
+    },
+    {
+      "ward_label": "126",
+      "establishments": 2964,
+      "total_workers": 10704,
+      "workers_per_est": 3.61,
+      "pt_index": 74.0,
+      "gap_index": 26,
+      "stop_count": 10
+    },
+    {
+      "ward_label": "54",
+      "establishments": 2952,
+      "total_workers": 6089,
+      "workers_per_est": 2.06,
+      "pt_index": 46.0,
+      "gap_index": 54,
+      "stop_count": 3
+    },
+    {
+      "ward_label": "8",
+      "establishments": 2883,
+      "total_workers": 6538,
+      "workers_per_est": 2.27,
+      "pt_index": 58.0,
+      "gap_index": 42,
+      "stop_count": 5
+    },
+    {
+      "ward_label": "131",
+      "establishments": 2862,
+      "total_workers": 5803,
+      "workers_per_est": 2.03,
+      "pt_index": 43.0,
+      "gap_index": 57,
+      "stop_count": 4
+    },
+    {
+      "ward_label": "118",
+      "establishments": 2858,
+      "total_workers": 8104,
+      "workers_per_est": 2.84,
+      "pt_index": 74.0,
+      "gap_index": 26,
+      "stop_count": 16
+    },
+    {
+      "ward_label": "48",
+      "establishments": 2791,
+      "total_workers": 7627,
+      "workers_per_est": 2.73,
+      "pt_index": 43.0,
+      "gap_index": 57,
+      "stop_count": 2
+    },
+    {
+      "ward_label": "105",
+      "establishments": 2782,
+      "total_workers": 6755,
+      "workers_per_est": 2.43,
+      "pt_index": 66.0,
+      "gap_index": 34,
+      "stop_count": 8
+    },
+    {
+      "ward_label": "64",
+      "establishments": 2777,
+      "total_workers": 8930,
+      "workers_per_est": 3.22,
+      "pt_index": 42.0,
+      "gap_index": 58,
+      "stop_count": 11
+    },
+    {
+      "ward_label": "128",
+      "establishments": 2729,
+      "total_workers": 5184,
+      "workers_per_est": 1.9,
+      "pt_index": 56.0,
+      "gap_index": 44,
+      "stop_count": 25
+    },
+    {
+      "ward_label": "89",
+      "establishments": 2645,
+      "total_workers": 7829,
+      "workers_per_est": 2.96,
+      "pt_index": 44.0,
+      "gap_index": 56,
+      "stop_count": 10
+    },
+    {
+      "ward_label": "151",
+      "establishments": 2634,
+      "total_workers": 6113,
+      "workers_per_est": 2.32,
+      "pt_index": 68.0,
+      "gap_index": 32,
+      "stop_count": 13
+    },
+    {
+      "ward_label": "82",
+      "establishments": 2574,
+      "total_workers": 6550,
+      "workers_per_est": 2.54,
+      "pt_index": 79.0,
+      "gap_index": 21,
+      "stop_count": 19
+    },
+    {
+      "ward_label": "114",
+      "establishments": 2529,
+      "total_workers": 10048,
+      "workers_per_est": 3.97,
+      "pt_index": 84.0,
+      "gap_index": 16,
+      "stop_count": 20
+    },
+    {
+      "ward_label": "135",
+      "establishments": 2514,
+      "total_workers": 4833,
+      "workers_per_est": 1.92,
+      "pt_index": 80.0,
+      "gap_index": 20,
+      "stop_count": 25
+    },
+    {
+      "ward_label": "75",
+      "establishments": 2481,
+      "total_workers": 6541,
+      "workers_per_est": 2.64,
+      "pt_index": 68.0,
+      "gap_index": 32,
+      "stop_count": 8
+    },
+    {
+      "ward_label": "50",
+      "establishments": 2477,
+      "total_workers": 6247,
+      "workers_per_est": 2.52,
+      "pt_index": 47.0,
+      "gap_index": 53,
+      "stop_count": 6
+    },
+    {
+      "ward_label": "80",
+      "establishments": 2465,
+      "total_workers": 5699,
+      "workers_per_est": 2.31,
+      "pt_index": 40.0,
+      "gap_index": 60,
+      "stop_count": 4
+    },
+    {
+      "ward_label": "154",
+      "establishments": 2449,
+      "total_workers": 5103,
+      "workers_per_est": 2.08,
+      "pt_index": 25.0,
+      "gap_index": 75,
+      "stop_count": 5
+    },
+    {
+      "ward_label": "24",
+      "establishments": 2425,
+      "total_workers": 4539,
+      "workers_per_est": 1.87,
+      "pt_index": 69.0,
+      "gap_index": 31,
+      "stop_count": 10
+    },
+    {
+      "ward_label": "141",
+      "establishments": 2393,
+      "total_workers": 5556,
+      "workers_per_est": 2.32,
+      "pt_index": 68.0,
+      "gap_index": 32,
+      "stop_count": 9
+    },
+    {
+      "ward_label": "34",
+      "establishments": 2342,
+      "total_workers": 4797,
+      "workers_per_est": 2.05,
+      "pt_index": 78.0,
+      "gap_index": 22,
+      "stop_count": 21
+    },
+    {
+      "ward_label": "12",
+      "establishments": 2300,
+      "total_workers": 4635,
+      "workers_per_est": 2.02,
+      "pt_index": 30.0,
+      "gap_index": 70,
+      "stop_count": 5
+    },
+    {
+      "ward_label": "13",
+      "establishments": 2222,
+      "total_workers": 4614,
+      "workers_per_est": 2.08,
+      "pt_index": 40.0,
+      "gap_index": 60,
+      "stop_count": 0
+    },
+    {
+      "ward_label": "109",
+      "establishments": 2191,
+      "total_workers": 17986,
+      "workers_per_est": 8.21,
+      "pt_index": 43.0,
+      "gap_index": 57,
+      "stop_count": 4
+    },
+    {
+      "ward_label": "74",
+      "establishments": 2159,
+      "total_workers": 5398,
+      "workers_per_est": 2.5,
+      "pt_index": 42.0,
+      "gap_index": 58,
+      "stop_count": 6
+    },
+    {
+      "ward_label": "122",
+      "establishments": 2121,
+      "total_workers": 4991,
+      "workers_per_est": 2.35,
+      "pt_index": 84.0,
+      "gap_index": 16,
+      "stop_count": 24
+    },
+    {
+      "ward_label": "120",
+      "establishments": 2046,
+      "total_workers": 4084,
+      "workers_per_est": 2.0,
+      "pt_index": 43.0,
+      "gap_index": 57,
+      "stop_count": 2
+    },
+    {
+      "ward_label": "18",
+      "establishments": 2044,
+      "total_workers": 3584,
+      "workers_per_est": 1.75,
+      "pt_index": 40.0,
+      "gap_index": 60,
+      "stop_count": 20
+    },
+    {
+      "ward_label": "6",
+      "establishments": 2025,
+      "total_workers": 3911,
+      "workers_per_est": 1.93,
+      "pt_index": 40.0,
+      "gap_index": 60,
+      "stop_count": 3
+    },
+    {
+      "ward_label": "47",
+      "establishments": 2011,
+      "total_workers": 5878,
+      "workers_per_est": 2.92,
+      "pt_index": 52.0,
+      "gap_index": 48,
+      "stop_count": 6
+    },
+    {
+      "ward_label": "121",
+      "establishments": 2004,
+      "total_workers": 5391,
+      "workers_per_est": 2.69,
+      "pt_index": 70.0,
+      "gap_index": 30,
+      "stop_count": 14
+    },
+    {
+      "ward_label": "63",
+      "establishments": 1935,
+      "total_workers": 5204,
+      "workers_per_est": 2.69,
+      "pt_index": 76.0,
+      "gap_index": 24,
+      "stop_count": 12
+    },
+    {
+      "ward_label": "35",
+      "establishments": 1888,
+      "total_workers": 5826,
+      "workers_per_est": 3.09,
+      "pt_index": 72.0,
+      "gap_index": 28,
+      "stop_count": 12
+    },
+    {
+      "ward_label": "108",
+      "establishments": 1872,
+      "total_workers": 4273,
+      "workers_per_est": 2.28,
+      "pt_index": 66.0,
+      "gap_index": 34,
+      "stop_count": 8
+    },
+    {
+      "ward_label": "127",
+      "establishments": 1870,
+      "total_workers": 5205,
+      "workers_per_est": 2.78,
+      "pt_index": 82.0,
+      "gap_index": 18,
+      "stop_count": 29
+    },
+    {
+      "ward_label": "25",
+      "establishments": 1850,
+      "total_workers": 4156,
+      "workers_per_est": 2.25,
+      "pt_index": 60.0,
+      "gap_index": 40,
+      "stop_count": 23
+    },
+    {
+      "ward_label": "5",
+      "establishments": 1827,
+      "total_workers": 3708,
+      "workers_per_est": 2.03,
+      "pt_index": 78.0,
+      "gap_index": 22,
+      "stop_count": 19
+    },
+    {
+      "ward_label": "149",
+      "establishments": 1827,
+      "total_workers": 3888,
+      "workers_per_est": 2.13,
+      "pt_index": 25.0,
+      "gap_index": 75,
+      "stop_count": 6
+    },
+    {
+      "ward_label": "113",
+      "establishments": 1822,
+      "total_workers": 5615,
+      "workers_per_est": 3.08,
+      "pt_index": 64.0,
+      "gap_index": 36,
+      "stop_count": 22
+    },
+    {
+      "ward_label": "51",
+      "establishments": 1821,
+      "total_workers": 3739,
+      "workers_per_est": 2.05,
+      "pt_index": 40.0,
+      "gap_index": 60,
+      "stop_count": 1
+    },
+    {
+      "ward_label": "115",
+      "establishments": 1817,
+      "total_workers": 4673,
+      "workers_per_est": 2.57,
+      "pt_index": 68.0,
+      "gap_index": 32,
+      "stop_count": 7
+    },
+    {
+      "ward_label": "71",
+      "establishments": 1800,
+      "total_workers": 4815,
+      "workers_per_est": 2.68,
+      "pt_index": 68.0,
+      "gap_index": 32,
+      "stop_count": 14
+    },
+    {
+      "ward_label": "36",
+      "establishments": 1794,
+      "total_workers": 3628,
+      "workers_per_est": 2.02,
+      "pt_index": 74.0,
+      "gap_index": 26,
+      "stop_count": 12
+    },
+    {
+      "ward_label": "33",
+      "establishments": 1768,
+      "total_workers": 3956,
+      "workers_per_est": 2.24,
+      "pt_index": 38.0,
+      "gap_index": 62,
+      "stop_count": 7
+    },
+    {
+      "ward_label": "88",
+      "establishments": 1763,
+      "total_workers": 3737,
+      "workers_per_est": 2.12,
+      "pt_index": 61.0,
+      "gap_index": 39,
+      "stop_count": 11
+    },
+    {
+      "ward_label": "95",
+      "establishments": 1757,
+      "total_workers": 5262,
+      "workers_per_est": 2.99,
+      "pt_index": 90.0,
+      "gap_index": 10,
+      "stop_count": 17
+    },
+    {
+      "ward_label": "68",
+      "establishments": 1735,
+      "total_workers": 5061,
+      "workers_per_est": 2.92,
+      "pt_index": 80.0,
+      "gap_index": 20,
+      "stop_count": 17
+    },
+    {
+      "ward_label": "79",
+      "establishments": 1729,
+      "total_workers": 3672,
+      "workers_per_est": 2.12,
+      "pt_index": 56.0,
+      "gap_index": 44,
+      "stop_count": 12
+    },
+    {
+      "ward_label": "85",
+      "establishments": 1713,
+      "total_workers": 3780,
+      "workers_per_est": 2.21,
+      "pt_index": 76.0,
+      "gap_index": 24,
+      "stop_count": 23
+    },
+    {
+      "ward_label": "116",
+      "establishments": 1700,
+      "total_workers": 3906,
+      "workers_per_est": 2.3,
+      "pt_index": 94.0,
+      "gap_index": 6,
+      "stop_count": 18
+    },
+    {
+      "ward_label": "136",
+      "establishments": 1697,
+      "total_workers": 3070,
+      "workers_per_est": 1.81,
+      "pt_index": 74.0,
+      "gap_index": 26,
+      "stop_count": 10
+    },
+    {
+      "ward_label": "26",
+      "establishments": 1682,
+      "total_workers": 3739,
+      "workers_per_est": 2.22,
+      "pt_index": 63.0,
+      "gap_index": 37,
+      "stop_count": 8
+    },
+    {
+      "ward_label": "15",
+      "establishments": 1655,
+      "total_workers": 3662,
+      "workers_per_est": 2.21,
+      "pt_index": 60.0,
+      "gap_index": 40,
+      "stop_count": 8
+    },
+    {
+      "ward_label": "139",
+      "establishments": 1646,
+      "total_workers": 3468,
+      "workers_per_est": 2.11,
+      "pt_index": 60.0,
+      "gap_index": 40,
+      "stop_count": 11
+    },
+    {
+      "ward_label": "83",
+      "establishments": 1628,
+      "total_workers": 3428,
+      "workers_per_est": 2.11,
+      "pt_index": 57.0,
+      "gap_index": 43,
+      "stop_count": 20
+    },
+    {
+      "ward_label": "14",
+      "establishments": 1624,
+      "total_workers": 2933,
+      "workers_per_est": 1.81,
+      "pt_index": 76.0,
+      "gap_index": 24,
+      "stop_count": 10
+    },
+    {
+      "ward_label": "29",
+      "establishments": 1612,
+      "total_workers": 3305,
+      "workers_per_est": 2.05,
+      "pt_index": 44.0,
+      "gap_index": 56,
+      "stop_count": 5
+    },
+    {
+      "ward_label": "150",
+      "establishments": 1612,
+      "total_workers": 3095,
+      "workers_per_est": 1.92,
+      "pt_index": 52.0,
+      "gap_index": 48,
+      "stop_count": 21
+    },
+    {
+      "ward_label": "142",
+      "establishments": 1588,
+      "total_workers": 3555,
+      "workers_per_est": 2.24,
+      "pt_index": 94.0,
+      "gap_index": 6,
+      "stop_count": 16
+    },
+    {
+      "ward_label": "4",
+      "establishments": 1585,
+      "total_workers": 2951,
+      "workers_per_est": 1.86,
+      "pt_index": 60.0,
+      "gap_index": 40,
+      "stop_count": 15
+    },
+    {
+      "ward_label": "59",
+      "establishments": 1534,
+      "total_workers": 3507,
+      "workers_per_est": 2.29,
+      "pt_index": 94.0,
+      "gap_index": 6,
+      "stop_count": 42
+    },
+    {
+      "ward_label": "91",
+      "establishments": 1525,
+      "total_workers": 3595,
+      "workers_per_est": 2.36,
+      "pt_index": 66.0,
+      "gap_index": 34,
+      "stop_count": 9
+    },
+    {
+      "ward_label": "66",
+      "establishments": 1491,
+      "total_workers": 4856,
+      "workers_per_est": 3.26,
+      "pt_index": 55.0,
+      "gap_index": 45,
+      "stop_count": 5
+    },
+    {
+      "ward_label": "93",
+      "establishments": 1475,
+      "total_workers": 2827,
+      "workers_per_est": 1.92,
+      "pt_index": 50.0,
+      "gap_index": 50,
+      "stop_count": 9
+    },
+    {
+      "ward_label": "19",
+      "establishments": 1471,
+      "total_workers": 3254,
+      "workers_per_est": 2.21,
+      "pt_index": 43.0,
+      "gap_index": 57,
+      "stop_count": 19
+    },
+    {
+      "ward_label": "58",
+      "establishments": 1442,
+      "total_workers": 3526,
+      "workers_per_est": 2.45,
+      "pt_index": 98.0,
+      "gap_index": 2,
+      "stop_count": 28
+    },
+    {
+      "ward_label": "53",
+      "establishments": 1415,
+      "total_workers": 3394,
+      "workers_per_est": 2.4,
+      "pt_index": 68.0,
+      "gap_index": 32,
+      "stop_count": 9
+    },
+    {
+      "ward_label": "81",
+      "establishments": 1415,
+      "total_workers": 3010,
+      "workers_per_est": 2.13,
+      "pt_index": 86.0,
+      "gap_index": 14,
+      "stop_count": 21
+    },
+    {
+      "ward_label": "9",
+      "establishments": 1401,
+      "total_workers": 3036,
+      "workers_per_est": 2.17,
+      "pt_index": 46.0,
+      "gap_index": 54,
+      "stop_count": 10
+    },
+    {
+      "ward_label": "143",
+      "establishments": 1398,
+      "total_workers": 3684,
+      "workers_per_est": 2.64,
+      "pt_index": 30.0,
+      "gap_index": 70,
+      "stop_count": 7
+    },
+    {
+      "ward_label": "106",
+      "establishments": 1388,
+      "total_workers": 3535,
+      "workers_per_est": 2.55,
+      "pt_index": 43.0,
+      "gap_index": 57,
+      "stop_count": 4
+    },
+    {
+      "ward_label": "40",
+      "establishments": 1380,
+      "total_workers": 2972,
+      "workers_per_est": 2.15,
+      "pt_index": 78.0,
+      "gap_index": 22,
+      "stop_count": 15
+    },
+    {
+      "ward_label": "23",
+      "establishments": 1373,
+      "total_workers": 2622,
+      "workers_per_est": 1.91,
+      "pt_index": 52.0,
+      "gap_index": 48,
+      "stop_count": 5
+    },
+    {
+      "ward_label": "42",
+      "establishments": 1366,
+      "total_workers": 3311,
+      "workers_per_est": 2.42,
+      "pt_index": 74.0,
+      "gap_index": 26,
+      "stop_count": 12
+    },
+    {
+      "ward_label": "41",
+      "establishments": 1365,
+      "total_workers": 3486,
+      "workers_per_est": 2.55,
+      "pt_index": 78.0,
+      "gap_index": 22,
+      "stop_count": 10
+    },
+    {
+      "ward_label": "124",
+      "establishments": 1356,
+      "total_workers": 2773,
+      "workers_per_est": 2.04,
+      "pt_index": 72.0,
+      "gap_index": 28,
+      "stop_count": 6
+    },
+    {
+      "ward_label": "96",
+      "establishments": 1342,
+      "total_workers": 2985,
+      "workers_per_est": 2.22,
+      "pt_index": 90.0,
+      "gap_index": 10,
+      "stop_count": 14
+    },
+    {
+      "ward_label": "37",
+      "establishments": 1290,
+      "total_workers": 3351,
+      "workers_per_est": 2.6,
+      "pt_index": 66.0,
+      "gap_index": 34,
+      "stop_count": 12
+    },
+    {
+      "ward_label": "11",
+      "establishments": 1275,
+      "total_workers": 2821,
+      "workers_per_est": 2.21,
+      "pt_index": 52.0,
+      "gap_index": 48,
+      "stop_count": 7
+    },
+    {
+      "ward_label": "52",
+      "establishments": 1253,
+      "total_workers": 2719,
+      "workers_per_est": 2.17,
+      "pt_index": 100.0,
+      "gap_index": 0,
+      "stop_count": 16
+    },
+    {
+      "ward_label": "132",
+      "establishments": 1250,
+      "total_workers": 2795,
+      "workers_per_est": 2.24,
+      "pt_index": 72.0,
+      "gap_index": 28,
+      "stop_count": 6
+    },
+    {
+      "ward_label": "152",
+      "establishments": 1244,
+      "total_workers": 2862,
+      "workers_per_est": 2.3,
+      "pt_index": 42.0,
+      "gap_index": 58,
+      "stop_count": 10
+    },
+    {
+      "ward_label": "43",
+      "establishments": 1241,
+      "total_workers": 2631,
+      "workers_per_est": 2.12,
+      "pt_index": 58.0,
+      "gap_index": 42,
+      "stop_count": 11
+    },
+    {
+      "ward_label": "138",
+      "establishments": 1239,
+      "total_workers": 2485,
+      "workers_per_est": 2.01,
+      "pt_index": 50.0,
+      "gap_index": 50,
+      "stop_count": 21
+    },
+    {
+      "ward_label": "123",
+      "establishments": 1239,
+      "total_workers": 2803,
+      "workers_per_est": 2.26,
+      "pt_index": 98.0,
+      "gap_index": 2,
+      "stop_count": 25
+    },
+    {
+      "ward_label": "103",
+      "establishments": 1225,
+      "total_workers": 2761,
+      "workers_per_est": 2.25,
+      "pt_index": 78.0,
+      "gap_index": 22,
+      "stop_count": 25
+    },
+    {
+      "ward_label": "111",
+      "establishments": 1224,
+      "total_workers": 3050,
+      "workers_per_est": 2.49,
+      "pt_index": 74.0,
+      "gap_index": 26,
+      "stop_count": 28
+    },
+    {
+      "ward_label": "46",
+      "establishments": 1209,
+      "total_workers": 3110,
+      "workers_per_est": 2.57,
+      "pt_index": 74.0,
+      "gap_index": 26,
+      "stop_count": 12
+    },
+    {
+      "ward_label": "21",
+      "establishments": 1198,
+      "total_workers": 2270,
+      "workers_per_est": 1.89,
+      "pt_index": 63.0,
+      "gap_index": 37,
+      "stop_count": 8
+    },
+    {
+      "ward_label": "67",
+      "establishments": 1168,
+      "total_workers": 2874,
+      "workers_per_est": 2.46,
+      "pt_index": 52.0,
+      "gap_index": 48,
+      "stop_count": 9
+    },
+    {
+      "ward_label": "16",
+      "establishments": 1156,
+      "total_workers": 2000,
+      "workers_per_est": 1.73,
+      "pt_index": 54.0,
+      "gap_index": 46,
+      "stop_count": 15
+    },
+    {
+      "ward_label": "70",
+      "establishments": 1154,
+      "total_workers": 4889,
+      "workers_per_est": 4.24,
+      "pt_index": 92.0,
+      "gap_index": 8,
+      "stop_count": 18
+    },
+    {
+      "ward_label": "107",
+      "establishments": 1148,
+      "total_workers": 2598,
+      "workers_per_est": 2.26,
+      "pt_index": 36.0,
+      "gap_index": 64,
+      "stop_count": 7
+    },
+    {
+      "ward_label": "119",
+      "establishments": 1144,
+      "total_workers": 3426,
+      "workers_per_est": 2.99,
+      "pt_index": 56.0,
+      "gap_index": 44,
+      "stop_count": 24
+    },
+    {
+      "ward_label": "94",
+      "establishments": 1136,
+      "total_workers": 2453,
+      "workers_per_est": 2.16,
+      "pt_index": 47.0,
+      "gap_index": 53,
+      "stop_count": 7
+    },
+    {
+      "ward_label": "38",
+      "establishments": 1129,
+      "total_workers": 2445,
+      "workers_per_est": 2.17,
+      "pt_index": 72.0,
+      "gap_index": 28,
+      "stop_count": 10
+    },
+    {
+      "ward_label": "125",
+      "establishments": 1116,
+      "total_workers": 2968,
+      "workers_per_est": 2.66,
+      "pt_index": 80.0,
+      "gap_index": 20,
+      "stop_count": 21
+    },
+    {
+      "ward_label": "99",
+      "establishments": 1112,
+      "total_workers": 2466,
+      "workers_per_est": 2.22,
+      "pt_index": 64.0,
+      "gap_index": 36,
+      "stop_count": 17
+    },
+    {
+      "ward_label": "144",
+      "establishments": 1110,
+      "total_workers": 2334,
+      "workers_per_est": 2.1,
+      "pt_index": 25.0,
+      "gap_index": 75,
+      "stop_count": 6
+    },
+    {
+      "ward_label": "22",
+      "establishments": 1093,
+      "total_workers": 2250,
+      "workers_per_est": 2.06,
+      "pt_index": 22.0,
+      "gap_index": 78,
+      "stop_count": 6
+    },
+    {
+      "ward_label": "76",
+      "establishments": 1082,
+      "total_workers": 2657,
+      "workers_per_est": 2.46,
+      "pt_index": 70.0,
+      "gap_index": 30,
+      "stop_count": 8
+    },
+    {
+      "ward_label": "84",
+      "establishments": 1070,
+      "total_workers": 2195,
+      "workers_per_est": 2.05,
+      "pt_index": 62.0,
+      "gap_index": 38,
+      "stop_count": 28
+    },
+    {
+      "ward_label": "134",
+      "establishments": 1060,
+      "total_workers": 2067,
+      "workers_per_est": 1.95,
+      "pt_index": 80.0,
+      "gap_index": 20,
+      "stop_count": 7
+    },
+    {
+      "ward_label": "101",
+      "establishments": 1049,
+      "total_workers": 2033,
+      "workers_per_est": 1.94,
+      "pt_index": 48.0,
+      "gap_index": 52,
+      "stop_count": 17
+    },
+    {
+      "ward_label": "39",
+      "establishments": 993,
+      "total_workers": 2787,
+      "workers_per_est": 2.81,
+      "pt_index": 68.0,
+      "gap_index": 32,
+      "stop_count": 9
+    },
+    {
+      "ward_label": "92",
+      "establishments": 968,
+      "total_workers": 1789,
+      "workers_per_est": 1.85,
+      "pt_index": 64.0,
+      "gap_index": 36,
+      "stop_count": 14
+    },
+    {
+      "ward_label": "147",
+      "establishments": 945,
+      "total_workers": 2031,
+      "workers_per_est": 2.15,
+      "pt_index": 48.0,
+      "gap_index": 52,
+      "stop_count": 23
+    },
+    {
+      "ward_label": "100",
+      "establishments": 938,
+      "total_workers": 2310,
+      "workers_per_est": 2.46,
+      "pt_index": 78.0,
+      "gap_index": 22,
+      "stop_count": 26
+    },
+    {
+      "ward_label": "17",
+      "establishments": 924,
+      "total_workers": 1828,
+      "workers_per_est": 1.98,
+      "pt_index": 40.0,
+      "gap_index": 60,
+      "stop_count": 15
+    },
+    {
+      "ward_label": "148",
+      "establishments": 902,
+      "total_workers": 1854,
+      "workers_per_est": 2.06,
+      "pt_index": 38.0,
+      "gap_index": 62,
+      "stop_count": 8
+    },
+    {
+      "ward_label": "98",
+      "establishments": 898,
+      "total_workers": 1870,
+      "workers_per_est": 2.08,
+      "pt_index": 40.0,
+      "gap_index": 60,
+      "stop_count": 3
+    },
+    {
+      "ward_label": "110",
+      "establishments": 877,
+      "total_workers": 2294,
+      "workers_per_est": 2.62,
+      "pt_index": 78.0,
+      "gap_index": 22,
+      "stop_count": 22
+    },
+    {
+      "ward_label": "57",
+      "establishments": 875,
+      "total_workers": 2078,
+      "workers_per_est": 2.37,
+      "pt_index": 50.0,
+      "gap_index": 50,
+      "stop_count": 6
+    },
+    {
+      "ward_label": "69",
+      "establishments": 859,
+      "total_workers": 1429,
+      "workers_per_est": 1.66,
+      "pt_index": 55.0,
+      "gap_index": 45,
+      "stop_count": 5
+    },
+    {
+      "ward_label": "45",
+      "establishments": 838,
+      "total_workers": 1828,
+      "workers_per_est": 2.18,
+      "pt_index": 74.0,
+      "gap_index": 26,
+      "stop_count": 11
+    },
+    {
+      "ward_label": "20",
+      "establishments": 837,
+      "total_workers": 1674,
+      "workers_per_est": 2.0,
+      "pt_index": 96.0,
+      "gap_index": 4,
+      "stop_count": 12
+    },
+    {
+      "ward_label": "78",
+      "establishments": 810,
+      "total_workers": 1727,
+      "workers_per_est": 2.13,
+      "pt_index": 60.0,
+      "gap_index": 40,
+      "stop_count": 6
+    },
+    {
+      "ward_label": "102",
+      "establishments": 805,
+      "total_workers": 1600,
+      "workers_per_est": 1.99,
+      "pt_index": 100.0,
+      "gap_index": 0,
+      "stop_count": 32
+    },
+    {
+      "ward_label": "97",
+      "establishments": 797,
+      "total_workers": 1869,
+      "workers_per_est": 2.35,
+      "pt_index": 52.0,
+      "gap_index": 48,
+      "stop_count": 6
+    },
+    {
+      "ward_label": "90",
+      "establishments": 797,
+      "total_workers": 1914,
+      "workers_per_est": 2.4,
+      "pt_index": 55.0,
+      "gap_index": 45,
+      "stop_count": 5
+    },
+    {
+      "ward_label": "133",
+      "establishments": 790,
+      "total_workers": 1646,
+      "workers_per_est": 2.08,
+      "pt_index": 80.0,
+      "gap_index": 20,
+      "stop_count": 26
+    },
+    {
+      "ward_label": "145",
+      "establishments": 779,
+      "total_workers": 1537,
+      "workers_per_est": 1.97,
+      "pt_index": 48.0,
+      "gap_index": 52,
+      "stop_count": 13
+    },
+    {
+      "ward_label": "55",
+      "establishments": 778,
+      "total_workers": 2314,
+      "workers_per_est": 2.97,
+      "pt_index": 66.0,
+      "gap_index": 34,
+      "stop_count": 5
+    },
+    {
+      "ward_label": "44",
+      "establishments": 769,
+      "total_workers": 1654,
+      "workers_per_est": 2.15,
+      "pt_index": 40.0,
+      "gap_index": 60,
+      "stop_count": 2
+    },
+    {
+      "ward_label": "77",
+      "establishments": 762,
+      "total_workers": 1706,
+      "workers_per_est": 2.24,
+      "pt_index": 76.0,
+      "gap_index": 24,
+      "stop_count": 10
+    },
+    {
+      "ward_label": "146",
+      "establishments": 741,
+      "total_workers": 1699,
+      "workers_per_est": 2.29,
+      "pt_index": 36.0,
+      "gap_index": 64,
+      "stop_count": 7
+    },
+    {
+      "ward_label": "73",
+      "establishments": 728,
+      "total_workers": 2863,
+      "workers_per_est": 3.93,
+      "pt_index": 74.0,
+      "gap_index": 26,
+      "stop_count": 11
+    },
+    {
+      "ward_label": "104",
+      "establishments": 714,
+      "total_workers": 1748,
+      "workers_per_est": 2.45,
+      "pt_index": 82.0,
+      "gap_index": 18,
+      "stop_count": 21
+    },
+    {
+      "ward_label": "87",
+      "establishments": 695,
+      "total_workers": 1832,
+      "workers_per_est": 2.64,
+      "pt_index": 80.0,
+      "gap_index": 20,
+      "stop_count": 13
+    },
+    {
+      "ward_label": "56",
+      "establishments": 672,
+      "total_workers": 1474,
+      "workers_per_est": 2.19,
+      "pt_index": 60.0,
+      "gap_index": 40,
+      "stop_count": 6
+    },
+    {
+      "ward_label": "61",
+      "establishments": 657,
+      "total_workers": 1603,
+      "workers_per_est": 2.44,
+      "pt_index": 80.0,
+      "gap_index": 20,
+      "stop_count": 27
+    },
+    {
+      "ward_label": "112",
+      "establishments": 454,
+      "total_workers": 1021,
+      "workers_per_est": 2.25,
+      "pt_index": 27.0,
+      "gap_index": 73,
+      "stop_count": 4
+    },
+    {
+      "ward_label": "137",
+      "establishments": 449,
+      "total_workers": 815,
+      "workers_per_est": 1.82,
+      "pt_index": 50.0,
+      "gap_index": 50,
+      "stop_count": 24
+    },
+    {
+      "ward_label": "32",
+      "establishments": 235,
+      "total_workers": 453,
+      "workers_per_est": 1.93,
+      "pt_index": 65.0,
+      "gap_index": 35,
+      "stop_count": 20
+    }
+  ]
+}

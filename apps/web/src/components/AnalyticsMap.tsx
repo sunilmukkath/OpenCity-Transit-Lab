@@ -18,6 +18,7 @@ const CORE: MapLayerKey[] = [
   "mrts_lines",
   "mrts_stations",
   "hubs",
+  "railway_stations",
   "wards",
   "stops",
   "schools",

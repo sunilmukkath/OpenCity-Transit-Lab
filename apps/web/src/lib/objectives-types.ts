@@ -11,10 +11,14 @@ export interface ObjectiveChartBar {
   ward_count?: number;
   mean_pt_index?: number | null;
   pct_low_pt?: number | null;
+  pct_within_100m?: number | null;
   pct_within_500m?: number | null;
+  pct_over_100m?: number | null;
   pct_within_1000m?: number | null;
   pct_over_1000m?: number | null;
   total?: number | null;
+  within_100m?: number | null;
+  over_100m?: number | null;
 }
 
 export interface ObjectiveBlock {
@@ -63,6 +67,22 @@ export interface ObjectiveBlock {
   schools?: Record<string, unknown> | null;
   healthcare?: Record<string, unknown> | null;
   partial_tables?: { name?: string; rows?: number; columns?: string[]; file?: string }[];
+  insights?: { theme?: string; detail?: string }[];
+  corridors_mentioned?: string[];
+  pt_measures_mentioned?: string[];
+  document?: Record<string, unknown>;
+  economic_census?: {
+    status?: string;
+    counts?: Record<string, number>;
+    chart?: ObjectiveChartBar[];
+    high_activity_low_pt?: {
+      ward_label?: string;
+      establishments?: number;
+      total_workers?: number;
+      pt_index?: number | null;
+    }[];
+    note?: string;
+  };
 }
 
 export interface ObjectiveRecommendation {

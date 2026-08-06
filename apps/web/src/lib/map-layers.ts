@@ -7,6 +7,7 @@ export type MapLayerKey =
   | "mrts_stations"
   | "mrts_lines"
   | "hubs"
+  | "railway_stations"
   | "connectivity_need"
   | "walk_distance_bands"
   | "omr_corridor"
@@ -36,6 +37,13 @@ export const MAP_LAYER_META: {
   },
   { key: "stops", label: "Transit stops (GTFS)", short: "Stops", defaultOn: true, group: "core" },
   { key: "hubs", label: "Rail / metro hubs (existing)", short: "Hubs", defaultOn: true, group: "core" },
+  {
+    key: "railway_stations",
+    label: "Suburban / IR railway stations (OSM download)",
+    short: "Rail stns",
+    defaultOn: false,
+    group: "core",
+  },
   { key: "mrts_lines", label: "MRTS lines", short: "MRTS", defaultOn: true, group: "core" },
   { key: "mrts_stations", label: "MRTS stations", short: "Stations", defaultOn: true, group: "core" },
   {
@@ -121,6 +129,7 @@ const CORE_OFF_AMENITIES: Partial<Record<MapLayerKey, boolean>> = {
   public_toilets: false,
   anganwadis: false,
   bus_stop_audit: false,
+  railway_stations: false,
 };
 
 export const LAYER_PRESETS: Record<
@@ -151,7 +160,7 @@ export const LAYER_PRESETS: Record<
   },
   destinations: {
     label: "Destinations",
-    blurb: "Schools + health + walk gaps",
+    blurb: "Schools + health · check ≤100m stop access",
     choropleth: "stops",
     layers: {
       wards: false,
@@ -159,6 +168,7 @@ export const LAYER_PRESETS: Record<
       mrts_lines: true,
       mrts_stations: true,
       hubs: true,
+      railway_stations: false,
       connectivity_need: false,
       walk_distance_bands: true,
       omr_corridor: true,

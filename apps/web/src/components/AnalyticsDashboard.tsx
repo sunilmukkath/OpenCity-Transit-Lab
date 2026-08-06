@@ -62,6 +62,7 @@ const DEFAULT_MAP_LAYERS: Record<string, boolean> = {
   mrts_stations: true,
   mrts_lines: true,
   hubs: true,
+  railway_stations: false,
   connectivity_need: false,
   walk_distance_bands: true,
   omr_corridor: true,
@@ -96,24 +97,24 @@ const CATEGORY_LABEL: Record<CategoryFilter, string> = {
 
 const TABS: { id: AnalyticsTab; label: string; blurb: string }[] = [
   {
-    id: "overview",
-    label: "Overview",
-    blurb: "City inventory, map layers, and feature charts",
+    id: "spatial",
+    label: "Ward / zone reports",
+    blurb: "Gap Index and inventory by area",
   },
   {
     id: "insights",
-    label: "Insights",
-    blurb: "Hub last-mile, shelter gaps, walk coverage",
+    label: "Feeder insights",
+    blurb: "Hub last-mile, shelters, catchments",
   },
   {
-    id: "spatial",
-    label: "Ward / zone reports",
-    blurb: "Area-wise inventory scores and recommendations",
+    id: "overview",
+    label: "Inventory map",
+    blurb: "Layer toggles and feature counts",
   },
   {
     id: "sources",
     label: "Data sources",
-    blurb: "Filter loaded layers, realtime plugs, and gaps",
+    blurb: "Filter loaded layers and plugs",
   },
 ];
 
@@ -148,7 +149,7 @@ function Bar({
 }
 
 export function AnalyticsDashboard() {
-  const [tab, setTab] = useState<AnalyticsTab>("overview");
+  const [tab, setTab] = useState<AnalyticsTab>("spatial");
   const [manifest, setManifest] = useState<Manifest | null>(null);
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [loading, setLoading] = useState(true);

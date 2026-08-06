@@ -31,6 +31,7 @@ from build_sec_proxy import build_sec_proxy  # noqa: E402
 from build_walk_distance_bands import build_walk_distance_bands  # noqa: E402
 from ingest_jam_catalog import ingest_jam_catalog  # noqa: E402
 from build_objectives_analysis import build_objectives_analysis  # noqa: E402
+from ingest_downloads import main as ingest_downloads_main  # noqa: E402
 
 RAW = ROOT / "data" / "raw"
 PROCESSED = ROOT / "data" / "processed"
@@ -1716,6 +1717,12 @@ def main() -> int:
         manifest = json.loads((PROCESSED / "manifest.json").read_text())
     except Exception as exc:  # noqa: BLE001
         print(f"[fail] jam catalog ingest: {exc}", file=sys.stderr)
+
+    # Manual downloads (CMP / EC / railway / pin codes)
+    try:
+        ingest_downloads_main()
+    except Exception as exc:  # noqa: BLE001
+        print(f"[fail] downloads ingest: {exc}", file=sys.stderr)
 
     # Datajam problem-statement objectives + recommendations JSON
     try:

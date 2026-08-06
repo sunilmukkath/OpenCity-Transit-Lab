@@ -1,18 +1,41 @@
 import Link from "next/link";
-import { AUDIENCES, fetchManifest, fetchMetrics, layerIsReady } from "@/lib/data";
+import { promises as fs } from "fs";
+import path from "path";
+import { fetchManifest, fetchMetrics, layerIsReady } from "@/lib/data";
 import { MetricCard } from "@/components/MetricCard";
-import { StatusBadge } from "@/components/StatusBadge";
-import { RealtimePanel } from "@/components/RealtimePanel";
-import { LayerMarquee } from "@/components/LayerMarquee";
 import { DecisionCta } from "@/components/DecisionCta";
 import { SectionEyebrow, SpectrumOrbs, SpectrumRule } from "@/components/BrandMotif";
+import { HomeImpactPanel } from "@/components/HomeImpactPanel";
+import type { ObjectivesAnalysis } from "@/lib/objectives-types";
+
+async function loadObjectives(): Promise<ObjectivesAnalysis | null> {
+  try {
+    const file = path.join(process.cwd(), "public", "data", "objectives_analysis.json");
+    const text = await fs.readFile(file, "utf8");
+    return JSON.parse(text) as ObjectivesAnalysis;
+  } catch {
+    return null;
+  }
+}
+
+const FLOW = [
+  { step: "1", label: "Objectives", href: "/objectives", blurb: "Charts for each problem statement" },
+  { step: "2", label: "Map", href: "/map", blurb: "See gaps spatially" },
+  { step: "3", label: "Actions", href: "/recommendations", blurb: "Prioritised recommendations" },
+  { step: "4", label: "Evidence", href: "/analytics", blurb: "Ward reports & inventory" },
+];
 
 export default async function HomePage() {
-  const [manifest, metrics] = await Promise.all([fetchManifest(), fetchMetrics()]);
+  const [manifest, metrics, objectives] = await Promise.all([
+    fetchManifest(),
+    fetchMetrics(),
+    loadObjectives(),
+  ]);
   const counts = metrics?.counts ?? {};
   const loadedLayers = manifest
     ? Object.values(manifest.layers).filter((l) => layerIsReady(l)).length
     : 0;
+  const objList = objectives?.objectives ?? [];
 
   return (
     <div className="space-y-10">
@@ -20,36 +43,32 @@ export default async function HomePage() {
         <SpectrumOrbs />
         <SpectrumRule className="absolute inset-x-0 top-0" />
         <div className="relative z-10">
-          <span className="et-pill et-fade-up">Civic evidence · verified layers only</span>
+          <span className="et-pill et-fade-up">Datajam objectives · verified layers only</span>
           <p className="et-fade-up et-fade-up-delay-1 mt-5 text-sm font-semibold uppercase tracking-[0.16em] text-[var(--yellow)]">
             OpenCity Transit Lab
           </p>
           <h1 className="et-fade-up et-fade-up-delay-1 mt-2 max-w-3xl font-[family-name:var(--font-display)] text-4xl font-semibold tracking-tight text-[var(--yellow-bright)] sm:text-5xl lg:text-[3.35rem] lg:leading-[1.08]">
-            Chennai last-mile decision support
+            Answer Chennai PT questions with evidence
           </h1>
           <p className="et-fade-up et-fade-up-delay-2 mt-4 max-w-2xl text-lg text-[var(--ink-muted)]">
-            We map. We measure. We recommend. Shared evidence for policymakers, GCC local
-            bodies, traffic planners, and the public — never fabricated equity scores or
-            simulated live buses.
+            Walk gaps, interchanges, equity, ward PT index, schools &amp; hospitals (≤100m),
+            CMP congestion corridors, and fleet trends — then act from the recommendations.
           </p>
           <div className="et-fade-up et-fade-up-delay-3 mt-7 flex flex-wrap gap-3">
             <Link href="/objectives" className="et-btn-primary">
-              Objectives &amp; charts
+              Start with objectives
+            </Link>
+            <Link href="/map" className="et-btn-ghost">
+              Open map
             </Link>
             <Link href="/recommendations" className="et-btn-ghost">
-              Final insights
-            </Link>
-            <Link href="/analytics" className="et-btn-ghost">
-              Analytics
-            </Link>
-            <Link href="/sources" className="et-btn-ghost">
-              Data Sources
+              Final actions
             </Link>
           </div>
           {manifest ? (
             <p className="mt-5 text-xs text-[var(--ink-muted)]">
-              Manifest generated {new Date(manifest.generated_at).toLocaleString()} ·{" "}
-              {manifest.integrity_rule}
+              Manifest {new Date(manifest.generated_at).toLocaleString()} · {loadedLayers} layers
+              loaded
             </p>
           ) : (
             <p className="mt-5 text-sm text-[var(--danger)]">
@@ -59,21 +78,78 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <HomeImpactPanel />
+
+      <section>
+        <SectionEyebrow>Recommended path</SectionEyebrow>
+        <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-semibold text-[var(--ink)]">
+          How to use this lab
+        </h2>
+        <ol className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {FLOW.map((f) => (
+            <li key={f.href}>
+              <Link href={f.href} className="et-card block h-full p-4 transition hover:border-[var(--accent)]">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--yellow)]">
+                  Step {f.step}
+                </span>
+                <p className="mt-1 font-semibold text-[var(--ink)]">{f.label}</p>
+                <p className="mt-1 text-sm text-[var(--ink-muted)]">{f.blurb}</p>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section>
+        <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <SectionEyebrow>Problem statements</SectionEyebrow>
+            <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-semibold text-[var(--ink)]">
+              Jump to an objective
+            </h2>
+          </div>
+          <Link href="/objectives" className="text-sm font-semibold text-[var(--accent)]">
+            All charts →
+          </Link>
+        </div>
+        {objList.length ? (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {objList.map((o, i) => (
+              <Link
+                key={o.id}
+                href={`/objectives#${o.id}`}
+                className="et-card group block p-4"
+              >
+                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">
+                  {String(i + 1).padStart(2, "0")}
+                </p>
+                <h3 className="mt-1 font-[family-name:var(--font-display)] text-base font-semibold text-[var(--yellow-bright)] group-hover:text-[var(--yellow)]">
+                  {o.title}
+                </h3>
+                <p className="mt-2 line-clamp-2 text-sm text-[var(--ink-muted)]">
+                  {o.summary ?? "Open for charts and metrics."}
+                </p>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-[var(--ink-muted)]">
+            Objectives analysis not generated yet.
+          </p>
+        )}
+      </section>
+
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="et-stat">
-          <strong>
-            {counts.wards?.toLocaleString() ?? "—"}
-          </strong>
+          <strong>{counts.wards?.toLocaleString() ?? "—"}</strong>
           <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-            GCC wards mapped
+            GCC wards
           </p>
         </div>
         <div className="et-stat">
-          <strong>
-            {counts.transit_stops?.toLocaleString() ?? "—"}
-          </strong>
+          <strong>{counts.transit_stops?.toLocaleString() ?? "—"}</strong>
           <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-            Transit stops loaded
+            GTFS stops
           </p>
         </div>
         <div className="et-stat">
@@ -83,124 +159,33 @@ export default async function HomePage() {
               : "—"}
           </strong>
           <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-            City Gap Index mean
+            Mean Gap Index
           </p>
         </div>
         <div className="et-stat">
-          <strong>{loadedLayers || "—"}</strong>
+          <strong>{objList.length || "—"}</strong>
           <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-            Verified map layers
+            Objectives with data
           </p>
         </div>
       </section>
 
-      <LayerMarquee />
-
-      <section>
-        <SectionEyebrow>Who is this for?</SectionEyebrow>
-        <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-semibold text-[var(--ink)]">
-          One evidence layer. Four entry paths.
-        </h2>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {AUDIENCES.map((a) => (
-            <Link key={a.id} href={a.href} className="et-card group block p-5">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">
-                Explore
-              </p>
-              <h3 className="mt-2 font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--yellow-bright)] group-hover:text-[var(--yellow)]">
-                {a.label}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-[var(--ink-muted)]">{a.blurb}</p>
-              <span className="mt-4 inline-flex text-sm font-semibold text-[var(--accent)]">
-                Open →
-              </span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <div className="mb-3 flex items-center justify-between gap-2">
-          <div>
-            <SectionEyebrow>Verified inventory</SectionEyebrow>
-            <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-semibold text-[var(--ink)]">
-              City counts from loaded layers
-            </h2>
-          </div>
-          <Link href="/sources" className="text-sm font-medium text-[var(--accent)]">
-            Why some cards are empty →
-          </Link>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <MetricCard
-            label="GCC wards"
-            value={counts.wards}
-            subtext="From OpenCity ward map 2022"
-          />
-          <MetricCard
-            label="Transit stops (GTFS)"
-            value={counts.transit_stops}
-            unavailableReason="GTFS stops layer not loaded. See Data Sources."
-            subtext="Community ChennaiGTFS — unofficial"
-          />
-          <MetricCard
-            label="Bus shelters"
-            value={counts.bus_shelters}
-            unavailableReason="Shelter layer empty or unavailable."
-            subtext="Shelter presence map — not all stops"
-          />
-          <MetricCard
-            label="Rail / metro hubs"
-            value={counts.rail_hubs}
-            unavailableReason="Hub geometries not loaded."
-            subtext="MRTS + metro-tagged stops"
-          />
-          <MetricCard
-            label="Equity / SEC gap"
-            value={null}
-            unavailableReason="Census→ward joins not validated. No invented equity scores."
-          />
-          <MetricCard
-            label="Pop-weighted 400m access"
-            value={null}
-            unavailableReason="Requires validated population surface. Geometry catchments may still appear on the map."
-          />
-          <MetricCard
-            label="Wards with zero GTFS stops"
-            value={counts.wards_with_zero_stops}
-            unavailableReason="Needs wards + stops spatial join."
-          />
-          <MetricCard
-            label="Mean stops per ward"
-            value={counts.mean_stops_per_ward}
-            unavailableReason="Needs wards + stops spatial join."
-          />
-        </div>
-      </section>
-
-      <section className="grid gap-4 lg:grid-cols-2">
-        <div className="et-card p-5">
-          <SectionEyebrow>Layer status</SectionEyebrow>
-          <h2 className="mt-2 font-[family-name:var(--font-display)] text-lg font-semibold">
-            What actually loaded
-          </h2>
-          <ul className="mt-3 space-y-2">
-            {manifest ? (
-              Object.entries(manifest.layers).map(([key, layer]) => (
-                <li key={key} className="flex items-center justify-between gap-2 text-sm">
-                  <span>{key}</span>
-                  <StatusBadge status={layer.status} />
-                </li>
-              ))
-            ) : (
-              <li className="text-sm text-[var(--ink-muted)]">Manifest unavailable</li>
-            )}
-          </ul>
-          <p className="mt-3 text-xs text-[var(--ink-muted)]">
-            Loaded layers with features: {loadedLayers}
-          </p>
-        </div>
-        <RealtimePanel />
+      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <MetricCard label="Schools mapped" value={counts.schools ?? manifest?.layers?.schools?.feature_count} />
+        <MetricCard
+          label="Healthcare mapped"
+          value={counts.healthcare ?? manifest?.layers?.healthcare?.feature_count}
+        />
+        <MetricCard
+          label="Weak last-mile hubs"
+          value={counts.weak_last_mile_hubs}
+          unavailableReason="Run ETL hub analysis"
+        />
+        <MetricCard
+          label="High gap wards"
+          value={counts.high_gap_wards ?? counts.severe_gap_wards}
+          unavailableReason="Run spatial reports"
+        />
       </section>
 
       <DecisionCta />

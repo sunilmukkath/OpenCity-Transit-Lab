@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type {
-  GapBand,
   GapComponents,
   SpatialReports as SpatialReportsData,
   SpatialUnitReport,
@@ -11,9 +10,15 @@ import type {
 import { fetchReportsClient } from "@/lib/data-client";
 import { StatusBadge } from "@/components/StatusBadge";
 import { MetricCard } from "@/components/MetricCard";
+import {
+  DashboardFilterBar,
+  FilterImpactStrip,
+  useFilteredUniverse,
+} from "@/components/DashboardFilterBar";
+import { DEFAULT_FILTERS, type DashboardFilters } from "@/lib/dashboard-filters";
+import type { EnrichedWard } from "@/lib/dashboard-filters";
 
-type UnitFilter = "all" | "ward" | "zone";
-type SortKey = "gap" | "stops" | "density" | "name";
+type SortKey = "gap" | "stops" | "density" | "name" | "pt" | "slum" | "activity";
 
 const PRIORITY_STYLE: Record<string, string> = {
   critical: "border-[var(--danger)] bg-[rgba(251,113,133,0.12)] text-[var(--danger)]",
@@ -172,12 +177,13 @@ function UnitListItem({
   active,
   onSelect,
 }: {
-  unit: SpatialUnitReport;
+  unit: EnrichedWard | SpatialUnitReport;
   active: boolean;
   onSelect: () => void;
 }) {
   const index = gapValue(unit);
   const band = gapBand(unit);
+  const enriched = unit as EnrichedWard;
   return (
     <button
       type="button"
@@ -203,7 +209,29 @@ function UnitListItem({
       <p className="mt-1 text-xs text-[var(--ink-muted)]">
         {fmt(unit.stop_count)} stops · {fmt(unit.shelter_count)} shelters · {fmt(unit.hub_count)}{" "}
         hubs
+        {enriched.pt_index != null ? ` · PT ${enriched.pt_index}` : ""}
       </p>
+      {unit.unit_type === "ward" ? (
+        <p className="mt-1 flex flex-wrap gap-1 text-[10px] text-[var(--ink-muted)]">
+          {enriched.sec_proxy_band ? (
+            <span className="rounded border border-[var(--border)] px-1.5 py-0.5">
+              SEC {enriched.sec_proxy_band.replace("_proxy", "")}
+            </span>
+          ) : null}
+          {enriched.has_slum ? (
+            <span className="rounded border border-[var(--border)] px-1.5 py-0.5">
+              slum {enriched.pct_slum_area != null ? `${enriched.pct_slum_area.toFixed(0)}%` : ""}
+            </span>
+          ) : (
+            <span className="rounded border border-[var(--border)] px-1.5 py-0.5">non-slum</span>
+          )}
+          {enriched.activity_band && enriched.activity_band !== "unknown" ? (
+            <span className="rounded border border-[var(--border)] px-1.5 py-0.5">
+              EC {enriched.activity_band}
+            </span>
+          ) : null}
+        </p>
+      ) : null}
     </button>
   );
 }
@@ -213,7 +241,7 @@ function ReportDetail({
   cityMean,
   cityGap,
 }: {
-  unit: SpatialUnitReport | null;
+  unit: EnrichedWard | SpatialUnitReport | null;
   cityMean: number | null;
   cityGap: number | null | undefined;
 }) {
@@ -227,6 +255,7 @@ function ReportDetail({
 
   const index = gapValue(unit);
   const band = gapBand(unit);
+  const enriched = unit as EnrichedWard;
 
   return (
     <article
@@ -254,6 +283,39 @@ function ReportDetail({
           Print report
         </button>
       </div>
+
+      {unit.unit_type === "ward" ? (
+        <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
+            <p className="text-[10px] uppercase text-[var(--ink-muted)]">PT index</p>
+            <p className="text-lg font-semibold text-[var(--yellow)]">
+              {enriched.pt_index ?? "—"}
+            </p>
+          </div>
+          <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
+            <p className="text-[10px] uppercase text-[var(--ink-muted)]">SEC proxy</p>
+            <p className="text-lg font-semibold text-[var(--ink)]">
+              {enriched.sec_proxy_band?.replace("_proxy", "") ?? "—"}
+            </p>
+          </div>
+          <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
+            <p className="text-[10px] uppercase text-[var(--ink-muted)]">Slum</p>
+            <p className="text-lg font-semibold text-[var(--ink)]">
+              {enriched.has_slum
+                ? enriched.pct_slum_area != null
+                  ? `${enriched.pct_slum_area.toFixed(1)}%`
+                  : "Yes"
+                : "Non-slum"}
+            </p>
+          </div>
+          <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
+            <p className="text-[10px] uppercase text-[var(--ink-muted)]">EC establishments</p>
+            <p className="text-lg font-semibold text-[var(--ink)]">
+              {enriched.establishments?.toLocaleString() ?? "—"}
+            </p>
+          </div>
+        </div>
+      ) : null}
 
       <div className="mt-5 grid gap-4 lg:grid-cols-2">
         <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-4">
@@ -371,12 +433,18 @@ function downloadReportsCsv(rows: SpatialUnitReport[], filename: string) {
 
 export function SpatialReports() {
   const [reports, setReports] = useState<SpatialReportsData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [unitFilter, setUnitFilter] = useState<UnitFilter>("all");
+  const [loadingReports, setLoadingReports] = useState(true);
+  const [filters, setFilters] = useState<DashboardFilters>({ ...DEFAULT_FILTERS, unit: "ward" });
   const [sortKey, setSortKey] = useState<SortKey>("gap");
-  const [bandFilter, setBandFilter] = useState<"all" | GapBand>("all");
-  const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const {
+    loading: loadingUniverse,
+    filtered,
+    wardOptions,
+    zoneOptions,
+    cityMeanGap,
+    all,
+  } = useFilteredUniverse(filters);
 
   useEffect(() => {
     let cancelled = false;
@@ -384,13 +452,11 @@ export function SpatialReports() {
       const data = await fetchReportsClient();
       if (!cancelled) {
         setReports(data);
-        setLoading(false);
+        setLoadingReports(false);
         const first =
           data?.severe_gap_wards?.[0] ??
           data?.priority_wards[0] ??
           data?.wards[0] ??
-          data?.priority_zones[0] ??
-          data?.zones[0] ??
           null;
         if (first) setSelectedId(`${first.unit_type}:${first.label}`);
       }
@@ -400,47 +466,41 @@ export function SpatialReports() {
     };
   }, []);
 
-  const allUnits = useMemo(() => {
-    if (!reports) return [];
-    return [...reports.wards, ...reports.zones];
-  }, [reports]);
-
   const bandCounts = useMemo(() => {
     const counts: Record<string, number> = { severe: 0, high: 0, moderate: 0, low: 0 };
-    for (const w of reports?.wards ?? []) {
+    for (const w of all.filter((u) => u.unit_type === "ward")) {
       const b = gapBand(w);
       counts[b] = (counts[b] ?? 0) + 1;
     }
     return counts;
-  }, [reports]);
+  }, [all]);
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    let rows = allUnits.filter((u) => {
-      if (unitFilter !== "all" && u.unit_type !== unitFilter) return false;
-      if (bandFilter !== "all" && gapBand(u) !== bandFilter) return false;
-      if (!q) return true;
-      return (
-        u.label.toLowerCase().includes(q) ||
-        u.unit_type.includes(q) ||
-        gapBand(u).includes(q) ||
-        (u.unit_type === "zone" && "area".includes(q))
-      );
-    });
-
-    rows = [...rows].sort((a, b) => {
+  const sorted = useMemo(() => {
+    const rows = [...filtered];
+    rows.sort((a, b) => {
       if (sortKey === "name") return a.label.localeCompare(b.label);
       if (sortKey === "stops") return (b.stop_count ?? -1) - (a.stop_count ?? -1);
       if (sortKey === "density") return (b.stops_per_km2 ?? -1) - (a.stops_per_km2 ?? -1);
+      if (sortKey === "pt") return (a.pt_index ?? 999) - (b.pt_index ?? 999);
+      if (sortKey === "slum") return (b.pct_slum_area ?? -1) - (a.pct_slum_area ?? -1);
+      if (sortKey === "activity") return (b.establishments ?? -1) - (a.establishments ?? -1);
       return gapValue(b) - gapValue(a) || a.label.localeCompare(b.label);
     });
     return rows;
-  }, [allUnits, unitFilter, query, sortKey, bandFilter]);
+  }, [filtered, sortKey]);
 
   const selected = useMemo(() => {
-    if (!selectedId) return null;
-    return allUnits.find((u) => `${u.unit_type}:${u.label}` === selectedId) ?? null;
-  }, [allUnits, selectedId]);
+    if (!selectedId) return sorted[0] ?? null;
+    return all.find((u) => `${u.unit_type}:${u.label}` === selectedId) ?? sorted[0] ?? null;
+  }, [all, selectedId, sorted]);
+
+  useEffect(() => {
+    if (!sorted.length) return;
+    const still = sorted.some((u) => `${u.unit_type}:${u.label}` === selectedId);
+    if (!still) setSelectedId(`${sorted[0].unit_type}:${sorted[0].label}`);
+  }, [sorted, selectedId]);
+
+  const loading = loadingReports || loadingUniverse;
 
   if (loading) {
     return <p className="text-sm text-[var(--ink-muted)]">Loading ward / zone reports…</p>;
@@ -459,10 +519,19 @@ export function SpatialReports() {
   }
 
   const method = reports.gap_index_method;
-  const severeCount = reports.severe_gap_wards?.length ?? bandCounts.severe;
+  const severeCount = bandCounts.severe;
 
   return (
     <div className="space-y-6">
+      <DashboardFilterBar
+        filters={filters}
+        onChange={setFilters}
+        wardOptions={wardOptions}
+        zoneOptions={zoneOptions}
+        resultCount={sorted.length}
+      />
+      <FilterImpactStrip units={sorted} cityMeanGap={cityMeanGap} />
+
       <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="max-w-2xl">
@@ -470,7 +539,7 @@ export function SpatialReports() {
               Inventory Gap Index
             </p>
             <h3 className="mt-1 font-[family-name:var(--font-display)] text-xl font-semibold text-[var(--ink)]">
-              0–100 score from verified stops, shelters, hubs &amp; density
+              Filter any slice — then open a ward brief
             </h3>
             <p className="mt-2 text-sm text-[var(--ink-muted)]">
               {method?.disclaimer ?? reports.note}
@@ -486,22 +555,6 @@ export function SpatialReports() {
           </div>
         </div>
 
-        {method ? (
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {Object.entries(method.components).map(([key, detail]) => (
-              <div
-                key={key}
-                className="rounded-lg border border-[var(--border)] bg-white/[0.02] p-3 text-sm"
-              >
-                <p className="font-semibold text-[var(--yellow)]">
-                  {key.replaceAll("_", " ")}
-                </p>
-                <p className="mt-1 text-xs text-[var(--ink-muted)]">{detail}</p>
-              </div>
-            ))}
-          </div>
-        ) : null}
-
         <div className="mt-4 flex flex-wrap gap-2">
           {(
             [
@@ -514,25 +567,21 @@ export function SpatialReports() {
             <button
               key={band}
               type="button"
-              onClick={() => setBandFilter((prev) => (prev === band ? "all" : band))}
+              onClick={() =>
+                setFilters((prev) => ({
+                  ...prev,
+                  gapBand: prev.gapBand === band ? "all" : band,
+                }))
+              }
               className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide transition ${
-                bandFilter === band
+                filters.gapBand === band
                   ? BAND_STYLE[band]
                   : "border-[var(--border)] text-[var(--ink-muted)] hover:border-[var(--accent)]"
               }`}
             >
-              {band} {range} · {bandCounts[band] ?? 0} wards
+              {band} {range} · {bandCounts[band] ?? 0}
             </button>
           ))}
-          {bandFilter !== "all" ? (
-            <button
-              type="button"
-              onClick={() => setBandFilter("all")}
-              className="rounded-full border border-[var(--border)] px-3 py-1 text-xs text-[var(--ink-muted)]"
-            >
-              Clear band filter
-            </button>
-          ) : null}
         </div>
       </div>
 
@@ -544,79 +593,20 @@ export function SpatialReports() {
               ? Number(reports.city_mean_gap_index).toFixed(1)
               : null
           }
-          subtext="Mean across 200 wards"
-          unavailableReason="Gap Index not generated yet"
+          subtext="Mean across all wards"
+        />
+        <MetricCard label="Severe gap (city)" value={severeCount} subtext="Gap Index ≥ 70" />
+        <MetricCard
+          label="In current filter"
+          value={sorted.filter((u) => u.unit_type === "ward").length}
+          subtext="Wards matching filters"
         />
         <MetricCard
-          label="Severe gap wards"
-          value={severeCount}
-          subtext="Gap Index ≥ 70"
-        />
-        <MetricCard
-          label="High gap wards"
-          value={reports.priority_wards.length}
-          subtext="Top list · Gap Index ≥ 45"
-        />
-        <MetricCard
-          label="High gap zones"
-          value={reports.priority_zones.length}
-          subtext="Zones / areas · Gap Index ≥ 35"
+          label="Filtered severe"
+          value={sorted.filter((u) => String(u.gap_band) === "severe").length}
+          subtext="Severe within filter"
         />
       </div>
-
-      <section className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5">
-          <h3 className="font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--yellow)]">
-            Highest Gap Index wards
-          </h3>
-          <p className="mt-1 text-sm text-[var(--ink-muted)]">
-            Open any row for component breakdown and recommendations.
-          </p>
-          <ul className="mt-4 max-h-72 space-y-2 overflow-y-auto pr-1">
-            {(reports.severe_gap_wards?.length
-              ? reports.severe_gap_wards
-              : reports.priority_wards
-            ).map((w) => (
-              <li key={`pw-${w.label}`}>
-                <UnitListItem
-                  unit={w}
-                  active={selectedId === `ward:${w.label}`}
-                  onSelect={() => {
-                    setUnitFilter("ward");
-                    setSelectedId(`ward:${w.label}`);
-                  }}
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5">
-          <h3 className="font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--yellow)]">
-            Highest Gap Index zones / areas
-          </h3>
-          <p className="mt-1 text-sm text-[var(--ink-muted)]">
-            GCC named zones ranked by inventory Gap Index.
-          </p>
-          <ul className="mt-4 max-h-72 space-y-2 overflow-y-auto pr-1">
-            {reports.priority_zones.map((z) => (
-              <li key={`pz-${z.label}`}>
-                <UnitListItem
-                  unit={z}
-                  active={selectedId === `zone:${z.label}`}
-                  onSelect={() => {
-                    setUnitFilter("zone");
-                    setSelectedId(`zone:${z.label}`);
-                  }}
-                />
-              </li>
-            ))}
-            {!reports.priority_zones.length ? (
-              <li className="text-sm text-[var(--ink-muted)]">No high-gap zones flagged.</li>
-            ) : null}
-          </ul>
-        </div>
-      </section>
 
       <section className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
@@ -625,10 +615,26 @@ export function SpatialReports() {
               Browse
             </p>
             <h3 className="mt-1 font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--ink)]">
-              Ward, zone &amp; area Gap Index
+              Filtered ward / zone workbench
             </h3>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="text-sm text-[var(--ink-muted)]">
+              Sort{" "}
+              <select
+                value={sortKey}
+                onChange={(e) => setSortKey(e.target.value as SortKey)}
+                className="ml-1 rounded-md border border-[var(--border)] bg-[var(--bg-elevated)] px-2 py-1.5 text-[var(--ink)]"
+              >
+                <option value="gap">Gap Index</option>
+                <option value="pt">PT index</option>
+                <option value="stops">Stop count</option>
+                <option value="density">Stop density</option>
+                <option value="slum">Slum %</option>
+                <option value="activity">EC establishments</option>
+                <option value="name">Name</option>
+              </select>
+            </label>
             <button
               type="button"
               onClick={() => downloadReportsCsv(reports.wards, "ward-gap-index.csv")}
@@ -636,67 +642,16 @@ export function SpatialReports() {
             >
               Export wards CSV
             </button>
-            <button
-              type="button"
-              onClick={() => downloadReportsCsv(reports.zones, "zone-gap-index.csv")}
-              className="rounded-md border border-[var(--border)] px-3 py-1.5 text-sm text-[var(--ink-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
-            >
-              Export zones CSV
-            </button>
           </div>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-3">
-          <label className="block text-sm">
-            <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-              Search ward / area / zone
-            </span>
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="e.g. Adyar, 45, Ambattur…"
-              className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-elevated)] px-3 py-2 text-[var(--ink)] placeholder:text-[var(--ink-subtle)]"
-            />
-          </label>
-          <label className="block text-sm">
-            <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-              Unit type
-            </span>
-            <select
-              value={unitFilter}
-              onChange={(e) => setUnitFilter(e.target.value as UnitFilter)}
-              className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-elevated)] px-3 py-2 text-[var(--ink)]"
-            >
-              <option value="all">All units</option>
-              <option value="ward">Wards only</option>
-              <option value="zone">Zones / areas only</option>
-            </select>
-          </label>
-          <label className="block text-sm">
-            <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-              Sort by
-            </span>
-            <select
-              value={sortKey}
-              onChange={(e) => setSortKey(e.target.value as SortKey)}
-              className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-elevated)] px-3 py-2 text-[var(--ink)]"
-            >
-              <option value="gap">Gap Index</option>
-              <option value="stops">Stop count</option>
-              <option value="density">Stop density</option>
-              <option value="name">Name</option>
-            </select>
-          </label>
-        </div>
-
-        <p className="mt-3 text-sm text-[var(--ink-muted)]">
-          Showing {filtered.length} of {allUnits.length} units
-          {bandFilter !== "all" ? ` · ${bandFilter} gap only` : ""}
+        <p className="mb-3 text-sm text-[var(--ink-muted)]">
+          Showing {sorted.length} of {all.length} units
         </p>
 
-        <div className="mt-4 grid gap-4 lg:grid-cols-[300px_minmax(0,1fr)]">
+        <div className="grid gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
           <ul className="max-h-[640px] space-y-2 overflow-y-auto pr-1">
-            {filtered.map((u) => (
+            {sorted.map((u) => (
               <li key={`${u.unit_type}-${u.label}`}>
                 <UnitListItem
                   unit={u}
@@ -705,9 +660,9 @@ export function SpatialReports() {
                 />
               </li>
             ))}
-            {!filtered.length ? (
+            {!sorted.length ? (
               <li className="rounded-lg border border-dashed border-[var(--border)] p-4 text-sm text-[var(--ink-muted)]">
-                No wards or zones match this search.
+                No wards or zones match these filters. Reset or widen the slice.
               </li>
             ) : null}
           </ul>

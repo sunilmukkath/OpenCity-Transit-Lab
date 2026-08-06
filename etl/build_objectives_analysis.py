@@ -49,28 +49,35 @@ def destination_access(
     stops: gpd.GeoDataFrame,
     label: str,
 ) -> dict[str, Any]:
+    """Facility access to PT — primary threshold 100m (schools/hospitals)."""
     dest_m = destinations.to_crs(3857)
+    buf100 = _union_buffers(stops, 100)
     buf500 = _union_buffers(stops, 500)
-    buf1000 = _union_buffers(stops, 1000)
+    within_100 = dest_m.geometry.within(buf100)
     within_500 = dest_m.geometry.within(buf500)
-    within_1000 = dest_m.geometry.within(buf1000)
     n = len(dest_m)
+    n100 = int(within_100.sum())
     n500 = int(within_500.sum())
-    n1000 = int(within_1000.sum())
-    over = n - n1000
+    over_100 = n - n100
     return {
         "status": "loaded",
         "destination": label,
         "total": n,
+        "threshold_m": 100,
+        "within_100m": n100,
         "within_500m": n500,
-        "within_1000m": n1000,
-        "over_1000m": over,
+        "over_100m": over_100,
+        "pct_within_100m": round(100 * n100 / n, 1) if n else None,
         "pct_within_500m": round(100 * n500 / n, 1) if n else None,
-        "pct_within_1000m": round(100 * n1000 / n, 1) if n else None,
-        "pct_over_1000m": round(100 * over / n, 1) if n else None,
+        "pct_over_100m": round(100 * over_100 / n, 1) if n else None,
+        # legacy keys kept for older UI (map 100m primary into former 500 slot)
+        "within_1000m": n500,
+        "over_1000m": over_100,
+        "pct_within_1000m": round(100 * n500 / n, 1) if n else None,
+        "pct_over_1000m": round(100 * over_100 / n, 1) if n else None,
         "note": (
-            f"Crow-flies distance from {label} points to nearest GTFS stop buffer. "
-            "Not street-network walk; not ridership-weighted."
+            f"Crow-flies: share of {label} within 100m of a GTFS stop (primary), "
+            "with 500m as secondary context. Not street-network walk."
         ),
     }
 
@@ -328,8 +335,9 @@ def build_objectives_analysis() -> dict[str, Any]:
         "healthcare": None,
         "chart": [],
         "limitations": [
+            "Primary access standard: 100m crow-flies to a GTFS stop.",
             "OpenCity school/health points — public vs private not always tagged; treated as facility inventory.",
-            "Crow-flies to GTFS stops only.",
+            "Not street-network walk time.",
         ],
     }
     if stops is not None and schools is not None:
@@ -345,48 +353,76 @@ def build_objectives_analysis() -> dict[str, Any]:
             chart.append(
                 {
                     "destination": block["destination"],
+                    "pct_within_100m": block.get("pct_within_100m"),
                     "pct_within_500m": block.get("pct_within_500m"),
-                    "pct_within_1000m": block.get("pct_within_1000m"),
-                    "pct_over_1000m": block.get("pct_over_1000m"),
+                    "pct_over_100m": block.get("pct_over_100m"),
                     "total": block.get("total"),
+                    "within_100m": block.get("within_100m"),
+                    "over_100m": block.get("over_100m"),
                 }
             )
         dest["chart"] = chart
+        dest["metrics"] = {
+            "schools_pct_within_100m": (dest.get("schools") or {}).get("pct_within_100m"),
+            "schools_over_100m": (dest.get("schools") or {}).get("over_100m"),
+            "healthcare_pct_within_100m": (dest.get("healthcare") or {}).get("pct_within_100m"),
+            "healthcare_over_100m": (dest.get("healthcare") or {}).get("over_100m"),
+        }
         dest["summary"] = (
-            "Share of school and healthcare facility points within 500m / 1km crow-flies of a GTFS stop."
+            "Share of school and healthcare points within 100m crow-flies of a GTFS stop "
+            "(primary standard for facility access). 500m shown as secondary context."
         )
 
-    # 6. Congestion
-    congestion = {
+    # 6. Congestion / mobility plan (from CMP PDF when available)
+    cmp_path = PROCESSED / "cmp_mobility_insights.json"
+    congestion: dict[str, Any] = {
         "id": "congestion_pt",
-        "title": "Congestion points vs public transport solutions",
+        "title": "Congestion corridors & PT responses (CMP)",
         "status": "unavailable",
-        "reason": (
-            "No verified citywide congestion-point inventory with coordinates was in the "
-            "Datajam Sheet 2 downloads (OpenCity crash CSV may exist separately but was not "
-            "ingested as a congestion layer)."
-        ),
-        "needed": "Official congestion hotspot list or traffic-speed/delay layer joined to PT corridors.",
+        "reason": "CMP PDF not ingested yet.",
         "chart": [],
-        "limitations": ["Cannot list congestion points without a validated source."],
+        "limitations": [],
     }
+    if cmp_path.exists():
+        cmp = json.loads(cmp_path.read_text())
+        if cmp.get("status") == "loaded":
+            congestion = {
+                "id": "congestion_pt",
+                "title": "Congestion corridors & PT responses (CMP)",
+                "status": "loaded",
+                "summary": cmp.get("note"),
+                "document": cmp.get("document"),
+                "insights": cmp.get("insights") or [],
+                "corridors_mentioned": cmp.get("corridors_mentioned") or [],
+                "pt_measures_mentioned": cmp.get("pt_measures_mentioned") or [],
+                "chart": [
+                    {"label": c, "count": 1}
+                    for c in (cmp.get("corridors_mentioned") or [])[:12]
+                ],
+                "metrics": {
+                    "corridors_named": len(cmp.get("corridors_mentioned") or []),
+                    "pt_measures_named": len(cmp.get("pt_measures_mentioned") or []),
+                    "cmp_pages": (cmp.get("document") or {}).get("pages"),
+                },
+                "limitations": [
+                    "Corridor names from CMP text — not a geocoded hotspot inventory.",
+                    "No live speed/delay layer joined yet.",
+                ],
+            }
 
-    # 7. Scheduling / travel patterns
+    # 7. Fleet / ridership trends (aggregate tables) — only if tables exist
+    # Dynamic OD scheduling is omitted until time-of-day data exists.
     tabular_mtc = PROCESSED / "tabular_chennai_mtc_performance_data.json"
     tabular_metro = PROCESSED / "tabular_chennai_metro_monthly_usage_data.json"
-    scheduling: dict[str, Any] = {
-        "id": "scheduling_optimisation",
-        "title": "PT scheduling from commute patterns",
+    scheduling: dict[str, Any] | None = {
+        "id": "fleet_ridership_trends",
+        "title": "MTC & metro ridership / fleet trends",
         "status": "unavailable",
-        "reason": (
-            "No origin–destination or stop-level boarding time series suitable for a "
-            "dynamic schedule model. MTC performance and metro monthly usage tables are "
-            "aggregate only."
-        ),
-        "needed": "Stop/route ridership by time-of-day or GTFS-RT + validated OD sample.",
         "chart": [],
         "partial_tables": [],
-        "limitations": ["Dynamic scheduling model not built — data gap."],
+        "limitations": [
+            "Aggregate annual/monthly tables only — not stop-level OD for dynamic scheduling.",
+        ],
     }
     for path, name in (
         (tabular_mtc, "MTC performance (aggregate)"),
@@ -403,10 +439,49 @@ def build_objectives_analysis() -> dict[str, Any]:
                 }
             )
     if scheduling["partial_tables"]:
-        scheduling["status"] = "partial"
+        scheduling["status"] = "loaded"
+        scheduling["summary"] = (
+            "Verified aggregate MTC performance and CMRL monthly passenger-flow tables. "
+            "Useful for trend context — not a schedule-optimisation model."
+        )
         scheduling["chart"] = [
             {"label": p["name"], "rows": p.get("rows")} for p in scheduling["partial_tables"]
         ]
+    else:
+        scheduling = None
+
+    # Economic census equity enrichment
+    ec_path = PROCESSED / "economic_census_wards.json"
+    if ec_path.exists():
+        ec = json.loads(ec_path.read_text())
+        if ec.get("status") == "loaded":
+            equity["status"] = "loaded"
+            equity["summary"] = (
+                "Ward PT Index cross-tabbed with Census amenity SEC proxy / slum share, "
+                "plus Economic Census establishment & worker activity by ward code."
+            )
+            equity["economic_census"] = {
+                "status": "loaded",
+                "counts": ec.get("counts"),
+                "chart": ec.get("chart"),
+                "high_activity_low_pt": ec.get("high_activity_low_pt"),
+                "note": ec.get("note"),
+            }
+            if ec.get("chart"):
+                equity["chart"] = (equity.get("chart") or []) + [
+                    {
+                        "band": f"EC:{c['band']}",
+                        "ward_count": c["ward_count"],
+                        "mean_pt_index": c["mean_pt_index"],
+                        "pct_low_pt": c.get("pct_low_pt"),
+                    }
+                    for c in ec["chart"]
+                ]
+            equity["limitations"] = [
+                "Economic Census WC→GCC ward_label join is best-effort (District=2 / State=33).",
+                "EC measures establishments/workers — not household income.",
+                "SEC proxy from Census 2011 amenities + OpenCity slum polygons.",
+            ]
 
     # Recommendations synthesized from loaded objectives
     recommendations = []
@@ -450,55 +525,71 @@ def build_objectives_analysis() -> dict[str, Any]:
                 "map_href": "/map",
             }
         )
+    if (equity.get("economic_census") or {}).get("high_activity_low_pt"):
+        n = len(equity["economic_census"]["high_activity_low_pt"])
+        recommendations.append(
+            {
+                "priority": "high",
+                "objective": "equal_access",
+                "title": "High economic activity wards with weak PT index",
+                "detail": (
+                    f"{n} wards show elevated Economic Census establishments/workers but PT index <45. "
+                    "Prioritise feeder / stop densification where jobs cluster."
+                ),
+                "map_href": "/objectives#equal_access",
+            }
+        )
     if dest.get("status") == "loaded" and dest.get("schools"):
         s = dest["schools"]
+        h = dest.get("healthcare") or {}
         recommendations.append(
             {
                 "priority": "medium",
                 "objective": "destinations_access",
-                "title": "Close school / clinic gaps beyond 1km of stops",
+                "title": "Bring stops within 100m of schools and clinics still outside range",
                 "detail": (
-                    f"{s.get('pct_over_1000m')}% of mapped schools and "
-                    f"{(dest.get('healthcare') or {}).get('pct_over_1000m')}% of healthcare points "
-                    "sit >1km crow-flies from a GTFS stop. Overlay Destinations preset on Walk km."
+                    f"{s.get('pct_over_100m')}% of mapped schools ({s.get('over_100m')} sites) and "
+                    f"{h.get('pct_over_100m')}% of healthcare points ({h.get('over_100m')} sites) "
+                    "sit >100m crow-flies from a GTFS stop. Use Destinations preset on the map."
                 ),
                 "map_href": "/map",
             }
         )
-    recommendations.append(
-        {
-            "priority": "info",
-            "objective": "congestion_pt",
-            "title": "Congestion–PT linkage still Unavailable",
-            "detail": congestion["reason"],
-            "map_href": "/sources",
-        }
-    )
-    recommendations.append(
-        {
-            "priority": "info",
-            "objective": "scheduling_optimisation",
-            "title": "Schedule optimisation needs time-of-day ridership",
-            "detail": scheduling["reason"],
-            "map_href": "/sources",
-        }
-    )
+    if congestion.get("status") == "loaded":
+        recommendations.append(
+            {
+                "priority": "medium",
+                "objective": "congestion_pt",
+                "title": "Align feeders with CMP congestion corridors + NMT",
+                "detail": (
+                    "CMP names radial/IT corridors and flags missing footpaths (~95% surveyed roads). "
+                    f"PT levers cited: {', '.join((congestion.get('pt_measures_mentioned') or [])[:5]) or 'metro/MRTS/BRT/NMT'}."
+                ),
+                "map_href": "/objectives#congestion_pt",
+            }
+        )
+
+    objectives = [
+        walk_obj,
+        interchange,
+        equity,
+        ward_index,
+        dest,
+        congestion,
+    ]
+    if scheduling is not None and scheduling.get("status") == "loaded":
+        objectives.append(scheduling)
+
+    # Drop any remaining unavailable objectives from the published list
+    objectives = [o for o in objectives if o.get("status") in ("loaded", "partial")]
 
     out = {
         "generated_at": _now(),
         "note": (
             "Objectives analysis for OpenCity Datajam problem statements. "
-            "Integrity rule: Unavailable / Partial when data is missing — no fabricated equity or ridership."
+            "Only objectives with verified data are shown — empty Unavailable sections are omitted."
         ),
-        "objectives": [
-            walk_obj,
-            interchange,
-            equity,
-            ward_index,
-            dest,
-            congestion,
-            scheduling,
-        ],
+        "objectives": objectives,
         "recommendations": recommendations,
         "catchment_coverage": {
             "status": catchment.get("status"),

@@ -52,38 +52,69 @@ export function SimpleBarChart({
   );
 }
 
+/** Schools / healthcare access — primary threshold 100m. */
 export function DualPctChart({
   items,
 }: {
   items: {
     destination?: string;
+    pct_within_100m?: number | null;
     pct_within_500m?: number | null;
+    pct_over_100m?: number | null;
+    /** legacy fallbacks */
     pct_within_1000m?: number | null;
     pct_over_1000m?: number | null;
     total?: number | null;
+    within_100m?: number | null;
+    over_100m?: number | null;
   }[];
 }) {
   return (
     <div className="space-y-4">
-      {items.map((it) => (
-        <div key={it.destination}>
-          <p className="mb-1.5 text-sm font-semibold text-[var(--ink)]">
-            {it.destination}{" "}
-            <span className="font-normal text-[var(--ink-muted)]">
-              ({it.total?.toLocaleString() ?? "—"} points)
-            </span>
-          </p>
-          <SimpleBarChart
-            items={[
-              { label: "Within 500m", count: it.pct_within_500m ?? 0, color: "#86efac" },
-              { label: "Within 1km", count: it.pct_within_1000m ?? 0, color: "#fde047" },
-              { label: "Over 1km", count: it.pct_over_1000m ?? 0, color: "#dc2626" },
-            ]}
-            maxValue={100}
-            formatValue={(n) => `${n}%`}
-          />
-        </div>
-      ))}
+      {items.map((it) => {
+        const within100 = it.pct_within_100m ?? null;
+        const within500 = it.pct_within_500m ?? it.pct_within_1000m ?? null;
+        const over100 = it.pct_over_100m ?? it.pct_over_1000m ?? null;
+        return (
+          <div key={it.destination}>
+            <p className="mb-1.5 text-sm font-semibold text-[var(--ink)]">
+              {it.destination}{" "}
+              <span className="font-normal text-[var(--ink-muted)]">
+                ({it.total?.toLocaleString() ?? "—"} points · primary ≤100m)
+              </span>
+            </p>
+            <SimpleBarChart
+              items={[
+                {
+                  label: "Within 100m of a stop",
+                  count: within100 ?? 0,
+                  color: "#86efac",
+                },
+                {
+                  label: "Within 500m (context)",
+                  count: within500 ?? 0,
+                  color: "#fde047",
+                },
+                {
+                  label: "Over 100m (gap)",
+                  count: over100 ?? 0,
+                  color: "#dc2626",
+                },
+              ]}
+              maxValue={100}
+              formatValue={(n) => `${n}%`}
+            />
+            {it.over_100m != null ? (
+              <p className="mt-1.5 text-xs text-[var(--ink-muted)]">
+                {it.over_100m.toLocaleString()} sites beyond 100m
+                {it.within_100m != null
+                  ? ` · ${it.within_100m.toLocaleString()} within 100m`
+                  : ""}
+              </p>
+            ) : null}
+          </div>
+        );
+      })}
     </div>
   );
 }

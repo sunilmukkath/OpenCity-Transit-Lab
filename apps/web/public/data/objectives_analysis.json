@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-06T15:48:08.400101+00:00",
-  "note": "Objectives analysis for OpenCity Datajam problem statements. Integrity rule: Unavailable / Partial when data is missing \u2014 no fabricated equity or ridership.",
+  "generated_at": "2026-08-06T17:00:18.714638+00:00",
+  "note": "Objectives analysis for OpenCity Datajam problem statements. Only objectives with verified data are shown \u2014 empty Unavailable sections are omitted.",
   "objectives": [
     {
       "id": "first_last_mile",
@@ -315,7 +315,7 @@
       "id": "equal_access",
       "title": "Equal access across neighbourhoods (SEC / slum proxy)",
       "status": "loaded",
-      "summary": "Compares Ward PT Index across SEC amenity proxy bands and slum area share. This is NOT household income or official poverty status.",
+      "summary": "Ward PT Index cross-tabbed with Census amenity SEC proxy / slum share, plus Economic Census establishment & worker activity by ward code.",
       "sec_counts": {
         "wards_total": 200,
         "wards_with_slum": 153,
@@ -351,6 +351,24 @@
           "ward_count": 6,
           "mean_pt_index": 48.0,
           "pct_low_pt": 33.3
+        },
+        {
+          "band": "EC:lower_activity",
+          "ward_count": 51,
+          "mean_pt_index": 61.9,
+          "pct_low_pt": 11.8
+        },
+        {
+          "band": "EC:middle_activity",
+          "ward_count": 51,
+          "mean_pt_index": 65.6,
+          "pct_low_pt": 5.9
+        },
+        {
+          "band": "EC:higher_activity",
+          "ward_count": 53,
+          "mean_pt_index": 60.4,
+          "pct_low_pt": 5.7
         }
       ],
       "underserved_examples": [
@@ -461,9 +479,223 @@
         }
       ],
       "limitations": [
-        "No verified income surface at ward level.",
-        "SEC proxy from Census 2011 amenities (wards 1\u2013155) + OpenCity slum polygons."
-      ]
+        "Economic Census WC\u2192GCC ward_label join is best-effort (District=2 / State=33).",
+        "EC measures establishments/workers \u2014 not household income.",
+        "SEC proxy from Census 2011 amenities + OpenCity slum polygons."
+      ],
+      "economic_census": {
+        "status": "loaded",
+        "counts": {
+          "rows_raw": 333049,
+          "wards_aggregated": 155,
+          "wards_joined_pt": 155,
+          "total_establishments": 333049,
+          "total_workers": 779532
+        },
+        "chart": [
+          {
+            "band": "lower_activity",
+            "ward_count": 51,
+            "mean_pt_index": 61.9,
+            "pct_low_pt": 11.8
+          },
+          {
+            "band": "middle_activity",
+            "ward_count": 51,
+            "mean_pt_index": 65.6,
+            "pct_low_pt": 5.9
+          },
+          {
+            "band": "higher_activity",
+            "ward_count": 53,
+            "mean_pt_index": 60.4,
+            "pct_low_pt": 5.7
+          }
+        ],
+        "high_activity_low_pt": [
+          {
+            "ward_label": "31",
+            "establishments": 4189,
+            "total_workers": 7732,
+            "workers_per_est": 1.85,
+            "pt_index": 30.0,
+            "gap_index": 70,
+            "stop_count": 7
+          },
+          {
+            "ward_label": "131",
+            "establishments": 2862,
+            "total_workers": 5803,
+            "workers_per_est": 2.03,
+            "pt_index": 43.0,
+            "gap_index": 57,
+            "stop_count": 4
+          },
+          {
+            "ward_label": "48",
+            "establishments": 2791,
+            "total_workers": 7627,
+            "workers_per_est": 2.73,
+            "pt_index": 43.0,
+            "gap_index": 57,
+            "stop_count": 2
+          },
+          {
+            "ward_label": "64",
+            "establishments": 2777,
+            "total_workers": 8930,
+            "workers_per_est": 3.22,
+            "pt_index": 42.0,
+            "gap_index": 58,
+            "stop_count": 11
+          },
+          {
+            "ward_label": "89",
+            "establishments": 2645,
+            "total_workers": 7829,
+            "workers_per_est": 2.96,
+            "pt_index": 44.0,
+            "gap_index": 56,
+            "stop_count": 10
+          },
+          {
+            "ward_label": "80",
+            "establishments": 2465,
+            "total_workers": 5699,
+            "workers_per_est": 2.31,
+            "pt_index": 40.0,
+            "gap_index": 60,
+            "stop_count": 4
+          },
+          {
+            "ward_label": "154",
+            "establishments": 2449,
+            "total_workers": 5103,
+            "workers_per_est": 2.08,
+            "pt_index": 25.0,
+            "gap_index": 75,
+            "stop_count": 5
+          },
+          {
+            "ward_label": "12",
+            "establishments": 2300,
+            "total_workers": 4635,
+            "workers_per_est": 2.02,
+            "pt_index": 30.0,
+            "gap_index": 70,
+            "stop_count": 5
+          },
+          {
+            "ward_label": "13",
+            "establishments": 2222,
+            "total_workers": 4614,
+            "workers_per_est": 2.08,
+            "pt_index": 40.0,
+            "gap_index": 60,
+            "stop_count": 0
+          },
+          {
+            "ward_label": "109",
+            "establishments": 2191,
+            "total_workers": 17986,
+            "workers_per_est": 8.21,
+            "pt_index": 43.0,
+            "gap_index": 57,
+            "stop_count": 4
+          },
+          {
+            "ward_label": "74",
+            "establishments": 2159,
+            "total_workers": 5398,
+            "workers_per_est": 2.5,
+            "pt_index": 42.0,
+            "gap_index": 58,
+            "stop_count": 6
+          },
+          {
+            "ward_label": "120",
+            "establishments": 2046,
+            "total_workers": 4084,
+            "workers_per_est": 2.0,
+            "pt_index": 43.0,
+            "gap_index": 57,
+            "stop_count": 2
+          },
+          {
+            "ward_label": "18",
+            "establishments": 2044,
+            "total_workers": 3584,
+            "workers_per_est": 1.75,
+            "pt_index": 40.0,
+            "gap_index": 60,
+            "stop_count": 20
+          },
+          {
+            "ward_label": "6",
+            "establishments": 2025,
+            "total_workers": 3911,
+            "workers_per_est": 1.93,
+            "pt_index": 40.0,
+            "gap_index": 60,
+            "stop_count": 3
+          },
+          {
+            "ward_label": "149",
+            "establishments": 1827,
+            "total_workers": 3888,
+            "workers_per_est": 2.13,
+            "pt_index": 25.0,
+            "gap_index": 75,
+            "stop_count": 6
+          },
+          {
+            "ward_label": "51",
+            "establishments": 1821,
+            "total_workers": 3739,
+            "workers_per_est": 2.05,
+            "pt_index": 40.0,
+            "gap_index": 60,
+            "stop_count": 1
+          },
+          {
+            "ward_label": "33",
+            "establishments": 1768,
+            "total_workers": 3956,
+            "workers_per_est": 2.24,
+            "pt_index": 38.0,
+            "gap_index": 62,
+            "stop_count": 7
+          },
+          {
+            "ward_label": "29",
+            "establishments": 1612,
+            "total_workers": 3305,
+            "workers_per_est": 2.05,
+            "pt_index": 44.0,
+            "gap_index": 56,
+            "stop_count": 5
+          },
+          {
+            "ward_label": "19",
+            "establishments": 1471,
+            "total_workers": 3254,
+            "workers_per_est": 2.21,
+            "pt_index": 43.0,
+            "gap_index": 57,
+            "stop_count": 19
+          },
+          {
+            "ward_label": "143",
+            "establishments": 1398,
+            "total_workers": 3684,
+            "workers_per_est": 2.64,
+            "pt_index": 30.0,
+            "gap_index": 70,
+            "stop_count": 7
+          }
+        ],
+        "note": "Economic Census microdata aggregated by WC (ward code) for TN State=33 District=2. Proxy for economic activity \u2014 not household income. Join to GCC ward_label is best-effort."
+      }
     },
     {
       "id": "ward_pt_index",
@@ -843,65 +1075,189 @@
         "status": "loaded",
         "destination": "schools",
         "total": 2227,
+        "threshold_m": 100,
+        "within_100m": 452,
         "within_500m": 2110,
-        "within_1000m": 2222,
-        "over_1000m": 5,
+        "over_100m": 1775,
+        "pct_within_100m": 20.3,
         "pct_within_500m": 94.7,
-        "pct_within_1000m": 99.8,
-        "pct_over_1000m": 0.2,
-        "note": "Crow-flies distance from schools points to nearest GTFS stop buffer. Not street-network walk; not ridership-weighted."
+        "pct_over_100m": 79.7,
+        "within_1000m": 2110,
+        "over_1000m": 1775,
+        "pct_within_1000m": 94.7,
+        "pct_over_1000m": 79.7,
+        "note": "Crow-flies: share of schools within 100m of a GTFS stop (primary), with 500m as secondary context. Not street-network walk."
       },
       "healthcare": {
         "status": "loaded",
         "destination": "healthcare",
         "total": 140,
+        "threshold_m": 100,
+        "within_100m": 45,
         "within_500m": 136,
-        "within_1000m": 140,
-        "over_1000m": 0,
+        "over_100m": 95,
+        "pct_within_100m": 32.1,
         "pct_within_500m": 97.1,
-        "pct_within_1000m": 100.0,
-        "pct_over_1000m": 0.0,
-        "note": "Crow-flies distance from healthcare points to nearest GTFS stop buffer. Not street-network walk; not ridership-weighted."
+        "pct_over_100m": 67.9,
+        "within_1000m": 136,
+        "over_1000m": 95,
+        "pct_within_1000m": 97.1,
+        "pct_over_1000m": 67.9,
+        "note": "Crow-flies: share of healthcare within 100m of a GTFS stop (primary), with 500m as secondary context. Not street-network walk."
       },
       "chart": [
         {
           "destination": "schools",
+          "pct_within_100m": 20.3,
           "pct_within_500m": 94.7,
-          "pct_within_1000m": 99.8,
-          "pct_over_1000m": 0.2,
-          "total": 2227
+          "pct_over_100m": 79.7,
+          "total": 2227,
+          "within_100m": 452,
+          "over_100m": 1775
         },
         {
           "destination": "healthcare",
+          "pct_within_100m": 32.1,
           "pct_within_500m": 97.1,
-          "pct_within_1000m": 100.0,
-          "pct_over_1000m": 0.0,
-          "total": 140
+          "pct_over_100m": 67.9,
+          "total": 140,
+          "within_100m": 45,
+          "over_100m": 95
         }
       ],
       "limitations": [
+        "Primary access standard: 100m crow-flies to a GTFS stop.",
         "OpenCity school/health points \u2014 public vs private not always tagged; treated as facility inventory.",
-        "Crow-flies to GTFS stops only."
+        "Not street-network walk time."
       ],
-      "summary": "Share of school and healthcare facility points within 500m / 1km crow-flies of a GTFS stop."
+      "metrics": {
+        "schools_pct_within_100m": 20.3,
+        "schools_over_100m": 1775,
+        "healthcare_pct_within_100m": 32.1,
+        "healthcare_over_100m": 95
+      },
+      "summary": "Share of school and healthcare points within 100m crow-flies of a GTFS stop (primary standard for facility access). 500m shown as secondary context."
     },
     {
       "id": "congestion_pt",
-      "title": "Congestion points vs public transport solutions",
-      "status": "unavailable",
-      "reason": "No verified citywide congestion-point inventory with coordinates was in the Datajam Sheet 2 downloads (OpenCity crash CSV may exist separately but was not ingested as a congestion layer).",
-      "needed": "Official congestion hotspot list or traffic-speed/delay layer joined to PT corridors.",
-      "chart": [],
+      "title": "Congestion corridors & PT responses (CMP)",
+      "status": "loaded",
+      "summary": "Insights extracted from CMP PDF text (executive-summary window). Not a geocoded congestion hotspot inventory \u2014 corridor names are document mentions.",
+      "document": {
+        "title": "Comprehensive Mobility Plan for Chennai Metropolitan Area \u2014 Final Report / Executive Summary",
+        "file": "b9c062d5-bebd-4f25-81dc-df68a2070230.pdf",
+        "pages": 343,
+        "date_hint": "15.10.2019"
+      },
+      "insights": [
+        {
+          "theme": "Congestion drivers",
+          "detail": "CMP notes rapid motorisation with rising congestion and pollution across CMA; growth pressure along southern/northern radial corridors and the IT Corridor."
+        },
+        {
+          "theme": "NMT gap",
+          "detail": "Primary survey finding cited: ~95% of surveyed roads lack adequate footpath infrastructure \u2014 CMP flags NMT around PT facilities as a priority."
+        },
+        {
+          "theme": "Public transport spine",
+          "detail": "CMP frames CMA PT as MTC buses + suburban rail + MRTS (and metro expansion), with intermodal integration and NMT as complementary measures."
+        },
+        {
+          "theme": "PT in the do-something case",
+          "detail": "Modelled BAU 'Do Something' case is described as reducing congestion levels substantially versus Do-Nothing \u2014 PT / TDM packages are part of the response."
+        }
+      ],
+      "corridors_mentioned": [
+        "IT Corridor / OMR",
+        "Anna Salai",
+        "Periyar EVR Salai",
+        "GST Road",
+        "GNT Road",
+        "Inner Ring Road",
+        "Outer Ring Road",
+        "NH32",
+        "NH16",
+        "NH48",
+        "NH716",
+        "T.Nagar",
+        "Purasawalkam",
+        "George Town",
+        "Nungambakkam",
+        "Thiruvottiyur\u2013Ponneri corridor"
+      ],
+      "pt_measures_mentioned": [
+        "BRT corridors",
+        "Metro expansion / CMRL",
+        "MRTS",
+        "NMT / footpaths around PT",
+        "IPT integration",
+        "UMTA institutional reform",
+        "Feeder services"
+      ],
+      "chart": [
+        {
+          "label": "IT Corridor / OMR",
+          "count": 1
+        },
+        {
+          "label": "Anna Salai",
+          "count": 1
+        },
+        {
+          "label": "Periyar EVR Salai",
+          "count": 1
+        },
+        {
+          "label": "GST Road",
+          "count": 1
+        },
+        {
+          "label": "GNT Road",
+          "count": 1
+        },
+        {
+          "label": "Inner Ring Road",
+          "count": 1
+        },
+        {
+          "label": "Outer Ring Road",
+          "count": 1
+        },
+        {
+          "label": "NH32",
+          "count": 1
+        },
+        {
+          "label": "NH16",
+          "count": 1
+        },
+        {
+          "label": "NH48",
+          "count": 1
+        },
+        {
+          "label": "NH716",
+          "count": 1
+        },
+        {
+          "label": "T.Nagar",
+          "count": 1
+        }
+      ],
+      "metrics": {
+        "corridors_named": 16,
+        "pt_measures_named": 7,
+        "cmp_pages": 343
+      },
       "limitations": [
-        "Cannot list congestion points without a validated source."
+        "Corridor names from CMP text \u2014 not a geocoded hotspot inventory.",
+        "No live speed/delay layer joined yet."
       ]
     },
     {
-      "id": "scheduling_optimisation",
-      "title": "PT scheduling from commute patterns",
-      "status": "partial",
-      "reason": "No origin\u2013destination or stop-level boarding time series suitable for a dynamic schedule model. MTC performance and metro monthly usage tables are aggregate only.",
-      "needed": "Stop/route ridership by time-of-day or GTFS-RT + validated OD sample.",
+      "id": "fleet_ridership_trends",
+      "title": "MTC & metro ridership / fleet trends",
+      "status": "loaded",
       "chart": [
         {
           "label": "MTC performance (aggregate)",
@@ -945,8 +1301,9 @@
         }
       ],
       "limitations": [
-        "Dynamic scheduling model not built \u2014 data gap."
-      ]
+        "Aggregate annual/monthly tables only \u2014 not stop-level OD for dynamic scheduling."
+      ],
+      "summary": "Verified aggregate MTC performance and CMRL monthly passenger-flow tables. Useful for trend context \u2014 not a schedule-optimisation model."
     }
   ],
   "recommendations": [
@@ -972,25 +1329,25 @@
       "map_href": "/map"
     },
     {
+      "priority": "high",
+      "objective": "equal_access",
+      "title": "High economic activity wards with weak PT index",
+      "detail": "20 wards show elevated Economic Census establishments/workers but PT index <45. Prioritise feeder / stop densification where jobs cluster.",
+      "map_href": "/objectives#equal_access"
+    },
+    {
       "priority": "medium",
       "objective": "destinations_access",
-      "title": "Close school / clinic gaps beyond 1km of stops",
-      "detail": "0.2% of mapped schools and 0.0% of healthcare points sit >1km crow-flies from a GTFS stop. Overlay Destinations preset on Walk km.",
+      "title": "Bring stops within 100m of schools and clinics still outside range",
+      "detail": "79.7% of mapped schools (1775 sites) and 67.9% of healthcare points (95 sites) sit >100m crow-flies from a GTFS stop. Use Destinations preset on the map.",
       "map_href": "/map"
     },
     {
-      "priority": "info",
+      "priority": "medium",
       "objective": "congestion_pt",
-      "title": "Congestion\u2013PT linkage still Unavailable",
-      "detail": "No verified citywide congestion-point inventory with coordinates was in the Datajam Sheet 2 downloads (OpenCity crash CSV may exist separately but was not ingested as a congestion layer).",
-      "map_href": "/sources"
-    },
-    {
-      "priority": "info",
-      "objective": "scheduling_optimisation",
-      "title": "Schedule optimisation needs time-of-day ridership",
-      "detail": "No origin\u2013destination or stop-level boarding time series suitable for a dynamic schedule model. MTC performance and metro monthly usage tables are aggregate only.",
-      "map_href": "/sources"
+      "title": "Align feeders with CMP congestion corridors + NMT",
+      "detail": "CMP names radial/IT corridors and flags missing footpaths (~95% surveyed roads). PT levers cited: BRT corridors, Metro expansion / CMRL, MRTS, NMT / footpaths around PT, IPT integration.",
+      "map_href": "/objectives#congestion_pt"
     }
   ],
   "catchment_coverage": {

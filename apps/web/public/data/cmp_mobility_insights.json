@@ -1,0 +1,106 @@
+{
+  "status": "loaded",
+  "generated_at": "2026-08-06T16:56:16.031277+00:00",
+  "document": {
+    "title": "Comprehensive Mobility Plan for Chennai Metropolitan Area \u2014 Final Report / Executive Summary",
+    "file": "b9c062d5-bebd-4f25-81dc-df68a2070230.pdf",
+    "pages": 343,
+    "date_hint": "15.10.2019"
+  },
+  "note": "Insights extracted from CMP PDF text (executive-summary window). Not a geocoded congestion hotspot inventory \u2014 corridor names are document mentions.",
+  "corridors_mentioned": [
+    "IT Corridor / OMR",
+    "Anna Salai",
+    "Periyar EVR Salai",
+    "GST Road",
+    "GNT Road",
+    "Inner Ring Road",
+    "Outer Ring Road",
+    "NH32",
+    "NH16",
+    "NH48",
+    "NH716",
+    "T.Nagar",
+    "Purasawalkam",
+    "George Town",
+    "Nungambakkam",
+    "Thiruvottiyur\u2013Ponneri corridor"
+  ],
+  "pt_measures_mentioned": [
+    "BRT corridors",
+    "Metro expansion / CMRL",
+    "MRTS",
+    "NMT / footpaths around PT",
+    "IPT integration",
+    "UMTA institutional reform",
+    "Feeder services"
+  ],
+  "insights": [
+    {
+      "theme": "Congestion drivers",
+      "detail": "CMP notes rapid motorisation with rising congestion and pollution across CMA; growth pressure along southern/northern radial corridors and the IT Corridor."
+    },
+    {
+      "theme": "NMT gap",
+      "detail": "Primary survey finding cited: ~95% of surveyed roads lack adequate footpath infrastructure \u2014 CMP flags NMT around PT facilities as a priority."
+    },
+    {
+      "theme": "Public transport spine",
+      "detail": "CMP frames CMA PT as MTC buses + suburban rail + MRTS (and metro expansion), with intermodal integration and NMT as complementary measures."
+    },
+    {
+      "theme": "PT in the do-something case",
+      "detail": "Modelled BAU 'Do Something' case is described as reducing congestion levels substantially versus Do-Nothing \u2014 PT / TDM packages are part of the response."
+    }
+  ],
+  "chart": [
+    {
+      "label": "IT Corridor / OMR",
+      "count": 1
+    },
+    {
+      "label": "Anna Salai",
+      "count": 1
+    },
+    {
+      "label": "Periyar EVR Salai",
+      "count": 1
+    },
+    {
+      "label": "GST Road",
+      "count": 1
+    },
+    {
+      "label": "GNT Road",
+      "count": 1
+    },
+    {
+      "label": "Inner Ring Road",
+      "count": 1
+    },
+    {
+      "label": "Outer Ring Road",
+      "count": 1
+    },
+    {
+      "label": "NH32",
+      "count": 1
+    },
+    {
+      "label": "NH16",
+      "count": 1
+    },
+    {
+      "label": "NH48",
+      "count": 1
+    },
+    {
+      "label": "NH716",
+      "count": 1
+    },
+    {
+      "label": "T.Nagar",
+      "count": 1
+    }
+  ]
+}

@@ -8,21 +8,24 @@ export function DecisionCta() {
       <SpectrumRule className="absolute inset-x-0 top-0" />
       <div className="relative z-10 max-w-2xl">
         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--yellow)]">
-          From inventory to action
+          From objectives to action
         </p>
         <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-semibold tracking-tight text-[var(--yellow-bright)] sm:text-4xl">
-          Ready to turn coverage data into decisions?
+          Done reading the charts?
         </h2>
         <p className="mt-3 text-[var(--ink-muted)]">
-          Open ward and zone Gap Index reports, inspect verified layers on the map, or audit
-          every source — without invented equity scores.
+          Jump to prioritised recommendations, then verify on the map — including schools and
+          hospitals outside the 100m stop standard.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/analytics?tab=spatial" className="et-btn-primary">
-            Open Gap Index reports
+          <Link href="/recommendations" className="et-btn-primary">
+            Final recommendations
           </Link>
           <Link href="/map" className="et-btn-ghost">
-            Explore the network map
+            Destinations on map
+          </Link>
+          <Link href="/analytics?tab=spatial" className="et-btn-ghost">
+            Ward Gap Index
           </Link>
         </div>
       </div>

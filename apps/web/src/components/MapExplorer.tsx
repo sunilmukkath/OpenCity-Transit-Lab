@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import type { FeatureCollection } from "geojson";
 import {
   fetchGeoJSONClient,
   fetchManifestClient,
@@ -10,6 +11,16 @@ import {
 } from "@/lib/data-client";
 import { ProvenanceStrip } from "@/components/ProvenanceStrip";
 import { TransitMap, joinWardGapIndex } from "@/components/TransitMap";
+import {
+  DashboardFilterBar,
+  FilterImpactStrip,
+  useFilteredUniverse,
+} from "@/components/DashboardFilterBar";
+import {
+  DEFAULT_FILTERS,
+  filtersActive,
+  type DashboardFilters,
+} from "@/lib/dashboard-filters";
 import {
   LAYER_PRESETS,
   MAP_LAYER_META,
@@ -29,6 +40,7 @@ const CORE_LAYERS: MapLayerKey[] = [
   "mrts_lines",
   "mrts_stations",
   "hubs",
+  "railway_stations",
   "wards",
   "stops",
   "schools",
@@ -79,6 +91,17 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
   const [loadingCore, setLoadingCore] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [activePreset, setActivePreset] = useState<string>("walkkm");
+  const [filters, setFilters] = useState<DashboardFilters>({
+    ...DEFAULT_FILTERS,
+    unit: "ward",
+  });
+  const {
+    loading: loadingFilters,
+    filtered,
+    wardOptions,
+    zoneOptions,
+    cityMeanGap,
+  } = useFilteredUniverse(filters);
 
   useEffect(() => {
     let cancelled = false;
@@ -137,8 +160,42 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
 
   const loadedCount = useMemo(() => Object.keys(data).length, [data]);
 
+  const filteredWardLabels = useMemo(
+    () =>
+      new Set(
+        filtered.filter((u) => u.unit_type === "ward").map((u) => String(u.label))
+      ),
+    [filtered]
+  );
+
+  const mapData = useMemo((): LayerData => {
+    if (!data.wards || !filtersActive(filters)) return data;
+    const wards = data.wards as FeatureCollection;
+    return {
+      ...data,
+      wards: {
+        ...wards,
+        features: wards.features.filter((f) =>
+          filteredWardLabels.has(String(f.properties?.ward_label ?? ""))
+        ),
+      },
+    };
+  }, [data, filters, filteredWardLabels]);
+
   return (
     <div className="space-y-3">
+      <DashboardFilterBar
+        filters={filters}
+        onChange={setFilters}
+        wardOptions={wardOptions}
+        zoneOptions={zoneOptions}
+        resultCount={filteredWardLabels.size}
+        compact
+      />
+      {!loadingFilters ? (
+        <FilterImpactStrip units={filtered} cityMeanGap={cityMeanGap} />
+      ) : null}
+
       <div className="no-print space-y-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-3 py-3 shadow-sm sm:px-4">
         {audienceNote ? (
           <p className="rounded-md bg-[var(--accent-soft)] px-2 py-1 text-xs text-[var(--accent)]">
@@ -147,6 +204,12 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
         ) : null}
         {loadError ? (
           <p className="text-xs text-[var(--danger)]">{loadError}</p>
+        ) : null}
+        {filtersActive(filters) ? (
+          <p className="text-xs text-[var(--yellow)]">
+            Ward polygons filtered to {filteredWardLabels.size.toLocaleString()} matching
+            wards. Other layers stay citywide for context.
+          </p>
         ) : null}
 
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -258,7 +321,7 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
       </div>
 
       <TransitMap
-        data={data}
+        data={mapData}
         visibility={visibility}
         choropleth={choropleth}
         height={MAP_HEIGHT}

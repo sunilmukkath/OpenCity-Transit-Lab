@@ -16,6 +16,7 @@ export interface ManifestSource {
   sha256?: string;
   error?: string;
   jam_catalog?: boolean;
+  ui_group?: string;
 }
 
 export interface JamCatalogIndex {
@@ -267,6 +268,10 @@ export interface AdvancedAnalyses {
       over_1000m_km2?: number;
       pct_over_1000m?: number;
     };
+  };
+  metro_extension?: {
+    status: string;
+    note?: string;
   };
 }
 

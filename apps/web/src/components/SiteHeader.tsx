@@ -6,11 +6,11 @@ import { SpectrumRule } from "@/components/BrandMotif";
 
 const LINKS = [
   { href: "/", label: "Home" },
-  { href: "/analytics", label: "Analytics" },
   { href: "/objectives", label: "Objectives" },
-  { href: "/recommendations", label: "Insights" },
   { href: "/map", label: "Map" },
-  { href: "/sources", label: "Data Sources" },
+  { href: "/recommendations", label: "Actions" },
+  { href: "/analytics", label: "Reports" },
+  { href: "/sources", label: "Sources" },
 ];
 
 export function SiteHeader() {

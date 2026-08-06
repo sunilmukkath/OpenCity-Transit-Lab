@@ -12,7 +12,12 @@ export async function fetchJson<T>(urlPath: string): Promise<T | null> {
   try {
     const res = await fetch(urlPath, { cache: "no-store" });
     if (!res.ok) return null;
-    return (await res.json()) as T;
+    const text = await res.text();
+    // Python json.dumps can emit NaN/Infinity — invalid in strict JSON.parse
+    const cleaned = text
+      .replace(/:\s*NaN\b/g, ": null")
+      .replace(/:\s*-?Infinity\b/g, ": null");
+    return JSON.parse(cleaned) as T;
   } catch {
     return null;
   }

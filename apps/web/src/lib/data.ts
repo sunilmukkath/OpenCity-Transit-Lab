@@ -10,7 +10,10 @@ const PUBLIC_DATA = path.join(process.cwd(), "public", "data");
 async function readPublicJson<T>(filename: string): Promise<T | null> {
   try {
     const raw = await fs.readFile(path.join(PUBLIC_DATA, filename), "utf8");
-    return JSON.parse(raw) as T;
+    const cleaned = raw
+      .replace(/:\s*NaN\b/g, ": null")
+      .replace(/:\s*-?Infinity\b/g, ": null");
+    return JSON.parse(cleaned) as T;
   } catch {
     return null;
   }

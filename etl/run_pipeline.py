@@ -1662,7 +1662,7 @@ def main() -> int:
     if walk_analysis:
         analyses["walk_distance_bands"] = walk_analysis
 
-    (PROCESSED / "analyses.json").write_text(json.dumps(analyses, indent=2))
+    (PROCESSED / "analyses.json").write_text(json.dumps(analyses, indent=2, allow_nan=False))
     hub_n = len(analyses.get("hub_last_mile", {}).get("hubs", []))
     mm_n = analyses.get("shelter_mismatch", {}).get("counts", {}).get("mismatch_wards", 0)
     cov_n = analyses.get("catchment_coverage", {}).get("counts", {}).get("wards_scored", 0)

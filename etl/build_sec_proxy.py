@@ -320,15 +320,19 @@ def build_sec_proxy(
                 "label": str(r.get("ward_label")),
                 "pct_slum_area": float(r["pct_slum_area"]) if pd.notna(r.get("pct_slum_area")) else 0.0,
                 "has_slum": bool(r.get("has_slum")),
-                "slum_band": r.get("slum_band"),
+                "slum_band": None if pd.isna(r.get("slum_band")) else r.get("slum_band"),
                 "amenity_deprivation": (
                     round(float(r["amenity_deprivation"]), 1)
                     if pd.notna(r.get("amenity_deprivation"))
                     else None
                 ),
-                "amenity_band": r.get("amenity_band"),
-                "amenity_join": r.get("amenity_join"),
-                "sec_proxy_band": r.get("sec_proxy_band"),
+                "amenity_band": None if pd.isna(r.get("amenity_band")) else r.get("amenity_band"),
+                "amenity_join": None if pd.isna(r.get("amenity_join")) else r.get("amenity_join"),
+                "sec_proxy_band": (
+                    None
+                    if pd.isna(r.get("sec_proxy_band"))
+                    else str(r.get("sec_proxy_band"))
+                ),
                 "banking_pct": float(r["banking_pct"]) if pd.notna(r.get("banking_pct")) else None,
                 "car_pct": float(r["car_pct"]) if pd.notna(r.get("car_pct")) else None,
                 "scooter_pct": float(r["scooter_pct"]) if pd.notna(r.get("scooter_pct")) else None,
@@ -416,7 +420,7 @@ if __name__ == "__main__":
     analyses_path = PROCESSED / "analyses.json"
     analyses = json.loads(analyses_path.read_text()) if analyses_path.exists() else {}
     analyses["sec_proxy"] = out["analysis"]
-    analyses_path.write_text(json.dumps(analyses, indent=2))
+    analyses_path.write_text(json.dumps(analyses, indent=2, allow_nan=False))
 
     manifest_path = PROCESSED / "manifest.json"
     if manifest_path.exists():

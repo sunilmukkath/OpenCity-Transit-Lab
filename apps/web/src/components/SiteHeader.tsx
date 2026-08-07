@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SpectrumRule } from "@/components/BrandMotif";
-import { LabFlowStrip } from "@/components/LabFlow";
 
 const LINKS = [
   { href: "/", label: "Home" },
@@ -28,9 +27,6 @@ export function SiteHeader() {
           >
             OpenCity Transit Lab
           </Link>
-          <p className="mt-0.5 text-sm text-[var(--ink-muted)]">
-            Home → Objectives → Map → Actions → Reports
-          </p>
         </div>
         <nav className="flex flex-wrap gap-1" aria-label="Primary">
           {LINKS.map((link) => {
@@ -52,7 +48,6 @@ export function SiteHeader() {
           })}
         </nav>
       </div>
-      <LabFlowStrip compact />
     </header>
   );
 }

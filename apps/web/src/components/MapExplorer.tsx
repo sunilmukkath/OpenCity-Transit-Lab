@@ -35,7 +35,7 @@ import {
   type MapLayerKey,
 } from "@/lib/map-layers";
 
-const MAP_HEIGHT = 680;
+const MAP_HEIGHT = 560;
 
 async function loadLayerBatch(
   m: Manifest,
@@ -65,17 +65,29 @@ const chipOn =
 const chipOff =
   "border-[var(--border)] bg-white/[0.03] text-[var(--ink-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]";
 
-export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
+export function MapExplorer({
+  audienceNote,
+  initialPreset: presetProp,
+  audience: audienceProp,
+  hideFilters,
+}: {
+  audienceNote?: string;
+  initialPreset?: string;
+  audience?: string;
+  hideFilters?: boolean;
+}) {
   const audienceParam = useAudienceParam();
   const presetParam = usePresetParam();
-  const note = audienceNote ?? audienceMapNote(audienceParam) ?? undefined;
+  const audience = audienceProp ?? audienceParam;
+  const note = audienceNote ?? audienceMapNote(audience) ?? undefined;
 
   const initialPreset = useMemo(() => {
+    if (presetProp && LAYER_PRESETS[presetProp]) return presetProp;
     if (presetParam && LAYER_PRESETS[presetParam]) return presetParam;
-    const aud = AUDIENCE_PRESETS.find((a) => a.audience === audienceParam);
+    const aud = AUDIENCE_PRESETS.find((a) => a.audience === audience);
     if (aud && LAYER_PRESETS[aud.preset]) return aud.preset;
     return "walkkm";
-  }, [presetParam, audienceParam]);
+  }, [presetProp, presetParam, audience]);
 
   const [manifest, setManifest] = useState<Manifest | null>(null);
   const [data, setData] = useState<LayerData>({});
@@ -190,13 +202,12 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
   useEffect(() => {
     if (presetParam && LAYER_PRESETS[presetParam] && presetParam !== activePreset) {
       applyPreset(presetParam);
-    } else if (!presetParam && audienceParam) {
-      const aud = AUDIENCE_PRESETS.find((a) => a.audience === audienceParam);
+    } else if (!presetParam && audience) {
+      const aud = AUDIENCE_PRESETS.find((a) => a.audience === audience);
       if (aud && aud.preset !== activePreset) applyPreset(aud.preset);
     }
-    // only react to URL changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [presetParam, audienceParam]);
+  }, [presetParam, audience]);
 
   const loadedCount = useMemo(() => Object.keys(data).length, [data]);
 
@@ -224,16 +235,20 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
 
   return (
     <div className="space-y-3">
-      <DashboardFilterBar
-        filters={filters}
-        onChange={setFilters}
-        wardOptions={wardOptions}
-        zoneOptions={zoneOptions}
-        resultCount={filteredWardLabels.size}
-        compact
-      />
-      {!loadingFilters ? (
-        <FilterImpactStrip units={filtered} cityMeanGap={cityMeanGap} />
+      {!hideFilters ? (
+        <>
+          <DashboardFilterBar
+            filters={filters}
+            onChange={setFilters}
+            wardOptions={wardOptions}
+            zoneOptions={zoneOptions}
+            resultCount={filteredWardLabels.size}
+            compact
+          />
+          {!loadingFilters ? (
+            <FilterImpactStrip units={filtered} cityMeanGap={cityMeanGap} />
+          ) : null}
+        </>
       ) : null}
 
       <div className="no-print space-y-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-3 py-3 shadow-sm sm:px-4">

@@ -4,12 +4,13 @@ import path from "path";
 const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(__dirname),
   transpilePackages: ["maplibre-gl"],
-  // Old multi-page lab routes → hubs (content lives there now)
   async redirects() {
     return [
-      { source: "/analytics", destination: "/for/planner", permanent: false },
-      { source: "/objectives", destination: "/for/planner", permanent: false },
-      { source: "/recommendations", destination: "/for/planner", permanent: false },
+      { source: "/map", destination: "/last-mile", permanent: false },
+      { source: "/analytics", destination: "/assessments", permanent: false },
+      { source: "/objectives", destination: "/destinations", permanent: false },
+      { source: "/recommendations", destination: "/infrastructure", permanent: false },
+      { source: "/for/:hub", destination: "/", permanent: false },
     ];
   },
 };

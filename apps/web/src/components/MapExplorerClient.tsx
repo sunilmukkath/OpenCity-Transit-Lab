@@ -8,13 +8,27 @@ const MapExplorer = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-[620px] items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--map-wash)] text-sm text-[var(--ink-muted)]">
+      <div className="flex h-[520px] items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--map-wash)] text-sm text-[var(--ink-muted)]">
         Loading map…
       </div>
     ),
   }
 );
 
-export function MapExplorerClient({ audienceNote }: { audienceNote?: string }) {
-  return <MapExplorer audienceNote={audienceNote} />;
+export function MapExplorerClient({
+  audienceNote,
+  initialPreset,
+  audience,
+}: {
+  audienceNote?: string;
+  initialPreset?: string;
+  audience?: string;
+}) {
+  return (
+    <MapExplorer
+      audienceNote={audienceNote}
+      initialPreset={initialPreset}
+      audience={audience}
+    />
+  );
 }

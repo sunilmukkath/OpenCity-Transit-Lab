@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { SpectrumOrbs, SpectrumRule } from "@/components/BrandMotif";
-import { HUBS } from "@/lib/hubs";
+import { HOME_CARDS } from "@/lib/site-nav";
 
 export default function HomePage() {
   return (
@@ -12,49 +12,40 @@ export default function HomePage() {
           <p className="et-fade-up text-sm font-semibold uppercase tracking-[0.16em] text-[var(--yellow)]">
             OpenCity Transit Lab
           </p>
-          <h1 className="et-fade-up et-fade-up-delay-1 mt-3 font-[family-name:var(--font-display)] text-4xl font-semibold tracking-tight text-[var(--yellow-bright)] sm:text-5xl lg:text-[3.4rem] lg:leading-[1.08]">
-            Chennai PT evidence — pick your hub
+          <h1 className="et-fade-up et-fade-up-delay-1 mt-3 font-[family-name:var(--font-display)] text-4xl font-semibold tracking-tight text-[var(--yellow-bright)] sm:text-5xl lg:text-[3.35rem] lg:leading-[1.08]">
+            Chennai public transport — mapped and measured
           </h1>
           <p className="et-fade-up et-fade-up-delay-2 mt-4 text-lg text-[var(--ink-muted)]">
-            One hub page answers your question. Map and Sources are the only other tools.
+            Four analysis pages. Verified open data only — no fabricated equity or ridership
+            scores.
           </p>
         </div>
       </section>
 
       <section>
-        <h2 className="sr-only">Choose your hub</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {HUBS.map((hub, i) => (
-            <Link
-              key={hub.id}
-              href={hub.href}
-              className={`et-fade-up group relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-6 transition hover:border-[var(--accent)] hover:shadow-[0_16px_40px_rgba(56,189,248,0.12)] et-fade-up-delay-${Math.min(i + 1, 3)}`}
-            >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--yellow)]">
-                {hub.short}
-              </p>
-              <h3 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-semibold text-[var(--ink)] group-hover:text-[var(--accent)]">
-                {hub.label}
-              </h3>
-              <p className="mt-1 text-sm font-medium text-[var(--ink)]">{hub.job}</p>
-              <p className="mt-2 text-sm text-[var(--ink-muted)]">{hub.blurb}</p>
-              <span className="mt-4 inline-block text-sm font-semibold text-[var(--accent)]">
-                Open →
-              </span>
-            </Link>
+        <h2 className="sr-only">Analysis pages</h2>
+        <ol className="grid gap-4 sm:grid-cols-2">
+          {HOME_CARDS.map((page, i) => (
+            <li key={page.id}>
+              <Link
+                href={page.href}
+                className={`et-fade-up group block rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-6 transition hover:border-[var(--accent)] et-fade-up-delay-${Math.min(i + 1, 3)}`}
+              >
+                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--yellow)]">
+                  {String(i + 1).padStart(2, "0")}
+                </p>
+                <h3 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-semibold text-[var(--ink)] group-hover:text-[var(--accent)]">
+                  {page.title}
+                </h3>
+                <p className="mt-2 text-sm text-[var(--ink-muted)]">{page.blurb}</p>
+                <span className="mt-4 inline-block text-sm font-semibold text-[var(--accent)]">
+                  Open →
+                </span>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ol>
       </section>
-
-      <p className="text-center text-sm text-[var(--ink-muted)]">
-        <Link href="/map" className="text-[var(--accent)] hover:underline">
-          Map
-        </Link>
-        {" · "}
-        <Link href="/sources" className="text-[var(--accent)] hover:underline">
-          Sources
-        </Link>
-      </p>
     </div>
   );
 }

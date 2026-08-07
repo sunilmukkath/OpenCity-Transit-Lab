@@ -15,9 +15,9 @@ const sans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "OpenCity Transit Lab | Chennai Last-Mile Decision Support",
+  title: "OpenCity Transit Lab | Chennai PT Evidence",
   description:
-    "Civic evidence platform for Chennai public transport — verified open data only for policymakers, local bodies, traffic, and the public.",
+    "Last-mile connectivity, hospitals and schools, ward/zone gaps, and stops vs shelters — verified open data for Chennai.",
 };
 
 export const viewport: Viewport = {
@@ -62,7 +62,10 @@ export default function RootLayout({
               </p>
               <p className="mt-2 text-sm text-[var(--ink-muted)]">
                 Not an official live MTC/CMRL operational feed unless an agency connector is
-                plugged in.
+                plugged in.{" "}
+                <a href="/sources" className="text-[var(--accent)] hover:underline">
+                  Data sources
+                </a>
               </p>
             </div>
           </div>

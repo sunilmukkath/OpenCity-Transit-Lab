@@ -3,8 +3,15 @@ import path from "path";
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(__dirname),
-  // Keep MapLibre's ESM + worker intact under Next bundling.
   transpilePackages: ["maplibre-gl"],
+  // Old multi-page lab routes → hubs (content lives there now)
+  async redirects() {
+    return [
+      { source: "/analytics", destination: "/for/planner", permanent: false },
+      { source: "/objectives", destination: "/for/planner", permanent: false },
+      { source: "/recommendations", destination: "/for/planner", permanent: false },
+    ];
+  },
 };
 
 export default nextConfig;

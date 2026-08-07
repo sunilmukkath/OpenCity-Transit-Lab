@@ -194,6 +194,10 @@ function PlannerHub() {
   }, []);
 
   const top = filtered.slice(0, 8);
+  const actions = (recs?.recommendations ?? []).slice(0, 5);
+  const evidence = (recs?.objectives ?? [])
+    .filter((o) => o.status === "loaded" || o.status === "partial")
+    .slice(0, 4);
 
   return (
     <div className="space-y-8">
@@ -203,8 +207,8 @@ function PlannerHub() {
           Where should we intervene?
         </h1>
         <p className="max-w-2xl text-[var(--ink-muted)]">
-          Severe-gap wards first. Jump to objectives evidence, map need lines, or export a ward
-          memo from Reports.
+          Filter severe-gap areas, review priority actions, then open the map. Everything for
+          planning is on this page.
         </p>
       </header>
 
@@ -270,24 +274,65 @@ function PlannerHub() {
                 </td>
               </tr>
             ))}
+            {!top.length ? (
+              <tr>
+                <td colSpan={4} className="px-3 py-6 text-center text-[var(--ink-muted)]">
+                  No areas match these filters.
+                </td>
+              </tr>
+            ) : null}
           </tbody>
         </table>
       </section>
 
-      <div className="flex flex-wrap gap-3">
-        <Link href={href("/objectives?audience=planner")} className="et-btn-primary">
-          Objectives evidence →
-        </Link>
-        <Link href={href("/recommendations?audience=planner")} className="et-btn-ghost">
-          Actions
-        </Link>
-        <Link href={href("/map?audience=planner&preset=serve")} className="et-btn-ghost">
-          Map
-        </Link>
-        <Link href={href("/analytics?tab=spatial&audience=planner")} className="et-btn-ghost">
-          Ward memo / Reports
-        </Link>
-      </div>
+      {actions.length ? (
+        <section className="space-y-3">
+          <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--ink)]">
+            Priority actions
+          </h2>
+          <ul className="space-y-2">
+            {actions.map((a, i) => (
+              <li
+                key={i}
+                className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm"
+              >
+                <p className="font-semibold text-[var(--ink)]">{a.title}</p>
+                {a.detail ? (
+                  <p className="mt-1 text-[var(--ink-muted)]">{a.detail}</p>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {evidence.length ? (
+        <section className="space-y-3">
+          <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--ink)]">
+            Evidence snapshot
+          </h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {evidence.map((o) => (
+              <article
+                key={o.id}
+                className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4"
+              >
+                <div className="mb-2 flex items-center gap-2">
+                  <StatusBadge status={o.status} />
+                  <h3 className="text-sm font-semibold text-[var(--ink)]">{o.title}</h3>
+                </div>
+                <p className="text-sm text-[var(--ink-muted)]">
+                  {o.summary ?? o.reason ?? "Loaded from verified layers."}
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      <Link href={href("/map?audience=planner&preset=serve")} className="et-btn-primary inline-flex">
+        Open map for this slice →
+      </Link>
     </div>
   );
 }
@@ -523,10 +568,7 @@ function PressHub() {
           Equity map
         </Link>
         <Link href={href("/sources")} className="et-btn-ghost">
-          Sources & provenance
-        </Link>
-        <Link href={href("/objectives?audience=press")} className="et-btn-ghost">
-          Equal-access evidence
+          Sources
         </Link>
       </div>
     </div>

@@ -1,4 +1,4 @@
-/** Multi-audience hubs — primary entry points after Home. */
+/** Stakeholder hubs + the three app tools. */
 
 export type HubId = "citizen" | "planner" | "operator" | "press";
 
@@ -17,16 +17,14 @@ export interface HubDef {
   job: string;
   blurb: string;
   href: string;
-  /** Default map preset id */
   mapPreset: string;
   mapAudience: AudienceQuery;
 }
 
-/** Single global tool nav — same on every page (no per-hub tab clones). */
+/** Only three tools in the header — hubs live on Home /for/*. */
 export const GLOBAL_NAV: { href: string; label: string }[] = [
   { href: "/", label: "Home" },
   { href: "/map", label: "Map" },
-  { href: "/analytics", label: "Reports" },
   { href: "/sources", label: "Sources" },
 ];
 
@@ -36,7 +34,7 @@ export const HUBS: HubDef[] = [
     label: "Citizen",
     short: "Your area",
     job: "Is my neighbourhood poorly served?",
-    blurb: "Plain-language ward brief, walk distance, schools and health access.",
+    blurb: "Pick a ward, get a plain-language brief, open the map.",
     href: "/for/citizen",
     mapPreset: "destinations",
     mapAudience: "citizen",
@@ -46,7 +44,7 @@ export const HUBS: HubDef[] = [
     label: "Planner",
     short: "Intervene",
     job: "Where should we intervene?",
-    blurb: "Gap Index, objectives evidence, priority actions, ward memos.",
+    blurb: "Severe-gap wards, priority actions, then the map.",
     href: "/for/planner",
     mapPreset: "serve",
     mapAudience: "planner",
@@ -56,7 +54,7 @@ export const HUBS: HubDef[] = [
     label: "Operator",
     short: "Feeders",
     job: "Where do feeders fail at hubs?",
-    blurb: "Hub last-mile, shelter gaps, need lines — live feeds stay Not connected until plugged in.",
+    blurb: "Weak hubs, shelter gaps, need lines. Live feeds stay Not connected.",
     href: "/for/operator",
     mapPreset: "hubs",
     mapAudience: "hubs",
@@ -66,7 +64,7 @@ export const HUBS: HubDef[] = [
     label: "Press / NGO",
     short: "Cite",
     job: "What can I cite with provenance?",
-    blurb: "Slum vs non-slum facts, EC×PT tables, citation pack, Sources.",
+    blurb: "Slum vs non-slum facts, citation pack, Sources.",
     href: "/for/press",
     mapPreset: "slum",
     mapAudience: "equity",
@@ -88,19 +86,13 @@ export function hubFromAudience(audience: string | null | undefined): HubDef | n
 }
 
 export const AUDIENCE_MAP_NOTES: Record<string, string> = {
-  citizen:
-    "Citizen view — destinations and walk distance. Inventory only; not a trip planner.",
-  planner:
-    "Planner view — gap wards, need lines, and GIS-ready layers for intervention planning.",
-  traffic:
-    "Traffic / network view — hubs, corridors, and need lines for GIS export.",
-  operator:
-    "Operator view — hub last-mile and feeder gaps. Live positions stay Not connected.",
-  hubs: "Operator / hub view — rail–metro hubs and surrounding stop inventory.",
-  equity:
-    "Equity view — slum vs non-slum ward choropleth from OpenCity polygons (not income).",
-  press:
-    "Press view — equity choropleth with downloadable provenance on Sources.",
+  citizen: "Citizen map — destinations and walk distance.",
+  planner: "Planner map — gap wards and need lines.",
+  traffic: "Traffic map — hubs, corridors, need lines.",
+  operator: "Operator map — hubs and feeders.",
+  hubs: "Hub map — rail/metro hubs and stops.",
+  equity: "Equity map — slum vs non-slum wards (not income).",
+  press: "Press map — equity choropleth.",
 };
 
 export function audienceMapNote(audience: string | null | undefined): string | undefined {

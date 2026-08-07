@@ -28,8 +28,8 @@ export function HomeImpactPanel() {
             controls as Objectives and Reports.
           </p>
         </div>
-        <Link href="/objectives" className="text-sm font-semibold text-[var(--accent)]">
-          Continue to charts →
+        <Link href="/for/planner" className="text-sm font-semibold text-[var(--accent)]">
+          Open planner hub →
         </Link>
       </div>
       <DashboardFilterBar

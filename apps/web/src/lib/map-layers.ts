@@ -292,18 +292,17 @@ export const LAYER_PRESETS: Record<
   },
 };
 
-/** Audience-facing preset chips (subset + aliases). */
+/** Audience-facing map views — one row only. */
 export const AUDIENCE_PRESETS: {
   id: string;
   label: string;
   audience?: string;
   preset: string;
 }[] = [
-  { id: "citizen", label: "Citizen", audience: "citizen", preset: "destinations" },
-  { id: "traffic", label: "Traffic", audience: "traffic", preset: "traffic" },
-  { id: "equity", label: "Equity", audience: "equity", preset: "slum" },
+  { id: "citizen", label: "Walk / destinations", audience: "citizen", preset: "destinations" },
+  { id: "planner", label: "Gaps", audience: "planner", preset: "serve" },
   { id: "hubs", label: "Hubs", audience: "hubs", preset: "hubs" },
-  { id: "planner", label: "Planner", audience: "planner", preset: "serve" },
+  { id: "equity", label: "Slum", audience: "equity", preset: "slum" },
 ];
 
 /** Layers that must be loaded for a given visibility map. */

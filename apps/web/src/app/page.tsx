@@ -13,11 +13,10 @@ export default function HomePage() {
             OpenCity Transit Lab
           </p>
           <h1 className="et-fade-up et-fade-up-delay-1 mt-3 font-[family-name:var(--font-display)] text-4xl font-semibold tracking-tight text-[var(--yellow-bright)] sm:text-5xl lg:text-[3.4rem] lg:leading-[1.08]">
-            Chennai PT evidence for every stakeholder
+            Chennai PT evidence — pick your hub
           </h1>
           <p className="et-fade-up et-fade-up-delay-2 mt-4 text-lg text-[var(--ink-muted)]">
-            Choose how you work. Verified open layers only — no fabricated equity or
-            ridership scores.
+            One hub page answers your question. Map and Sources are the only other tools.
           </p>
         </div>
       </section>
@@ -40,17 +39,20 @@ export default function HomePage() {
               <p className="mt-1 text-sm font-medium text-[var(--ink)]">{hub.job}</p>
               <p className="mt-2 text-sm text-[var(--ink-muted)]">{hub.blurb}</p>
               <span className="mt-4 inline-block text-sm font-semibold text-[var(--accent)]">
-                Enter hub →
+                Open →
               </span>
             </Link>
           ))}
         </div>
       </section>
 
-      <p className="text-center text-xs text-[var(--ink-muted)]">
-        Integrity rule: Unavailable or Not connected when data is missing.{" "}
+      <p className="text-center text-sm text-[var(--ink-muted)]">
+        <Link href="/map" className="text-[var(--accent)] hover:underline">
+          Map
+        </Link>
+        {" · "}
         <Link href="/sources" className="text-[var(--accent)] hover:underline">
-          Data sources
+          Sources
         </Link>
       </p>
     </div>

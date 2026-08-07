@@ -61,16 +61,12 @@ export default async function SourcesPage() {
           aria-hidden
           className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(56,189,248,0.55),rgba(139,92,246,0.7),rgba(45,212,191,0.55),transparent)]"
         />
-        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--yellow)]">
-          Catalog
-        </p>
         <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)]">
           Data Sources
         </h1>
         <p className="max-w-3xl text-[var(--ink-muted)]">
-          First-class catalog of every dataset behind this platform. Status badges reflect
-          what the ETL actually loaded — not aspirational coverage. Real-time connectors
-          stay Not connected until an agency feed is plugged in.
+          What the ETL loaded — Loaded / Partial / Unavailable / Not connected. No aspirational
+          coverage.
         </p>
         {jamNote ? (
           <p className="max-w-3xl text-sm text-[var(--accent)]">

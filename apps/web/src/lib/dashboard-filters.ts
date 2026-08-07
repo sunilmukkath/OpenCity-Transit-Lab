@@ -75,6 +75,8 @@ export function applyUnitFilters(
   f: DashboardFilters
 ): EnrichedWard[] {
   const q = f.query.trim().toLowerCase();
+  const zoneMode = f.unit === "zone" || Boolean(f.zone);
+
   return units.filter((u) => {
     if (f.ward) {
       return u.unit_type === "ward" && u.label === f.ward;
@@ -91,6 +93,7 @@ export function applyUnitFilters(
       f.slum !== "all" || f.activity !== "all" || f.ptBand !== "all";
 
     if (u.unit_type === "ward") {
+      // Ward-only attributes — ignored in zone-only mode (wards already excluded)
       if (f.slum === "has_slum" && !u.has_slum) return false;
       if (f.slum === "no_slum" && u.has_slum) return false;
       if (f.slum === "high_slum" && (u.pct_slum_area ?? 0) < 10) return false;
@@ -99,7 +102,8 @@ export function applyUnitFilters(
 
       const ptB = ptBandOf(u.pt_index);
       if (f.ptBand !== "all" && ptB !== f.ptBand) return false;
-    } else if (socioActive) {
+    } else if (socioActive && !zoneMode) {
+      // In "wards + zones" with a ward socio filter, keep wards only
       return false;
     }
 
@@ -121,11 +125,18 @@ export function applyUnitFilters(
 
 export function summarizeFiltered(units: EnrichedWard[]) {
   const wards = units.filter((u) => u.unit_type === "ward");
+  const zones = units.filter((u) => u.unit_type === "zone");
   const n = wards.length;
+  const meanGapUnits = n > 0 ? wards : zones;
   const meanGap =
-    n > 0
+    meanGapUnits.length > 0
       ? Math.round(
-          (wards.reduce((s, w) => s + (w.gap_index ?? w.priority_score ?? 0), 0) / n) * 10
+          (meanGapUnits.reduce(
+            (s, w) => s + (w.gap_index ?? w.priority_score ?? 0),
+            0
+          ) /
+            meanGapUnits.length) *
+            10
         ) / 10
       : null;
   const meanPt =
@@ -138,7 +149,7 @@ export function summarizeFiltered(units: EnrichedWard[]) {
             10
         ) / 10
       : null;
-  const severe = wards.filter((w) => String(w.gap_band) === "severe").length;
+  const severe = meanGapUnits.filter((w) => String(w.gap_band) === "severe").length;
   const withSlum = wards.filter((w) => w.has_slum).length;
   const nonSlum = wards.filter((w) => !w.has_slum).length;
   const highSlum = wards.filter((w) => (w.pct_slum_area ?? 0) >= 10).length;
@@ -146,7 +157,7 @@ export function summarizeFiltered(units: EnrichedWard[]) {
   const estSum = wards.reduce((s, w) => s + (w.establishments ?? 0), 0);
   return {
     wards: n,
-    zones: units.filter((u) => u.unit_type === "zone").length,
+    zones: zones.length,
     meanGap,
     meanPt,
     severe,

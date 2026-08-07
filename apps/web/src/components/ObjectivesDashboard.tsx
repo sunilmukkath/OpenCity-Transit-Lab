@@ -317,11 +317,9 @@ export function ObjectivesDashboard() {
     cityMeanGap,
   } = useFilteredUniverse(filters);
 
-  const filteredWards = useMemo(
+  const filteredUnits = useMemo(
     () =>
-      [...filtered]
-        .filter((u) => u.unit_type === "ward")
-        .sort((a, b) => (b.gap_index ?? 0) - (a.gap_index ?? 0)),
+      [...filtered].sort((a, b) => (b.gap_index ?? 0) - (a.gap_index ?? 0)),
     [filtered]
   );
 
@@ -409,7 +407,7 @@ export function ObjectivesDashboard() {
         onChange={setFilters}
         wardOptions={wardOptions}
         zoneOptions={zoneOptions}
-        resultCount={filteredWards.length}
+        resultCount={filteredUnits.length}
       />
       {!loadingFilters ? (
         <FilterImpactStrip units={filtered} cityMeanGap={cityMeanGap} />
@@ -421,21 +419,22 @@ export function ObjectivesDashboard() {
         <div className="flex flex-wrap items-end justify-between gap-2 border-b border-[var(--border)] px-4 py-3">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--yellow)]">
-              Filtered ward table
+              Filtered table
             </p>
             <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--ink)]">
-              Slice by slum vs non-slum, activity, gap &amp; PT index
+              Wards and zones matching the current slice
             </h2>
           </div>
           <Link href="/analytics?tab=spatial" className="text-sm font-semibold text-[var(--accent)]">
-            Open full ward brief →
+            Open full ward / zone brief →
           </Link>
         </div>
         <div className="max-h-[420px] overflow-auto">
           <table className="w-full text-left text-sm">
             <thead className="sticky top-0 bg-[rgba(10,31,74,0.96)] text-[10px] uppercase tracking-wide text-[var(--ink-muted)]">
               <tr>
-                <th className="px-3 py-2">Ward</th>
+                <th className="px-3 py-2">Type</th>
+                <th className="px-3 py-2">Name</th>
                 <th className="px-3 py-2">Gap</th>
                 <th className="px-3 py-2">PT</th>
                 <th className="px-3 py-2">Slum</th>
@@ -444,26 +443,31 @@ export function ObjectivesDashboard() {
               </tr>
             </thead>
             <tbody>
-              {filteredWards.slice(0, 80).map((w) => (
-                <tr key={w.label} className="border-t border-[var(--border)]">
+              {filteredUnits.slice(0, 80).map((w) => (
+                <tr key={`${w.unit_type}:${w.label}`} className="border-t border-[var(--border)]">
+                  <td className="px-3 py-2 text-[var(--ink-muted)]">
+                    {w.unit_type === "zone" ? "Zone" : "Ward"}
+                  </td>
                   <td className="px-3 py-2 font-medium text-[var(--ink)]">{w.label}</td>
                   <td className="px-3 py-2 text-[var(--yellow)]">{w.gap_index ?? "—"}</td>
                   <td className="px-3 py-2">{w.pt_index ?? "—"}</td>
                   <td className="px-3 py-2 text-[var(--ink-muted)]">
-                    {w.has_slum
-                      ? w.pct_slum_area != null
-                        ? `Slum ${w.pct_slum_area.toFixed(1)}%`
-                        : "Slum"
-                      : "Non-slum"}
+                    {w.unit_type !== "ward"
+                      ? "—"
+                      : w.has_slum
+                        ? w.pct_slum_area != null
+                          ? `Slum ${w.pct_slum_area.toFixed(1)}%`
+                          : "Slum"
+                        : "Non-slum"}
                   </td>
                   <td className="px-3 py-2">{w.establishments?.toLocaleString() ?? "—"}</td>
                   <td className="px-3 py-2">{w.stop_count ?? "—"}</td>
                 </tr>
               ))}
-              {!filteredWards.length ? (
+              {!filteredUnits.length ? (
                 <tr>
-                  <td colSpan={6} className="px-3 py-6 text-center text-[var(--ink-muted)]">
-                    No wards match these filters.
+                  <td colSpan={7} className="px-3 py-6 text-center text-[var(--ink-muted)]">
+                    No areas match these filters.
                   </td>
                 </tr>
               ) : null}

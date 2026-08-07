@@ -126,6 +126,8 @@ export function DashboardFilterBar({
     onChange({ ...filters, [key]: value });
 
   const active = filtersActive(filters);
+  const zoneMode = filters.unit === "zone" || Boolean(filters.zone);
+  const wardOnlyDisabled = zoneMode;
 
   return (
     <div
@@ -178,7 +180,19 @@ export function DashboardFilterBar({
           <select
             className={`w-full ${selectCls}`}
             value={filters.unit}
-            onChange={(e) => set("unit", e.target.value as UnitKind)}
+            onChange={(e) => {
+              const unit = e.target.value as UnitKind;
+              onChange({
+                ...filters,
+                unit,
+                ward: unit === "zone" ? "" : filters.ward,
+                zone: unit === "ward" ? "" : filters.zone,
+                // Slum / EC / PT are ward attributes — clear when viewing zones
+                ...(unit === "zone"
+                  ? { slum: "all" as const, activity: "all" as const, ptBand: "all" as const }
+                  : {}),
+              });
+            }}
           >
             <option value="all">Wards + zones</option>
             <option value="ward">Wards only</option>
@@ -190,6 +204,7 @@ export function DashboardFilterBar({
           <select
             className={`w-full ${selectCls}`}
             value={filters.ward}
+            disabled={zoneMode}
             onChange={(e) =>
               onChange({
                 ...filters,
@@ -208,16 +223,20 @@ export function DashboardFilterBar({
           </select>
         </label>
         <label className="block text-xs">
-          <span className="mb-1 block text-[var(--ink-muted)]">Zone</span>
+          <span className="mb-1 block text-[var(--ink-muted)]">Zone / area</span>
           <select
             className={`w-full ${selectCls}`}
             value={filters.zone}
+            disabled={filters.unit === "ward" || Boolean(filters.ward)}
             onChange={(e) =>
               onChange({
                 ...filters,
                 zone: e.target.value,
-                unit: e.target.value ? "zone" : filters.unit,
+                unit: e.target.value ? "zone" : filters.unit === "ward" ? "all" : filters.unit,
                 ward: "",
+                ...(e.target.value
+                  ? { slum: "all" as const, activity: "all" as const, ptBand: "all" as const }
+                  : {}),
               })
             }
           >
@@ -244,10 +263,13 @@ export function DashboardFilterBar({
           </select>
         </label>
         <label className="block text-xs">
-          <span className="mb-1 block text-[var(--ink-muted)]">Slum vs non-slum</span>
+          <span className="mb-1 block text-[var(--ink-muted)]">
+            Slum vs non-slum{wardOnlyDisabled ? " (wards)" : ""}
+          </span>
           <select
             className={`w-full ${selectCls}`}
             value={filters.slum}
+            disabled={wardOnlyDisabled}
             onChange={(e) => set("slum", e.target.value as SlumFilter)}
           >
             <option value="all">Slum + non-slum</option>
@@ -257,10 +279,13 @@ export function DashboardFilterBar({
           </select>
         </label>
         <label className="block text-xs">
-          <span className="mb-1 block text-[var(--ink-muted)]">Economic activity (EC)</span>
+          <span className="mb-1 block text-[var(--ink-muted)]">
+            Economic activity (EC){wardOnlyDisabled ? " (wards)" : ""}
+          </span>
           <select
             className={`w-full ${selectCls}`}
             value={filters.activity}
+            disabled={wardOnlyDisabled}
             onChange={(e) => set("activity", e.target.value as ActivityFilter)}
           >
             <option value="all">All activity</option>
@@ -271,10 +296,13 @@ export function DashboardFilterBar({
           </select>
         </label>
         <label className="block text-xs">
-          <span className="mb-1 block text-[var(--ink-muted)]">PT index band</span>
+          <span className="mb-1 block text-[var(--ink-muted)]">
+            PT index band{wardOnlyDisabled ? " (wards)" : ""}
+          </span>
           <select
             className={`w-full ${selectCls}`}
             value={filters.ptBand}
+            disabled={wardOnlyDisabled}
             onChange={(e) => set("ptBand", e.target.value as PtBandFilter)}
           >
             <option value="all">All PT index</option>
@@ -297,23 +325,37 @@ export function FilterImpactStrip({
   cityMeanGap: number | null;
 }) {
   const s = summarizeFiltered(units);
-  const cards = [
-    { label: "Wards in view", value: String(s.wards) },
-    {
-      label: "Mean Gap Index",
-      value: s.meanGap != null ? String(s.meanGap) : null,
-      sub: cityMeanGap != null ? `City ${cityMeanGap}` : undefined,
-    },
-    { label: "Mean PT index", value: s.meanPt != null ? String(s.meanPt) : null },
-    { label: "Severe gap", value: String(s.severe) },
-    { label: "Slum wards", value: String(s.withSlum) },
-    { label: "Non-slum wards", value: String(s.nonSlum) },
-    { label: "PT index <40", value: String(s.lowPt) },
-    {
-      label: "EC establishments",
-      value: s.establishments ? s.establishments.toLocaleString() : null,
-    },
-  ].filter((c) => c.value != null);
+  const zoneOnly = s.zones > 0 && s.wards === 0;
+  const cards = (
+    zoneOnly
+      ? [
+          { label: "Zones in view", value: String(s.zones) },
+          {
+            label: "Mean Gap Index",
+            value: s.meanGap != null ? String(s.meanGap) : null,
+            sub: cityMeanGap != null ? `City ward mean ${cityMeanGap}` : undefined,
+          },
+          { label: "Severe gap", value: String(s.severe) },
+        ]
+      : [
+          { label: "Wards in view", value: String(s.wards) },
+          ...(s.zones > 0 ? [{ label: "Zones in view", value: String(s.zones) }] : []),
+          {
+            label: "Mean Gap Index",
+            value: s.meanGap != null ? String(s.meanGap) : null,
+            sub: cityMeanGap != null ? `City ${cityMeanGap}` : undefined,
+          },
+          { label: "Mean PT index", value: s.meanPt != null ? String(s.meanPt) : null },
+          { label: "Severe gap", value: String(s.severe) },
+          { label: "Slum wards", value: String(s.withSlum) },
+          { label: "Non-slum wards", value: String(s.nonSlum) },
+          { label: "PT index <40", value: String(s.lowPt) },
+          {
+            label: "EC establishments",
+            value: s.establishments ? s.establishments.toLocaleString() : null,
+          },
+        ]
+  ).filter((c) => c.value != null);
 
   if (!cards.length) return null;
 
@@ -330,7 +372,9 @@ export function FilterImpactStrip({
           <p className="mt-1 font-[family-name:var(--font-display)] text-xl font-semibold text-[var(--yellow)]">
             {c.value}
           </p>
-          {c.sub ? <p className="mt-0.5 text-[10px] text-[var(--ink-muted)]">{c.sub}</p> : null}
+          {"sub" in c && c.sub ? (
+            <p className="mt-0.5 text-[10px] text-[var(--ink-muted)]">{c.sub}</p>
+          ) : null}
         </div>
       ))}
     </div>

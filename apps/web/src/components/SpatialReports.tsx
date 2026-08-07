@@ -15,8 +15,8 @@ import {
   FilterImpactStrip,
   useFilteredUniverse,
 } from "@/components/DashboardFilterBar";
-import { DEFAULT_FILTERS, type DashboardFilters } from "@/lib/dashboard-filters";
 import type { EnrichedWard } from "@/lib/dashboard-filters";
+import { useDashboardFilters } from "@/hooks/useDashboardFilters";
 
 type SortKey = "gap" | "stops" | "density" | "name" | "pt" | "slum" | "activity";
 
@@ -423,7 +423,7 @@ function downloadReportsCsv(rows: SpatialUnitReport[], filename: string) {
 export function SpatialReports() {
   const [reports, setReports] = useState<SpatialReportsData | null>(null);
   const [loadingReports, setLoadingReports] = useState(true);
-  const [filters, setFilters] = useState<DashboardFilters>({ ...DEFAULT_FILTERS, unit: "ward" });
+  const [filters, setFilters] = useDashboardFilters({ unit: "ward" });
   const [sortKey, setSortKey] = useState<SortKey>("gap");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const {

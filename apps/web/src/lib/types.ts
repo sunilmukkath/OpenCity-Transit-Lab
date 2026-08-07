@@ -261,6 +261,11 @@ export interface AdvancedAnalyses {
     status: string;
     note?: string;
     method?: Record<string, string>;
+    study?: {
+      pct_within_100m?: number;
+      pct_over_1000m?: number;
+      study_area_km2?: number;
+    };
     counts?: {
       study_area_km2?: number;
       within_100m_km2?: number;
@@ -272,39 +277,25 @@ export interface AdvancedAnalyses {
       pct_over_1000m?: number;
     };
   };
+  pop_access?: {
+    status: string;
+    note?: string;
+    city?: {
+      population_joined?: number;
+      est_pop_within_400m?: number;
+      pct_pop_within_400m?: number;
+    };
+  };
   metro_extension?: {
     status: string;
     note?: string;
   };
 }
 
-export type AudienceId = "local" | "traffic" | "public";
+/** @deprecated Prefer HUBS from `@/lib/hubs` — kept for legacy links. */
+export type AudienceId = "local" | "traffic" | "public" | "citizen" | "planner" | "operator" | "press";
 
-export const AUDIENCES: {
-  id: AudienceId;
-  label: string;
-  blurb: string;
-  href: string;
-}[] = [
-  {
-    id: "local",
-    label: "Ward / zone reports",
-    blurb: "For GCC local bodies — Gap Index, inventory counts, and recommendations by ward or zone.",
-    href: "/analytics?tab=spatial",
-  },
-  {
-    id: "traffic",
-    label: "Network map",
-    blurb: "For traffic department — hubs, stops, catchments, GIS exports.",
-    href: "/map?audience=traffic",
-  },
-  {
-    id: "public",
-    label: "Insights & Gap Index",
-    blurb: "Hub last-mile, shelter mismatch, walk coverage, and city inventory.",
-    href: "/analytics?tab=insights",
-  },
-];
+export { HUBS as AUDIENCES } from "@/lib/hubs";
 
 export function statusLabel(status: LayerStatus | string): string {
   switch (status) {
@@ -322,5 +313,9 @@ export function statusLabel(status: LayerStatus | string): string {
 }
 
 export function layerIsReady(layer?: ManifestLayer): boolean {
-  return Boolean(layer && layer.status === "loaded" && (layer.feature_count ?? 0) > 0);
+  return Boolean(
+    layer &&
+      (layer.status === "loaded" || layer.status === "partial") &&
+      (layer.feature_count ?? 0) > 0
+  );
 }

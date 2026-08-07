@@ -792,6 +792,24 @@
       "notes": "Insights extracted from CMP PDF text (executive-summary window). Not a geocoded congestion hotspot inventory \u2014 corridor names are document mentions.",
       "status": "loaded",
       "fetched_at": "2026-08-06T16:56:16.032778+00:00"
+    },
+    "osm_nmt": {
+      "id": "osm_nmt",
+      "name": "OSM NMT network (footway/cycleway)",
+      "publisher": "OpenStreetMap contributors",
+      "url": "https://www.openstreetmap.org/copyright",
+      "kind": "overpass",
+      "status": "partial",
+      "notes": "OSM footway/cycleway/path/pedestrian ways in Greater Chennai bbox. Coverage is incomplete and unofficial. "
+    },
+    "cmp_corridors_geocoded": {
+      "id": "cmp_corridors_geocoded",
+      "name": "CMP corridors (geocoded)",
+      "publisher": "CMDA CMP text + OSM Nominatim",
+      "url": "https://data.opencity.in/",
+      "kind": "derived",
+      "status": "partial",
+      "notes": "CMP corridor names from PDF text extract, geocoded via Nominatim/OSM. Not official CMDA centerlines \u2014 approximate for map context only."
     }
   },
   "layers": {
@@ -1060,6 +1078,20 @@
       "status": "loaded",
       "file": "cmp_mobility_insights.json",
       "notes": "Insights extracted from CMP PDF text (executive-summary window). Not a geocoded congestion hotspot inventory \u2014 corridor names are document mentions."
+    },
+    "nmt_network": {
+      "status": "partial",
+      "feature_count": 2570,
+      "file": "nmt_network.geojson",
+      "derived_from": "osm_overpass",
+      "notes": "OSM footway/cycleway/path/pedestrian ways in Greater Chennai bbox. Coverage is incomplete and unofficial. "
+    },
+    "cmp_corridors": {
+      "status": "partial",
+      "feature_count": 9,
+      "file": "cmp_corridors.geojson",
+      "derived_from": "cmp_mobility_insights+nominatim",
+      "notes": "CMP corridor names from PDF text extract, geocoded via Nominatim/OSM. Not official CMDA centerlines \u2014 approximate for map context only."
     }
   },
   "realtime": [
@@ -1096,9 +1128,9 @@
     {
       "id": "pop_weighted_access",
       "name": "Population-weighted % within 400m of transit",
-      "status": "unavailable",
-      "reason": "Requires a validated population surface joined to wards. Geometry catchments are available without population weights.",
-      "needed": "Ward-level population table with acceptable join rate to GCC 2022 wards."
+      "status": "partial",
+      "reason": "Population from Census 2011 ward tables (historic 155-ward scheme) joined to GCC 2022 wards by ward number where labels match. People within 400m estimated as population \u00d7 geometry catchment share \u2014 not a dasymetric surface. Joined 155 of 200 wards.",
+      "needed": "Validated population surface for all 200 GCC 2022 wards (current join uses Census 2011 ward numbers)."
     },
     {
       "id": "proposed_metro_stations",

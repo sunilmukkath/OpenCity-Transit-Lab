@@ -1,6 +1,6 @@
 {
   "generated_at": "2026-08-05T08:32:25.576978+00:00",
-  "note": "Only counts derived from successfully loaded geometries. No equity or population-weighted access scores.",
+  "note": "Only counts derived from successfully loaded geometries. No equity or population-weighted access scores. pop_weighted_access is Partial (Census 2011 join).",
   "counts": {
     "transit_stops": 5580,
     "bus_shelters": 983,
@@ -25,10 +25,10 @@
     "schools": 2227,
     "healthcare": 140,
     "parks": 544,
-    "anganwadis": 1806
+    "anganwadis": 1806,
+    "pct_pop_within_400m_partial": 83.91
   },
   "unavailable": [
-    "equity_sec",
-    "pop_weighted_access"
+    "equity_sec"
   ]
 }

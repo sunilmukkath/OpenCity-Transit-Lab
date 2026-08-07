@@ -1,20 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { Suspense, useMemo } from "react";
 import { SpectrumRule } from "@/components/BrandMotif";
+import { HUBS, hubFromAudience, hubById } from "@/lib/hubs";
+import { hrefWithFilters } from "@/lib/filter-url";
 
-const LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/objectives", label: "Objectives" },
-  { href: "/map", label: "Map" },
-  { href: "/recommendations", label: "Actions" },
-  { href: "/analytics", label: "Reports" },
-  { href: "/sources", label: "Sources" },
-];
-
-export function SiteHeader() {
+function SiteHeaderInner() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const activeHub = useMemo(() => {
+    const fromPath = pathname.match(/^\/for\/([^/]+)/)?.[1];
+    if (fromPath) return hubById(fromPath);
+    return hubFromAudience(searchParams.get("audience"));
+  }, [pathname, searchParams]);
+
+  const navLinks = activeHub
+    ? [{ href: "/", label: "Home" }, ...activeHub.nav]
+    : [
+        { href: "/", label: "Home" },
+        ...HUBS.map((h) => ({ href: h.href, label: h.short })),
+        { href: "/map", label: "Map" },
+        { href: "/sources", label: "Sources" },
+      ];
+
+  const withQ = (href: string) => hrefWithFilters(href, searchParams);
 
   return (
     <header className="site-header no-print sticky top-0 z-50 border-b border-[var(--border)] bg-[rgba(8,13,26,0.78)] backdrop-blur-xl">
@@ -27,15 +39,27 @@ export function SiteHeader() {
           >
             OpenCity Transit Lab
           </Link>
+          {activeHub ? (
+            <p className="mt-0.5 text-xs text-[var(--ink-muted)]">
+              Viewing as <span className="text-[var(--accent)]">{activeHub.label}</span>
+              {" · "}
+              <Link href="/" className="underline-offset-2 hover:underline">
+                Switch hub
+              </Link>
+            </p>
+          ) : null}
         </div>
         <nav className="flex flex-wrap gap-1" aria-label="Primary">
-          {LINKS.map((link) => {
+          {navLinks.map((link) => {
+            const pathOnly = link.href.split("?")[0];
             const active =
-              link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+              pathOnly === "/"
+                ? pathname === "/"
+                : pathname === pathOnly || pathname.startsWith(`${pathOnly}/`);
             return (
               <Link
-                key={link.href}
-                href={link.href}
+                key={`${link.label}:${link.href}`}
+                href={withQ(link.href)}
                 className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition ${
                   active
                     ? "bg-[linear-gradient(135deg,#38bdf8,#5eead4)] text-[var(--void)] shadow-[0_8px_22px_rgba(56,189,248,0.28)]"
@@ -49,5 +73,24 @@ export function SiteHeader() {
         </nav>
       </div>
     </header>
+  );
+}
+
+export function SiteHeader() {
+  return (
+    <Suspense
+      fallback={
+        <header className="site-header no-print sticky top-0 z-50 border-b border-[var(--border)] bg-[rgba(8,13,26,0.78)] backdrop-blur-xl">
+          <SpectrumRule />
+          <div className="mx-auto px-4 py-3.5">
+            <span className="font-[family-name:var(--font-display)] text-xl font-semibold text-[var(--yellow)]">
+              OpenCity Transit Lab
+            </span>
+          </div>
+        </header>
+      }
+    >
+      <SiteHeaderInner />
+    </Suspense>
   );
 }

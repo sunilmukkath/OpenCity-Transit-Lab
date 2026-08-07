@@ -32,6 +32,9 @@ from build_walk_distance_bands import build_walk_distance_bands  # noqa: E402
 from ingest_jam_catalog import ingest_jam_catalog  # noqa: E402
 from build_objectives_analysis import build_objectives_analysis  # noqa: E402
 from ingest_downloads import main as ingest_downloads_main  # noqa: E402
+from build_pop_access import main as build_pop_access_main  # noqa: E402
+from build_nmt_network import main as build_nmt_network_main  # noqa: E402
+from build_cmp_corridors import main as build_cmp_corridors_main  # noqa: E402
 
 RAW = ROOT / "data" / "raw"
 PROCESSED = ROOT / "data" / "processed"
@@ -137,9 +140,12 @@ UNAVAILABLE_ANALYTICS = [
     {
         "id": "pop_weighted_access",
         "name": "Population-weighted % within 400m of transit",
-        "status": "unavailable",
-        "reason": "Requires a validated population surface joined to wards. Geometry catchments are available without population weights.",
-        "needed": "Ward-level population table with acceptable join rate to GCC 2022 wards.",
+        "status": "partial",
+        "reason": (
+            "Census 2011 ward population joined to GCC 2022 wards by number (155/200). "
+            "People within 400m estimated as population × geometry catchment share — not dasymetric."
+        ),
+        "needed": "Validated population surface for all 200 GCC 2022 wards.",
     },
 ]
 
@@ -1731,6 +1737,18 @@ def main() -> int:
         print(f"[ok] objectives_analysis ({', '.join(statuses)})")
     except Exception as exc:  # noqa: BLE001
         print(f"[fail] objectives analysis: {exc}", file=sys.stderr)
+
+    # Hub rebuild enrichments (pop access / NMT / CMP corridors)
+    for label, fn in (
+        ("pop_access", build_pop_access_main),
+        ("nmt_network", build_nmt_network_main),
+        ("cmp_corridors", build_cmp_corridors_main),
+    ):
+        try:
+            fn()
+            print(f"[ok] {label}")
+        except Exception as exc:  # noqa: BLE001
+            print(f"[fail] {label}: {exc}", file=sys.stderr)
 
     copy_to_web(PROCESSED, WEB_PUBLIC)
     print(f"[ok] copied processed data → {WEB_PUBLIC}")

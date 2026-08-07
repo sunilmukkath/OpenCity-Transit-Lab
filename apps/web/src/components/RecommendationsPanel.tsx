@@ -9,8 +9,7 @@ import {
   FilterImpactStrip,
   useFilteredUniverse,
 } from "@/components/DashboardFilterBar";
-import { NextFlowLink } from "@/components/LabFlow";
-import { DEFAULT_FILTERS, type DashboardFilters } from "@/lib/dashboard-filters";
+import { useDashboardFilters } from "@/hooks/useDashboardFilters";
 import type { ObjectivesAnalysis } from "@/lib/objectives-types";
 import { fetchJson } from "@/lib/data-client";
 
@@ -24,8 +23,7 @@ const PRIORITY_TONE: Record<string, string> = {
 export function RecommendationsPanel() {
   const [data, setData] = useState<ObjectivesAnalysis | null>(null);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<DashboardFilters>({
-    ...DEFAULT_FILTERS,
+  const [filters, setFilters] = useDashboardFilters({
     unit: "ward",
     gapBand: "severe",
   });
@@ -77,33 +75,30 @@ export function RecommendationsPanel() {
   return (
     <div className="space-y-6">
       <header className="rounded-2xl border border-[var(--border)] bg-[linear-gradient(145deg,rgba(16,52,102,0.9),rgba(10,31,74,0.96))] px-6 py-7">
-        <SectionEyebrow>Step 4 · Actions</SectionEyebrow>
+        <SectionEyebrow>Actions</SectionEyebrow>
         <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)]">
-          Final actions &amp; insights
+          Priority actions &amp; insights
         </h1>
         <p className="mt-2 max-w-3xl text-sm text-[var(--ink-muted)]">
-          Prioritised moves from Objectives evidence. Filter the slice, then continue to Reports
-          for ward briefs — or go back to the Map to verify.
+          Prioritised moves from Objectives evidence. Filter the slice, then open Reports for
+          ward briefs — or the Map to verify spatially.
         </p>
         <div className="mt-4 flex flex-wrap gap-2 text-xs">
           <span className="rounded-full border border-[var(--border)] px-3 py-1 text-[var(--ink-muted)]">
             {loaded.length} objectives with evidence
           </span>
           <Link
-            href="/objectives"
+            href="/for/planner"
             className="rounded-full border border-[var(--accent)] px-3 py-1 font-semibold text-[var(--accent)]"
           >
-            ← Objectives
+            ← Planner hub
           </Link>
           <Link
-            href="/map"
+            href="/map?audience=planner"
             className="rounded-full border border-[var(--border)] px-3 py-1 font-semibold text-[var(--ink-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
           >
-            ← Map
+            Map
           </Link>
-        </div>
-        <div className="mt-5">
-          <NextFlowLink />
         </div>
       </header>
 
@@ -241,12 +236,14 @@ export function RecommendationsPanel() {
       ) : null}
 
       <div className="flex flex-wrap gap-3">
-        <NextFlowLink />
-        <Link href="/map" className="et-btn-ghost">
-          ← Map
+        <Link href="/analytics?tab=spatial&audience=planner" className="et-btn-primary">
+          Ward reports →
         </Link>
-        <Link href="/objectives" className="et-btn-ghost">
-          ← Objectives
+        <Link href="/map?audience=planner" className="et-btn-ghost">
+          Map
+        </Link>
+        <Link href="/objectives?audience=planner" className="et-btn-ghost">
+          Objectives
         </Link>
         <Link href="/sources" className="et-btn-ghost">
           Sources

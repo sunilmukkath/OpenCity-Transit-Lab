@@ -1,0 +1,22 @@
+{
+  "status": "partial",
+  "generated_at": "2026-08-07T04:46:55.853572+00:00",
+  "note": "OSM footway/cycleway/path/pedestrian ways in Greater Chennai bbox. Coverage is incomplete and unofficial. ",
+  "counts": {
+    "features": 2570,
+    "truncated": false,
+    "by_highway": {
+      "footway": 1418,
+      "pedestrian": 122,
+      "path": 1015,
+      "cycleway": 15
+    }
+  },
+  "bbox": [
+    12.75,
+    79.95,
+    13.25,
+    80.35
+  ],
+  "source": "https://www.openstreetmap.org/copyright"
+}

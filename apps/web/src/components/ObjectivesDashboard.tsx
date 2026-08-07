@@ -11,9 +11,7 @@ import {
   FilterImpactStrip,
   useFilteredUniverse,
 } from "@/components/DashboardFilterBar";
-import { NextFlowLink } from "@/components/LabFlow";
-import { DEFAULT_FILTERS, type DashboardFilters } from "@/lib/dashboard-filters";
-import { LAB_FLOW } from "@/lib/lab-flow";
+import { useDashboardFilters } from "@/hooks/useDashboardFilters";
 import type { ObjectiveBlock, ObjectivesAnalysis } from "@/lib/objectives-types";
 import { fetchJson } from "@/lib/data-client";
 
@@ -305,10 +303,7 @@ function ObjectiveCard({ obj }: { obj: ObjectiveBlock }) {
 export function ObjectivesDashboard() {
   const [data, setData] = useState<ObjectivesAnalysis | null>(null);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<DashboardFilters>({
-    ...DEFAULT_FILTERS,
-    unit: "ward",
-  });
+  const [filters, setFilters] = useDashboardFilters({ unit: "ward" });
   const {
     loading: loadingFilters,
     filtered,
@@ -352,38 +347,14 @@ export function ObjectivesDashboard() {
   return (
     <div className="space-y-6">
       <header className="rounded-2xl border border-[var(--border)] bg-[linear-gradient(145deg,rgba(16,52,102,0.9),rgba(10,31,74,0.96))] px-6 py-7">
-        <SectionEyebrow>Step 2 · Objectives</SectionEyebrow>
+        <SectionEyebrow>Objectives</SectionEyebrow>
         <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)] sm:text-4xl">
           Problem statements — analysis &amp; charts
         </h1>
         <p className="mt-2 max-w-3xl text-sm text-[var(--ink-muted)]">{data.note}</p>
-        <p className="mt-3 text-xs text-[var(--yellow)]">
-          Filter the city here, read the charts, then continue to the Map.
-        </p>
         <p className="mt-3 text-xs text-[var(--ink-muted)]">
           Generated {new Date(data.generated_at).toLocaleString()}
         </p>
-        <nav
-          aria-label="Objective flow"
-          className="mt-4 flex flex-wrap items-center gap-2 text-xs text-[var(--ink-muted)]"
-        >
-          <span className="font-semibold text-[var(--yellow)]">Path:</span>
-          {LAB_FLOW.map((f, i) => (
-            <span key={f.href} className="flex items-center gap-2">
-              {i > 0 ? <span aria-hidden>→</span> : null}
-              <Link
-                href={f.href}
-                className={
-                  f.step === 2
-                    ? "rounded-full border border-[var(--yellow)] bg-[rgba(255,229,102,0.12)] px-2.5 py-1 text-[var(--yellow)]"
-                    : "rounded-full border border-[var(--border)] px-2.5 py-1 hover:border-[var(--accent)] hover:text-[var(--accent)]"
-                }
-              >
-                {f.step} · {f.label}
-              </Link>
-            </span>
-          ))}
-        </nav>
         <div className="mt-4 flex flex-wrap gap-2">
           {data.objectives
             .filter((o) => o.status === "loaded" || o.status === "partial")
@@ -397,8 +368,13 @@ export function ObjectivesDashboard() {
             </a>
           ))}
         </div>
-        <div className="mt-5">
-          <NextFlowLink />
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Link href="/for/planner" className="et-btn-ghost">
+            ← Planner hub
+          </Link>
+          <Link href="/map?audience=planner&preset=serve" className="et-btn-primary">
+            Open map →
+          </Link>
         </div>
       </header>
 
@@ -481,13 +457,6 @@ export function ObjectivesDashboard() {
         .map((obj) => (
           <ObjectiveCard key={obj.id} obj={obj} />
         ))}
-
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-5 py-4">
-        <p className="text-sm text-[var(--ink-muted)]">
-          Charts done? Continue the path — Map next, then Actions.
-        </p>
-        <NextFlowLink />
-      </div>
     </div>
   );
 }

@@ -17,7 +17,9 @@ export type MapLayerKey =
   | "parks"
   | "public_toilets"
   | "anganwadis"
-  | "bus_stop_audit";
+  | "bus_stop_audit"
+  | "nmt_network"
+  | "cmp_corridors";
 
 export const MAP_LAYER_META: {
   key: MapLayerKey;
@@ -104,6 +106,21 @@ export const MAP_LAYER_META: {
     defaultOn: false,
     group: "amenities",
   },
+  {
+    key: "nmt_network",
+    label: "NMT footways / cycleways (OSM, partial)",
+    short: "NMT",
+    defaultOn: false,
+    heavy: true,
+    group: "core",
+  },
+  {
+    key: "cmp_corridors",
+    label: "CMP named corridors (geocoded)",
+    short: "CMP",
+    defaultOn: false,
+    group: "core",
+  },
 ];
 
 export const CHENNAI_VIEW = {
@@ -130,6 +147,8 @@ const CORE_OFF_AMENITIES: Partial<Record<MapLayerKey, boolean>> = {
   anganwadis: false,
   bus_stop_audit: false,
   railway_stations: false,
+  nmt_network: false,
+  cmp_corridors: false,
 };
 
 export const LAYER_PRESETS: Record<
@@ -179,6 +198,8 @@ export const LAYER_PRESETS: Record<
       public_toilets: false,
       anganwadis: false,
       bus_stop_audit: false,
+      nmt_network: true,
+      cmp_corridors: false,
     },
   },
   serve: {
@@ -196,6 +217,7 @@ export const LAYER_PRESETS: Record<
       walk_distance_bands: true,
       omr_corridor: true,
       metro_area_boundaries: true,
+      cmp_corridors: true,
     },
   },
   south: {
@@ -230,6 +252,7 @@ export const LAYER_PRESETS: Record<
       walk_distance_bands: false,
       omr_corridor: false,
       metro_area_boundaries: false,
+      nmt_network: true,
     },
   },
   slum: {
@@ -249,4 +272,55 @@ export const LAYER_PRESETS: Record<
       metro_area_boundaries: false,
     },
   },
+  traffic: {
+    label: "Traffic",
+    blurb: "CMP corridors + need lines + hubs for network staff",
+    choropleth: "gap",
+    layers: {
+      ...CORE_OFF_AMENITIES,
+      wards: true,
+      stops: true,
+      hubs: true,
+      mrts_lines: true,
+      mrts_stations: true,
+      connectivity_need: true,
+      cmp_corridors: true,
+      walk_distance_bands: false,
+      omr_corridor: true,
+      metro_area_boundaries: false,
+    },
+  },
 };
+
+/** Audience-facing preset chips (subset + aliases). */
+export const AUDIENCE_PRESETS: {
+  id: string;
+  label: string;
+  audience?: string;
+  preset: string;
+}[] = [
+  { id: "citizen", label: "Citizen", audience: "citizen", preset: "destinations" },
+  { id: "traffic", label: "Traffic", audience: "traffic", preset: "traffic" },
+  { id: "equity", label: "Equity", audience: "equity", preset: "slum" },
+  { id: "hubs", label: "Hubs", audience: "hubs", preset: "hubs" },
+  { id: "planner", label: "Planner", audience: "planner", preset: "serve" },
+];
+
+/** Layers that must be loaded for a given visibility map. */
+export function layersForPreset(
+  visibility: Partial<Record<MapLayerKey, boolean>>
+): MapLayerKey[] {
+  return (Object.keys(visibility) as MapLayerKey[]).filter((k) => visibility[k]);
+}
+
+/** Lightweight first paint — wards + walks + stops + hubs. */
+export const BOOTSTRAP_LAYERS: MapLayerKey[] = [
+  "walk_distance_bands",
+  "stops",
+  "hubs",
+  "mrts_stations",
+  "mrts_lines",
+  "wards",
+  "omr_corridor",
+  "metro_area_boundaries",
+];

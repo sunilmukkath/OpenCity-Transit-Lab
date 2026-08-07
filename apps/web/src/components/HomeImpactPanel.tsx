@@ -1,19 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import {
   DashboardFilterBar,
   FilterImpactStrip,
   useFilteredUniverse,
 } from "@/components/DashboardFilterBar";
-import { DEFAULT_FILTERS, type DashboardFilters } from "@/lib/dashboard-filters";
+import { useDashboardFilters } from "@/hooks/useDashboardFilters";
 
 export function HomeImpactPanel() {
-  const [filters, setFilters] = useState<DashboardFilters>({
-    ...DEFAULT_FILTERS,
-    unit: "ward",
-  });
+  const [filters, setFilters] = useDashboardFilters({ unit: "ward" });
   const { loading, filtered, wardOptions, zoneOptions, cityMeanGap } =
     useFilteredUniverse(filters);
 

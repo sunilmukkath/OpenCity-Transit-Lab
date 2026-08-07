@@ -12319,5 +12319,1499 @@
     "feature_count": 120,
     "file": "pincodes_chennai.geojson",
     "note": "India pin-code KMZ clipped to Chennai 600xxx / CMA bbox."
+  },
+  "pop_access": {
+    "status": "partial",
+    "generated_at": "2026-08-07T04:46:38.092216+00:00",
+    "note": "Population from Census 2011 ward tables (historic 155-ward scheme) joined to GCC 2022 wards by ward number where labels match. People within 400m estimated as population \u00d7 geometry catchment share \u2014 not a dasymetric surface. Joined 155 of 200 wards.",
+    "method": {
+      "population_source": "data/raw/census_sec/census_ward_2011.csv",
+      "opencity_dataset": "https://data.opencity.in/dataset/chennai-census-2011-data",
+      "catchment": "pct_area_within_400m from Euclidean dissolved buffers",
+      "formula": "est_pop_within_400m = population_2011 * pct_area_within_400m / 100",
+      "join_rate": 0.775,
+      "wards_joined": 155,
+      "wards_total": 200,
+      "census_wards_in_table": 155
+    },
+    "city": {
+      "population_joined": 4621135,
+      "est_pop_within_400m": 3877465,
+      "pct_pop_within_400m": 83.91
+    },
+    "wards": [
+      {
+        "label": "181",
+        "population_2011": null,
+        "pct_area_within_400m": 58.6,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "183",
+        "population_2011": null,
+        "pct_area_within_400m": 43.2,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "191",
+        "population_2011": null,
+        "pct_area_within_400m": 17.7,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "158",
+        "population_2011": null,
+        "pct_area_within_400m": 40.3,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "192",
+        "population_2011": null,
+        "pct_area_within_400m": 50.1,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "22",
+        "population_2011": 26177,
+        "pct_area_within_400m": 51.4,
+        "est_pop_within_400m": 13455,
+        "join_status": "joined"
+      },
+      {
+        "label": "144",
+        "population_2011": 21231,
+        "pct_area_within_400m": 90.9,
+        "est_pop_within_400m": 19299,
+        "join_status": "joined"
+      },
+      {
+        "label": "149",
+        "population_2011": 32138,
+        "pct_area_within_400m": 81.2,
+        "est_pop_within_400m": 26096,
+        "join_status": "joined"
+      },
+      {
+        "label": "154",
+        "population_2011": 53855,
+        "pct_area_within_400m": 90.9,
+        "est_pop_within_400m": 48954,
+        "join_status": "joined"
+      },
+      {
+        "label": "112",
+        "population_2011": 14912,
+        "pct_area_within_400m": 62.5,
+        "est_pop_within_400m": 9320,
+        "join_status": "joined"
+      },
+      {
+        "label": "12",
+        "population_2011": 16254,
+        "pct_area_within_400m": 97.6,
+        "est_pop_within_400m": 15864,
+        "join_status": "joined"
+      },
+      {
+        "label": "143",
+        "population_2011": 20124,
+        "pct_area_within_400m": 61.3,
+        "est_pop_within_400m": 12336,
+        "join_status": "joined"
+      },
+      {
+        "label": "159",
+        "population_2011": null,
+        "pct_area_within_400m": 15.1,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "164",
+        "population_2011": null,
+        "pct_area_within_400m": 98.9,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "166",
+        "population_2011": null,
+        "pct_area_within_400m": 52.6,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "184",
+        "population_2011": null,
+        "pct_area_within_400m": 10.2,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "31",
+        "population_2011": 32152,
+        "pct_area_within_400m": 59.1,
+        "est_pop_within_400m": 19002,
+        "join_status": "joined"
+      },
+      {
+        "label": "160",
+        "population_2011": null,
+        "pct_area_within_400m": 95.1,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "162",
+        "population_2011": null,
+        "pct_area_within_400m": 93.4,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "107",
+        "population_2011": 22902,
+        "pct_area_within_400m": 87.2,
+        "est_pop_within_400m": 19971,
+        "join_status": "joined"
+      },
+      {
+        "label": "146",
+        "population_2011": 17539,
+        "pct_area_within_400m": 98.1,
+        "est_pop_within_400m": 17206,
+        "join_status": "joined"
+      },
+      {
+        "label": "148",
+        "population_2011": 17914,
+        "pct_area_within_400m": 95.4,
+        "est_pop_within_400m": 17090,
+        "join_status": "joined"
+      },
+      {
+        "label": "187",
+        "population_2011": null,
+        "pct_area_within_400m": 80.5,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "33",
+        "population_2011": 41617,
+        "pct_area_within_400m": 100.0,
+        "est_pop_within_400m": 41617,
+        "join_status": "joined"
+      },
+      {
+        "label": "156",
+        "population_2011": null,
+        "pct_area_within_400m": 55.5,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "193",
+        "population_2011": null,
+        "pct_area_within_400m": 64.1,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "13",
+        "population_2011": 21829,
+        "pct_area_within_400m": 43.3,
+        "est_pop_within_400m": 9452,
+        "join_status": "joined"
+      },
+      {
+        "label": "17",
+        "population_2011": 24670,
+        "pct_area_within_400m": 42.2,
+        "est_pop_within_400m": 10411,
+        "join_status": "joined"
+      },
+      {
+        "label": "18",
+        "population_2011": 16424,
+        "pct_area_within_400m": 51.3,
+        "est_pop_within_400m": 8426,
+        "join_status": "joined"
+      },
+      {
+        "label": "199",
+        "population_2011": null,
+        "pct_area_within_400m": 35.7,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "44",
+        "population_2011": 14291,
+        "pct_area_within_400m": 92.6,
+        "est_pop_within_400m": 13233,
+        "join_status": "joined"
+      },
+      {
+        "label": "51",
+        "population_2011": 46250,
+        "pct_area_within_400m": 89.7,
+        "est_pop_within_400m": 41486,
+        "join_status": "joined"
+      },
+      {
+        "label": "6",
+        "population_2011": 19523,
+        "pct_area_within_400m": 54.3,
+        "est_pop_within_400m": 10601,
+        "join_status": "joined"
+      },
+      {
+        "label": "80",
+        "population_2011": 20318,
+        "pct_area_within_400m": 77.1,
+        "est_pop_within_400m": 15665,
+        "join_status": "joined"
+      },
+      {
+        "label": "98",
+        "population_2011": 17466,
+        "pct_area_within_400m": 69.1,
+        "est_pop_within_400m": 12069,
+        "join_status": "joined"
+      },
+      {
+        "label": "152",
+        "population_2011": 25707,
+        "pct_area_within_400m": 84.9,
+        "est_pop_within_400m": 21825,
+        "join_status": "joined"
+      },
+      {
+        "label": "64",
+        "population_2011": 72144,
+        "pct_area_within_400m": 84.3,
+        "est_pop_within_400m": 60817,
+        "join_status": "joined"
+      },
+      {
+        "label": "74",
+        "population_2011": 56960,
+        "pct_area_within_400m": 88.9,
+        "est_pop_within_400m": 50637,
+        "join_status": "joined"
+      },
+      {
+        "label": "106",
+        "population_2011": 20023,
+        "pct_area_within_400m": 64.4,
+        "est_pop_within_400m": 12895,
+        "join_status": "joined"
+      },
+      {
+        "label": "109",
+        "population_2011": 18546,
+        "pct_area_within_400m": 36.2,
+        "est_pop_within_400m": 6714,
+        "join_status": "joined"
+      },
+      {
+        "label": "120",
+        "population_2011": 28874,
+        "pct_area_within_400m": 99.4,
+        "est_pop_within_400m": 28701,
+        "join_status": "joined"
+      },
+      {
+        "label": "131",
+        "population_2011": 58468,
+        "pct_area_within_400m": 99.5,
+        "est_pop_within_400m": 58176,
+        "join_status": "joined"
+      },
+      {
+        "label": "19",
+        "population_2011": 15457,
+        "pct_area_within_400m": 62.5,
+        "est_pop_within_400m": 9661,
+        "join_status": "joined"
+      },
+      {
+        "label": "48",
+        "population_2011": 18269,
+        "pct_area_within_400m": 99.8,
+        "est_pop_within_400m": 18232,
+        "join_status": "joined"
+      },
+      {
+        "label": "29",
+        "population_2011": 19415,
+        "pct_area_within_400m": 50.2,
+        "est_pop_within_400m": 9746,
+        "join_status": "joined"
+      },
+      {
+        "label": "89",
+        "population_2011": 16014,
+        "pct_area_within_400m": 86.1,
+        "est_pop_within_400m": 13788,
+        "join_status": "joined"
+      },
+      {
+        "label": "54",
+        "population_2011": 39058,
+        "pct_area_within_400m": 79.5,
+        "est_pop_within_400m": 31051,
+        "join_status": "joined"
+      },
+      {
+        "label": "9",
+        "population_2011": 20306,
+        "pct_area_within_400m": 83.5,
+        "est_pop_within_400m": 16956,
+        "join_status": "joined"
+      },
+      {
+        "label": "50",
+        "population_2011": 51527,
+        "pct_area_within_400m": 47.6,
+        "est_pop_within_400m": 24527,
+        "join_status": "joined"
+      },
+      {
+        "label": "94",
+        "population_2011": 22407,
+        "pct_area_within_400m": 64.4,
+        "est_pop_within_400m": 14430,
+        "join_status": "joined"
+      },
+      {
+        "label": "101",
+        "population_2011": 12703,
+        "pct_area_within_400m": 98.5,
+        "est_pop_within_400m": 12512,
+        "join_status": "joined"
+      },
+      {
+        "label": "117",
+        "population_2011": 36192,
+        "pct_area_within_400m": 100.0,
+        "est_pop_within_400m": 36192,
+        "join_status": "joined"
+      },
+      {
+        "label": "145",
+        "population_2011": 24508,
+        "pct_area_within_400m": 76.0,
+        "est_pop_within_400m": 18626,
+        "join_status": "joined"
+      },
+      {
+        "label": "147",
+        "population_2011": 17881,
+        "pct_area_within_400m": 82.4,
+        "est_pop_within_400m": 14734,
+        "join_status": "joined"
+      },
+      {
+        "label": "155",
+        "population_2011": 75748,
+        "pct_area_within_400m": 81.3,
+        "est_pop_within_400m": 61583,
+        "join_status": "joined"
+      },
+      {
+        "label": "157",
+        "population_2011": null,
+        "pct_area_within_400m": 55.3,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "172",
+        "population_2011": null,
+        "pct_area_within_400m": 51.7,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "137",
+        "population_2011": 22019,
+        "pct_area_within_400m": 97.2,
+        "est_pop_within_400m": 21402,
+        "join_status": "joined"
+      },
+      {
+        "label": "138",
+        "population_2011": 37720,
+        "pct_area_within_400m": 98.8,
+        "est_pop_within_400m": 37267,
+        "join_status": "joined"
+      },
+      {
+        "label": "57",
+        "population_2011": 21805,
+        "pct_area_within_400m": 81.4,
+        "est_pop_within_400m": 17749,
+        "join_status": "joined"
+      },
+      {
+        "label": "72",
+        "population_2011": 32446,
+        "pct_area_within_400m": 91.4,
+        "est_pop_within_400m": 29656,
+        "join_status": "joined"
+      },
+      {
+        "label": "93",
+        "population_2011": 17368,
+        "pct_area_within_400m": 93.3,
+        "est_pop_within_400m": 16204,
+        "join_status": "joined"
+      },
+      {
+        "label": "10",
+        "population_2011": 44747,
+        "pct_area_within_400m": 85.5,
+        "est_pop_within_400m": 38259,
+        "join_status": "joined"
+      },
+      {
+        "label": "11",
+        "population_2011": 33287,
+        "pct_area_within_400m": 94.2,
+        "est_pop_within_400m": 31356,
+        "join_status": "joined"
+      },
+      {
+        "label": "150",
+        "population_2011": 31270,
+        "pct_area_within_400m": 80.2,
+        "est_pop_within_400m": 25079,
+        "join_status": "joined"
+      },
+      {
+        "label": "153",
+        "population_2011": 143626,
+        "pct_area_within_400m": 63.1,
+        "est_pop_within_400m": 90628,
+        "join_status": "joined"
+      },
+      {
+        "label": "179",
+        "population_2011": null,
+        "pct_area_within_400m": 54.7,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "23",
+        "population_2011": 18434,
+        "pct_area_within_400m": 36.3,
+        "est_pop_within_400m": 6692,
+        "join_status": "joined"
+      },
+      {
+        "label": "47",
+        "population_2011": 14379,
+        "pct_area_within_400m": 86.6,
+        "est_pop_within_400m": 12452,
+        "join_status": "joined"
+      },
+      {
+        "label": "67",
+        "population_2011": 37331,
+        "pct_area_within_400m": 70.9,
+        "est_pop_within_400m": 26468,
+        "join_status": "joined"
+      },
+      {
+        "label": "86",
+        "population_2011": 16185,
+        "pct_area_within_400m": 77.0,
+        "est_pop_within_400m": 12462,
+        "join_status": "joined"
+      },
+      {
+        "label": "97",
+        "population_2011": 20860,
+        "pct_area_within_400m": 91.8,
+        "est_pop_within_400m": 19149,
+        "join_status": "joined"
+      },
+      {
+        "label": "190",
+        "population_2011": null,
+        "pct_area_within_400m": 37.3,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "16",
+        "population_2011": 22947,
+        "pct_area_within_400m": 22.9,
+        "est_pop_within_400m": 5255,
+        "join_status": "joined"
+      },
+      {
+        "label": "66",
+        "population_2011": 50926,
+        "pct_area_within_400m": 85.5,
+        "est_pop_within_400m": 43542,
+        "join_status": "joined"
+      },
+      {
+        "label": "69",
+        "population_2011": 27133,
+        "pct_area_within_400m": 79.9,
+        "est_pop_within_400m": 21679,
+        "join_status": "joined"
+      },
+      {
+        "label": "90",
+        "population_2011": 17329,
+        "pct_area_within_400m": 86.3,
+        "est_pop_within_400m": 14955,
+        "join_status": "joined"
+      },
+      {
+        "label": "119",
+        "population_2011": 23472,
+        "pct_area_within_400m": 97.0,
+        "est_pop_within_400m": 22768,
+        "join_status": "joined"
+      },
+      {
+        "label": "128",
+        "population_2011": 58003,
+        "pct_area_within_400m": 99.9,
+        "est_pop_within_400m": 57945,
+        "join_status": "joined"
+      },
+      {
+        "label": "175",
+        "population_2011": null,
+        "pct_area_within_400m": 96.8,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "79",
+        "population_2011": 19748,
+        "pct_area_within_400m": 71.1,
+        "est_pop_within_400m": 14041,
+        "join_status": "joined"
+      },
+      {
+        "label": "83",
+        "population_2011": 19140,
+        "pct_area_within_400m": 43.5,
+        "est_pop_within_400m": 8326,
+        "join_status": "joined"
+      },
+      {
+        "label": "43",
+        "population_2011": 15835,
+        "pct_area_within_400m": 93.6,
+        "est_pop_within_400m": 14822,
+        "join_status": "joined"
+      },
+      {
+        "label": "8",
+        "population_2011": 33039,
+        "pct_area_within_400m": 95.6,
+        "est_pop_within_400m": 31585,
+        "join_status": "joined"
+      },
+      {
+        "label": "139",
+        "population_2011": 35299,
+        "pct_area_within_400m": 100.0,
+        "est_pop_within_400m": 35299,
+        "join_status": "joined"
+      },
+      {
+        "label": "15",
+        "population_2011": 19952,
+        "pct_area_within_400m": 16.4,
+        "est_pop_within_400m": 3272,
+        "join_status": "joined"
+      },
+      {
+        "label": "174",
+        "population_2011": null,
+        "pct_area_within_400m": 67.1,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "186",
+        "population_2011": null,
+        "pct_area_within_400m": 75.6,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "188",
+        "population_2011": null,
+        "pct_area_within_400m": 45.6,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "194",
+        "population_2011": null,
+        "pct_area_within_400m": 41.0,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "195",
+        "population_2011": null,
+        "pct_area_within_400m": 85.1,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "200",
+        "population_2011": null,
+        "pct_area_within_400m": 27.3,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "25",
+        "population_2011": 19261,
+        "pct_area_within_400m": 68.8,
+        "est_pop_within_400m": 13252,
+        "join_status": "joined"
+      },
+      {
+        "label": "3",
+        "population_2011": 52995,
+        "pct_area_within_400m": 70.7,
+        "est_pop_within_400m": 37467,
+        "join_status": "joined"
+      },
+      {
+        "label": "4",
+        "population_2011": 15186,
+        "pct_area_within_400m": 77.0,
+        "est_pop_within_400m": 11693,
+        "join_status": "joined"
+      },
+      {
+        "label": "56",
+        "population_2011": 38123,
+        "pct_area_within_400m": 100.0,
+        "est_pop_within_400m": 38123,
+        "join_status": "joined"
+      },
+      {
+        "label": "78",
+        "population_2011": 23476,
+        "pct_area_within_400m": 95.7,
+        "est_pop_within_400m": 22467,
+        "join_status": "joined"
+      },
+      {
+        "label": "88",
+        "population_2011": 23618,
+        "pct_area_within_400m": 64.3,
+        "est_pop_within_400m": 15186,
+        "join_status": "joined"
+      },
+      {
+        "label": "84",
+        "population_2011": 17825,
+        "pct_area_within_400m": 82.9,
+        "est_pop_within_400m": 14777,
+        "join_status": "joined"
+      },
+      {
+        "label": "180",
+        "population_2011": null,
+        "pct_area_within_400m": 54.9,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "196",
+        "population_2011": null,
+        "pct_area_within_400m": 73.4,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "21",
+        "population_2011": 16044,
+        "pct_area_within_400m": 40.9,
+        "est_pop_within_400m": 6562,
+        "join_status": "joined"
+      },
+      {
+        "label": "26",
+        "population_2011": 20239,
+        "pct_area_within_400m": 73.5,
+        "est_pop_within_400m": 14876,
+        "join_status": "joined"
+      },
+      {
+        "label": "113",
+        "population_2011": 19701,
+        "pct_area_within_400m": 100.0,
+        "est_pop_within_400m": 19701,
+        "join_status": "joined"
+      },
+      {
+        "label": "92",
+        "population_2011": 16511,
+        "pct_area_within_400m": 96.2,
+        "est_pop_within_400m": 15884,
+        "join_status": "joined"
+      },
+      {
+        "label": "99",
+        "population_2011": 15460,
+        "pct_area_within_400m": 100.0,
+        "est_pop_within_400m": 15460,
+        "join_status": "joined"
+      },
+      {
+        "label": "32",
+        "population_2011": 32269,
+        "pct_area_within_400m": 65.3,
+        "est_pop_within_400m": 21072,
+        "join_status": "joined"
+      },
+      {
+        "label": "105",
+        "population_2011": 17965,
+        "pct_area_within_400m": 90.2,
+        "est_pop_within_400m": 16204,
+        "join_status": "joined"
+      },
+      {
+        "label": "108",
+        "population_2011": 20042,
+        "pct_area_within_400m": 80.7,
+        "est_pop_within_400m": 16174,
+        "join_status": "joined"
+      },
+      {
+        "label": "189",
+        "population_2011": null,
+        "pct_area_within_400m": 25.6,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "198",
+        "population_2011": null,
+        "pct_area_within_400m": 33.8,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "37",
+        "population_2011": 26491,
+        "pct_area_within_400m": 52.9,
+        "est_pop_within_400m": 14014,
+        "join_status": "joined"
+      },
+      {
+        "label": "55",
+        "population_2011": 23220,
+        "pct_area_within_400m": 63.0,
+        "est_pop_within_400m": 14629,
+        "join_status": "joined"
+      },
+      {
+        "label": "91",
+        "population_2011": 22285,
+        "pct_area_within_400m": 88.1,
+        "est_pop_within_400m": 19633,
+        "join_status": "joined"
+      },
+      {
+        "label": "115",
+        "population_2011": 24775,
+        "pct_area_within_400m": 100.0,
+        "est_pop_within_400m": 24775,
+        "join_status": "joined"
+      },
+      {
+        "label": "140",
+        "population_2011": 33089,
+        "pct_area_within_400m": 96.7,
+        "est_pop_within_400m": 31997,
+        "join_status": "joined"
+      },
+      {
+        "label": "141",
+        "population_2011": 54598,
+        "pct_area_within_400m": 99.2,
+        "est_pop_within_400m": 54161,
+        "join_status": "joined"
+      },
+      {
+        "label": "151",
+        "population_2011": 34509,
+        "pct_area_within_400m": 90.9,
+        "est_pop_within_400m": 31369,
+        "join_status": "joined"
+      },
+      {
+        "label": "163",
+        "population_2011": null,
+        "pct_area_within_400m": 99.9,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "185",
+        "population_2011": null,
+        "pct_area_within_400m": 97.8,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "39",
+        "population_2011": 30573,
+        "pct_area_within_400m": 92.4,
+        "est_pop_within_400m": 28249,
+        "join_status": "joined"
+      },
+      {
+        "label": "53",
+        "population_2011": 23831,
+        "pct_area_within_400m": 100.0,
+        "est_pop_within_400m": 23831,
+        "join_status": "joined"
+      },
+      {
+        "label": "71",
+        "population_2011": 12091,
+        "pct_area_within_400m": 98.8,
+        "est_pop_within_400m": 11946,
+        "join_status": "joined"
+      },
+      {
+        "label": "75",
+        "population_2011": 60126,
+        "pct_area_within_400m": 86.0,
+        "est_pop_within_400m": 51708,
+        "join_status": "joined"
+      },
+      {
+        "label": "24",
+        "population_2011": 21002,
+        "pct_area_within_400m": 50.1,
+        "est_pop_within_400m": 10522,
+        "join_status": "joined"
+      },
+      {
+        "label": "121",
+        "population_2011": 25912,
+        "pct_area_within_400m": 100.0,
+        "est_pop_within_400m": 25912,
+        "join_status": "joined"
+      },
+      {
+        "label": "197",
+        "population_2011": null,
+        "pct_area_within_400m": 35.7,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "76",
+        "population_2011": 24524,
+        "pct_area_within_400m": 99.8,
+        "est_pop_within_400m": 24475,
+        "join_status": "joined"
+      },
+      {
+        "label": "124",
+        "population_2011": 22907,
+        "pct_area_within_400m": 90.8,
+        "est_pop_within_400m": 20800,
+        "join_status": "joined"
+      },
+      {
+        "label": "129",
+        "population_2011": 59322,
+        "pct_area_within_400m": 88.1,
+        "est_pop_within_400m": 52263,
+        "join_status": "joined"
+      },
+      {
+        "label": "132",
+        "population_2011": 41733,
+        "pct_area_within_400m": 63.5,
+        "est_pop_within_400m": 26500,
+        "join_status": "joined"
+      },
+      {
+        "label": "161",
+        "population_2011": null,
+        "pct_area_within_400m": 98.1,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "170",
+        "population_2011": null,
+        "pct_area_within_400m": 89.9,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "35",
+        "population_2011": 40075,
+        "pct_area_within_400m": 98.3,
+        "est_pop_within_400m": 39394,
+        "join_status": "joined"
+      },
+      {
+        "label": "38",
+        "population_2011": 35187,
+        "pct_area_within_400m": 89.3,
+        "est_pop_within_400m": 31422,
+        "join_status": "joined"
+      },
+      {
+        "label": "60",
+        "population_2011": 29821,
+        "pct_area_within_400m": 64.9,
+        "est_pop_within_400m": 19354,
+        "join_status": "joined"
+      },
+      {
+        "label": "27",
+        "population_2011": 24426,
+        "pct_area_within_400m": 69.9,
+        "est_pop_within_400m": 17074,
+        "join_status": "joined"
+      },
+      {
+        "label": "111",
+        "population_2011": 18480,
+        "pct_area_within_400m": 90.2,
+        "est_pop_within_400m": 16669,
+        "join_status": "joined"
+      },
+      {
+        "label": "118",
+        "population_2011": 34310,
+        "pct_area_within_400m": 94.0,
+        "est_pop_within_400m": 32251,
+        "join_status": "joined"
+      },
+      {
+        "label": "126",
+        "population_2011": 17718,
+        "pct_area_within_400m": 91.0,
+        "est_pop_within_400m": 16123,
+        "join_status": "joined"
+      },
+      {
+        "label": "130",
+        "population_2011": 55784,
+        "pct_area_within_400m": 90.0,
+        "est_pop_within_400m": 50206,
+        "join_status": "joined"
+      },
+      {
+        "label": "136",
+        "population_2011": 33270,
+        "pct_area_within_400m": 94.4,
+        "est_pop_within_400m": 31407,
+        "join_status": "joined"
+      },
+      {
+        "label": "36",
+        "population_2011": 52262,
+        "pct_area_within_400m": 88.7,
+        "est_pop_within_400m": 46356,
+        "join_status": "joined"
+      },
+      {
+        "label": "42",
+        "population_2011": 27857,
+        "pct_area_within_400m": 87.1,
+        "est_pop_within_400m": 24263,
+        "join_status": "joined"
+      },
+      {
+        "label": "45",
+        "population_2011": 17871,
+        "pct_area_within_400m": 100.0,
+        "est_pop_within_400m": 17871,
+        "join_status": "joined"
+      },
+      {
+        "label": "46",
+        "population_2011": 12747,
+        "pct_area_within_400m": 79.9,
+        "est_pop_within_400m": 10185,
+        "join_status": "joined"
+      },
+      {
+        "label": "73",
+        "population_2011": 22662,
+        "pct_area_within_400m": 98.7,
+        "est_pop_within_400m": 22367,
+        "join_status": "joined"
+      },
+      {
+        "label": "14",
+        "population_2011": 35130,
+        "pct_area_within_400m": 91.6,
+        "est_pop_within_400m": 32179,
+        "join_status": "joined"
+      },
+      {
+        "label": "165",
+        "population_2011": null,
+        "pct_area_within_400m": 89.4,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "30",
+        "population_2011": 25286,
+        "pct_area_within_400m": 63.8,
+        "est_pop_within_400m": 16132,
+        "join_status": "joined"
+      },
+      {
+        "label": "49",
+        "population_2011": 16889,
+        "pct_area_within_400m": 99.0,
+        "est_pop_within_400m": 16720,
+        "join_status": "joined"
+      },
+      {
+        "label": "63",
+        "population_2011": 81648,
+        "pct_area_within_400m": 99.0,
+        "est_pop_within_400m": 80832,
+        "join_status": "joined"
+      },
+      {
+        "label": "7",
+        "population_2011": 22161,
+        "pct_area_within_400m": 38.0,
+        "est_pop_within_400m": 8421,
+        "join_status": "joined"
+      },
+      {
+        "label": "77",
+        "population_2011": 23619,
+        "pct_area_within_400m": 99.8,
+        "est_pop_within_400m": 23572,
+        "join_status": "joined"
+      },
+      {
+        "label": "85",
+        "population_2011": 11304,
+        "pct_area_within_400m": 63.3,
+        "est_pop_within_400m": 7155,
+        "join_status": "joined"
+      },
+      {
+        "label": "1",
+        "population_2011": 51163,
+        "pct_area_within_400m": 66.1,
+        "est_pop_within_400m": 33819,
+        "join_status": "joined"
+      },
+      {
+        "label": "100",
+        "population_2011": 9545,
+        "pct_area_within_400m": 96.5,
+        "est_pop_within_400m": 9211,
+        "join_status": "joined"
+      },
+      {
+        "label": "103",
+        "population_2011": 16595,
+        "pct_area_within_400m": 92.2,
+        "est_pop_within_400m": 15301,
+        "join_status": "joined"
+      },
+      {
+        "label": "110",
+        "population_2011": 13867,
+        "pct_area_within_400m": 94.3,
+        "est_pop_within_400m": 13077,
+        "join_status": "joined"
+      },
+      {
+        "label": "176",
+        "population_2011": null,
+        "pct_area_within_400m": 82.8,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "34",
+        "population_2011": 49559,
+        "pct_area_within_400m": 90.4,
+        "est_pop_within_400m": 44801,
+        "join_status": "joined"
+      },
+      {
+        "label": "40",
+        "population_2011": 51479,
+        "pct_area_within_400m": 95.0,
+        "est_pop_within_400m": 48905,
+        "join_status": "joined"
+      },
+      {
+        "label": "41",
+        "population_2011": 21550,
+        "pct_area_within_400m": 94.6,
+        "est_pop_within_400m": 20386,
+        "join_status": "joined"
+      },
+      {
+        "label": "5",
+        "population_2011": 45204,
+        "pct_area_within_400m": 98.3,
+        "est_pop_within_400m": 44436,
+        "join_status": "joined"
+      },
+      {
+        "label": "65",
+        "population_2011": 95564,
+        "pct_area_within_400m": 89.8,
+        "est_pop_within_400m": 85816,
+        "join_status": "joined"
+      },
+      {
+        "label": "82",
+        "population_2011": 16338,
+        "pct_area_within_400m": 62.6,
+        "est_pop_within_400m": 10228,
+        "join_status": "joined"
+      },
+      {
+        "label": "125",
+        "population_2011": 20416,
+        "pct_area_within_400m": 100.0,
+        "est_pop_within_400m": 20416,
+        "join_status": "joined"
+      },
+      {
+        "label": "133",
+        "population_2011": 25793,
+        "pct_area_within_400m": 99.6,
+        "est_pop_within_400m": 25690,
+        "join_status": "joined"
+      },
+      {
+        "label": "134",
+        "population_2011": 23054,
+        "pct_area_within_400m": 85.9,
+        "est_pop_within_400m": 19803,
+        "join_status": "joined"
+      },
+      {
+        "label": "135",
+        "population_2011": 49869,
+        "pct_area_within_400m": 100.0,
+        "est_pop_within_400m": 49869,
+        "join_status": "joined"
+      },
+      {
+        "label": "167",
+        "population_2011": null,
+        "pct_area_within_400m": 100.0,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "28",
+        "population_2011": 26156,
+        "pct_area_within_400m": 99.3,
+        "est_pop_within_400m": 25973,
+        "join_status": "joined"
+      },
+      {
+        "label": "61",
+        "population_2011": 17321,
+        "pct_area_within_400m": 97.5,
+        "est_pop_within_400m": 16888,
+        "join_status": "joined"
+      },
+      {
+        "label": "68",
+        "population_2011": 32999,
+        "pct_area_within_400m": 91.0,
+        "est_pop_within_400m": 30029,
+        "join_status": "joined"
+      },
+      {
+        "label": "87",
+        "population_2011": 14375,
+        "pct_area_within_400m": 90.6,
+        "est_pop_within_400m": 13024,
+        "join_status": "joined"
+      },
+      {
+        "label": "104",
+        "population_2011": 20897,
+        "pct_area_within_400m": 91.3,
+        "est_pop_within_400m": 19079,
+        "join_status": "joined"
+      },
+      {
+        "label": "127",
+        "population_2011": 24606,
+        "pct_area_within_400m": 87.9,
+        "est_pop_within_400m": 21629,
+        "join_status": "joined"
+      },
+      {
+        "label": "2",
+        "population_2011": 66897,
+        "pct_area_within_400m": 72.1,
+        "est_pop_within_400m": 48233,
+        "join_status": "joined"
+      },
+      {
+        "label": "114",
+        "population_2011": 32913,
+        "pct_area_within_400m": 91.7,
+        "est_pop_within_400m": 30181,
+        "join_status": "joined"
+      },
+      {
+        "label": "122",
+        "population_2011": 30204,
+        "pct_area_within_400m": 90.9,
+        "est_pop_within_400m": 27455,
+        "join_status": "joined"
+      },
+      {
+        "label": "168",
+        "population_2011": null,
+        "pct_area_within_400m": 95.6,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "81",
+        "population_2011": 17123,
+        "pct_area_within_400m": 89.9,
+        "est_pop_within_400m": 15394,
+        "join_status": "joined"
+      },
+      {
+        "label": "177",
+        "population_2011": null,
+        "pct_area_within_400m": 77.0,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "95",
+        "population_2011": 11664,
+        "pct_area_within_400m": 78.9,
+        "est_pop_within_400m": 9203,
+        "join_status": "joined"
+      },
+      {
+        "label": "96",
+        "population_2011": 12954,
+        "pct_area_within_400m": 54.3,
+        "est_pop_within_400m": 7034,
+        "join_status": "joined"
+      },
+      {
+        "label": "169",
+        "population_2011": null,
+        "pct_area_within_400m": 70.2,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "171",
+        "population_2011": null,
+        "pct_area_within_400m": 72.8,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "173",
+        "population_2011": null,
+        "pct_area_within_400m": 95.5,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "70",
+        "population_2011": 26313,
+        "pct_area_within_400m": 82.9,
+        "est_pop_within_400m": 21813,
+        "join_status": "joined"
+      },
+      {
+        "label": "182",
+        "population_2011": null,
+        "pct_area_within_400m": 69.0,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "116",
+        "population_2011": 23624,
+        "pct_area_within_400m": 100.0,
+        "est_pop_within_400m": 23624,
+        "join_status": "joined"
+      },
+      {
+        "label": "142",
+        "population_2011": 26525,
+        "pct_area_within_400m": 100.0,
+        "est_pop_within_400m": 26525,
+        "join_status": "joined"
+      },
+      {
+        "label": "59",
+        "population_2011": 23595,
+        "pct_area_within_400m": 92.9,
+        "est_pop_within_400m": 21920,
+        "join_status": "joined"
+      },
+      {
+        "label": "62",
+        "population_2011": 110474,
+        "pct_area_within_400m": 100.0,
+        "est_pop_within_400m": 110474,
+        "join_status": "joined"
+      },
+      {
+        "label": "178",
+        "population_2011": null,
+        "pct_area_within_400m": 93.0,
+        "est_pop_within_400m": null,
+        "join_status": "unmatched"
+      },
+      {
+        "label": "20",
+        "population_2011": 13276,
+        "pct_area_within_400m": 99.8,
+        "est_pop_within_400m": 13249,
+        "join_status": "joined"
+      },
+      {
+        "label": "123",
+        "population_2011": 25733,
+        "pct_area_within_400m": 93.2,
+        "est_pop_within_400m": 23983,
+        "join_status": "joined"
+      },
+      {
+        "label": "58",
+        "population_2011": 30577,
+        "pct_area_within_400m": 99.9,
+        "est_pop_within_400m": 30546,
+        "join_status": "joined"
+      },
+      {
+        "label": "102",
+        "population_2011": 9377,
+        "pct_area_within_400m": 97.3,
+        "est_pop_within_400m": 9124,
+        "join_status": "joined"
+      },
+      {
+        "label": "52",
+        "population_2011": 23233,
+        "pct_area_within_400m": 99.1,
+        "est_pop_within_400m": 23024,
+        "join_status": "joined"
+      }
+    ],
+    "priority_low_access": [
+      {
+        "label": "50",
+        "population_2011": 51527,
+        "pct_area_within_400m": 47.6,
+        "est_pop_within_400m": 24527,
+        "join_status": "joined"
+      },
+      {
+        "label": "17",
+        "population_2011": 24670,
+        "pct_area_within_400m": 42.2,
+        "est_pop_within_400m": 10411,
+        "join_status": "joined"
+      },
+      {
+        "label": "13",
+        "population_2011": 21829,
+        "pct_area_within_400m": 43.3,
+        "est_pop_within_400m": 9452,
+        "join_status": "joined"
+      },
+      {
+        "label": "7",
+        "population_2011": 22161,
+        "pct_area_within_400m": 38.0,
+        "est_pop_within_400m": 8421,
+        "join_status": "joined"
+      },
+      {
+        "label": "83",
+        "population_2011": 19140,
+        "pct_area_within_400m": 43.5,
+        "est_pop_within_400m": 8326,
+        "join_status": "joined"
+      },
+      {
+        "label": "109",
+        "population_2011": 18546,
+        "pct_area_within_400m": 36.2,
+        "est_pop_within_400m": 6714,
+        "join_status": "joined"
+      },
+      {
+        "label": "23",
+        "population_2011": 18434,
+        "pct_area_within_400m": 36.3,
+        "est_pop_within_400m": 6692,
+        "join_status": "joined"
+      },
+      {
+        "label": "21",
+        "population_2011": 16044,
+        "pct_area_within_400m": 40.9,
+        "est_pop_within_400m": 6562,
+        "join_status": "joined"
+      },
+      {
+        "label": "16",
+        "population_2011": 22947,
+        "pct_area_within_400m": 22.9,
+        "est_pop_within_400m": 5255,
+        "join_status": "joined"
+      },
+      {
+        "label": "15",
+        "population_2011": 19952,
+        "pct_area_within_400m": 16.4,
+        "est_pop_within_400m": 3272,
+        "join_status": "joined"
+      }
+    ]
   }
 }

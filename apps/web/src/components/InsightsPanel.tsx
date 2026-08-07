@@ -16,11 +16,8 @@ import {
   FilterImpactStrip,
   useFilteredUniverse,
 } from "@/components/DashboardFilterBar";
-import {
-  DEFAULT_FILTERS,
-  filtersActive,
-  type DashboardFilters,
-} from "@/lib/dashboard-filters";
+import { filtersActive } from "@/lib/dashboard-filters";
+import { useDashboardFilters } from "@/hooks/useDashboardFilters";
 
 type InsightView =
   | "hubs"
@@ -69,10 +66,7 @@ export function InsightsPanel() {
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<InsightView>("hubs");
   const [query, setQuery] = useState("");
-  const [filters, setFilters] = useState<DashboardFilters>({
-    ...DEFAULT_FILTERS,
-    unit: "ward",
-  });
+  const [filters, setFilters] = useDashboardFilters({ unit: "ward" });
   const {
     filtered,
     wardOptions,

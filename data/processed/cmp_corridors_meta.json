@@ -1,0 +1,40 @@
+{
+  "status": "partial",
+  "generated_at": "2026-08-07T04:47:14.913458+00:00",
+  "note": "CMP corridor names from PDF text extract, geocoded via Nominatim/OSM. Not official CMDA centerlines \u2014 approximate for map context only.",
+  "corridors_mentioned_in_pdf": [
+    "IT Corridor / OMR",
+    "Anna Salai",
+    "Periyar EVR Salai",
+    "GST Road",
+    "GNT Road",
+    "Inner Ring Road",
+    "Outer Ring Road",
+    "NH32",
+    "NH16",
+    "NH48",
+    "NH716",
+    "T.Nagar",
+    "Purasawalkam",
+    "George Town",
+    "Nungambakkam",
+    "Thiruvottiyur\u2013Ponneri corridor"
+  ],
+  "resolved": [
+    "IT Corridor / OMR",
+    "Anna Salai",
+    "Periyar EVR Salai",
+    "GST Road",
+    "GNT Road",
+    "Inner Ring Road",
+    "Outer Ring Road",
+    "NH32",
+    "NH16"
+  ],
+  "failed": [
+    "T.Nagar"
+  ],
+  "counts": {
+    "features": 9
+  }
+}

@@ -262,6 +262,46 @@ const LAYER_STACK: {
     ],
   },
   {
+    key: "cmp_corridors",
+    sourceId: "tm-cmp-corridors",
+    layers: [
+      {
+        id: "tm-cmp-corridors-line",
+        type: "line",
+        paint: {
+          "line-color": "#38bdf8",
+          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 2.5, 14, 5],
+          "line-opacity": 0.9,
+        },
+      },
+    ],
+  },
+  {
+    key: "nmt_network",
+    sourceId: "tm-nmt",
+    layers: [
+      {
+        id: "tm-nmt-line",
+        type: "line",
+        paint: {
+          "line-color": [
+            "match",
+            ["get", "highway"],
+            "cycleway",
+            "#22d3ee",
+            "footway",
+            "#a3e635",
+            "path",
+            "#84cc16",
+            "#86efac",
+          ],
+          "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.8, 15, 2.2],
+          "line-opacity": 0.75,
+        },
+      },
+    ],
+  },
+  {
     key: "wards",
     sourceId: "tm-wards",
     layers: [

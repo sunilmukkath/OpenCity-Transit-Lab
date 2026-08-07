@@ -346,36 +346,14 @@ export function ObjectivesDashboard() {
 
   return (
     <div className="space-y-6">
-      <header className="rounded-2xl border border-[var(--border)] bg-[linear-gradient(145deg,rgba(16,52,102,0.9),rgba(10,31,74,0.96))] px-6 py-7">
-        <SectionEyebrow>Objectives</SectionEyebrow>
-        <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)] sm:text-4xl">
-          Problem statements — analysis &amp; charts
+      <header>
+        <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)] sm:text-4xl">
+          Objectives
         </h1>
         <p className="mt-2 max-w-3xl text-sm text-[var(--ink-muted)]">{data.note}</p>
-        <p className="mt-3 text-xs text-[var(--ink-muted)]">
+        <p className="mt-2 text-xs text-[var(--ink-muted)]">
           Generated {new Date(data.generated_at).toLocaleString()}
         </p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {data.objectives
-            .filter((o) => o.status === "loaded" || o.status === "partial")
-            .map((o) => (
-            <a
-              key={o.id}
-              href={`#${o.id}`}
-              className="rounded-full border border-[var(--border)] px-3 py-1 text-xs font-semibold text-[var(--ink-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
-            >
-              {o.title.length > 42 ? `${o.title.slice(0, 40)}…` : o.title}
-            </a>
-          ))}
-        </div>
-        <div className="mt-5 flex flex-wrap gap-3">
-          <Link href="/for/planner" className="et-btn-ghost">
-            ← Planner hub
-          </Link>
-          <Link href="/map?audience=planner&preset=serve" className="et-btn-primary">
-            Open map →
-          </Link>
-        </div>
       </header>
 
       <DashboardFilterBar

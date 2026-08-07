@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { StatusBadge } from "@/components/StatusBadge";
-import { SectionEyebrow } from "@/components/BrandMotif";
 import {
   DashboardFilterBar,
   FilterImpactStrip,
@@ -74,32 +73,13 @@ export function RecommendationsPanel() {
 
   return (
     <div className="space-y-6">
-      <header className="rounded-2xl border border-[var(--border)] bg-[linear-gradient(145deg,rgba(16,52,102,0.9),rgba(10,31,74,0.96))] px-6 py-7">
-        <SectionEyebrow>Actions</SectionEyebrow>
-        <h1 className="mt-1 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)]">
-          Priority actions &amp; insights
+      <header>
+        <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow-bright)]">
+          Actions
         </h1>
         <p className="mt-2 max-w-3xl text-sm text-[var(--ink-muted)]">
-          Prioritised moves from Objectives evidence. Filter the slice, then open Reports for
-          ward briefs — or the Map to verify spatially.
+          Prioritised moves from Objectives evidence ({loaded.length} with data).
         </p>
-        <div className="mt-4 flex flex-wrap gap-2 text-xs">
-          <span className="rounded-full border border-[var(--border)] px-3 py-1 text-[var(--ink-muted)]">
-            {loaded.length} objectives with evidence
-          </span>
-          <Link
-            href="/for/planner"
-            className="rounded-full border border-[var(--accent)] px-3 py-1 font-semibold text-[var(--accent)]"
-          >
-            ← Planner hub
-          </Link>
-          <Link
-            href="/map?audience=planner"
-            className="rounded-full border border-[var(--border)] px-3 py-1 font-semibold text-[var(--ink-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
-          >
-            Map
-          </Link>
-        </div>
       </header>
 
       <DashboardFilterBar
@@ -234,21 +214,6 @@ export function RecommendationsPanel() {
           </ul>
         </section>
       ) : null}
-
-      <div className="flex flex-wrap gap-3">
-        <Link href="/analytics?tab=spatial&audience=planner" className="et-btn-primary">
-          Ward reports →
-        </Link>
-        <Link href="/map?audience=planner" className="et-btn-ghost">
-          Map
-        </Link>
-        <Link href="/objectives?audience=planner" className="et-btn-ghost">
-          Objectives
-        </Link>
-        <Link href="/sources" className="et-btn-ghost">
-          Sources
-        </Link>
-      </div>
     </div>
   );
 }

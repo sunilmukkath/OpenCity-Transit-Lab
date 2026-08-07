@@ -10,7 +10,6 @@ import type {
 import { fetchAnalysesClient } from "@/lib/data-client";
 import { MetricCard } from "@/components/MetricCard";
 import { StatusBadge } from "@/components/StatusBadge";
-import { SectionEyebrow } from "@/components/BrandMotif";
 import {
   DashboardFilterBar,
   FilterImpactStrip,
@@ -222,29 +221,31 @@ export function InsightsPanel() {
   return (
     <div className="space-y-6">
       <div className="et-card p-5">
-        <SectionEyebrow>Unique insights</SectionEyebrow>
-        <h3 className="mt-1 font-[family-name:var(--font-display)] text-xl font-semibold text-[var(--ink)]">
-          Last-mile, shelter gaps &amp; walk coverage
-        </h3>
-        <p className="mt-2 text-sm text-[var(--ink-muted)]">{data.note}</p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {insightTabs.map(([id, label]) => (
-            <button
-              key={id}
-              type="button"
-              onClick={() => setView(id)}
-              className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide ${
-                view === id
-                  ? "border-[var(--yellow)] bg-[rgba(255,229,102,0.12)] text-[var(--yellow)]"
-                  : "border-[var(--border)] text-[var(--ink-muted)]"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-          {!insightTabs.length ? (
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h3 className="font-[family-name:var(--font-display)] text-xl font-semibold text-[var(--ink)]">
+              Insights
+            </h3>
+            <p className="mt-1 text-sm text-[var(--ink-muted)]">{data.note}</p>
+          </div>
+          {insightTabs.length ? (
+            <label className="block text-xs">
+              <span className="mb-1 block text-[var(--ink-muted)]">Module</span>
+              <select
+                className="rounded-md border border-[var(--border)] bg-[var(--bg-elevated)] px-2.5 py-1.5 text-sm text-[var(--ink)]"
+                value={view}
+                onChange={(e) => setView(e.target.value as typeof view)}
+              >
+                {insightTabs.map(([id, label]) => (
+                  <option key={id} value={id}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
             <p className="text-sm text-[var(--ink-muted)]">No loaded insight modules yet.</p>
-          ) : null}
+          )}
         </div>
       </div>
 

@@ -254,7 +254,7 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
 
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-muted)]">
-            Audience
+            View
           </span>
           <div className="flex flex-wrap gap-1">
             {AUDIENCE_PRESETS.map((ap) => (
@@ -270,30 +270,9 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
               </button>
             ))}
           </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-[var(--border)] pt-2.5">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-muted)]">
-            Preset
-          </span>
-          <div className="flex flex-wrap gap-1">
-            {Object.entries(LAYER_PRESETS).map(([id, preset]) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => applyPreset(id)}
-                title={preset.blurb}
-                className={`${chipBase} ${activePreset === id ? chipOn : chipOff}`}
-              >
-                {preset.label}
-              </button>
-            ))}
-          </div>
-
           <span className="hidden h-4 w-px bg-[var(--border)] sm:block" aria-hidden />
-
           <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-muted)]">
-            Ward colour
+            Colour
           </span>
           <div className="flex flex-wrap gap-1">
             {(
@@ -318,14 +297,13 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-[var(--border)] pt-2.5">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-muted)]">
-            Layers
-          </span>
-          <div className="flex flex-wrap gap-1">
-            {MAP_LAYER_META.filter((l) => (l.group ?? "core") === "core")
-              .filter(({ key }) => layerIsReady(manifest?.layers[key]))
-              .map(({ key, label, short }) => {
+        <details className="border-t border-[var(--border)] pt-2.5">
+          <summary className="cursor-pointer text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-muted)]">
+            Layers · {loadedCount} loaded
+          </summary>
+          <div className="mt-2 flex flex-wrap gap-1">
+            {MAP_LAYER_META.filter(({ key }) => layerIsReady(manifest?.layers[key])).map(
+              ({ key, label, short }) => {
                 const on = visibility[key];
                 return (
                   <button
@@ -338,42 +316,18 @@ export function MapExplorer({ audienceNote }: { audienceNote?: string }) {
                     {short}
                   </button>
                 );
-              })}
+              }
+            )}
           </div>
           {visibility.connectivity_need ? (
-            <span className="w-full text-[10px] leading-snug text-[var(--ink-muted)] sm:w-auto">
-              Need lines = roads with long stretches &gt;400m from a stop (urgent / priority /
-              watch).
-            </span>
+            <p className="mt-2 text-[10px] leading-snug text-[var(--ink-muted)]">
+              Need lines = roads with long stretches &gt;400m from a stop.
+            </p>
           ) : null}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-[var(--border)] pt-2.5">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-muted)]">
-            Amenities
-          </span>
-          <div className="flex flex-wrap gap-1">
-            {MAP_LAYER_META.filter((l) => l.group === "amenities")
-              .filter(({ key }) => layerIsReady(manifest?.layers[key]))
-              .map(({ key, label, short }) => {
-                const on = visibility[key];
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    title={label}
-                    onClick={() => toggle(key)}
-                    className={`${chipBase} ${on ? chipOn : chipOff}`}
-                  >
-                    {short}
-                  </button>
-                );
-              })}
-          </div>
-          <span className="ml-auto text-[10px] text-[var(--ink-muted)]">
-            {loadingCore ? "Loading…" : `${loadedCount} layers`}
-          </span>
-        </div>
+          {loadingCore ? (
+            <p className="mt-2 text-[10px] text-[var(--ink-muted)]">Loading…</p>
+          ) : null}
+        </details>
       </div>
 
       <TransitMap

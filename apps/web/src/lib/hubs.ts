@@ -17,12 +17,18 @@ export interface HubDef {
   job: string;
   blurb: string;
   href: string;
-  /** Primary nav links when this hub is active */
-  nav: { href: string; label: string }[];
   /** Default map preset id */
   mapPreset: string;
   mapAudience: AudienceQuery;
 }
+
+/** Single global tool nav — same on every page (no per-hub tab clones). */
+export const GLOBAL_NAV: { href: string; label: string }[] = [
+  { href: "/", label: "Home" },
+  { href: "/map", label: "Map" },
+  { href: "/analytics", label: "Reports" },
+  { href: "/sources", label: "Sources" },
+];
 
 export const HUBS: HubDef[] = [
   {
@@ -32,11 +38,6 @@ export const HUBS: HubDef[] = [
     job: "Is my neighbourhood poorly served?",
     blurb: "Plain-language ward brief, walk distance, schools and health access.",
     href: "/for/citizen",
-    nav: [
-      { href: "/for/citizen", label: "Brief" },
-      { href: "/map?audience=citizen&preset=destinations", label: "Map" },
-      { href: "/sources", label: "Sources" },
-    ],
     mapPreset: "destinations",
     mapAudience: "citizen",
   },
@@ -47,13 +48,6 @@ export const HUBS: HubDef[] = [
     job: "Where should we intervene?",
     blurb: "Gap Index, objectives evidence, priority actions, ward memos.",
     href: "/for/planner",
-    nav: [
-      { href: "/for/planner", label: "Hub" },
-      { href: "/objectives?audience=planner", label: "Objectives" },
-      { href: "/map?audience=planner&preset=serve", label: "Map" },
-      { href: "/recommendations?audience=planner", label: "Actions" },
-      { href: "/analytics?tab=spatial&audience=planner", label: "Reports" },
-    ],
     mapPreset: "serve",
     mapAudience: "planner",
   },
@@ -64,12 +58,6 @@ export const HUBS: HubDef[] = [
     job: "Where do feeders fail at hubs?",
     blurb: "Hub last-mile, shelter gaps, need lines — live feeds stay Not connected until plugged in.",
     href: "/for/operator",
-    nav: [
-      { href: "/for/operator", label: "Hub" },
-      { href: "/map?audience=hubs&preset=hubs", label: "Map" },
-      { href: "/analytics?tab=insights&audience=operator", label: "Insights" },
-      { href: "/sources", label: "Sources" },
-    ],
     mapPreset: "hubs",
     mapAudience: "hubs",
   },
@@ -80,12 +68,6 @@ export const HUBS: HubDef[] = [
     job: "What can I cite with provenance?",
     blurb: "Slum vs non-slum facts, EC×PT tables, citation pack, Sources.",
     href: "/for/press",
-    nav: [
-      { href: "/for/press", label: "Story pack" },
-      { href: "/map?audience=equity&preset=slum", label: "Map" },
-      { href: "/objectives?audience=press", label: "Evidence" },
-      { href: "/sources", label: "Sources" },
-    ],
     mapPreset: "slum",
     mapAudience: "equity",
   },

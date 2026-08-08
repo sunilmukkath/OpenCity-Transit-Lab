@@ -30,8 +30,8 @@ PROCESSED = ROOT / "data" / "processed"
 UA = {"User-Agent": "OpenCity-TransitLab/1.0 (civic research; connectivity corridors)"}
 
 # Cap features for map readability
-TOP_N = 100
-MIN_UNMET_M = 280.0
+TOP_N = 120
+MIN_UNMET_M = 250.0
 HIGHWAY_CLASSES = {"trunk", "primary", "secondary", "tertiary"}
 
 
@@ -302,63 +302,90 @@ def score_roads(
 
     gdf = gpd.GeoDataFrame(records, crs=3857)
 
-    # Dissolve by road name — keep strongest corridors (unmet segments only)
+    # Group key: named roads dissolve by name+ref; unnamed stay per OSM way
+    # (dissolving all "Unnamed road" produced one 28km mega-feature).
+    def _group_key(row: pd.Series) -> str:
+        name = str(row.get("road_name") or "").strip() or "Unnamed road"
+        ref = str(row.get("ref") or "").strip()
+        osm = row.get("osm_id")
+        if name.lower() in ("unnamed road", "unnamed") or name.startswith("Unnamed"):
+            return f"osm:{osm}" if osm is not None else f"seg:{id(row.geometry)}"
+        return f"{name}|{ref}" if ref else name
+
+    gdf["group_key"] = gdf.apply(_group_key, axis=1)
+
     dissolved_rows: list[dict[str, Any]] = []
-    for name, grp in gdf.groupby("road_name"):
+    for key, grp in gdf.groupby("group_key"):
         try:
             unioned = unary_union(list(grp.geometry))
             if unioned.geom_type == "LineString":
-                merged = unioned
+                parts = [unioned]
             elif unioned.geom_type == "MultiLineString":
                 merged = linemerge(unioned)
+                if merged.geom_type == "LineString":
+                    parts = [merged]
+                elif merged.geom_type == "MultiLineString":
+                    parts = list(merged.geoms)
+                else:
+                    parts = list(unioned.geoms)
             elif unioned.geom_type == "GeometryCollection":
                 parts = [
                     g
                     for g in unioned.geoms
-                    if g.geom_type in ("LineString", "MultiLineString") and not g.is_empty
+                    if g.geom_type == "LineString" and not g.is_empty
                 ]
-                if not parts:
-                    continue
-                u2 = unary_union(parts)
-                merged = linemerge(u2) if u2.geom_type == "MultiLineString" else u2
             else:
                 continue
         except Exception:  # noqa: BLE001
-            merged = max(list(grp.geometry), key=lambda g: g.length)
-        length_m = float(grp["length_m"].sum())
-        unmet_m = float(grp["unmet_length_m"].sum())
-        pct = (unmet_m / length_m * 100.0) if length_m else 0.0
-        in_gap = bool(grp["in_high_gap_ward"].any())
-        need = float(grp["need_score"].sum())
+            parts = [max(list(grp.geometry), key=lambda g: g.length)]
+
+        name = str(grp["road_name"].iloc[0])
         hwy = (
             grp["highway"].value_counts().index[0]
             if len(grp["highway"].value_counts())
             else "secondary"
         )
         ref = next((str(r) for r in grp["ref"] if r), "")
-        if unmet_m < MIN_UNMET_M and not (in_gap and unmet_m >= 200):
-            continue
-        band = "urgent" if need >= 4000 or pct >= 55 else ("priority" if need >= 1500 or pct >= 35 else "watch")
-        dissolved_rows.append(
-            {
-                "road_name": name,
-                "highway": hwy,
-                "ref": ref,
-                "length_m": round(length_m, 1),
-                "unmet_length_m": round(unmet_m, 1),
-                "pct_outside_400m": round(pct, 1),
-                "in_high_gap_ward": in_gap,
-                "need_score": round(need, 1),
-                "need_band": band,
-                "recommendation": (
-                    "Road segments farther than 400m from a GTFS stop — mid-block stops "
-                    "or a short feeder may help. Field-verify boarding demand."
-                    if pct >= 40
-                    else "Partial coverage gaps along this road — field-check before capital works."
-                ),
-                "geometry": merged,
-            }
-        )
+        in_gap = bool(grp["in_high_gap_ward"].any())
+
+        for part in parts:
+            if part is None or part.is_empty or part.geom_type != "LineString":
+                continue
+            unmet_m = float(part.length)
+            if unmet_m < MIN_UNMET_M and not (in_gap and unmet_m >= 200):
+                continue
+            # Approximate pct using parent way totals when available
+            length_m = float(grp["length_m"].sum()) or unmet_m
+            pct = min(100.0, (unmet_m / length_m * 100.0) if length_m else 100.0)
+            need = unmet_m * (1.35 if in_gap else 1.0) * (1.0 + pct / 200.0)
+            band = (
+                "urgent"
+                if need >= 2500 or unmet_m >= 1200 or pct >= 55
+                else ("priority" if need >= 900 or unmet_m >= 500 or pct >= 35 else "watch")
+            )
+            label = name
+            if str(key).startswith("osm:") and name.lower().startswith("unnamed"):
+                label = f"Unnamed {hwy} (OSM {str(key).split(':', 1)[-1]})"
+            dissolved_rows.append(
+                {
+                    "road_name": label,
+                    "highway": hwy,
+                    "ref": ref,
+                    "length_m": round(length_m, 1),
+                    "unmet_length_m": round(unmet_m, 1),
+                    "pct_outside_400m": round(pct, 1),
+                    "in_high_gap_ward": in_gap,
+                    "need_score": round(need, 1),
+                    "need_band": band,
+                    "recommendation": (
+                        "Road segment farther than 400m from a GTFS stop — mid-block stops "
+                        "or a short feeder may help. Field-verify boarding demand."
+                        if pct >= 40 or unmet_m >= 800
+                        else "Partial coverage gap along this road — field-check before capital works."
+                    ),
+                    "geometry": part,
+                }
+            )
 
     out = gpd.GeoDataFrame(dissolved_rows, crs=3857)
     if out.empty:

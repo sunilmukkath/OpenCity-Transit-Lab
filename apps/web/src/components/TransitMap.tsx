@@ -268,50 +268,6 @@ const LAYER_STACK: {
     ],
   },
   {
-    key: "connectivity_need",
-    sourceId: "tm-connectivity-need",
-    layers: [
-      {
-        // Halo so need corridors read against dense basemap / isochrones
-        id: "tm-connectivity-need-halo",
-        type: "line",
-        paint: {
-          "line-color": "#0f172a",
-          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 5, 13, 11, 15, 14],
-          "line-opacity": 0.55,
-          "line-blur": 0.4,
-        },
-      },
-      {
-        id: "tm-connectivity-need-line",
-        type: "line",
-        paint: {
-          "line-color": [
-            "match",
-            ["get", "need_band"],
-            "urgent",
-            "#ff2d55",
-            "priority",
-            "#ff8a1f",
-            "#facc15",
-          ],
-          "line-width": [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            9,
-            ["match", ["get", "need_band"], "urgent", 3.5, "priority", 2.8, 2],
-            13,
-            ["match", ["get", "need_band"], "urgent", 7.5, "priority", 6, 4.5],
-            15,
-            ["match", ["get", "need_band"], "urgent", 10, "priority", 8, 6],
-          ],
-          "line-opacity": 1,
-        },
-      },
-    ],
-  },
-  {
     key: "cmp_corridors",
     sourceId: "tm-cmp-corridors",
     layers: [
@@ -421,6 +377,50 @@ const LAYER_STACK: {
           // Visible at city zoom; thicken when zoomed in
           "line-width": ["interpolate", ["linear"], ["zoom"], 9, 1.6, 12, 2.4, 15, 3.5],
           "line-opacity": 0.9,
+        },
+      },
+    ],
+  },
+  {
+    // Above fills so corridors stay readable on isochrones / wards
+    key: "connectivity_need",
+    sourceId: "tm-connectivity-need",
+    layers: [
+      {
+        id: "tm-connectivity-need-halo",
+        type: "line",
+        paint: {
+          "line-color": "#0f172a",
+          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 6, 13, 12, 15, 16],
+          "line-opacity": 0.65,
+          "line-blur": 0.35,
+        },
+      },
+      {
+        id: "tm-connectivity-need-line",
+        type: "line",
+        paint: {
+          "line-color": [
+            "match",
+            ["get", "need_band"],
+            "urgent",
+            "#ff2d55",
+            "priority",
+            "#ff8a1f",
+            "#facc15",
+          ],
+          "line-width": [
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            9,
+            ["match", ["get", "need_band"], "urgent", 4, "priority", 3.2, 2.4],
+            13,
+            ["match", ["get", "need_band"], "urgent", 8, "priority", 6.5, 5],
+            15,
+            ["match", ["get", "need_band"], "urgent", 11, "priority", 9, 7],
+          ],
+          "line-opacity": 1,
         },
       },
     ],

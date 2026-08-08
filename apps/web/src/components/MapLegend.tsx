@@ -115,6 +115,10 @@ export function MapLegend({
   if (visibility.hubs) points.push({ kind: "dot", color: "#7c3aed", label: "CMRL metro hubs" });
   if (visibility.railway_stations)
     points.push({ kind: "dot", color: "#a78bfa", label: "Suburban / IR stations" });
+  if (visibility.tngis_settlement_area)
+    points.push({ kind: "fill", color: "rgba(217,119,6,0.45)", label: "TNGIS settlements" });
+  if (visibility.tngis_habitation)
+    points.push({ kind: "dot", color: "#78350f", label: "TNGIS habitation" });
   if (visibility.omr_corridor) points.push({ kind: "line", color: "#7c3aed", label: "OMR → Mahabs" });
   if (visibility.metro_area_boundaries) {
     points.push({ kind: "fill", color: "rgba(219,39,119,0.35)", label: "South town areas" });

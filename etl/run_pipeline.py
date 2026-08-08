@@ -35,6 +35,7 @@ from ingest_downloads import main as ingest_downloads_main  # noqa: E402
 from build_pop_access import main as build_pop_access_main  # noqa: E402
 from build_nmt_network import main as build_nmt_network_main  # noqa: E402
 from build_cmp_corridors import main as build_cmp_corridors_main  # noqa: E402
+from ingest_tngis_wfs import main as ingest_tngis_wfs_main  # noqa: E402
 
 RAW = ROOT / "data" / "raw"
 PROCESSED = ROOT / "data" / "processed"
@@ -1921,6 +1922,12 @@ def main() -> int:
             print(f"[ok] {label}")
         except Exception as exc:  # noqa: BLE001
             print(f"[fail] {label}: {exc}", file=sys.stderr)
+
+    try:
+        ingest_tngis_wfs_main()
+        print("[ok] tngis_wfs")
+    except Exception as exc:  # noqa: BLE001
+        print(f"[fail] tngis_wfs: {exc}", file=sys.stderr)
 
     copy_to_web(PROCESSED, WEB_PUBLIC)
     print(f"[ok] copied processed data → {WEB_PUBLIC}")

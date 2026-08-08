@@ -13813,5 +13813,33 @@
         "join_status": "joined"
       }
     ]
+  },
+  "tngis_wfs": {
+    "status": "loaded",
+    "layers": {
+      "tngis_settlement_area": {
+        "status": "loaded",
+        "feature_count": 1682,
+        "reason": null
+      },
+      "tngis_habitation": {
+        "status": "loaded",
+        "feature_count": 3523,
+        "reason": null
+      },
+      "tngis_slum_boundary": {
+        "status": "unavailable",
+        "feature_count": null,
+        "reason": "HTTP Error 400: "
+      }
+    },
+    "note": "TNGIS settlement/habitation inventory for map context. Slum WFS Unavailable.",
+    "bbox": [
+      79.95,
+      12.7,
+      80.4,
+      13.3
+    ],
+    "fetched_at": "2026-08-08T07:37:54.672858+00:00"
   }
 }

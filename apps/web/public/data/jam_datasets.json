@@ -576,7 +576,7 @@
       "maps_to_layers": [],
       "prefer_formats": [],
       "publisher": "OpenCity Datajam Aug 2026 catalog",
-      "notes": "TNGIS server \u2014 WFS connector not wired."
+      "notes": "WFS connector wired for settlement_area + habitation (CMA bbox). Slum GetFeature Unavailable (HTTP 400)."
     },
     {
       "id": "jam_dynamic_world_v1",

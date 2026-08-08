@@ -530,10 +530,14 @@
       "license": "See OpenCity / source portal",
       "kind": "external",
       "category": "Servers",
-      "notes": "TNGIS server \u2014 WFS connector not wired.",
-      "status": "unavailable",
-      "fetched_at": null,
-      "jam_catalog": true
+      "notes": "WFS connector wired for settlement_area + habitation (CMA bbox). Slum and many TNGIS_V2 layers return server errors on GetFeature \u2014 marked Unavailable.",
+      "status": "loaded",
+      "fetched_at": "2026-08-08T07:37:54.667540+00:00",
+      "jam_catalog": true,
+      "layers_loaded": [
+        "tngis_settlement_area",
+        "tngis_habitation"
+      ]
     },
     "jam_dynamic_world_v1": {
       "id": "jam_dynamic_world_v1",
@@ -810,6 +814,24 @@
       "kind": "derived",
       "status": "partial",
       "notes": "CMP corridor names from PDF text extract, geocoded via Nominatim/OSM. Not official CMDA centerlines \u2014 approximate for map context only."
+    },
+    "tngis_wfs": {
+      "id": "tngis_wfs",
+      "name": "TNGIS WFS (settlement / habitation)",
+      "publisher": "TNeGA / Tamil Nadu Geographical Information System",
+      "url": "https://tngis.tn.gov.in/tngismaps/wfs",
+      "portal": "https://tngis.tn.gov.in/",
+      "license": "See TNGIS terms of use \u2014 inventory context only",
+      "kind": "wfs",
+      "status": "loaded",
+      "fetched_at": "2026-08-08T07:37:54.667559+00:00",
+      "notes": "WFS connector wired for settlement_area + habitation (CMA bbox). Slum and many TNGIS_V2 layers return server errors on GetFeature \u2014 marked Unavailable.",
+      "bbox": [
+        79.95,
+        12.7,
+        80.4,
+        13.3
+      ]
     }
   },
   "layers": {
@@ -1092,6 +1114,71 @@
       "file": "cmp_corridors.geojson",
       "derived_from": "cmp_mobility_insights+nominatim",
       "notes": "CMP corridor names from PDF text extract, geocoded via Nominatim/OSM. Not official CMDA centerlines \u2014 approximate for map context only."
+    },
+    "tngis_settlement_area": {
+      "status": "loaded",
+      "file": "tngis_settlement_area.geojson",
+      "derived_from": "tngis_wfs",
+      "source_typename": "generic_viewer:settlement_area",
+      "bbox": [
+        79.95,
+        12.7,
+        80.4,
+        13.3
+      ],
+      "notes": "TNGIS settlement area (built-up) via public TNGIS WFS, clipped to CMA study bbox. Inventory context only \u2014 not an equity score.",
+      "feature_count": 1682,
+      "attributes": [
+        "label",
+        "landuse_level_1",
+        "landuse_level_2",
+        "landuse_level_3",
+        "Habitation_name",
+        "District",
+        "taluk",
+        "ac_name",
+        "pc_name",
+        "object_id",
+        "source_layer"
+      ]
+    },
+    "tngis_habitation": {
+      "status": "loaded",
+      "file": "tngis_habitation.geojson",
+      "derived_from": "tngis_wfs",
+      "source_typename": "generic_viewer:habitation",
+      "bbox": [
+        79.95,
+        12.7,
+        80.4,
+        13.3
+      ],
+      "notes": "TNGIS habitation points via public TNGIS WFS, clipped to CMA study bbox. Inventory context only \u2014 not an equity score.",
+      "feature_count": 3523,
+      "attributes": [
+        "label",
+        "habitation_name",
+        "village_name",
+        "block_name",
+        "ac_name",
+        "pc_name",
+        "object_id",
+        "source_layer"
+      ]
+    },
+    "tngis_slum_boundary": {
+      "status": "unavailable",
+      "file": "tngis_slum_boundary.geojson",
+      "derived_from": "tngis_wfs",
+      "source_typename": "generic_viewer:slum_boundary",
+      "bbox": [
+        79.95,
+        12.7,
+        80.4,
+        13.3
+      ],
+      "notes": "TNGIS slum boundary \u2014 GetFeature failed (HTTPError). Export from QGIS if you have departmental access.",
+      "reason": "HTTP Error 400: "
     }
   },
   "realtime": [

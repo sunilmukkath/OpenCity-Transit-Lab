@@ -93,6 +93,18 @@ function formatPopupProps(props: Record<string, unknown>): string {
     "hub_type",
     "mode",
     "highway",
+    "label",
+    "habitation_name",
+    "Habitation_name",
+    "landuse_level_1",
+    "landuse_level_2",
+    "landuse_level_3",
+    "District",
+    "taluk",
+    "village_name",
+    "block_name",
+    "ac_name",
+    "source_layer",
   ];
   const lines: string[] = [];
   for (const key of prefer) {
@@ -283,6 +295,54 @@ const LAYER_STACK: {
           "line-color": "#38bdf8",
           "line-width": ["interpolate", ["linear"], ["zoom"], 9, 2.5, 14, 5],
           "line-opacity": 0.9,
+        },
+      },
+    ],
+  },
+  {
+    key: "tngis_settlement_area",
+    sourceId: "tm-tngis-settlement",
+    layers: [
+      {
+        id: "tm-tngis-settlement-fill",
+        type: "fill",
+        paint: {
+          "fill-color": [
+            "match",
+            ["get", "landuse_level_3"],
+            "Core urban",
+            "#b45309",
+            "Built up (Rural)",
+            "#ca8a04",
+            "#d97706",
+          ],
+          "fill-opacity": 0.28,
+        },
+      },
+      {
+        id: "tm-tngis-settlement-line",
+        type: "line",
+        paint: {
+          "line-color": "#92400e",
+          "line-width": 0.6,
+          "line-opacity": 0.55,
+        },
+      },
+    ],
+  },
+  {
+    key: "tngis_habitation",
+    sourceId: "tm-tngis-habitation",
+    layers: [
+      {
+        id: "tm-tngis-habitation-circle",
+        type: "circle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 2.2, 14, 5],
+          "circle-color": "#78350f",
+          "circle-opacity": 0.85,
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#fef3c7",
         },
       },
     ],
@@ -568,10 +628,12 @@ const LAYER_STACK: {
 const INTERACTIVE_LAYER_IDS = [
   "tm-wards-fill",
   "tm-walk-bands-fill",
+  "tm-tngis-settlement-fill",
   "tm-stops-circle",
   "tm-mrts-stations-circle",
   "tm-hubs-circle",
   "tm-railway-circle",
+  "tm-tngis-habitation-circle",
   "tm-connectivity-need-line",
   "tm-schools-circle",
   "tm-healthcare-circle",

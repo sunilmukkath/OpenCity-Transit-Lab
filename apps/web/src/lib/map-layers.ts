@@ -19,7 +19,9 @@ export type MapLayerKey =
   | "anganwadis"
   | "bus_stop_audit"
   | "nmt_network"
-  | "cmp_corridors";
+  | "cmp_corridors"
+  | "tngis_settlement_area"
+  | "tngis_habitation";
 
 export const MAP_LAYER_META: {
   key: MapLayerKey;
@@ -121,6 +123,21 @@ export const MAP_LAYER_META: {
     defaultOn: false,
     group: "core",
   },
+  {
+    key: "tngis_settlement_area",
+    label: "TNGIS settlement / built-up (WFS, Partial bbox)",
+    short: "Settlements",
+    defaultOn: false,
+    heavy: true,
+    group: "core",
+  },
+  {
+    key: "tngis_habitation",
+    label: "TNGIS habitation points (WFS, Partial bbox)",
+    short: "Habitation",
+    defaultOn: false,
+    group: "core",
+  },
 ];
 
 export const CHENNAI_VIEW = {
@@ -149,6 +166,8 @@ const CORE_OFF_AMENITIES: Partial<Record<MapLayerKey, boolean>> = {
   railway_stations: false,
   nmt_network: false,
   cmp_corridors: false,
+  tngis_settlement_area: false,
+  tngis_habitation: false,
 };
 
 export const LAYER_PRESETS: Record<

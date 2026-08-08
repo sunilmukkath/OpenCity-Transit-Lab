@@ -207,8 +207,11 @@ function UnitListItem({
         </div>
       </div>
       <p className="mt-1 text-xs text-[var(--ink-muted)]">
-        {fmt(unit.stop_count)} stops · {fmt(unit.shelter_count)} shelters · {fmt(unit.hub_count)}{" "}
-        hubs
+        {fmt(unit.stop_count)} stops · {fmt(unit.shelter_count)} shelters · MRTS{" "}
+        {fmt(unit.mrts_station_count ?? 0)} · CMRL {fmt(unit.cmrl_hub_count ?? 0)}
+        {unit.railway_station_count != null && unit.railway_station_count > 0
+          ? ` · rail ${fmt(unit.railway_station_count)}`
+          : ""}
         {enriched.pt_index != null ? ` · PT ${enriched.pt_index}` : ""}
       </p>
       {unit.unit_type === "ward" ? (
@@ -340,9 +343,10 @@ function ReportDetail({
         </div>
         <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
           <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-            Rail hubs
+            Rail hubs (combined)
           </p>
           <p className="mt-1 text-2xl font-semibold text-[var(--yellow)]">{fmt(unit.hub_count)}</p>
+          <p className="mt-1 text-xs text-[var(--ink-muted)]">MRTS + metro tags · Gap Index input</p>
         </div>
         <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
           <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
@@ -353,6 +357,54 @@ function ReportDetail({
           </p>
           <p className="mt-1 text-xs text-[var(--ink-muted)]">
             stops/km² · {fmt(unit.area_km2, 2)} km²
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-3 sm:grid-cols-3">
+        <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
+            MRTS stations
+          </p>
+          <p className="mt-1 text-2xl font-semibold text-[var(--yellow)]">
+            {fmt(unit.mrts_station_count ?? 0)}
+          </p>
+          <p className="mt-1 text-xs text-[var(--ink-muted)]">
+            {unit.has_mrts
+              ? "Inside boundary"
+              : unit.nearest_mrts_m != null
+                ? `Nearest ${fmt(unit.nearest_mrts_m, 0)} m`
+                : "No station join"}
+          </p>
+        </div>
+        <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
+            CMRL hubs
+          </p>
+          <p className="mt-1 text-2xl font-semibold text-[var(--yellow)]">
+            {fmt(unit.cmrl_hub_count ?? 0)}
+          </p>
+          <p className="mt-1 text-xs text-[var(--ink-muted)]">
+            {unit.has_cmrl
+              ? "Inside boundary"
+              : unit.nearest_cmrl_m != null
+                ? `Nearest ${fmt(unit.nearest_cmrl_m, 0)} m`
+                : "No hub join"}
+          </p>
+        </div>
+        <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
+            Railway stations
+          </p>
+          <p className="mt-1 text-2xl font-semibold text-[var(--yellow)]">
+            {fmt(unit.railway_station_count ?? 0)}
+          </p>
+          <p className="mt-1 text-xs text-[var(--ink-muted)]">
+            {unit.has_railway
+              ? "OSM inside boundary"
+              : unit.nearest_railway_m != null
+                ? `Nearest ${fmt(unit.nearest_railway_m, 0)} m`
+                : "Partial / no join"}
           </p>
         </div>
       </div>
@@ -386,6 +438,15 @@ function downloadReportsCsv(rows: SpatialUnitReport[], filename: string) {
     "stop_count",
     "shelter_count",
     "hub_count",
+    "mrts_station_count",
+    "cmrl_hub_count",
+    "railway_station_count",
+    "has_mrts",
+    "has_cmrl",
+    "has_railway",
+    "nearest_mrts_m",
+    "nearest_cmrl_m",
+    "nearest_railway_m",
     "area_km2",
     "stops_per_km2",
     "top_recommendation",
@@ -405,6 +466,15 @@ function downloadReportsCsv(rows: SpatialUnitReport[], filename: string) {
         r.stop_count ?? "",
         r.shelter_count ?? "",
         r.hub_count ?? "",
+        r.mrts_station_count ?? "",
+        r.cmrl_hub_count ?? "",
+        r.railway_station_count ?? "",
+        r.has_mrts ? 1 : 0,
+        r.has_cmrl ? 1 : 0,
+        r.has_railway ? 1 : 0,
+        r.nearest_mrts_m ?? "",
+        r.nearest_cmrl_m ?? "",
+        r.nearest_railway_m ?? "",
         r.area_km2 ?? "",
         r.stops_per_km2 ?? "",
         `"${(r.recommendations[0]?.title ?? "").replaceAll('"', '""')}"`,

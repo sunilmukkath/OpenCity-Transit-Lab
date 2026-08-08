@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-05T08:38:30.249541+00:00",
-  "note": "Reports use verified spatial joins only (stops/shelters/hubs inside polygons). Gap Index and recommendations are inventory rules \u2014 not census equity scores.",
+  "generated_at": "2026-08-08T07:10:15.699089+00:00",
+  "note": "Reports use verified spatial joins only (stops/shelters/hubs inside polygons). Mode fields split MRTS stations, CMRL metro-named hubs, and OSM railway stations. Nearest_*_m are crow-flies from unit representative point \u2014 not network walk. Gap Index and recommendations are inventory rules \u2014 not census equity scores.",
   "gap_index_method": {
     "scale": "0\u2013100 (higher = larger inventory gap)",
     "bands": {
@@ -12,8 +12,15 @@
     "components": {
       "stop_gap": "max 40 \u2014 zero / very low / below city-mean stop counts",
       "shelter_gap": "max 30 \u2014 shelter presence vs stops",
-      "hub_gap": "max 20 \u2014 no MRTS/metro hub inside boundary",
+      "hub_gap": "max 20 \u2014 no MRTS/metro hub inside boundary (combined hub_count)",
       "density_gap": "max 10 \u2014 low stops per km\u00b2"
+    },
+    "mode_inventory": {
+      "mrts_station_count": "OpenCity MRTS station points inside the unit",
+      "cmrl_hub_count": "metro_named hubs (CMRL Phase-I tags) inside the unit",
+      "railway_station_count": "OSM railway station points inside the unit (Partial)",
+      "nearest_*_m": "Straight-line metres to nearest station/hub",
+      "limitation": "Proposed CMRL Phase-II stations Unavailable"
     },
     "disclaimer": "Not a population-weighted equity score. Field-verify before capital works. Community GTFS may under-count official MTC stops."
   },
@@ -59,7 +66,17 @@
           "title": "Low stop density for land area",
           "detail": "About 1.85 stops per km\u00b2 across 1.625 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1971.4,
+      "nearest_cmrl_m": 1831.8,
+      "nearest_railway_m": 1904.0
     },
     {
       "id": "183",
@@ -100,7 +117,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.6 stops per km\u00b2 across 1.54 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2626.0,
+      "nearest_cmrl_m": 2559.5,
+      "nearest_railway_m": 2569.5
     },
     {
       "id": "191",
@@ -141,7 +168,17 @@
           "title": "Low stop density for land area",
           "detail": "About 0.48 stops per km\u00b2 across 4.163 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5593.5,
+      "nearest_cmrl_m": 7832.9,
+      "nearest_railway_m": 5627.1
     },
     {
       "id": "158",
@@ -182,7 +219,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.49 stops per km\u00b2 across 2.012 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2827.6,
+      "nearest_cmrl_m": 2098.9,
+      "nearest_railway_m": 2853.8
     },
     {
       "id": "192",
@@ -223,7 +270,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.35 stops per km\u00b2 across 2.554 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3766.4,
+      "nearest_cmrl_m": 3798.7,
+      "nearest_railway_m": 3734.4
     },
     {
       "id": "22",
@@ -264,7 +321,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.79 stops per km\u00b2 across 2.153 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3256.6,
+      "nearest_cmrl_m": 866.5,
+      "nearest_railway_m": 3790.1
     },
     {
       "id": "144",
@@ -305,7 +372,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.32 stops per km\u00b2 across 1.388 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5696.0,
+      "nearest_cmrl_m": 2263.8,
+      "nearest_railway_m": 4769.0
     },
     {
       "id": "149",
@@ -346,7 +423,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.24 stops per km\u00b2 across 1.416 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5290.1,
+      "nearest_cmrl_m": 3204.6,
+      "nearest_railway_m": 5295.2
     },
     {
       "id": "154",
@@ -387,7 +474,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.27 stops per km\u00b2 across 1.172 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4737.1,
+      "nearest_cmrl_m": 4070.6,
+      "nearest_railway_m": 4719.9
     },
     {
       "id": "112",
@@ -428,7 +525,17 @@
           "title": "Low stop density for land area",
           "detail": "About 3.77 stops per km\u00b2 across 1.06 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1369.3,
+      "nearest_cmrl_m": 2900.0,
+      "nearest_railway_m": 1380.3
     },
     {
       "id": "12",
@@ -464,7 +571,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 897.8,
+      "nearest_cmrl_m": 3742.4,
+      "nearest_railway_m": 794.5
     },
     {
       "id": "143",
@@ -500,7 +617,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.7 stops per km\u00b2 across 2.597 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4673.5,
+      "nearest_cmrl_m": 2977.3,
+      "nearest_railway_m": 4622.8
     },
     {
       "id": "159",
@@ -541,7 +668,17 @@
           "title": "Low stop density for land area",
           "detail": "About 0.89 stops per km\u00b2 across 3.367 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 1,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": true,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1121.8,
+      "nearest_cmrl_m": 979.7,
+      "nearest_railway_m": 1127.5
     },
     {
       "id": "164",
@@ -577,7 +714,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 607.8,
+      "nearest_cmrl_m": 1273.2,
+      "nearest_railway_m": 675.4
     },
     {
       "id": "166",
@@ -608,7 +755,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 809.2,
+      "nearest_cmrl_m": 1060.6,
+      "nearest_railway_m": 807.7
     },
     {
       "id": "184",
@@ -639,7 +796,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1157.7,
+      "nearest_cmrl_m": 1953.9,
+      "nearest_railway_m": 1233.0
     },
     {
       "id": "31",
@@ -675,7 +842,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.81 stops per km\u00b2 across 2.495 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4508.3,
+      "nearest_cmrl_m": 6873.3,
+      "nearest_railway_m": 4496.5
     },
     {
       "id": "160",
@@ -716,7 +893,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.48 stops per km\u00b2 across 0.67 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 1,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": true,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 973.6,
+      "nearest_cmrl_m": 515.6,
+      "nearest_railway_m": 925.7
     },
     {
       "id": "162",
@@ -757,7 +944,17 @@
           "title": "Low stop density for land area",
           "detail": "About 3.23 stops per km\u00b2 across 1.24 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 2,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 439.2,
+      "nearest_cmrl_m": 954.6,
+      "nearest_railway_m": 284.4
     },
     {
       "id": "107",
@@ -788,7 +985,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1285.3,
+      "nearest_cmrl_m": 1659.3,
+      "nearest_railway_m": 1257.5
     },
     {
       "id": "146",
@@ -819,7 +1026,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 6918.6,
+      "nearest_cmrl_m": 4103.1,
+      "nearest_railway_m": 6553.8
     },
     {
       "id": "148",
@@ -850,7 +1067,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5286.9,
+      "nearest_cmrl_m": 2110.2,
+      "nearest_railway_m": 4972.0
     },
     {
       "id": "187",
@@ -881,7 +1108,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2073.4,
+      "nearest_cmrl_m": 3441.1,
+      "nearest_railway_m": 2060.7
     },
     {
       "id": "33",
@@ -912,7 +1149,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2478.0,
+      "nearest_cmrl_m": 5328.7,
+      "nearest_railway_m": 2466.8
     },
     {
       "id": "156",
@@ -948,7 +1195,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.32 stops per km\u00b2 across 2.777 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4350.4,
+      "nearest_cmrl_m": 4106.8,
+      "nearest_railway_m": 4347.3
     },
     {
       "id": "193",
@@ -984,7 +1241,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.8 stops per km\u00b2 across 2.082 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3286.1,
+      "nearest_cmrl_m": 3902.8,
+      "nearest_railway_m": 3312.7
     },
     {
       "id": "13",
@@ -1015,7 +1282,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1123.7,
+      "nearest_cmrl_m": 3641.1,
+      "nearest_railway_m": 1274.4
     },
     {
       "id": "17",
@@ -1051,7 +1328,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.25 stops per km\u00b2 across 6.675 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 7344.7,
+      "nearest_cmrl_m": 4084.2,
+      "nearest_railway_m": 7378.3
     },
     {
       "id": "18",
@@ -1087,7 +1374,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.48 stops per km\u00b2 across 8.073 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3620.3,
+      "nearest_cmrl_m": 1898.2,
+      "nearest_railway_m": 3675.2
     },
     {
       "id": "199",
@@ -1123,7 +1420,17 @@
           "title": "Low stop density for land area",
           "detail": "About 1.86 stops per km\u00b2 across 8.074 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 9155.5,
+      "nearest_cmrl_m": 10719.8,
+      "nearest_railway_m": 9189.9
     },
     {
       "id": "44",
@@ -1159,7 +1466,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.89 stops per km\u00b2 across 0.691 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1252.9,
+      "nearest_cmrl_m": 4872.0,
+      "nearest_railway_m": 1223.7
     },
     {
       "id": "51",
@@ -1195,7 +1512,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.48 stops per km\u00b2 across 0.403 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 623.5,
+      "nearest_cmrl_m": 2071.6,
+      "nearest_railway_m": 651.3
     },
     {
       "id": "6",
@@ -1231,7 +1558,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.18 stops per km\u00b2 across 1.377 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 967.8,
+      "nearest_cmrl_m": 4157.5,
+      "nearest_railway_m": 857.5
     },
     {
       "id": "80",
@@ -1267,7 +1604,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.69 stops per km\u00b2 across 1.485 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2013.8,
+      "nearest_cmrl_m": 6891.6,
+      "nearest_railway_m": 2043.9
     },
     {
       "id": "98",
@@ -1303,7 +1650,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.09 stops per km\u00b2 across 1.436 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1793.3,
+      "nearest_cmrl_m": 1933.6,
+      "nearest_railway_m": 1780.0
     },
     {
       "id": "152",
@@ -1334,7 +1691,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4825.9,
+      "nearest_cmrl_m": 3707.5,
+      "nearest_railway_m": 4837.0
     },
     {
       "id": "64",
@@ -1365,7 +1732,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1254.7,
+      "nearest_cmrl_m": 4022.8,
+      "nearest_railway_m": 1234.8
     },
     {
       "id": "74",
@@ -1401,7 +1778,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 784.2,
+      "nearest_cmrl_m": 3480.5,
+      "nearest_railway_m": 800.1
     },
     {
       "id": "106",
@@ -1437,7 +1824,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.52 stops per km\u00b2 across 0.885 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1710.2,
+      "nearest_cmrl_m": 2417.8,
+      "nearest_railway_m": 1739.3
     },
     {
       "id": "109",
@@ -1473,7 +1870,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.25 stops per km\u00b2 across 0.941 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 741.4,
+      "nearest_cmrl_m": 2297.4,
+      "nearest_railway_m": 791.0
     },
     {
       "id": "120",
@@ -1509,7 +1916,17 @@
           "title": "Low stop density for land area",
           "detail": "About 3.75 stops per km\u00b2 across 0.534 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 547.4,
+      "nearest_cmrl_m": 3143.7,
+      "nearest_railway_m": 488.6
     },
     {
       "id": "131",
@@ -1545,7 +1962,17 @@
           "title": "Low stop density for land area",
           "detail": "About 3.83 stops per km\u00b2 across 1.045 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1077.6,
+      "nearest_cmrl_m": 2289.8,
+      "nearest_railway_m": 1073.9
     },
     {
       "id": "19",
@@ -1581,7 +2008,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.61 stops per km\u00b2 across 4.118 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 6374.4,
+      "nearest_cmrl_m": 2895.2,
+      "nearest_railway_m": 6393.2
     },
     {
       "id": "48",
@@ -1617,7 +2054,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.18 stops per km\u00b2 across 0.479 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 722.8,
+      "nearest_cmrl_m": 2409.5,
+      "nearest_railway_m": 682.9
     },
     {
       "id": "29",
@@ -1653,7 +2100,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.19 stops per km\u00b2 across 2.279 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2629.8,
+      "nearest_cmrl_m": 5162.9,
+      "nearest_railway_m": 2596.1
     },
     {
       "id": "89",
@@ -1684,7 +2141,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2677.4,
+      "nearest_cmrl_m": 1918.5,
+      "nearest_railway_m": 2066.0
     },
     {
       "id": "54",
@@ -1715,7 +2182,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 711.5,
+      "nearest_cmrl_m": 1215.4,
+      "nearest_railway_m": 681.4
     },
     {
       "id": "9",
@@ -1746,7 +2223,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1206.0,
+      "nearest_cmrl_m": 4748.3,
+      "nearest_railway_m": 1231.9
     },
     {
       "id": "50",
@@ -1782,7 +2269,17 @@
           "title": "Low stop density for land area",
           "detail": "About 3.91 stops per km\u00b2 across 1.536 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1136.0,
+      "nearest_cmrl_m": 2498.0,
+      "nearest_railway_m": 1109.4
     },
     {
       "id": "94",
@@ -1818,7 +2315,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.66 stops per km\u00b2 across 1.502 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 815.2,
+      "nearest_cmrl_m": 2851.4,
+      "nearest_railway_m": 778.3
     },
     {
       "id": "101",
@@ -1849,7 +2356,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1809.2,
+      "nearest_cmrl_m": 995.8,
+      "nearest_railway_m": 1815.8
     },
     {
       "id": "117",
@@ -1880,7 +2397,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2056.7,
+      "nearest_cmrl_m": 468.6,
+      "nearest_railway_m": 2031.9
     },
     {
       "id": "145",
@@ -1911,7 +2438,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5253.3,
+      "nearest_cmrl_m": 1256.5,
+      "nearest_railway_m": 3975.8
     },
     {
       "id": "147",
@@ -1942,7 +2479,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 6581.4,
+      "nearest_cmrl_m": 3644.8,
+      "nearest_railway_m": 6300.1
     },
     {
       "id": "155",
@@ -1973,7 +2520,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4103.6,
+      "nearest_cmrl_m": 3560.1,
+      "nearest_railway_m": 4066.8
     },
     {
       "id": "157",
@@ -2009,7 +2566,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.15 stops per km\u00b2 across 4.575 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3100.1,
+      "nearest_cmrl_m": 2878.8,
+      "nearest_railway_m": 3127.6
     },
     {
       "id": "172",
@@ -2045,7 +2612,17 @@
           "title": "Low stop density for land area",
           "detail": "About 3.7 stops per km\u00b2 across 8.376 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1862.5,
+      "nearest_cmrl_m": 1898.8,
+      "nearest_railway_m": 1894.7
     },
     {
       "id": "137",
@@ -2076,7 +2653,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3722.5,
+      "nearest_cmrl_m": 3819.7,
+      "nearest_railway_m": 3733.4
     },
     {
       "id": "138",
@@ -2107,7 +2694,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2454.7,
+      "nearest_cmrl_m": 2748.5,
+      "nearest_railway_m": 2462.5
     },
     {
       "id": "57",
@@ -2138,7 +2735,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1121.6,
+      "nearest_cmrl_m": 740.9,
+      "nearest_railway_m": 1097.6
     },
     {
       "id": "72",
@@ -2169,7 +2776,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 2,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 478.5,
+      "nearest_cmrl_m": 2348.8,
+      "nearest_railway_m": 487.5
     },
     {
       "id": "93",
@@ -2200,7 +2817,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3878.5,
+      "nearest_cmrl_m": 1204.0,
+      "nearest_railway_m": 2718.4
     },
     {
       "id": "10",
@@ -2231,7 +2858,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 538.6,
+      "nearest_cmrl_m": 3867.6,
+      "nearest_railway_m": 629.2
     },
     {
       "id": "11",
@@ -2262,7 +2899,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 959.9,
+      "nearest_cmrl_m": 4485.8,
+      "nearest_railway_m": 931.0
     },
     {
       "id": "150",
@@ -2293,7 +2940,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 7516.7,
+      "nearest_cmrl_m": 5989.1,
+      "nearest_railway_m": 7485.8
     },
     {
       "id": "153",
@@ -2329,7 +2986,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.65 stops per km\u00b2 across 2.266 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5406.3,
+      "nearest_cmrl_m": 5159.3,
+      "nearest_railway_m": 5402.8
     },
     {
       "id": "179",
@@ -2365,7 +3032,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.67 stops per km\u00b2 across 1.873 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1325.1,
+      "nearest_cmrl_m": 2523.1,
+      "nearest_railway_m": 1306.2
     },
     {
       "id": "23",
@@ -2401,7 +3078,17 @@
           "title": "Low stop density for land area",
           "detail": "About 1.2 stops per km\u00b2 across 4.154 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 6726.8,
+      "nearest_cmrl_m": 6650.3,
+      "nearest_railway_m": 6717.3
     },
     {
       "id": "47",
@@ -2432,7 +3119,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 677.9,
+      "nearest_cmrl_m": 2818.6,
+      "nearest_railway_m": 662.0
     },
     {
       "id": "67",
@@ -2463,7 +3160,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1391.0,
+      "nearest_cmrl_m": 4337.2,
+      "nearest_railway_m": 1425.3
     },
     {
       "id": "86",
@@ -2494,7 +3201,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2683.1,
+      "nearest_cmrl_m": 4353.4,
+      "nearest_railway_m": 2663.6
     },
     {
       "id": "97",
@@ -2525,7 +3242,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1652.7,
+      "nearest_cmrl_m": 1416.0,
+      "nearest_railway_m": 1643.3
     },
     {
       "id": "190",
@@ -2561,7 +3288,17 @@
           "title": "Low stop density for land area",
           "detail": "About 3.26 stops per km\u00b2 across 3.067 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4525.4,
+      "nearest_cmrl_m": 6958.3,
+      "nearest_railway_m": 4555.7
     },
     {
       "id": "16",
@@ -2597,7 +3334,17 @@
           "title": "Low stop density for land area",
           "detail": "About 1.5 stops per km\u00b2 across 10.025 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3394.2,
+      "nearest_cmrl_m": 3951.5,
+      "nearest_railway_m": 3393.2
     },
     {
       "id": "66",
@@ -2633,7 +3380,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.85 stops per km\u00b2 across 1.031 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1971.8,
+      "nearest_cmrl_m": 4723.0,
+      "nearest_railway_m": 1959.8
     },
     {
       "id": "69",
@@ -2669,7 +3426,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.77 stops per km\u00b2 across 1.049 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 683.5,
+      "nearest_cmrl_m": 3521.9,
+      "nearest_railway_m": 735.9
     },
     {
       "id": "90",
@@ -2705,7 +3472,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.61 stops per km\u00b2 across 1.084 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3428.2,
+      "nearest_cmrl_m": 911.7,
+      "nearest_railway_m": 1797.0
     },
     {
       "id": "119",
@@ -2736,7 +3513,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 820.1,
+      "nearest_cmrl_m": 1942.8,
+      "nearest_railway_m": 811.5
     },
     {
       "id": "128",
@@ -2767,7 +3554,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4284.4,
+      "nearest_cmrl_m": 3086.6,
+      "nearest_railway_m": 4289.2
     },
     {
       "id": "175",
@@ -2798,7 +3595,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1366.1,
+      "nearest_cmrl_m": 1964.3,
+      "nearest_railway_m": 1350.9
     },
     {
       "id": "79",
@@ -2829,7 +3636,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2008.7,
+      "nearest_cmrl_m": 7610.2,
+      "nearest_railway_m": 2041.0
     },
     {
       "id": "83",
@@ -2865,7 +3682,17 @@
           "title": "Low stop density for land area",
           "detail": "About 3.02 stops per km\u00b2 across 6.632 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1448.8,
+      "nearest_cmrl_m": 4790.9,
+      "nearest_railway_m": 1456.5
     },
     {
       "id": "43",
@@ -2896,7 +3723,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1350.2,
+      "nearest_cmrl_m": 3827.7,
+      "nearest_railway_m": 1329.3
     },
     {
       "id": "8",
@@ -2927,7 +3764,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1451.9,
+      "nearest_cmrl_m": 4767.5,
+      "nearest_railway_m": 1467.2
     },
     {
       "id": "139",
@@ -2958,7 +3805,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1221.3,
+      "nearest_cmrl_m": 1696.1,
+      "nearest_railway_m": 1219.6
     },
     {
       "id": "15",
@@ -2989,7 +3846,17 @@
           "title": "Low stop density for land area",
           "detail": "About 0.92 stops per km\u00b2 across 8.705 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3553.3,
+      "nearest_cmrl_m": 6259.3,
+      "nearest_railway_m": 4000.2
     },
     {
       "id": "174",
@@ -3020,7 +3887,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2021.4,
+      "nearest_cmrl_m": 3797.6,
+      "nearest_railway_m": 2001.2
     },
     {
       "id": "186",
@@ -3051,7 +3928,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 775.6,
+      "nearest_cmrl_m": 3287.6,
+      "nearest_railway_m": 758.4
     },
     {
       "id": "188",
@@ -3082,7 +3969,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.34 stops per km\u00b2 across 3.423 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2083.2,
+      "nearest_cmrl_m": 4451.2,
+      "nearest_railway_m": 2098.4
     },
     {
       "id": "194",
@@ -3113,7 +4010,17 @@
           "title": "Low stop density for land area",
           "detail": "About 1.77 stops per km\u00b2 across 4.512 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5702.9,
+      "nearest_cmrl_m": 5993.9,
+      "nearest_railway_m": 5730.9
     },
     {
       "id": "195",
@@ -3144,7 +4051,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4346.6,
+      "nearest_cmrl_m": 5345.9,
+      "nearest_railway_m": 4377.8
     },
     {
       "id": "200",
@@ -3175,7 +4092,17 @@
           "title": "Low stop density for land area",
           "detail": "About 1.06 stops per km\u00b2 across 7.517 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 11552.9,
+      "nearest_cmrl_m": 13126.0,
+      "nearest_railway_m": 11587.3
     },
     {
       "id": "25",
@@ -3206,7 +4133,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4757.7,
+      "nearest_cmrl_m": 4699.6,
+      "nearest_railway_m": 4752.7
     },
     {
       "id": "3",
@@ -3237,7 +4174,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1109.4,
+      "nearest_cmrl_m": 6589.8,
+      "nearest_railway_m": 2003.2
     },
     {
       "id": "4",
@@ -3268,7 +4215,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 657.5,
+      "nearest_cmrl_m": 5041.6,
+      "nearest_railway_m": 725.9
     },
     {
       "id": "56",
@@ -3299,7 +4256,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 825.2,
+      "nearest_cmrl_m": 732.6,
+      "nearest_railway_m": 842.7
     },
     {
       "id": "78",
@@ -3330,7 +4297,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1322.6,
+      "nearest_cmrl_m": 1314.5,
+      "nearest_railway_m": 1483.2
     },
     {
       "id": "88",
@@ -3361,7 +4338,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.84 stops per km\u00b2 across 2.272 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1657.2,
+      "nearest_cmrl_m": 2102.7,
+      "nearest_railway_m": 1162.0
     },
     {
       "id": "84",
@@ -3392,7 +4379,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1226.0,
+      "nearest_cmrl_m": 3937.0,
+      "nearest_railway_m": 1192.8
     },
     {
       "id": "180",
@@ -3423,7 +4420,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.4 stops per km\u00b2 across 1.82 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1454.1,
+      "nearest_cmrl_m": 1960.2,
+      "nearest_railway_m": 1393.2
     },
     {
       "id": "196",
@@ -3454,7 +4461,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.51 stops per km\u00b2 across 1.552 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5133.3,
+      "nearest_cmrl_m": 6207.7,
+      "nearest_railway_m": 5165.6
     },
     {
       "id": "21",
@@ -3485,7 +4502,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.28 stops per km\u00b2 across 1.87 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2296.2,
+      "nearest_cmrl_m": 1548.1,
+      "nearest_railway_m": 2331.3
     },
     {
       "id": "26",
@@ -3516,7 +4543,17 @@
           "title": "Low stop density for land area",
           "detail": "About 3.72 stops per km\u00b2 across 2.153 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5715.9,
+      "nearest_cmrl_m": 3389.7,
+      "nearest_railway_m": 5687.2
     },
     {
       "id": "113",
@@ -3547,7 +4584,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1729.5,
+      "nearest_cmrl_m": 1218.6,
+      "nearest_railway_m": 1733.8
     },
     {
       "id": "92",
@@ -3578,7 +4625,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3562.4,
+      "nearest_cmrl_m": 1998.7,
+      "nearest_railway_m": 3004.4
     },
     {
       "id": "99",
@@ -3609,7 +4666,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1059.8,
+      "nearest_cmrl_m": 1809.1,
+      "nearest_railway_m": 1074.5
     },
     {
       "id": "32",
@@ -3640,7 +4707,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.03 stops per km\u00b2 across 4.966 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3224.5,
+      "nearest_cmrl_m": 6619.5,
+      "nearest_railway_m": 3250.5
     },
     {
       "id": "105",
@@ -3666,7 +4743,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2378.9,
+      "nearest_cmrl_m": 1948.0,
+      "nearest_railway_m": 2382.6
     },
     {
       "id": "108",
@@ -3692,7 +4779,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 263.7,
+      "nearest_cmrl_m": 906.8,
+      "nearest_railway_m": 307.4
     },
     {
       "id": "189",
@@ -3723,7 +4820,17 @@
           "title": "Low stop density for land area",
           "detail": "About 1.18 stops per km\u00b2 across 10.197 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2203.9,
+      "nearest_cmrl_m": 4690.2,
+      "nearest_railway_m": 2237.5
     },
     {
       "id": "198",
@@ -3754,7 +4861,17 @@
           "title": "Low stop density for land area",
           "detail": "About 1.75 stops per km\u00b2 across 6.3 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 6273.8,
+      "nearest_cmrl_m": 7764.2,
+      "nearest_railway_m": 6307.9
     },
     {
       "id": "37",
@@ -3785,7 +4902,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.93 stops per km\u00b2 across 4.1 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1711.0,
+      "nearest_cmrl_m": 3480.0,
+      "nearest_railway_m": 1731.3
     },
     {
       "id": "55",
@@ -3816,7 +4943,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 1,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": true,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1013.2,
+      "nearest_cmrl_m": 802.9,
+      "nearest_railway_m": 1038.3
     },
     {
       "id": "91",
@@ -3842,7 +4979,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3886.1,
+      "nearest_cmrl_m": 2419.1,
+      "nearest_railway_m": 3594.0
     },
     {
       "id": "115",
@@ -3868,7 +5015,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1577.7,
+      "nearest_cmrl_m": 2409.9,
+      "nearest_railway_m": 1578.6
     },
     {
       "id": "140",
@@ -3894,7 +5051,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 783.9,
+      "nearest_cmrl_m": 1069.3,
+      "nearest_railway_m": 844.8
     },
     {
       "id": "141",
@@ -3920,7 +5087,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1043.8,
+      "nearest_cmrl_m": 819.5,
+      "nearest_railway_m": 1069.8
     },
     {
       "id": "151",
@@ -3946,7 +5123,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5305.1,
+      "nearest_cmrl_m": 4768.7,
+      "nearest_railway_m": 5306.5
     },
     {
       "id": "163",
@@ -3972,7 +5159,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 637.2,
+      "nearest_cmrl_m": 1495.3,
+      "nearest_railway_m": 727.9
     },
     {
       "id": "185",
@@ -3998,7 +5195,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 823.3,
+      "nearest_cmrl_m": 2539.6,
+      "nearest_railway_m": 712.9
     },
     {
       "id": "39",
@@ -4024,7 +5231,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 830.7,
+      "nearest_cmrl_m": 4315.7,
+      "nearest_railway_m": 1907.4
     },
     {
       "id": "53",
@@ -4050,7 +5267,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 726.3,
+      "nearest_cmrl_m": 1935.0,
+      "nearest_railway_m": 672.2
     },
     {
       "id": "71",
@@ -4081,7 +5308,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 354.8,
+      "nearest_cmrl_m": 4075.9,
+      "nearest_railway_m": 330.7
     },
     {
       "id": "75",
@@ -4107,7 +5344,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1762.6,
+      "nearest_cmrl_m": 2779.7,
+      "nearest_railway_m": 1786.6
     },
     {
       "id": "24",
@@ -4138,7 +5385,17 @@
           "title": "Low stop density for land area",
           "detail": "About 3.69 stops per km\u00b2 across 2.712 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5701.5,
+      "nearest_cmrl_m": 5987.3,
+      "nearest_railway_m": 5695.5
     },
     {
       "id": "121",
@@ -4169,7 +5426,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "2 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 2,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 2,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 464.7,
+      "nearest_cmrl_m": 2676.2,
+      "nearest_railway_m": 454.7
     },
     {
       "id": "197",
@@ -4200,7 +5467,17 @@
           "title": "Low stop density for land area",
           "detail": "About 1.89 stops per km\u00b2 across 8.473 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 9698.7,
+      "nearest_cmrl_m": 10656.6,
+      "nearest_railway_m": 9731.8
     },
     {
       "id": "76",
@@ -4226,7 +5503,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1558.8,
+      "nearest_cmrl_m": 1957.2,
+      "nearest_railway_m": 1524.7
     },
     {
       "id": "124",
@@ -4257,7 +5544,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 234.4,
+      "nearest_cmrl_m": 2502.6,
+      "nearest_railway_m": 169.6
     },
     {
       "id": "129",
@@ -4283,7 +5580,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3165.3,
+      "nearest_cmrl_m": 2506.1,
+      "nearest_railway_m": 3165.9
     },
     {
       "id": "132",
@@ -4314,7 +5621,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 757.6,
+      "nearest_cmrl_m": 2648.7,
+      "nearest_railway_m": 750.0
     },
     {
       "id": "161",
@@ -4345,7 +5662,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "2 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 2,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 305.4,
+      "nearest_cmrl_m": 987.2,
+      "nearest_railway_m": 307.3
     },
     {
       "id": "170",
@@ -4376,7 +5703,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "2 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 2,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 2,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 568.6,
+      "nearest_cmrl_m": 2344.8,
+      "nearest_railway_m": 583.5
     },
     {
       "id": "35",
@@ -4402,7 +5739,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2597.0,
+      "nearest_cmrl_m": 4154.9,
+      "nearest_railway_m": 2570.4
     },
     {
       "id": "38",
@@ -4428,7 +5775,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 804.2,
+      "nearest_cmrl_m": 3470.6,
+      "nearest_railway_m": 1028.2
     },
     {
       "id": "60",
@@ -4459,7 +5816,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "2 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 6,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 2,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 740.9,
+      "nearest_cmrl_m": 1144.1,
+      "nearest_railway_m": 665.8
     },
     {
       "id": "27",
@@ -4490,7 +5857,17 @@
           "title": "Low stop density for land area",
           "detail": "About 3.84 stops per km\u00b2 across 3.644 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4758.0,
+      "nearest_cmrl_m": 1886.2,
+      "nearest_railway_m": 5008.4
     },
     {
       "id": "111",
@@ -4521,7 +5898,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "2 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 2,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": true,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 2295.2,
+      "nearest_cmrl_m": 1566.4,
+      "nearest_railway_m": 2253.0
     },
     {
       "id": "118",
@@ -4552,7 +5939,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "2 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 2,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": true,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 2057.9,
+      "nearest_cmrl_m": 494.8,
+      "nearest_railway_m": 2055.1
     },
     {
       "id": "126",
@@ -4578,7 +5975,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1209.9,
+      "nearest_cmrl_m": 3173.0,
+      "nearest_railway_m": 1237.4
     },
     {
       "id": "130",
@@ -4604,7 +6011,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2011.5,
+      "nearest_cmrl_m": 3014.4,
+      "nearest_railway_m": 2013.2
     },
     {
       "id": "136",
@@ -4630,7 +6047,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2644.3,
+      "nearest_cmrl_m": 3361.6,
+      "nearest_railway_m": 2652.7
     },
     {
       "id": "36",
@@ -4656,7 +6083,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1857.4,
+      "nearest_cmrl_m": 4397.3,
+      "nearest_railway_m": 1822.7
     },
     {
       "id": "42",
@@ -4682,7 +6119,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 2,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 545.2,
+      "nearest_cmrl_m": 3131.4,
+      "nearest_railway_m": 543.0
     },
     {
       "id": "45",
@@ -4708,7 +6155,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 596.4,
+      "nearest_cmrl_m": 3971.5,
+      "nearest_railway_m": 563.6
     },
     {
       "id": "46",
@@ -4734,7 +6191,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1111.2,
+      "nearest_cmrl_m": 3193.4,
+      "nearest_railway_m": 1110.9
     },
     {
       "id": "73",
@@ -4760,7 +6227,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 982.3,
+      "nearest_cmrl_m": 2579.2,
+      "nearest_railway_m": 1017.4
     },
     {
       "id": "14",
@@ -4786,7 +6263,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1348.0,
+      "nearest_cmrl_m": 4406.2,
+      "nearest_railway_m": 1259.3
     },
     {
       "id": "165",
@@ -4817,7 +6304,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "2 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 2,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 2,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 505.0,
+      "nearest_cmrl_m": 2353.8,
+      "nearest_railway_m": 553.8
     },
     {
       "id": "30",
@@ -4843,7 +6340,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3502.1,
+      "nearest_cmrl_m": 5907.4,
+      "nearest_railway_m": 3503.3
     },
     {
       "id": "49",
@@ -4869,7 +6376,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1313.2,
+      "nearest_cmrl_m": 2712.2,
+      "nearest_railway_m": 1288.3
     },
     {
       "id": "63",
@@ -4895,7 +6412,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1453.4,
+      "nearest_cmrl_m": 1912.2,
+      "nearest_railway_m": 1449.0
     },
     {
       "id": "7",
@@ -4926,7 +6453,17 @@
           "title": "Low stop density for land area",
           "detail": "About 1.69 stops per km\u00b2 across 7.678 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1599.4,
+      "nearest_cmrl_m": 2001.3,
+      "nearest_railway_m": 1587.8
     },
     {
       "id": "77",
@@ -4952,7 +6489,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 970.6,
+      "nearest_cmrl_m": 1817.7,
+      "nearest_railway_m": 923.5
     },
     {
       "id": "85",
@@ -4978,7 +6525,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 941.9,
+      "nearest_cmrl_m": 6029.7,
+      "nearest_railway_m": 912.2
     },
     {
       "id": "1",
@@ -5004,7 +6561,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1108.1,
+      "nearest_cmrl_m": 9916.5,
+      "nearest_railway_m": 1127.5
     },
     {
       "id": "100",
@@ -5030,7 +6597,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 935.8,
+      "nearest_cmrl_m": 1781.6,
+      "nearest_railway_m": 918.2
     },
     {
       "id": "103",
@@ -5056,7 +6633,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2734.8,
+      "nearest_cmrl_m": 826.6,
+      "nearest_railway_m": 1865.1
     },
     {
       "id": "110",
@@ -5082,7 +6669,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 791.4,
+      "nearest_cmrl_m": 1105.7,
+      "nearest_railway_m": 834.4
     },
     {
       "id": "176",
@@ -5108,7 +6705,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 777.4,
+      "nearest_cmrl_m": 3242.5,
+      "nearest_railway_m": 748.1
     },
     {
       "id": "34",
@@ -5134,7 +6741,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3586.3,
+      "nearest_cmrl_m": 3082.2,
+      "nearest_railway_m": 3551.1
     },
     {
       "id": "40",
@@ -5165,7 +6782,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 491.2,
+      "nearest_cmrl_m": 4060.7,
+      "nearest_railway_m": 1280.4
     },
     {
       "id": "41",
@@ -5196,7 +6823,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "2 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 2,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 598.2,
+      "nearest_cmrl_m": 3656.2,
+      "nearest_railway_m": 647.6
     },
     {
       "id": "5",
@@ -5222,7 +6859,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 564.2,
+      "nearest_cmrl_m": 5472.5,
+      "nearest_railway_m": 580.9
     },
     {
       "id": "65",
@@ -5248,7 +6895,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1612.1,
+      "nearest_cmrl_m": 4440.8,
+      "nearest_railway_m": 1619.7
     },
     {
       "id": "82",
@@ -5279,7 +6936,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.9 stops per km\u00b2 across 3.877 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1501.7,
+      "nearest_cmrl_m": 5987.4,
+      "nearest_railway_m": 1521.9
     },
     {
       "id": "125",
@@ -5305,7 +6972,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 827.3,
+      "nearest_cmrl_m": 3214.8,
+      "nearest_railway_m": 834.2
     },
     {
       "id": "133",
@@ -5331,7 +7008,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1049.5,
+      "nearest_cmrl_m": 1179.4,
+      "nearest_railway_m": 1017.8
     },
     {
       "id": "134",
@@ -5357,7 +7044,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 513.0,
+      "nearest_cmrl_m": 1940.4,
+      "nearest_railway_m": 502.1
     },
     {
       "id": "135",
@@ -5383,7 +7080,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1685.0,
+      "nearest_cmrl_m": 2434.7,
+      "nearest_railway_m": 1698.8
     },
     {
       "id": "167",
@@ -5409,7 +7116,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1407.6,
+      "nearest_cmrl_m": 1682.9,
+      "nearest_railway_m": 1390.7
     },
     {
       "id": "28",
@@ -5435,7 +7152,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3314.8,
+      "nearest_cmrl_m": 4356.5,
+      "nearest_railway_m": 3332.5
     },
     {
       "id": "61",
@@ -5461,7 +7188,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 936.4,
+      "nearest_cmrl_m": 1290.4,
+      "nearest_railway_m": 896.1
     },
     {
       "id": "68",
@@ -5487,7 +7224,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 854.9,
+      "nearest_cmrl_m": 3571.3,
+      "nearest_railway_m": 872.6
     },
     {
       "id": "87",
@@ -5513,7 +7260,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1600.5,
+      "nearest_cmrl_m": 2494.3,
+      "nearest_railway_m": 1567.3
     },
     {
       "id": "104",
@@ -5544,7 +7301,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "2 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 2,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": true,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 2541.2,
+      "nearest_cmrl_m": 474.3,
+      "nearest_railway_m": 1165.1
     },
     {
       "id": "127",
@@ -5570,7 +7337,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 1,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": true,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 3623.1,
+      "nearest_cmrl_m": 995.0,
+      "nearest_railway_m": 3636.9
     },
     {
       "id": "2",
@@ -5596,7 +7373,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 470.2,
+      "nearest_cmrl_m": 8541.1,
+      "nearest_railway_m": 452.5
     },
     {
       "id": "114",
@@ -5622,7 +7409,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 197.2,
+      "nearest_cmrl_m": 2241.3,
+      "nearest_railway_m": 191.9
     },
     {
       "id": "122",
@@ -5653,7 +7450,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "3 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 3,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": true,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1244.6,
+      "nearest_cmrl_m": 514.6,
+      "nearest_railway_m": 1216.6
     },
     {
       "id": "168",
@@ -5679,7 +7486,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 1,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": true,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1084.3,
+      "nearest_cmrl_m": 1022.7,
+      "nearest_railway_m": 1074.3
     },
     {
       "id": "81",
@@ -5705,7 +7522,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 610.8,
+      "nearest_cmrl_m": 6749.7,
+      "nearest_railway_m": 644.3
     },
     {
       "id": "177",
@@ -5731,7 +7558,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1069.2,
+      "nearest_cmrl_m": 2329.0,
+      "nearest_railway_m": 1129.4
     },
     {
       "id": "95",
@@ -5757,7 +7594,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 2,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1101.0,
+      "nearest_cmrl_m": 1908.3,
+      "nearest_railway_m": 562.4
     },
     {
       "id": "96",
@@ -5783,7 +7630,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 648.8,
+      "nearest_cmrl_m": 2186.2,
+      "nearest_railway_m": 650.4
     },
     {
       "id": "169",
@@ -5809,7 +7666,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 1,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": true,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 927.4,
+      "nearest_cmrl_m": 608.4,
+      "nearest_railway_m": 900.8
     },
     {
       "id": "171",
@@ -5835,7 +7702,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1049.6,
+      "nearest_cmrl_m": 2822.2,
+      "nearest_railway_m": 1070.4
     },
     {
       "id": "173",
@@ -5861,7 +7738,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 577.2,
+      "nearest_cmrl_m": 2533.0,
+      "nearest_railway_m": 564.2
     },
     {
       "id": "70",
@@ -5887,7 +7774,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 637.2,
+      "nearest_cmrl_m": 3927.2,
+      "nearest_railway_m": 638.2
     },
     {
       "id": "182",
@@ -5918,7 +7815,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.57 stops per km\u00b2 across 3.28 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 1,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": true,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1554.1,
+      "nearest_cmrl_m": 1636.2,
+      "nearest_railway_m": 1533.5
     },
     {
       "id": "116",
@@ -5944,7 +7851,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 338.5,
+      "nearest_cmrl_m": 3158.2,
+      "nearest_railway_m": 377.0
     },
     {
       "id": "142",
@@ -5970,7 +7887,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 587.8,
+      "nearest_cmrl_m": 994.2,
+      "nearest_railway_m": 542.2
     },
     {
       "id": "59",
@@ -5996,7 +7923,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 2,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 2,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 344.3,
+      "nearest_cmrl_m": 966.1,
+      "nearest_railway_m": 380.2
     },
     {
       "id": "62",
@@ -6022,7 +7959,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "1 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 449.7,
+      "nearest_cmrl_m": 649.6,
+      "nearest_railway_m": 454.4
     },
     {
       "id": "178",
@@ -6048,7 +7995,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "3 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 2,
+      "cmrl_hub_count": 1,
+      "railway_station_count": 2,
+      "has_mrts": true,
+      "has_cmrl": true,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 728.9,
+      "nearest_cmrl_m": 710.8,
+      "nearest_railway_m": 709.0
     },
     {
       "id": "20",
@@ -6074,7 +8031,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "2 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 2,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": true,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 4803.5,
+      "nearest_cmrl_m": 1303.6,
+      "nearest_railway_m": 4817.4
     },
     {
       "id": "123",
@@ -6100,7 +8067,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "2 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 1,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": true,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 557.5,
+      "nearest_cmrl_m": 1314.7,
+      "nearest_railway_m": 552.8
     },
     {
       "id": "58",
@@ -6126,7 +8103,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "4 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 4,
+      "cmrl_hub_count": 1,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": true,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 930.3,
+      "nearest_cmrl_m": 788.2,
+      "nearest_railway_m": 970.2
     },
     {
       "id": "102",
@@ -6152,7 +8139,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "2 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 2,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": true,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 2595.2,
+      "nearest_cmrl_m": 183.9,
+      "nearest_railway_m": 2475.0
     },
     {
       "id": "52",
@@ -6178,7 +8175,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "2 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 3,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 2,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 529.8,
+      "nearest_cmrl_m": 1590.9,
+      "nearest_railway_m": 591.7
     }
   ],
   "zones": [
@@ -6211,7 +8218,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 6261.2,
+      "nearest_cmrl_m": 3348.0,
+      "nearest_railway_m": 6065.3
     },
     {
       "id": "Unnamed zone",
@@ -6242,7 +8259,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "3 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 3,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": true,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1566.9,
+      "nearest_cmrl_m": 839.7,
+      "nearest_railway_m": 1594.4
     },
     {
       "id": "SHOZHANGANALLUR",
@@ -6273,7 +8300,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.21 stops per km\u00b2 across 42.586 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 7284.1,
+      "nearest_cmrl_m": 8578.8,
+      "nearest_railway_m": 7317.9
     },
     {
       "id": "MADHAVARAM",
@@ -6304,7 +8341,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.31 stops per km\u00b2 across 33.638 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4872.9,
+      "nearest_cmrl_m": 4216.0,
+      "nearest_railway_m": 4856.6
     },
     {
       "id": "MANALI",
@@ -6340,7 +8387,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.42 stops per km\u00b2 across 40.101 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 2,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": true,
+      "has_railway": false,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 4631.0,
+      "nearest_cmrl_m": 3586.8,
+      "nearest_railway_m": 4612.5
     },
     {
       "id": "ALANDUR",
@@ -6371,7 +8428,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "10 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 8,
+      "cmrl_hub_count": 2,
+      "railway_station_count": 5,
+      "has_mrts": true,
+      "has_cmrl": true,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1732.4,
+      "nearest_cmrl_m": 1498.1,
+      "nearest_railway_m": 1728.8
     },
     {
       "id": "PERUNKUDI",
@@ -6402,7 +8469,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.34 stops per km\u00b2 across 35.836 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 1,
+      "railway_station_count": 2,
+      "has_mrts": true,
+      "has_cmrl": true,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 2510.0,
+      "nearest_cmrl_m": 4893.8,
+      "nearest_railway_m": 2544.0
     },
     {
       "id": "AMBATTUR",
@@ -6428,7 +8505,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "3 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 3,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 3,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 895.9,
+      "nearest_cmrl_m": 4457.1,
+      "nearest_railway_m": 867.0
     },
     {
       "id": "THIRUVOTTRIYUR",
@@ -6454,7 +8541,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "4 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 4,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 3,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 999.0,
+      "nearest_cmrl_m": 5873.8,
+      "nearest_railway_m": 1122.5
     },
     {
       "id": "TEYNAMPET",
@@ -6480,7 +8577,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "15 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 7,
+      "cmrl_hub_count": 8,
+      "railway_station_count": 7,
+      "has_mrts": true,
+      "has_cmrl": true,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1121.3,
+      "nearest_cmrl_m": 1408.0,
+      "nearest_railway_m": 1117.3
     },
     {
       "id": "ADYAR",
@@ -6506,7 +8613,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "10 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 7,
+      "cmrl_hub_count": 3,
+      "railway_station_count": 7,
+      "has_mrts": true,
+      "has_cmrl": true,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1138.4,
+      "nearest_cmrl_m": 2288.3,
+      "nearest_railway_m": 1161.5
     },
     {
       "id": "TONDIARPET",
@@ -6532,7 +8649,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "3 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 3,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 3,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1129.7,
+      "nearest_cmrl_m": 4061.8,
+      "nearest_railway_m": 1180.6
     },
     {
       "id": "ANNA NAGAR",
@@ -6558,7 +8685,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "7 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 3,
+      "cmrl_hub_count": 4,
+      "railway_station_count": 3,
+      "has_mrts": true,
+      "has_cmrl": true,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 2344.5,
+      "nearest_cmrl_m": 428.0,
+      "nearest_railway_m": 2384.6
     },
     {
       "id": "KODAMBAKKAM",
@@ -6584,7 +8721,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "4 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 3,
+      "cmrl_hub_count": 1,
+      "railway_station_count": 3,
+      "has_mrts": true,
+      "has_cmrl": true,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 2179.1,
+      "nearest_cmrl_m": 3312.2,
+      "nearest_railway_m": 2170.4
     },
     {
       "id": "ROYAPURAM",
@@ -6610,7 +8757,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "11 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 16,
+      "cmrl_hub_count": 2,
+      "railway_station_count": 9,
+      "has_mrts": true,
+      "has_cmrl": true,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 739.4,
+      "nearest_cmrl_m": 370.6,
+      "nearest_railway_m": 716.3
     },
     {
       "id": "THIRU-VIKA-NAGAR",
@@ -6636,7 +8793,17 @@
           "title": "Hub present \u2014 strengthen last-mile",
           "detail": "4 hub(s) inside boundary. Prioritise clear walk paths, feeder stop clustering within ~100\u2013300m of the hub, and passenger information."
         }
-      ]
+      ],
+      "mrts_station_count": 5,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 4,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 134.7,
+      "nearest_cmrl_m": 3437.5,
+      "nearest_railway_m": 138.7
     }
   ],
   "priority_wards": [
@@ -6679,7 +8846,17 @@
           "title": "Low stop density for land area",
           "detail": "About 1.85 stops per km\u00b2 across 1.625 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1971.4,
+      "nearest_cmrl_m": 1831.8,
+      "nearest_railway_m": 1904.0
     },
     {
       "id": "183",
@@ -6720,7 +8897,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.6 stops per km\u00b2 across 1.54 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2626.0,
+      "nearest_cmrl_m": 2559.5,
+      "nearest_railway_m": 2569.5
     },
     {
       "id": "191",
@@ -6761,7 +8948,17 @@
           "title": "Low stop density for land area",
           "detail": "About 0.48 stops per km\u00b2 across 4.163 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5593.5,
+      "nearest_cmrl_m": 7832.9,
+      "nearest_railway_m": 5627.1
     },
     {
       "id": "158",
@@ -6802,7 +8999,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.49 stops per km\u00b2 across 2.012 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2827.6,
+      "nearest_cmrl_m": 2098.9,
+      "nearest_railway_m": 2853.8
     },
     {
       "id": "192",
@@ -6843,7 +9050,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.35 stops per km\u00b2 across 2.554 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3766.4,
+      "nearest_cmrl_m": 3798.7,
+      "nearest_railway_m": 3734.4
     },
     {
       "id": "22",
@@ -6884,7 +9101,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.79 stops per km\u00b2 across 2.153 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3256.6,
+      "nearest_cmrl_m": 866.5,
+      "nearest_railway_m": 3790.1
     },
     {
       "id": "144",
@@ -6925,7 +9152,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.32 stops per km\u00b2 across 1.388 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5696.0,
+      "nearest_cmrl_m": 2263.8,
+      "nearest_railway_m": 4769.0
     },
     {
       "id": "149",
@@ -6966,7 +9203,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.24 stops per km\u00b2 across 1.416 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5290.1,
+      "nearest_cmrl_m": 3204.6,
+      "nearest_railway_m": 5295.2
     },
     {
       "id": "154",
@@ -7007,7 +9254,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.27 stops per km\u00b2 across 1.172 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4737.1,
+      "nearest_cmrl_m": 4070.6,
+      "nearest_railway_m": 4719.9
     },
     {
       "id": "112",
@@ -7048,7 +9305,17 @@
           "title": "Low stop density for land area",
           "detail": "About 3.77 stops per km\u00b2 across 1.06 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1369.3,
+      "nearest_cmrl_m": 2900.0,
+      "nearest_railway_m": 1380.3
     },
     {
       "id": "12",
@@ -7084,7 +9351,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 897.8,
+      "nearest_cmrl_m": 3742.4,
+      "nearest_railway_m": 794.5
     },
     {
       "id": "143",
@@ -7120,7 +9397,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.7 stops per km\u00b2 across 2.597 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4673.5,
+      "nearest_cmrl_m": 2977.3,
+      "nearest_railway_m": 4622.8
     },
     {
       "id": "159",
@@ -7161,7 +9448,17 @@
           "title": "Low stop density for land area",
           "detail": "About 0.89 stops per km\u00b2 across 3.367 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 1,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": true,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1121.8,
+      "nearest_cmrl_m": 979.7,
+      "nearest_railway_m": 1127.5
     },
     {
       "id": "164",
@@ -7197,7 +9494,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 607.8,
+      "nearest_cmrl_m": 1273.2,
+      "nearest_railway_m": 675.4
     },
     {
       "id": "166",
@@ -7228,7 +9535,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 809.2,
+      "nearest_cmrl_m": 1060.6,
+      "nearest_railway_m": 807.7
     },
     {
       "id": "184",
@@ -7259,7 +9576,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1157.7,
+      "nearest_cmrl_m": 1953.9,
+      "nearest_railway_m": 1233.0
     },
     {
       "id": "31",
@@ -7295,7 +9622,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.81 stops per km\u00b2 across 2.495 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4508.3,
+      "nearest_cmrl_m": 6873.3,
+      "nearest_railway_m": 4496.5
     },
     {
       "id": "160",
@@ -7336,7 +9673,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.48 stops per km\u00b2 across 0.67 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 1,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": true,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 973.6,
+      "nearest_cmrl_m": 515.6,
+      "nearest_railway_m": 925.7
     },
     {
       "id": "162",
@@ -7377,7 +9724,17 @@
           "title": "Low stop density for land area",
           "detail": "About 3.23 stops per km\u00b2 across 1.24 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 2,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 439.2,
+      "nearest_cmrl_m": 954.6,
+      "nearest_railway_m": 284.4
     },
     {
       "id": "107",
@@ -7408,7 +9765,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1285.3,
+      "nearest_cmrl_m": 1659.3,
+      "nearest_railway_m": 1257.5
     },
     {
       "id": "146",
@@ -7439,7 +9806,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 6918.6,
+      "nearest_cmrl_m": 4103.1,
+      "nearest_railway_m": 6553.8
     },
     {
       "id": "148",
@@ -7470,7 +9847,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5286.9,
+      "nearest_cmrl_m": 2110.2,
+      "nearest_railway_m": 4972.0
     },
     {
       "id": "187",
@@ -7501,7 +9888,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2073.4,
+      "nearest_cmrl_m": 3441.1,
+      "nearest_railway_m": 2060.7
     },
     {
       "id": "33",
@@ -7532,7 +9929,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2478.0,
+      "nearest_cmrl_m": 5328.7,
+      "nearest_railway_m": 2466.8
     },
     {
       "id": "156",
@@ -7568,7 +9975,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.32 stops per km\u00b2 across 2.777 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4350.4,
+      "nearest_cmrl_m": 4106.8,
+      "nearest_railway_m": 4347.3
     }
   ],
   "priority_zones": [
@@ -7601,7 +10018,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 6261.2,
+      "nearest_cmrl_m": 3348.0,
+      "nearest_railway_m": 6065.3
     }
   ],
   "severe_gap_wards": [
@@ -7644,7 +10071,17 @@
           "title": "Low stop density for land area",
           "detail": "About 1.85 stops per km\u00b2 across 1.625 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1971.4,
+      "nearest_cmrl_m": 1831.8,
+      "nearest_railway_m": 1904.0
     },
     {
       "id": "183",
@@ -7685,7 +10122,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.6 stops per km\u00b2 across 1.54 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2626.0,
+      "nearest_cmrl_m": 2559.5,
+      "nearest_railway_m": 2569.5
     },
     {
       "id": "191",
@@ -7726,7 +10173,17 @@
           "title": "Low stop density for land area",
           "detail": "About 0.48 stops per km\u00b2 across 4.163 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5593.5,
+      "nearest_cmrl_m": 7832.9,
+      "nearest_railway_m": 5627.1
     },
     {
       "id": "158",
@@ -7767,7 +10224,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.49 stops per km\u00b2 across 2.012 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 2827.6,
+      "nearest_cmrl_m": 2098.9,
+      "nearest_railway_m": 2853.8
     },
     {
       "id": "192",
@@ -7808,7 +10275,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.35 stops per km\u00b2 across 2.554 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3766.4,
+      "nearest_cmrl_m": 3798.7,
+      "nearest_railway_m": 3734.4
     },
     {
       "id": "22",
@@ -7849,7 +10326,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.79 stops per km\u00b2 across 2.153 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 3256.6,
+      "nearest_cmrl_m": 866.5,
+      "nearest_railway_m": 3790.1
     },
     {
       "id": "144",
@@ -7890,7 +10377,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.32 stops per km\u00b2 across 1.388 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5696.0,
+      "nearest_cmrl_m": 2263.8,
+      "nearest_railway_m": 4769.0
     },
     {
       "id": "149",
@@ -7931,7 +10428,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.24 stops per km\u00b2 across 1.416 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 5290.1,
+      "nearest_cmrl_m": 3204.6,
+      "nearest_railway_m": 5295.2
     },
     {
       "id": "154",
@@ -7972,7 +10479,17 @@
           "title": "Low stop density for land area",
           "detail": "About 4.27 stops per km\u00b2 across 1.172 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4737.1,
+      "nearest_cmrl_m": 4070.6,
+      "nearest_railway_m": 4719.9
     },
     {
       "id": "112",
@@ -8013,7 +10530,17 @@
           "title": "Low stop density for land area",
           "detail": "About 3.77 stops per km\u00b2 across 1.06 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": false,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1369.3,
+      "nearest_cmrl_m": 2900.0,
+      "nearest_railway_m": 1380.3
     },
     {
       "id": "12",
@@ -8049,7 +10576,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 897.8,
+      "nearest_cmrl_m": 3742.4,
+      "nearest_railway_m": 794.5
     },
     {
       "id": "143",
@@ -8085,7 +10622,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.7 stops per km\u00b2 across 2.597 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4673.5,
+      "nearest_cmrl_m": 2977.3,
+      "nearest_railway_m": 4622.8
     },
     {
       "id": "159",
@@ -8126,7 +10673,17 @@
           "title": "Low stop density for land area",
           "detail": "About 0.89 stops per km\u00b2 across 3.367 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 1,
+      "cmrl_hub_count": 1,
+      "railway_station_count": 1,
+      "has_mrts": true,
+      "has_cmrl": true,
+      "has_railway": true,
+      "has_any_rail_metro": true,
+      "nearest_mrts_m": 1121.8,
+      "nearest_cmrl_m": 979.7,
+      "nearest_railway_m": 1127.5
     },
     {
       "id": "164",
@@ -8162,7 +10719,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 607.8,
+      "nearest_cmrl_m": 1273.2,
+      "nearest_railway_m": 675.4
     },
     {
       "id": "166",
@@ -8193,7 +10760,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 809.2,
+      "nearest_cmrl_m": 1060.6,
+      "nearest_railway_m": 807.7
     },
     {
       "id": "184",
@@ -8224,7 +10801,17 @@
           "title": "No rail/metro hub inside boundary",
           "detail": "No MRTS/metro-tagged hub falls inside this unit. Map walk/feeder access to the nearest hub and improve last-mile links."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 1157.7,
+      "nearest_cmrl_m": 1953.9,
+      "nearest_railway_m": 1233.0
     },
     {
       "id": "31",
@@ -8260,7 +10847,17 @@
           "title": "Low stop density for land area",
           "detail": "About 2.81 stops per km\u00b2 across 2.495 km\u00b2. Large blocks may need mid-block stops or shared mobility feeders."
         }
-      ]
+      ],
+      "mrts_station_count": 0,
+      "cmrl_hub_count": 0,
+      "railway_station_count": 0,
+      "has_mrts": false,
+      "has_cmrl": false,
+      "has_railway": false,
+      "has_any_rail_metro": false,
+      "nearest_mrts_m": 4508.3,
+      "nearest_cmrl_m": 6873.3,
+      "nearest_railway_m": 4496.5
     }
   ]
 }

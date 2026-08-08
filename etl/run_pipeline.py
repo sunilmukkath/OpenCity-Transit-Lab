@@ -286,6 +286,131 @@ def count_points_in_polygons(
     return left
 
 
+def nearest_distances_m(
+    polys: gpd.GeoDataFrame, points: gpd.GeoDataFrame | None, dist_col: str
+) -> gpd.GeoDataFrame:
+    """Straight-line metres from each polygon representative point to nearest point."""
+    left = polys.copy()
+    if points is None or points.empty:
+        left[dist_col] = None
+        return left
+    cents = left.to_crs(3857).copy()
+    cents["geometry"] = cents.geometry.representative_point()
+    p_m = points.to_crs(3857)
+    joined = gpd.sjoin_nearest(
+        cents[["geometry"]], p_m[["geometry"]], how="left", distance_col=dist_col
+    )
+    dist = joined.groupby(joined.index)[dist_col].min()
+
+    def _round(i: Any) -> float | None:
+        if i not in dist.index:
+            return None
+        val = dist.loc[i]
+        if val != val:  # NaN
+            return None
+        return round(float(val), 1)
+
+    left[dist_col] = left.index.map(_round)
+    return left
+
+
+def filter_cmrl_hubs(hubs: gpd.GeoDataFrame | None) -> gpd.GeoDataFrame | None:
+    if hubs is None or hubs.empty or "hub_type" not in hubs.columns:
+        return None
+    cmrl = hubs[hubs["hub_type"].astype(str).str.contains("metro", case=False, na=False)].copy()
+    return cmrl if not cmrl.empty else None
+
+
+def add_mode_inventory(
+    polys: gpd.GeoDataFrame,
+    *,
+    mrts: gpd.GeoDataFrame | None,
+    hubs: gpd.GeoDataFrame | None,
+    railway: gpd.GeoDataFrame | None,
+) -> gpd.GeoDataFrame:
+    """MRTS / CMRL / suburban-rail counts + nearest distances on ward/zone polygons."""
+    out = polys.copy()
+    cmrl = filter_cmrl_hubs(hubs)
+
+    if mrts is not None:
+        out = count_points_in_polygons(out, mrts, "mrts_station_count")
+    else:
+        out["mrts_station_count"] = 0
+    if cmrl is not None:
+        out = count_points_in_polygons(out, cmrl, "cmrl_hub_count")
+    else:
+        out["cmrl_hub_count"] = 0
+    if railway is not None:
+        out = count_points_in_polygons(out, railway, "railway_station_count")
+    else:
+        out["railway_station_count"] = 0
+
+    out["has_mrts"] = out["mrts_station_count"].fillna(0).astype(int) > 0
+    out["has_cmrl"] = out["cmrl_hub_count"].fillna(0).astype(int) > 0
+    out["has_railway"] = out["railway_station_count"].fillna(0).astype(int) > 0
+    out["has_any_rail_metro"] = out["has_mrts"] | out["has_cmrl"] | out["has_railway"]
+
+    out = nearest_distances_m(out, mrts, "nearest_mrts_m")
+    out = nearest_distances_m(out, cmrl, "nearest_cmrl_m")
+    out = nearest_distances_m(out, railway, "nearest_railway_m")
+    return out
+
+
+MODE_INVENTORY_ATTRS = [
+    "mrts_station_count",
+    "cmrl_hub_count",
+    "railway_station_count",
+    "has_mrts",
+    "has_cmrl",
+    "has_railway",
+    "has_any_rail_metro",
+    "nearest_mrts_m",
+    "nearest_cmrl_m",
+    "nearest_railway_m",
+]
+
+
+def _nullable_int(value: Any) -> int | None:
+    if value is None or str(value) == "nan":
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _nullable_float(value: Any) -> float | None:
+    if value is None or str(value) == "nan":
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _nullable_bool(value: Any) -> bool | None:
+    if value is None or str(value) == "nan":
+        return None
+    if isinstance(value, bool):
+        return value
+    return bool(value)
+
+
+def mode_fields_from_row(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "mrts_station_count": _nullable_int(row.get("mrts_station_count")) or 0,
+        "cmrl_hub_count": _nullable_int(row.get("cmrl_hub_count")) or 0,
+        "railway_station_count": _nullable_int(row.get("railway_station_count")) or 0,
+        "has_mrts": bool(_nullable_bool(row.get("has_mrts"))),
+        "has_cmrl": bool(_nullable_bool(row.get("has_cmrl"))),
+        "has_railway": bool(_nullable_bool(row.get("has_railway"))),
+        "has_any_rail_metro": bool(_nullable_bool(row.get("has_any_rail_metro"))),
+        "nearest_mrts_m": _nullable_float(row.get("nearest_mrts_m")),
+        "nearest_cmrl_m": _nullable_float(row.get("nearest_cmrl_m")),
+        "nearest_railway_m": _nullable_float(row.get("nearest_railway_m")),
+    }
+
+
 def simplify_ward_attrs(wards: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     cols = list(wards.columns)
     name_col = None
@@ -608,7 +733,7 @@ def build_unit_report(
     # Keep priority_score as alias of gap_index for older UI consumers
     priority_score = gap["gap_index"]
 
-    return {
+    report = {
         "id": label,
         "label": label,
         "unit_type": unit_type,
@@ -631,6 +756,8 @@ def build_unit_report(
             city_mean_stops=city_mean_stops,
         ),
     }
+    report.update(mode_fields_from_row(row))
+    return report
 
 
 def build_spatial_reports(
@@ -644,35 +771,31 @@ def build_spatial_reports(
     if wards is not None and not wards.empty and "stop_count" in wards.columns:
         city_mean = float(wards["stop_count"].mean())
         for _, row in wards.iterrows():
-            ward_reports.append(
-                build_unit_report(
-                    {
-                        "label": row.get("ward_label"),
-                        "stop_count": row.get("stop_count"),
-                        "shelter_count": row.get("shelter_count"),
-                        "hub_count": row.get("hub_count"),
-                        "area_km2": row.get("area_km2"),
-                    },
-                    "ward",
-                    city_mean,
-                )
-            )
+            payload = {
+                "label": row.get("ward_label"),
+                "stop_count": row.get("stop_count"),
+                "shelter_count": row.get("shelter_count"),
+                "hub_count": row.get("hub_count"),
+                "area_km2": row.get("area_km2"),
+            }
+            for key in MODE_INVENTORY_ATTRS:
+                if key in wards.columns:
+                    payload[key] = row.get(key)
+            ward_reports.append(build_unit_report(payload, "ward", city_mean))
 
     if zones is not None and not zones.empty:
         for _, row in zones.iterrows():
-            zone_reports.append(
-                build_unit_report(
-                    {
-                        "label": row.get("zone_label"),
-                        "stop_count": row.get("stop_count"),
-                        "shelter_count": row.get("shelter_count"),
-                        "hub_count": row.get("hub_count"),
-                        "area_km2": row.get("area_km2"),
-                    },
-                    "zone",
-                    city_mean,
-                )
-            )
+            payload = {
+                "label": row.get("zone_label"),
+                "stop_count": row.get("stop_count"),
+                "shelter_count": row.get("shelter_count"),
+                "hub_count": row.get("hub_count"),
+                "area_km2": row.get("area_km2"),
+            }
+            for key in MODE_INVENTORY_ATTRS:
+                if key in zones.columns:
+                    payload[key] = row.get(key)
+            zone_reports.append(build_unit_report(payload, "zone", city_mean))
 
     ward_reports.sort(key=lambda r: (-r["gap_index"], r["label"]))
     zone_reports.sort(key=lambda r: (-r["gap_index"], r["label"]))
@@ -684,6 +807,8 @@ def build_spatial_reports(
         "generated_at": utc_now(),
         "note": (
             "Reports use verified spatial joins only (stops/shelters/hubs inside polygons). "
+            "Mode fields split MRTS stations, CMRL metro-named hubs, and OSM railway stations. "
+            "Nearest_*_m are crow-flies from unit representative point — not network walk. "
             "Gap Index and recommendations are inventory rules — not census equity scores."
         ),
         "gap_index_method": {
@@ -697,8 +822,15 @@ def build_spatial_reports(
             "components": {
                 "stop_gap": "max 40 — zero / very low / below city-mean stop counts",
                 "shelter_gap": "max 30 — shelter presence vs stops",
-                "hub_gap": "max 20 — no MRTS/metro hub inside boundary",
+                "hub_gap": "max 20 — no MRTS/metro hub inside boundary (combined hub_count)",
                 "density_gap": "max 10 — low stops per km²",
+            },
+            "mode_inventory": {
+                "mrts_station_count": "OpenCity MRTS station points inside the unit",
+                "cmrl_hub_count": "metro_named hubs (CMRL Phase-I tags) inside the unit",
+                "railway_station_count": "OSM railway station points inside the unit (Partial)",
+                "nearest_*_m": "Straight-line metres to nearest station/hub",
+                "limitation": "Proposed CMRL Phase-II stations Unavailable",
             },
             "disclaimer": (
                 "Not a population-weighted equity score. Field-verify before capital works. "
@@ -1224,6 +1356,7 @@ def main() -> int:
         "mrts_stations": None,
         "mrts_lines": None,
         "hubs": None,
+        "railway_stations": None,
         "catchment_400m": None,
         "catchment_800m": None,
     }
@@ -1471,6 +1604,33 @@ def main() -> int:
                 "error": str(exc),
             }
 
+    # Prefer railway from prior / early ingest so mode counts land in reports.
+    rail_path = PROCESSED / "railway_stations.geojson"
+    if layers.get("railway_stations") is None and rail_path.exists():
+        try:
+            layers["railway_stations"] = gpd.read_file(rail_path)
+            print(f"[ok] loaded railway_stations.geojson ({len(layers['railway_stations'])})")
+        except Exception as exc:  # noqa: BLE001
+            print(f"[warn] railway_stations load: {exc}", file=sys.stderr)
+
+    try:
+        from ingest_downloads import ingest_railway as _ingest_railway
+
+        rail_meta = _ingest_railway()
+        if rail_meta.get("status") == "loaded":
+            layers["railway_stations"] = gpd.read_file(rail_path)
+            print(f"[ok] railway ingest for mode inventory ({rail_meta.get('feature_count')})")
+    except Exception as exc:  # noqa: BLE001
+        print(f"[warn] early railway ingest: {exc}", file=sys.stderr)
+
+    inventory_attrs = [
+        "stop_count",
+        "shelter_count",
+        "hub_count",
+        "area_km2",
+        *MODE_INVENTORY_ATTRS,
+    ]
+
     # --- Ward / zone inventory joins (verified spatial counts) ---
     if layers["wards"] is not None:
         try:
@@ -1495,12 +1655,18 @@ def main() -> int:
                 )
             else:
                 wards_enriched["hub_count"] = None
+            wards_enriched = add_mode_inventory(
+                wards_enriched,
+                mrts=layers.get("mrts_stations"),
+                hubs=layers.get("hubs"),
+                railway=layers.get("railway_stations"),
+            )
             layers["wards"] = wards_enriched
             n = write_geojson(wards_enriched, PROCESSED / "wards.geojson")
             manifest["layers"]["wards"]["feature_count"] = n
             manifest["layers"]["wards"]["attributes"] = [
                 a
-                for a in ["ward_label", "stop_count", "shelter_count", "hub_count", "area_km2"]
+                for a in ["ward_label", *inventory_attrs]
                 if a in wards_enriched.columns
             ]
             print(f"[ok] wards enriched with inventory counts ({n})")
@@ -1530,13 +1696,19 @@ def main() -> int:
                 )
             else:
                 zones_enriched["hub_count"] = None
+            zones_enriched = add_mode_inventory(
+                zones_enriched,
+                mrts=layers.get("mrts_stations"),
+                hubs=layers.get("hubs"),
+                railway=layers.get("railway_stations"),
+            )
             layers["zones"] = zones_enriched
             n = write_geojson(zones_enriched, PROCESSED / "zones.geojson")
             if "zones" in manifest["layers"]:
                 manifest["layers"]["zones"]["feature_count"] = n
                 manifest["layers"]["zones"]["attributes"] = [
                     a
-                    for a in ["zone_label", "stop_count", "shelter_count", "hub_count", "area_km2"]
+                    for a in ["zone_label", *inventory_attrs]
                     if a in zones_enriched.columns
                 ]
             print(f"[ok] zones enriched with inventory counts ({n})")

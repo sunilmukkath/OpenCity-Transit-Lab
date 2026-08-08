@@ -102,6 +102,20 @@ export interface SpatialUnitReport {
   gap_band: GapBand | string;
   gap_components: GapComponents;
   recommendations: UnitRecommendation[];
+  /** OpenCity MRTS station points inside the unit */
+  mrts_station_count?: number | null;
+  /** metro_named hubs (CMRL Phase-I tags) inside the unit */
+  cmrl_hub_count?: number | null;
+  /** OSM railway station points inside the unit */
+  railway_station_count?: number | null;
+  has_mrts?: boolean;
+  has_cmrl?: boolean;
+  has_railway?: boolean;
+  has_any_rail_metro?: boolean;
+  /** Crow-flies metres from unit representative point */
+  nearest_mrts_m?: number | null;
+  nearest_cmrl_m?: number | null;
+  nearest_railway_m?: number | null;
 }
 
 export interface GapIndexMethod {

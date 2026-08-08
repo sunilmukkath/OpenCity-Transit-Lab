@@ -126,9 +126,9 @@ export function LastMilePage() {
           }
         >
           <MapExplorerClient
-            initialPreset="hubs"
+            initialPreset="lastmile"
             audience="hubs"
-            audienceNote="Last-mile view — hubs, stops, and walk bands."
+            audienceNote="Need lines = road stretches >400m from a GTFS stop. Toggle Settlements / Habitation (TNGIS) in Context."
           />
         </Suspense>
       </section>

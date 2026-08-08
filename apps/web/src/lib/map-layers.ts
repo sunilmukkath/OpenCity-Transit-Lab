@@ -309,6 +309,25 @@ export const LAYER_PRESETS: Record<
       metro_area_boundaries: false,
     },
   },
+  lastmile: {
+    label: "Last mile",
+    blurb: "Need lines (no PT) + settlements + hubs + walk bands",
+    choropleth: "gap",
+    layers: {
+      ...CORE_OFF_AMENITIES,
+      wards: false,
+      stops: true,
+      mrts_lines: true,
+      mrts_stations: true,
+      hubs: true,
+      connectivity_need: true,
+      walk_distance_bands: true,
+      omr_corridor: true,
+      metro_area_boundaries: true,
+      tngis_settlement_area: true,
+      tngis_habitation: true,
+    },
+  },
 };
 
 /** Audience-facing map views — one row only. */

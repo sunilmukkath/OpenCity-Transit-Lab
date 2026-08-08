@@ -160,8 +160,8 @@ export function MapLegend({
       ) : null}
       {visibility.connectivity_need ? (
         <p className="mt-2 border-t border-slate-200 pt-1.5 text-[9px] leading-snug text-slate-500">
-          Need lines = OSM roads (plus a few feeder desire lines) with long stretches outside
-          400m of a GTFS stop — where mid-block stops or feeders may help.
+          Need lines = OSM road stretches outside 400m of a GTFS stop (drawn only where there is
+          no nearby PT). Inventory — not ridership.
         </p>
       ) : null}
     </div>

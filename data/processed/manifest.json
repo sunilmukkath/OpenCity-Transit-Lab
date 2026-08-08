@@ -993,8 +993,8 @@
     "connectivity_need": {
       "status": "loaded",
       "file": "connectivity_need_roads.geojson",
-      "feature_count": 45,
-      "notes": "OSM major roads intersecting high Gap Index wards, ranked by length outside the 400m GTFS stop catchment. Not ridership or equity.",
+      "feature_count": 100,
+      "notes": "OSM major-road segments farther than 400m from a GTFS stop (unmet geometry). High Gap Index wards are boosted in ranking. Inventory only \u2014 not ridership or equity.",
       "attributes": [
         "road_name",
         "highway",

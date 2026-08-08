@@ -300,54 +300,6 @@ const LAYER_STACK: {
     ],
   },
   {
-    key: "tngis_settlement_area",
-    sourceId: "tm-tngis-settlement",
-    layers: [
-      {
-        id: "tm-tngis-settlement-fill",
-        type: "fill",
-        paint: {
-          "fill-color": [
-            "match",
-            ["get", "landuse_level_3"],
-            "Core urban",
-            "#b45309",
-            "Built up (Rural)",
-            "#ca8a04",
-            "#d97706",
-          ],
-          "fill-opacity": 0.28,
-        },
-      },
-      {
-        id: "tm-tngis-settlement-line",
-        type: "line",
-        paint: {
-          "line-color": "#92400e",
-          "line-width": 0.6,
-          "line-opacity": 0.55,
-        },
-      },
-    ],
-  },
-  {
-    key: "tngis_habitation",
-    sourceId: "tm-tngis-habitation",
-    layers: [
-      {
-        id: "tm-tngis-habitation-circle",
-        type: "circle",
-        paint: {
-          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 2.2, 14, 5],
-          "circle-color": "#78350f",
-          "circle-opacity": 0.85,
-          "circle-stroke-width": 1,
-          "circle-stroke-color": "#fef3c7",
-        },
-      },
-    ],
-  },
-  {
     key: "nmt_network",
     sourceId: "tm-nmt",
     layers: [
@@ -430,6 +382,54 @@ const LAYER_STACK: {
           ],
           "line-width": ["match", ["get", "band"], "within_100m", 1.2, 0.5],
           "line-opacity": ["match", ["get", "band"], "within_100m", 0.85, 0.45],
+        },
+      },
+    ],
+  },
+  {
+    key: "tngis_settlement_area",
+    sourceId: "tm-tngis-settlement",
+    layers: [
+      {
+        id: "tm-tngis-settlement-fill",
+        type: "fill",
+        paint: {
+          "fill-color": [
+            "match",
+            ["get", "landuse_level_3"],
+            "Core urban",
+            "#b45309",
+            "Built up (Rural)",
+            "#ca8a04",
+            "#d97706",
+          ],
+          "fill-opacity": 0.45,
+        },
+      },
+      {
+        id: "tm-tngis-settlement-line",
+        type: "line",
+        paint: {
+          "line-color": "#92400e",
+          "line-width": 0.8,
+          "line-opacity": 0.7,
+        },
+      },
+    ],
+  },
+  {
+    key: "tngis_habitation",
+    sourceId: "tm-tngis-habitation",
+    layers: [
+      {
+        id: "tm-tngis-habitation-circle",
+        type: "circle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 2.5, 14, 6],
+          "circle-color": "#78350f",
+          "circle-opacity": 0.9,
+          "circle-stroke-width": 1.2,
+          "circle-stroke-color": "#fef3c7",
         },
       },
     ],

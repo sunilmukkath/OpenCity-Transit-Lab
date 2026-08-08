@@ -3,10 +3,9 @@
 Map OSM major roads that need better transit / feeder connectivity.
 
 Method (inventory only — not equity or ridership):
-1. Take GCC wards with high Gap Index (severe / high bands).
-2. Pull OSM trunk/primary/secondary/tertiary ways that intersect those wards.
-3. Measure how much of each named road lies outside the 400m stop catchment.
-4. Keep corridors with the most unmet length; annotate with gap-ward overlap.
+1. Pull OSM trunk/primary/secondary/tertiary ways across GCC wards.
+2. Keep only road segments outside the 400m GTFS stop catchment (unmet geometry).
+3. Rank by unmet length; boost corridors that intersect high Gap Index wards.
 
 Output: connectivity_need_roads.geojson + analysis summary dict.
 """
@@ -31,8 +30,8 @@ PROCESSED = ROOT / "data" / "processed"
 UA = {"User-Agent": "OpenCity-TransitLab/1.0 (civic research; connectivity corridors)"}
 
 # Cap features for map readability
-TOP_N = 45
-MIN_UNMET_M = 350.0
+TOP_N = 100
+MIN_UNMET_M = 280.0
 HIGHWAY_CLASSES = {"trunk", "primary", "secondary", "tertiary"}
 
 
@@ -229,6 +228,11 @@ def score_roads(
     catchment: gpd.GeoDataFrame | None,
     gap_wards: gpd.GeoDataFrame,
 ) -> gpd.GeoDataFrame:
+    """Score roads by length outside the 400m stop catchment.
+
+    Geometry kept on the map is the unmet segment (road minus catchment),
+    so lines draw only where there is no nearby PT stop.
+    """
     if roads.empty:
         return roads
 
@@ -249,26 +253,30 @@ def score_roads(
         if length_m < 80:
             continue
 
+        unmet_geom = geom
         if catch_union is not None:
             try:
-                covered = geom.intersection(catch_union)
-                covered_m = float(covered.length) if not covered.is_empty else 0.0
+                diff = geom.difference(catch_union)
+                if diff is not None and not diff.is_empty:
+                    unmet_geom = diff
+                else:
+                    continue
             except Exception:  # noqa: BLE001
-                covered_m = 0.0
-        else:
-            covered_m = 0.0
+                unmet_geom = geom
 
-        unmet_m = max(0.0, length_m - covered_m)
+        unmet_m = float(unmet_geom.length) if unmet_geom is not None and not unmet_geom.is_empty else 0.0
+        if unmet_m < 40:
+            continue
         pct_unmet = (unmet_m / length_m) * 100.0 if length_m else 0.0
 
         in_gap = False
         if gap_union is not None:
             try:
-                in_gap = bool(geom.intersects(gap_union))
+                in_gap = bool(unmet_geom.intersects(gap_union))
             except Exception:  # noqa: BLE001
                 in_gap = False
 
-        # Prefer roads with long stretches outside walk catchments, especially in high-gap wards
+        # Prefer long stretches without PT; boost high Gap Index wards
         need_score = unmet_m * (1.35 if in_gap else 1.0) * (1.0 + pct_unmet / 200.0)
 
         if unmet_m < MIN_UNMET_M and not (in_gap and unmet_m >= 200):
@@ -285,7 +293,7 @@ def score_roads(
                 "pct_outside_400m": round(pct_unmet, 1),
                 "in_high_gap_ward": in_gap,
                 "need_score": round(need_score, 1),
-                "geometry": geom,
+                "geometry": unmet_geom,
             }
         )
 
@@ -294,7 +302,7 @@ def score_roads(
 
     gdf = gpd.GeoDataFrame(records, crs=3857)
 
-    # Dissolve by road name — keep strongest corridors
+    # Dissolve by road name — keep strongest corridors (unmet segments only)
     dissolved_rows: list[dict[str, Any]] = []
     for name, grp in gdf.groupby("road_name"):
         try:
@@ -316,7 +324,6 @@ def score_roads(
             else:
                 continue
         except Exception:  # noqa: BLE001
-            # Fall back to longest single segment
             merged = max(list(grp.geometry), key=lambda g: g.length)
         length_m = float(grp["length_m"].sum())
         unmet_m = float(grp["unmet_length_m"].sum())
@@ -344,10 +351,10 @@ def score_roads(
                 "need_score": round(need, 1),
                 "need_band": band,
                 "recommendation": (
-                    "Long stretches outside 400m of a GTFS stop — consider mid-block stops "
-                    "or a short feeder / trunk parallel service."
+                    "Road segments farther than 400m from a GTFS stop — mid-block stops "
+                    "or a short feeder may help. Field-verify boarding demand."
                     if pct >= 40
-                    else "Partial coverage gaps along this road — field-check boarding demand before capital works."
+                    else "Partial coverage gaps along this road — field-check before capital works."
                 ),
                 "geometry": merged,
             }
@@ -388,25 +395,13 @@ def build_connectivity_need(
         return result
 
     gap = high_gap_wards(wards, reports)
-    if gap.empty:
-        result["errors"].append("no high-gap wards found")
-        result["layers"]["connectivity_need"] = {
-            "status": "unavailable",
-            "error": "no high-gap wards",
-        }
-        return result
 
-    # Limit bbox to the worst wards so Overpass stays reliable
-    if "gap_index" in gap.columns:
-        gap_focus = gap.sort_values("gap_index", ascending=False).head(40)
-    else:
-        gap_focus = gap.head(40)
-
-    minx, miny, maxx, maxy = gap_focus.total_bounds
-    pad = 0.012
+    # Study bbox = all wards so we map roads without PT citywide
+    minx, miny, maxx, maxy = wards.total_bounds
+    pad = 0.015
     bbox = (miny - pad, minx - pad, maxy + pad, maxx + pad)
 
-    cache = RAW / "osm_connectivity_roads.json"
+    cache = RAW / "osm_connectivity_roads_city.json"
     scored = gpd.GeoDataFrame(columns=[], geometry=[], crs=4326)
     source_kind = "osm_roads"
 
@@ -414,9 +409,10 @@ def build_connectivity_need(
         overpass = fetch_roads_overpass(bbox, cache)
         roads = ways_to_gdf(overpass)
         if not roads.empty:
-            gap_buf = gap_focus.to_crs(3857).buffer(450)
-            gap_area = gpd.GeoDataFrame(geometry=[unary_union(gap_buf)], crs=3857).to_crs(4326)
-            roads = gpd.overlay(roads, gap_area, how="intersection", keep_geom_type=False)
+            # Clip to ward envelope (all GCC wards), not only high-gap polygons
+            wards_buf = wards.to_crs(3857).buffer(200)
+            study = gpd.GeoDataFrame(geometry=[unary_union(wards_buf)], crs=3857).to_crs(4326)
+            roads = gpd.overlay(roads, study, how="intersection", keep_geom_type=False)
             roads = roads.explode(index_parts=False).reset_index(drop=True)
             roads = roads[roads.geometry.type.isin(["LineString", "MultiLineString"])]
             roads = roads[~roads.geometry.is_empty]
@@ -428,13 +424,16 @@ def build_connectivity_need(
                     crs=3857,
                 ).to_crs(4326)
 
-            scored = score_roads(roads, catch, gap_focus)
+            gap_for_boost = gap if gap is not None and not gap.empty else wards.iloc[0:0]
+            scored = score_roads(roads, catch, gap_for_boost)
     except Exception as exc:  # noqa: BLE001
         result["errors"].append(str(exc))
         print(f"[warn] OSM connectivity roads: {exc}")
 
     if scored.empty:
-        scored = desire_lines_fallback(gap_focus, hubs)
+        scored = desire_lines_fallback(
+            gap if gap is not None and not gap.empty else wards.head(25), hubs
+        )
         source_kind = "desire_lines"
         if scored.empty:
             result["errors"].append("no corridors met threshold / no desire lines")
@@ -469,8 +468,8 @@ def build_connectivity_need(
         )
 
     note = (
-        "OSM major roads intersecting high Gap Index wards, ranked by length "
-        "outside the 400m GTFS stop catchment. Not ridership or equity."
+        "OSM major-road segments farther than 400m from a GTFS stop (unmet geometry). "
+        "High Gap Index wards are boosted in ranking. Inventory only — not ridership or equity."
         if source_kind == "osm_roads"
         else (
             "Fallback desire lines from high Gap Index ward centroids to nearest hubs "
@@ -500,8 +499,9 @@ def build_connectivity_need(
         "status": "loaded",
         "note": note,
         "method": {
-            "inputs": ["GCC wards Gap Index", "GTFS stops / 400m catchment", "OSM highways or hub desire lines"],
+            "inputs": ["GCC wards", "GTFS stops / 400m catchment", "OSM highways (unmet segments)"],
             "source_kind": source_kind,
+            "geometry": "road minus 400m stop catchment",
             "bands": {
                 "urgent": "highest unmet length / gap overlap",
                 "priority": "substantial coverage gaps",

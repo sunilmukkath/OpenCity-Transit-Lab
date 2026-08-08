@@ -362,6 +362,38 @@ export function MapExplorer({
           </span>
           <span className="hidden h-4 w-px bg-[var(--border)] sm:block" aria-hidden />
           <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-muted)]">
+            Context
+          </span>
+          <div className="flex flex-wrap gap-1">
+            {(
+              [
+                ["connectivity_need", "Need lines"],
+                ["tngis_settlement_area", "Settlements"],
+                ["tngis_habitation", "Habitation"],
+              ] as const
+            ).map(([key, label]) => {
+              const ready = layerIsReady(manifest?.layers[key]);
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  disabled={!ready}
+                  title={
+                    ready
+                      ? MAP_LAYER_META.find((l) => l.key === key)?.label
+                      : "Layer not loaded yet"
+                  }
+                  onClick={() => toggle(key)}
+                  aria-pressed={Boolean(visibility[key])}
+                  className={`${chipBase} ${visibility[key] ? chipOn : chipOff}`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+          <span className="hidden h-4 w-px bg-[var(--border)] sm:block" aria-hidden />
+          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-muted)]">
             View
           </span>
           <div className="flex flex-wrap gap-1">
@@ -429,7 +461,12 @@ export function MapExplorer({
           </div>
           {visibility.connectivity_need ? (
             <p className="mt-2 text-[10px] leading-snug text-[var(--ink-muted)]">
-              Need lines = roads with long stretches &gt;400m from a stop.
+              Need lines = road segments farther than 400m from a GTFS stop (no nearby PT).
+            </p>
+          ) : null}
+          {visibility.tngis_settlement_area || visibility.tngis_habitation ? (
+            <p className="mt-2 text-[10px] leading-snug text-[var(--ink-muted)]">
+              TNGIS settlements / habitation — inventory context from the state WFS (CMA bbox).
             </p>
           ) : null}
           {loadingCore ? (

@@ -122,6 +122,16 @@ export function MapExplorer({
     cityMeanGap,
   } = useFilteredUniverse(filters);
 
+  // Destinations / map pages often inherit ?gap= from assessments — clear so ward colours aren't confused
+  useEffect(() => {
+    if (filters.gapBand === "all") return;
+    if (initialPreset === "destinations" || initialPreset === "walkkm" || initialPreset === "south") {
+      setFilters((prev) => ({ ...prev, gapBand: "all" }));
+    }
+    // only on first mount for this preset
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialPreset]);
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -305,6 +315,12 @@ export function MapExplorer({
         ) : null}
         {loadError ? (
           <p className="text-xs text-[var(--danger)]">{loadError}</p>
+        ) : null}
+        {visibility.wards ? (
+          <p className="text-xs text-[var(--ink-muted)]">
+            Showing all 200 Greater Chennai Corporation wards (2022). Areas labeled Avadi /
+            Poonamallee / Tiruvallur are outside GCC and have no ward polygons in this dataset.
+          </p>
         ) : null}
         {filtersActive(filters) ? (
           <p className="text-xs text-[var(--yellow)]">

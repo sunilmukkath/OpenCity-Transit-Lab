@@ -176,8 +176,8 @@ export function MapLegend({
       </div>
       {visibility.wards ? (
         <p className="mt-2 border-t border-slate-200 pt-1.5 text-[9px] leading-snug text-slate-500">
-          GCC 2022 wards only (200). Places west of the corporation edge (Avadi /
-          Poonamallee / Sriperumbudur) are outside this layer.
+          GCC 2022 wards only (200). Avadi, Poonamallee, Kundrathur, Tiruvallur sit outside the
+          corporation boundary — not missing polygons.
         </p>
       ) : null}
       {visibility.walk_isochrones ? (

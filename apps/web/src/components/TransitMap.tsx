@@ -12,6 +12,7 @@ import {
 import type { FeatureCollection, Geometry } from "geojson";
 import {
   CHENNAI_VIEW,
+  GCC_WARDS_BOUNDS,
   type ChoroplethMode,
   type LayerData,
   type MapLayerKey,
@@ -962,6 +963,28 @@ export function TransitMap({
     if (!basemapReady) return;
     scheduleSync();
   }, [data, visibility, choropleth, basemapReady, scheduleSync]);
+
+  // When wards turn on, frame Greater Chennai Corporation (avoids empty Avadi/Tiruvallur looking "missing")
+  const fittedWardsRef = useRef(false);
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !basemapReady) return;
+    if (!visibility.wards) {
+      fittedWardsRef.current = false;
+      return;
+    }
+    if (!data.wards?.features?.length || fittedWardsRef.current) return;
+    fittedWardsRef.current = true;
+    try {
+      map.fitBounds(GCC_WARDS_BOUNDS, {
+        padding: { top: 48, bottom: 48, left: 48, right: 48 },
+        maxZoom: 11,
+        duration: 700,
+      });
+    } catch {
+      /* ignore */
+    }
+  }, [visibility.wards, data.wards, basemapReady]);
 
   // Keep pan enabled; pointer cursor only when hovering a clickable feature
   useEffect(() => {

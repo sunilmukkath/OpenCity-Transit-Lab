@@ -64,7 +64,7 @@ export const MAP_LAYER_META: {
     defaultOn: true,
     group: "core",
   },
-  { key: "wards", label: "GCC wards", short: "Wards", defaultOn: false, group: "core" },
+  { key: "wards", label: "GCC wards (2022 municipal — not Avadi/Tiruvallur)", short: "Wards", defaultOn: false, group: "core" },
   {
     key: "connectivity_need",
     label: "Need lines — roads with long stretches >400m from a GTFS stop",
@@ -141,10 +141,17 @@ export const MAP_LAYER_META: {
 ];
 
 export const CHENNAI_VIEW = {
-  longitude: 80.2,
-  latitude: 12.82,
-  zoom: 9.2,
+  // Centered on Greater Chennai Corporation wards (not Tiruvallur / Avadi LPA)
+  longitude: 80.24,
+  latitude: 13.05,
+  zoom: 10.35,
 };
+
+/** Approx GCC ward extent for fitBounds (lon/lat). */
+export const GCC_WARDS_BOUNDS: [[number, number], [number, number]] = [
+  [80.13, 12.85],
+  [80.34, 13.24],
+];
 
 export type ChoroplethMode = "stops" | "gap" | "slum" | "walk";
 

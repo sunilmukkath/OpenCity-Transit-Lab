@@ -4,6 +4,7 @@ import type { FeatureCollection, Geometry } from "geojson";
 export type MapLayerKey =
   | "wards"
   | "stops"
+  | "bus_routes"
   | "mrts_stations"
   | "mrts_lines"
   | "hubs"
@@ -40,6 +41,14 @@ export const MAP_LAYER_META: {
     group: "core",
   },
   { key: "stops", label: "Transit stops (GTFS)", short: "Stops", defaultOn: true, group: "core" },
+  {
+    key: "bus_routes",
+    label: "MTC bus routes (GTFS stop-to-stop, Partial)",
+    short: "Bus routes",
+    defaultOn: true,
+    heavy: true,
+    group: "core",
+  },
   { key: "hubs", label: "Rail / metro hubs (existing)", short: "Hubs", defaultOn: true, group: "core" },
   {
     key: "railway_stations",
@@ -194,6 +203,7 @@ export const LAYER_PRESETS: Record<
       ...CORE_OFF_AMENITIES,
       wards: true,
       stops: true,
+      bus_routes: true,
       mrts_lines: true,
       mrts_stations: true,
       hubs: true,
@@ -210,6 +220,7 @@ export const LAYER_PRESETS: Record<
     layers: {
       wards: false,
       stops: true,
+      bus_routes: true,
       mrts_lines: true,
       mrts_stations: true,
       hubs: true,
@@ -236,6 +247,7 @@ export const LAYER_PRESETS: Record<
       ...CORE_OFF_AMENITIES,
       wards: true,
       stops: true,
+      bus_routes: true,
       mrts_lines: true,
       mrts_stations: true,
       hubs: true,
@@ -254,6 +266,7 @@ export const LAYER_PRESETS: Record<
       ...CORE_OFF_AMENITIES,
       wards: false,
       stops: true,
+      bus_routes: true,
       mrts_lines: true,
       mrts_stations: true,
       hubs: true,
@@ -271,6 +284,7 @@ export const LAYER_PRESETS: Record<
       ...CORE_OFF_AMENITIES,
       wards: true,
       stops: true,
+      bus_routes: true,
       mrts_lines: true,
       mrts_stations: true,
       hubs: true,
@@ -289,6 +303,7 @@ export const LAYER_PRESETS: Record<
       ...CORE_OFF_AMENITIES,
       wards: true,
       stops: false,
+      bus_routes: false,
       mrts_lines: false,
       mrts_stations: false,
       hubs: true,
@@ -306,6 +321,7 @@ export const LAYER_PRESETS: Record<
       ...CORE_OFF_AMENITIES,
       wards: true,
       stops: true,
+      bus_routes: true,
       hubs: true,
       mrts_lines: true,
       mrts_stations: true,
@@ -324,6 +340,7 @@ export const LAYER_PRESETS: Record<
       ...CORE_OFF_AMENITIES,
       wards: false,
       stops: true,
+      bus_routes: true,
       mrts_lines: true,
       mrts_stations: true,
       hubs: true,

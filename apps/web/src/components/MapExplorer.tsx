@@ -222,13 +222,14 @@ export function MapExplorer({
         setVisibility((v) => ({
           ...v,
           stops: next.bus,
+          bus_routes: next.bus,
           mrts_stations: next.mrts,
           mrts_lines: next.mrts,
           hubs: next.cmrl,
         }));
         if (manifest) {
           const keys: MapLayerKey[] = [];
-          if (next.bus) keys.push("stops");
+          if (next.bus) keys.push("stops", "bus_routes");
           if (next.mrts) keys.push("mrts_stations", "mrts_lines");
           if (next.cmrl) keys.push("hubs");
           if (keys.length) {
@@ -376,6 +377,7 @@ export function MapExplorer({
             {(
               [
                 ["connectivity_need", "Need lines"],
+                ["bus_routes", "Bus routes"],
                 ["nmt_network", "NMT paths"],
                 ["tngis_settlement_area", "Settlements"],
                 ["tngis_habitation", "Habitation"],

@@ -1,0 +1,12 @@
+{
+  "status": "partial",
+  "generated_at": "2026-08-08T11:25:43.300065+00:00",
+  "note": "MTC bus routes from unofficial Chennai GTFS (UngalSoththu). One LineString per route_id \u00d7 direction from the trip with the most mapped stops. Straight stop-to-stop chords \u2014 not road-matched. shapes.txt has no usable bus geometry.",
+  "counts": {
+    "features": 3934,
+    "bus_routes_in_gtfs": 4611,
+    "route_direction_pairs": 3934
+  },
+  "source": "chennai_gtfs_unified",
+  "limitation": "Crow-flies between consecutive stops; not official MTC path geometry."
+}

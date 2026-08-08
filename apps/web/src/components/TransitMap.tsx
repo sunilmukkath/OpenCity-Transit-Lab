@@ -96,6 +96,10 @@ function formatPopupProps(props: Record<string, unknown>): string {
     "stops_per_km2",
     "hub_type",
     "mode",
+    "route_short_name",
+    "route_long_name",
+    "direction_id",
+    "geometry_note",
     "highway",
     "label",
     "habitation_name",
@@ -488,6 +492,21 @@ const LAYER_STACK: {
     ],
   },
   {
+    key: "bus_routes",
+    sourceId: "tm-bus-routes",
+    layers: [
+      {
+        id: "tm-bus-routes-line",
+        type: "line",
+        paint: {
+          "line-color": "#0284c7",
+          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 0.6, 12, 1.2, 15, 2.2],
+          "line-opacity": 0.35,
+        },
+      },
+    ],
+  },
+  {
     key: "stops",
     sourceId: "tm-stops",
     layers: [
@@ -669,6 +688,7 @@ const INTERACTIVE_LAYER_IDS = [
   "tm-walk-isochrones-fill",
   "tm-nmt-line",
   "tm-tngis-settlement-fill",
+  "tm-bus-routes-line",
   "tm-stops-circle",
   "tm-mrts-stations-circle",
   "tm-hubs-circle",
@@ -906,6 +926,7 @@ export function TransitMap({
           props.zone_label ||
           props.label ||
           props.road_name ||
+          props.route_short_name ||
           props.stop_name ||
           props.hub_name ||
           props.station_name ||

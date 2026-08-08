@@ -86,7 +86,7 @@
       "portal": "https://github.com/ungalsoththu/ChennaiGTFS",
       "license": "See GitHub repository",
       "kind": "static",
-      "notes": "Unofficial community GTFS. Shapes may be straight-line; no suburban rail; no GTFS-RT.",
+      "notes": "Unofficial community GTFS. Bus route lines are stop-to-stop (no usable shapes.txt for MTC); no suburban rail; no GTFS-RT.",
       "status": "loaded",
       "bytes": 9091816,
       "sha256": "db1da880f9ad93e352f6658df0e94a8b2d71cd1dc8bdfbb60fa3968a9b0ad3e6",
@@ -1202,6 +1202,20 @@
         "mrts_stations",
         "chennai_osm_walk_graph"
       ]
+    },
+    "bus_routes": {
+      "status": "partial",
+      "feature_count": 3934,
+      "bbox": [
+        79.80188,
+        12.6148,
+        80.33584,
+        13.49042
+      ],
+      "file": "bus_routes.geojson",
+      "derived_from": "chennai_gtfs_unified",
+      "notes": "MTC bus routes from unofficial Chennai GTFS (UngalSoththu). One LineString per route_id \u00d7 direction from the trip with the most mapped stops. Straight stop-to-stop chords \u2014 not road-matched. shapes.txt has no usable bus geometry.",
+      "limitation": "Crow-flies between consecutive stops; not official MTC path geometry."
     }
   },
   "realtime": [

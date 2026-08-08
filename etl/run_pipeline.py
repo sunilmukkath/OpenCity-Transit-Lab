@@ -37,6 +37,7 @@ from build_cmp_corridors import main as build_cmp_corridors_main  # noqa: E402
 from build_ward_walk_access import main as build_ward_walk_access_main  # noqa: E402
 from gap_index import build_gap_index  # noqa: E402
 from build_walk_isochrones import main as build_walk_isochrones_main  # noqa: E402
+from build_bus_routes import main as build_bus_routes_main  # noqa: E402
 
 RAW = ROOT / "data" / "raw"
 PROCESSED = ROOT / "data" / "processed"
@@ -97,7 +98,10 @@ SOURCES: dict[str, dict[str, Any]] = {
         "portal": "https://github.com/ungalsoththu/ChennaiGTFS",
         "kind": "static",
         "filename": "chennai-unified-gtfs.zip",
-        "notes": "Unofficial community GTFS. Shapes may be straight-line; no suburban rail; no GTFS-RT.",
+        "notes": (
+            "Unofficial community GTFS. Bus route lines are stop-to-stop "
+            "(no usable shapes.txt for MTC); no suburban rail; no GTFS-RT."
+        ),
     },
 }
 
@@ -1819,6 +1823,7 @@ def main() -> int:
         ("pop_access", build_pop_access_main),
         ("nmt_network", build_nmt_network_main),
         ("cmp_corridors", build_cmp_corridors_main),
+        ("bus_routes", build_bus_routes_main),
     ):
         try:
             fn()

@@ -132,6 +132,8 @@ export function MapLegend({
 
   const points: Swatch[] = [];
   if (visibility.stops) points.push({ kind: "dot", color: "#0369a1", label: "Bus stops (GTFS)" });
+  if (visibility.bus_routes)
+    points.push({ kind: "line", color: "#0284c7", label: "MTC bus routes (straight-line)" });
   if (visibility.mrts_stations) points.push({ kind: "dot", color: "#ea580c", label: "MRTS stations" });
   if (visibility.mrts_lines) points.push({ kind: "line", color: "#ea580c", label: "MRTS lines" });
   if (visibility.hubs) points.push({ kind: "dot", color: "#7c3aed", label: "CMRL metro hubs" });

@@ -10,7 +10,6 @@ export type MapLayerKey =
   | "railway_stations"
   | "connectivity_need"
   | "walk_isochrones"
-  | "walk_distance_bands"
   | "omr_corridor"
   | "metro_area_boundaries"
   | "schools"
@@ -38,13 +37,6 @@ export const MAP_LAYER_META: {
     label: "Walk isochrones 5/10/15 min (OSM network)",
     short: "Isochrones",
     defaultOn: true,
-    group: "core",
-  },
-  {
-    key: "walk_distance_bands",
-    label: "Walk distance crow-flies (≤1km bands)",
-    short: "Crow-flies",
-    defaultOn: false,
     group: "core",
   },
   { key: "stops", label: "Transit stops (GTFS)", short: "Stops", defaultOn: true, group: "core" },
@@ -188,7 +180,7 @@ export const LAYER_PRESETS: Record<
   }
 > = {
   walkkm: {
-    label: "Walk km",
+    label: "Isochrones",
     blurb: "OSM walk isochrones 5/10/15 min + ward walk colour",
     choropleth: "walk",
     layers: {
@@ -200,7 +192,6 @@ export const LAYER_PRESETS: Record<
       hubs: true,
       connectivity_need: false,
       walk_isochrones: true,
-      walk_distance_bands: false,
       omr_corridor: true,
       metro_area_boundaries: true,
     },
@@ -218,7 +209,6 @@ export const LAYER_PRESETS: Record<
       railway_stations: false,
       connectivity_need: false,
       walk_isochrones: true,
-      walk_distance_bands: false,
       omr_corridor: true,
       metro_area_boundaries: true,
       schools: true,
@@ -244,7 +234,6 @@ export const LAYER_PRESETS: Record<
       hubs: true,
       connectivity_need: true,
       walk_isochrones: true,
-      walk_distance_bands: false,
       omr_corridor: true,
       metro_area_boundaries: true,
       cmp_corridors: true,
@@ -263,7 +252,6 @@ export const LAYER_PRESETS: Record<
       hubs: true,
       connectivity_need: false,
       walk_isochrones: true,
-      walk_distance_bands: false,
       omr_corridor: true,
       metro_area_boundaries: true,
     },
@@ -281,7 +269,6 @@ export const LAYER_PRESETS: Record<
       hubs: true,
       connectivity_need: false,
       walk_isochrones: false,
-      walk_distance_bands: false,
       omr_corridor: false,
       metro_area_boundaries: false,
       nmt_network: true,
@@ -300,7 +287,6 @@ export const LAYER_PRESETS: Record<
       hubs: true,
       connectivity_need: false,
       walk_isochrones: false,
-      walk_distance_bands: false,
       omr_corridor: false,
       metro_area_boundaries: false,
     },
@@ -319,7 +305,6 @@ export const LAYER_PRESETS: Record<
       connectivity_need: true,
       cmp_corridors: true,
       walk_isochrones: false,
-      walk_distance_bands: false,
       omr_corridor: true,
       metro_area_boundaries: false,
     },
@@ -337,7 +322,6 @@ export const LAYER_PRESETS: Record<
       hubs: true,
       connectivity_need: true,
       walk_isochrones: true,
-      walk_distance_bands: false,
       omr_corridor: true,
       metro_area_boundaries: true,
       tngis_settlement_area: true,
@@ -353,7 +337,7 @@ export const AUDIENCE_PRESETS: {
   audience?: string;
   preset: string;
 }[] = [
-  { id: "citizen", label: "Walk / destinations", audience: "citizen", preset: "destinations" },
+  { id: "citizen", label: "Isochrones / destinations", audience: "citizen", preset: "destinations" },
   { id: "planner", label: "Gaps", audience: "planner", preset: "serve" },
   { id: "hubs", label: "Hubs", audience: "hubs", preset: "hubs" },
   { id: "equity", label: "Slum", audience: "equity", preset: "slum" },

@@ -1022,17 +1022,9 @@
       "derived_from": "opencity_chennai_slums"
     },
     "walk_distance_bands": {
-      "status": "loaded",
-      "file": "walk_distance_bands.geojson",
-      "feature_count": 4,
-      "notes": "Crow-flies from existing GTFS stops + MRTS/metro hubs. Bands: \u2264100m, 100\u2013500m, 500m\u20131km, >1km. Study = GCC wards + OMR corridor buffer + Tambaram/Chengalpattu/Mahabalipuram. Proposed metro stations not included (no verified open station points). Not street-network walk; not population-weighted.",
-      "attributes": [
-        "band",
-        "label",
-        "color_hint",
-        "area_km2",
-        "note"
-      ]
+      "status": "unavailable",
+      "error": "Replaced by walk_isochrones (OSM network 5/10/15 min)",
+      "replaced_by": "walk_isochrones"
     },
     "bus_stop_audit": {
       "status": "loaded",

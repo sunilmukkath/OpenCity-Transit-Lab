@@ -185,7 +185,7 @@ export function InsightsPanel() {
           ],
           ["needlines", "Need lines", data?.connectivity_need?.status === "loaded"],
           ["slum", "Slum vs non-slum", data?.sec_proxy?.status === "loaded"],
-          ["walkkm", "Walk km", data?.walk_distance_bands?.status === "loaded"],
+          ["walkkm", "Isochrones", data?.walk_isochrones?.status === "partial" || data?.walk_isochrones?.status === "loaded"],
         ] as const
       ).filter((row) => row[2]) as [InsightView, string, boolean][],
     [data]
@@ -806,58 +806,51 @@ export function InsightsPanel() {
 
       {view === "walkkm" ? (
         <section className="space-y-4">
-          <div className="et-card border-[rgba(239,68,68,0.35)] p-4 text-sm text-[var(--ink-muted)]">
-            {data.walk_distance_bands?.note ??
-              "Crow-flies to existing stops/hubs. Bands: ≤100m, 100–500m, 500m–1km, >1km. Study includes GCC + OMR south. Red = over 1km."}
+          <div className="et-card border-[rgba(45,212,191,0.35)] p-4 text-sm text-[var(--ink-muted)]">
+            {data.walk_isochrones?.note ??
+              "OSM network walk isochrones: ≤5 / 5–10 / 10–15 min from GTFS stops and hubs at 80 m/min. Partial — not crow-flies."}
           </div>
-          {!data.walk_distance_bands || data.walk_distance_bands.status !== "loaded" ? (
+          {!data.walk_isochrones ||
+          (data.walk_isochrones.status !== "loaded" &&
+            data.walk_isochrones.status !== "partial") ? (
             <div className="et-card p-5 text-sm text-[var(--ink-muted)]">
-              Walk-distance bands unavailable. Run{" "}
-              <code>etl/build_walk_distance_bands.py</code> after stops are loaded.
+              Walk isochrones unavailable. Run{" "}
+              <code>etl/build_walk_isochrones.py</code> after stops are loaded.
             </div>
           ) : (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <MetricCard
-                label="Within 100m"
+                label="≤5 min"
                 value={
-                  data.walk_distance_bands.counts?.within_100m_km2 != null
-                    ? `${fmt(data.walk_distance_bands.counts.within_100m_km2, 1)} km²`
+                  data.walk_isochrones.counts?.within_5min_km2 != null
+                    ? `${fmt(data.walk_isochrones.counts.within_5min_km2, 1)} km²`
                     : null
                 }
-                subtext={`${fmt(data.walk_distance_bands.counts?.pct_within_100m, 1)}% of study · teal`}
+                subtext={`${fmt(data.walk_isochrones.counts?.pct_within_5min, 1)}% of study · teal`}
               />
               <MetricCard
-                label="100m–500m"
+                label="5–10 min"
                 value={
-                  data.walk_distance_bands.counts?.band_100_500m_km2 != null
-                    ? `${fmt(data.walk_distance_bands.counts.band_100_500m_km2, 1)} km²`
+                  data.walk_isochrones.counts?.band_5_10min_km2 != null
+                    ? `${fmt(data.walk_isochrones.counts.band_5_10min_km2, 1)} km²`
                     : null
                 }
-                subtext="Green on map"
+                subtext={`${fmt(data.walk_isochrones.counts?.pct_band_5_10min, 1)}% · amber`}
               />
               <MetricCard
-                label="500m–1km"
+                label="10–15 min"
                 value={
-                  data.walk_distance_bands.counts?.band_500_1000m_km2 != null
-                    ? `${fmt(data.walk_distance_bands.counts.band_500_1000m_km2, 1)} km²`
+                  data.walk_isochrones.counts?.band_10_15min_km2 != null
+                    ? `${fmt(data.walk_isochrones.counts.band_10_15min_km2, 1)} km²`
                     : null
                 }
-                subtext="Amber on map"
-              />
-              <MetricCard
-                label="Over 1km (red)"
-                value={
-                  data.walk_distance_bands.counts?.over_1000m_km2 != null
-                    ? `${fmt(data.walk_distance_bands.counts.over_1000m_km2, 1)} km²`
-                    : null
-                }
-                subtext={`${fmt(data.walk_distance_bands.counts?.pct_over_1000m, 1)}% of study area`}
+                subtext={`${fmt(data.walk_isochrones.counts?.pct_band_10_15min, 1)}% · orange`}
               />
               <MetricCard
                 label="Study area"
                 value={
-                  data.walk_distance_bands.counts?.study_area_km2 != null
-                    ? `${fmt(data.walk_distance_bands.counts.study_area_km2, 1)} km²`
+                  data.walk_isochrones.counts?.study_area_km2 != null
+                    ? `${fmt(data.walk_isochrones.counts.study_area_km2, 1)} km²`
                     : null
                 }
                 subtext="GCC + OMR south"
@@ -868,7 +861,7 @@ export function InsightsPanel() {
             href="/map"
             className="inline-flex text-sm font-semibold text-[var(--accent)]"
           >
-            Open map with Walk km preset →
+            Open map with Isochrones preset →
           </a>
         </section>
       ) : null}

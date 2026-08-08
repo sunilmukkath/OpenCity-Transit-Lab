@@ -21,7 +21,7 @@ export function LastMilePage() {
 
   const hubs = analyses?.hub_last_mile?.priority_hubs?.slice(0, 12) ?? [];
   const need = analyses?.connectivity_need?.corridors?.slice(0, 8) ?? [];
-  const walk = analyses?.walk_distance_bands;
+  const walk = analyses?.walk_isochrones;
   const walkCounts = walk?.counts;
 
   return (
@@ -31,8 +31,8 @@ export function LastMilePage() {
           Last-mile connectivity
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-[var(--ink-muted)]">
-          Advanced analysis of hub feeders, walk-distance bands, and roads far from stops —
-          plus the map for the same layers.
+          Hub feeders, OSM walk isochrones, and roads far from stops — plus the map for the same
+          layers.
         </p>
       </header>
 
@@ -44,13 +44,11 @@ export function LastMilePage() {
           </p>
         </div>
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
-          <p className="text-[10px] uppercase text-[var(--ink-muted)]">Within 100m</p>
+          <p className="text-[10px] uppercase text-[var(--ink-muted)]">Within 5 min walk</p>
           <p className="mt-1 text-2xl text-[var(--ink)]">
-            {walkCounts?.pct_within_100m != null
-              ? `${walkCounts.pct_within_100m}%`
-              : "—"}
+            {walkCounts?.pct_within_5min != null ? `${walkCounts.pct_within_5min}%` : "—"}
           </p>
-          <p className="mt-1 text-xs text-[var(--ink-muted)]">of study area (crow-flies)</p>
+          <p className="mt-1 text-xs text-[var(--ink-muted)]">of study area (OSM network)</p>
         </div>
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
           <p className="text-[10px] uppercase text-[var(--ink-muted)]">Need corridors</p>

@@ -172,7 +172,7 @@ def build_objectives_analysis() -> dict[str, Any]:
     analyses = json.loads(analyses_path.read_text()) if analyses_path.exists() else {}
     reports = json.loads(reports_path.read_text()) if reports_path.exists() else {}
 
-    walk = analyses.get("walk_distance_bands") or {}
+    walk = analyses.get("walk_isochrones") or {}
     hubs = analyses.get("hub_last_mile") or {}
     need = analyses.get("connectivity_need") or {}
     sec = analyses.get("sec_proxy") or {}
@@ -182,7 +182,7 @@ def build_objectives_analysis() -> dict[str, Any]:
     schools = _load("schools.geojson")
     healthcare = _load("healthcare.geojson")
 
-    # 1. First / last mile walk gaps
+    # 1. First / last mile walk gaps (OSM network isochrones)
     walk_obj: dict[str, Any] = {
         "id": "first_last_mile",
         "title": "First / last-mile walk connectivity gaps",
@@ -192,7 +192,7 @@ def build_objectives_analysis() -> dict[str, Any]:
         "metrics": walk.get("counts") or {},
         "method": walk.get("method") or {},
         "limitations": [
-            "Crow-flies buffers, not street-network walks.",
+            "OSM pedestrian network isochrones at 80 m/min — Partial completeness.",
             "NMT (footways/cycle) layer Unavailable — no verified citywide NMT network ingest.",
             "IPT (auto/share) layer Unavailable — no verified IPT stop inventory.",
         ],
@@ -200,10 +200,9 @@ def build_objectives_analysis() -> dict[str, Any]:
     if walk.get("counts"):
         c = walk["counts"]
         walk_obj["chart"] = [
-            {"label": "Within 100m", "km2": c.get("within_100m_km2"), "color": "#2dd4bf"},
-            {"label": "100–500m", "km2": c.get("band_100_500m_km2"), "color": "#86efac"},
-            {"label": "500m–1km", "km2": c.get("band_500_1000m_km2"), "color": "#fde047"},
-            {"label": "Over 1km", "km2": c.get("over_1000m_km2"), "color": "#dc2626"},
+            {"label": "≤5 min", "km2": c.get("within_5min_km2"), "color": "#2dd4bf"},
+            {"label": "5–10 min", "km2": c.get("band_5_10min_km2"), "color": "#eab308"},
+            {"label": "10–15 min", "km2": c.get("band_10_15min_km2"), "color": "#f97316"},
         ]
 
     # 2. Interchange integration
@@ -492,16 +491,17 @@ def build_objectives_analysis() -> dict[str, Any]:
 
     # Recommendations synthesized from loaded objectives
     recommendations = []
-    if walk.get("counts") and (walk["counts"].get("pct_over_1000m") or 0) > 0:
+    if walk.get("counts") and (walk["counts"].get("pct_within_5min") or 0) >= 0:
+        pct5 = walk["counts"].get("pct_within_5min")
+        km5 = walk["counts"].get("within_5min_km2")
         recommendations.append(
             {
                 "priority": "critical",
                 "objective": "first_last_mile",
-                "title": "Prioritise service where walk-to-stop exceeds 1km",
+                "title": "Expand coverage beyond 5-minute walk isochrones",
                 "detail": (
-                    f"About {walk['counts'].get('pct_over_1000m')}% of the extended study area "
-                    f"({walk['counts'].get('over_1000m_km2')} km²) is crow-flies >1km from a stop/hub. "
-                    "Use the Walk km map (red) and Need lines for feeder placement."
+                    f"About {pct5}% of the study area ({km5} km²) is within a 5-minute OSM walk "
+                    "of a stop/hub. Use Isochrones + Need lines on the map for feeder placement."
                 ),
                 "map_href": "/map",
             }

@@ -28,7 +28,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_metro_extension import build_metro_extension  # noqa: E402
 from build_connectivity_need import build_connectivity_need  # noqa: E402
 from build_sec_proxy import build_sec_proxy  # noqa: E402
-from build_walk_distance_bands import build_walk_distance_bands  # noqa: E402
 from ingest_jam_catalog import ingest_jam_catalog  # noqa: E402
 from build_objectives_analysis import build_objectives_analysis  # noqa: E402
 from ingest_downloads import main as ingest_downloads_main  # noqa: E402
@@ -1499,37 +1498,13 @@ def main() -> int:
             manifest["layers"]["catchment_400m"] = {"status": "unavailable", "error": str(exc)}
             print(f"[fail] catchments: {exc}", file=sys.stderr)
 
-    # Walk-distance bands: <500m, 500–1000m, >1km (red)
-    # Study extends south along OMR / Tambaram / Chengalpattu / Mahabalipuram.
-    # Access = GTFS stops + existing MRTS/metro hubs (proposed metro Unavailable).
+    # Crow-flies walk_distance_bands retired — use OSM walk_isochrones (built later).
     walk_analysis: dict[str, Any] | None = None
-    if layers.get("stops") is not None and layers.get("wards") is not None:
-        try:
-            walk = build_walk_distance_bands(
-                layers["stops"],
-                layers["wards"],
-                hubs=layers.get("hubs"),
-                mrts=layers.get("mrts_stations"),
-                omr=layers.get("omr_corridor"),
-                metro_areas=layers.get("metro_area_boundaries"),
-                corridor_aois=layers.get("corridor_aois"),
-            )
-            walk_analysis = walk.get("analysis")
-            for key, meta in walk.get("layers", {}).items():
-                manifest["layers"][key] = meta
-                if meta.get("status") == "loaded":
-                    print(
-                        f"[ok] {meta.get('file')} "
-                        f"(over_1km={walk_analysis.get('counts', {}).get('over_1000m_km2') if walk_analysis else '?'} km²)"
-                    )
-            for err in walk.get("errors") or []:
-                print(f"[warn] walk bands: {err}", file=sys.stderr)
-        except Exception as exc:  # noqa: BLE001
-            print(f"[fail] walk distance bands: {exc}", file=sys.stderr)
-            manifest["layers"]["walk_distance_bands"] = {
-                "status": "unavailable",
-                "error": str(exc),
-            }
+    manifest["layers"]["walk_distance_bands"] = {
+        "status": "unavailable",
+        "error": "Replaced by walk_isochrones (OSM network 5/10/15 min)",
+        "replaced_by": "walk_isochrones",
+    }
 
     # Prefer railway from prior / early ingest so mode counts land in reports.
     rail_path = PROCESSED / "railway_stations.geojson"
@@ -1766,6 +1741,8 @@ def main() -> int:
 
     if walk_analysis:
         analyses["walk_distance_bands"] = walk_analysis
+    else:
+        analyses.pop("walk_distance_bands", None)
 
     (PROCESSED / "analyses.json").write_text(json.dumps(analyses, indent=2, allow_nan=False))
     hub_n = len(analyses.get("hub_last_mile", {}).get("hubs", []))

@@ -286,24 +286,19 @@ export interface AdvancedAnalyses {
     }[];
     counts?: Record<string, number>;
   };
-  walk_distance_bands?: {
+  walk_isochrones?: {
     status: string;
     note?: string;
-    method?: Record<string, string>;
-    study?: {
-      pct_within_100m?: number;
-      pct_over_1000m?: number;
-      study_area_km2?: number;
-    };
+    method?: Record<string, unknown>;
     counts?: {
       study_area_km2?: number;
-      within_100m_km2?: number;
-      band_100_500m_km2?: number;
-      within_500m_km2?: number;
-      band_500_1000m_km2?: number;
-      over_1000m_km2?: number;
-      pct_within_100m?: number;
-      pct_over_1000m?: number;
+      within_5min_km2?: number;
+      band_5_10min_km2?: number;
+      band_10_15min_km2?: number;
+      pct_within_5min?: number;
+      pct_band_5_10min?: number;
+      pct_band_10_15min?: number;
+      walk_speed_m_per_min?: number;
     };
   };
   pop_access?: {

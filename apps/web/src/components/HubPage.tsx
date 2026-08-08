@@ -51,20 +51,25 @@ function CitizenHub() {
         }>("/data/pop_access.json"),
       ]);
       if (cancelled) return;
-      const walk = a?.walk_distance_bands as
+      const walk = a?.walk_isochrones as
         | {
-            study?: { pct_within_100m?: number; pct_over_1000m?: number };
-            counts?: { pct_within_100m?: number; pct_over_1000m?: number };
+            counts?: {
+              pct_within_5min?: number;
+              pct_band_5_10min?: number;
+              pct_band_10_15min?: number;
+              within_5min_km2?: number;
+            };
+            note?: string;
           }
         | undefined;
-      const study = walk?.study ?? walk?.counts;
-      if (study?.pct_within_100m != null) {
+      const c = walk?.counts;
+      if (c?.pct_within_5min != null) {
+        const covered =
+          (c.pct_within_5min ?? 0) +
+          (c.pct_band_5_10min ?? 0) +
+          (c.pct_band_10_15min ?? 0);
         setWalkNote(
-          `About ${study.pct_within_100m.toFixed(1)}% of the study area is within 100m of a stop or hub (crow-flies). ${
-            study.pct_over_1000m != null
-              ? `${study.pct_over_1000m.toFixed(1)}% is more than 1km away.`
-              : ""
-          }`
+          `About ${c.pct_within_5min.toFixed(1)}% of the study area is within a 5-minute OSM walk of a stop or hub; ~${covered.toFixed(1)}% is within 15 minutes (Partial network isochrones).`
         );
       }
       if (pop?.city?.pct_pop_within_400m != null) {

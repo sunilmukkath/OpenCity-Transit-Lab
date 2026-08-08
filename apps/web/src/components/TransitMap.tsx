@@ -270,7 +270,7 @@ const LAYER_STACK: {
     sourceId: "tm-connectivity-need",
     layers: [
       {
-        // Halo so need corridors read against dense basemap / walk bands
+        // Halo so need corridors read against dense basemap / isochrones
         id: "tm-connectivity-need-halo",
         type: "line",
         paint: {
@@ -406,60 +406,6 @@ const LAYER_STACK: {
           ],
           "line-width": ["match", ["get", "band"], "within_5min", 1.1, 0.6],
           "line-opacity": 0.7,
-        },
-      },
-    ],
-  },
-  {
-    key: "walk_distance_bands",
-    sourceId: "tm-walk-bands",
-    layers: [
-      {
-        id: "tm-walk-bands-fill",
-        type: "fill",
-        // Hide over_1000m — residual study-area remainder, not a measured band
-        filter: ["!=", ["get", "band"], "over_1000m"],
-        paint: {
-          "fill-color": [
-            "match",
-            ["get", "band"],
-            "within_100m",
-            "#2dd4bf",
-            "band_100_500m",
-            "#86efac",
-            "within_500m",
-            "#86efac",
-            "band_500_1000m",
-            "#fde047",
-            "#94a3b8",
-          ],
-          "fill-opacity": [
-            "match",
-            ["get", "band"],
-            "band_500_1000m",
-            0.32,
-            "within_100m",
-            0.55,
-            0.28,
-          ],
-        },
-      },
-      {
-        id: "tm-walk-bands-line",
-        type: "line",
-        filter: ["!=", ["get", "band"], "over_1000m"],
-        paint: {
-          "line-color": [
-            "match",
-            ["get", "band"],
-            "band_500_1000m",
-            "#a16207",
-            "within_100m",
-            "#0f766e",
-            "#166534",
-          ],
-          "line-width": ["match", ["get", "band"], "within_100m", 1.2, 0.5],
-          "line-opacity": ["match", ["get", "band"], "within_100m", 0.85, 0.45],
         },
       },
     ],
@@ -706,7 +652,6 @@ const LAYER_STACK: {
 const INTERACTIVE_LAYER_IDS = [
   "tm-wards-fill",
   "tm-walk-isochrones-fill",
-  "tm-walk-bands-fill",
   "tm-tngis-settlement-fill",
   "tm-stops-circle",
   "tm-mrts-stations-circle",
@@ -799,9 +744,8 @@ export function TransitMap({
           paint = {
             ...layer.paint,
             "fill-color": fill,
-            // Keep wards under walk bands readable without washing out >1km red
-            "fill-opacity":
-              vis.walk_isochrones || vis.walk_distance_bands ? 0.22 : 0.55,
+            // Keep wards under isochrones readable
+            "fill-opacity": vis.walk_isochrones ? 0.22 : 0.55,
           };
         }
 

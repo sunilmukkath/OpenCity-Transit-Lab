@@ -50,7 +50,6 @@ export function MapLegend({
         { kind: "fill", color: "#2dd4bf", label: "Within 100m" },
         { kind: "fill", color: "#86efac", label: "100m – 500m" },
         { kind: "fill", color: "#fde047", label: "500m – 1km" },
-        { kind: "fill", color: "#dc2626", label: "Over 1km (priority)" },
       ],
     });
   }
@@ -151,8 +150,8 @@ export function MapLegend({
       </div>
       {visibility.walk_distance_bands ? (
         <p className="mt-2 border-t border-slate-200 pt-1.5 text-[9px] leading-snug text-slate-500">
-          Crow-flies to existing stops/hubs. Includes OMR south of GCC. Proposed metro
-          stations not in data.
+          Crow-flies buffers to existing stops/hubs (≤1km shown). Areas farther than 1km are
+          not drawn.
         </p>
       ) : null}
       {visibility.connectivity_need ? (

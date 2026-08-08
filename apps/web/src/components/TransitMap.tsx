@@ -193,7 +193,12 @@ function wardFillExpression(
 const LAYER_STACK: {
   key: MapLayerKey;
   sourceId: string;
-  layers: { id: string; type: "fill" | "line" | "circle"; paint: Record<string, unknown> }[];
+  layers: {
+    id: string;
+    type: "fill" | "line" | "circle";
+    paint: Record<string, unknown>;
+    filter?: unknown[];
+  }[];
 }[] = [
   {
     key: "metro_area_boundaries",
@@ -316,6 +321,8 @@ const LAYER_STACK: {
       {
         id: "tm-walk-bands-fill",
         type: "fill",
+        // Hide over_1000m — residual study-area remainder, not a measured band
+        filter: ["!=", ["get", "band"], "over_1000m"],
         paint: {
           "fill-color": [
             "match",
@@ -328,56 +335,35 @@ const LAYER_STACK: {
             "#86efac",
             "band_500_1000m",
             "#fde047",
-            "over_1000m",
-            "#dc2626",
             "#94a3b8",
           ],
           "fill-opacity": [
             "match",
             ["get", "band"],
-            "over_1000m",
-            0.78,
             "band_500_1000m",
             0.32,
             "within_100m",
             0.55,
-            0.22,
+            0.28,
           ],
         },
       },
       {
         id: "tm-walk-bands-line",
         type: "line",
+        filter: ["!=", ["get", "band"], "over_1000m"],
         paint: {
           "line-color": [
             "match",
             ["get", "band"],
-            "over_1000m",
-            "#7f1d1d",
             "band_500_1000m",
             "#a16207",
             "within_100m",
             "#0f766e",
             "#166534",
           ],
-          "line-width": [
-            "match",
-            ["get", "band"],
-            "over_1000m",
-            1.8,
-            "within_100m",
-            1.2,
-            0.5,
-          ],
-          "line-opacity": [
-            "match",
-            ["get", "band"],
-            "over_1000m",
-            0.95,
-            "within_100m",
-            0.85,
-            0.45,
-          ],
+          "line-width": ["match", ["get", "band"], "within_100m", 1.2, 0.5],
+          "line-opacity": ["match", ["get", "band"], "within_100m", 0.85, 0.45],
         },
       },
     ],
@@ -684,6 +670,7 @@ export function TransitMap({
             type: layer.type,
             source: entry.sourceId,
             paint: paint as never,
+            ...(layer.filter ? { filter: layer.filter as never } : {}),
           } as never);
         } catch (err) {
           console.warn("Failed to add layer", layer.id, err);

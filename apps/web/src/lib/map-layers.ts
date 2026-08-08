@@ -32,7 +32,7 @@ export const MAP_LAYER_META: {
 }[] = [
   {
     key: "walk_distance_bands",
-    label: "Walk distance to stop/hub (<500m / <1km / >1km red)",
+    label: "Walk distance to stop/hub (≤1km bands)",
     short: "Walk km",
     defaultOn: true,
     group: "core",

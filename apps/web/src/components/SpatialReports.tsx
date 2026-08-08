@@ -212,11 +212,7 @@ function UnitListItem({
         {unit.railway_station_count != null && unit.railway_station_count > 0
           ? ` · rail ${fmt(unit.railway_station_count)}`
           : ""}
-        {unit.mean_walk_min != null
-          ? ` · ~${fmt(unit.mean_walk_min, 1)} min walk`
-          : unit.mean_walk_m != null
-            ? ` · walk ~${fmt(unit.mean_walk_m, 0)} m`
-            : ""}
+        {unit.mean_walk_min != null ? ` · ~${fmt(unit.mean_walk_min, 1)} min walk` : ""}
         {enriched.pt_index != null ? ` · PT ${enriched.pt_index}` : ""}
       </p>
       {unit.unit_type === "ward" ? (
@@ -398,16 +394,14 @@ function ReportDetail({
         </div>
         <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
           <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-            Crow-flies (compare)
+            P90 walk
           </p>
           <p className="mt-1 text-2xl font-semibold text-[var(--yellow)]">
-            {unit.mean_walk_m != null ? `${fmt(unit.mean_walk_m, 0)} m` : "—"}
+            {unit.p90_walk_min != null ? `${fmt(unit.p90_walk_min, 1)} min` : "—"}
           </p>
           <p className="mt-1 text-xs text-[var(--ink-muted)]">
-            Straight-line mean
-            {unit.pct_samples_within_400m != null
-              ? ` · ${fmt(unit.pct_samples_within_400m, 0)}% ≤400m`
-              : ""}
+            90th percentile network time
+            {unit.walk_sample_points != null ? ` · n=${unit.walk_sample_points}` : ""}
           </p>
         </div>
       </div>
@@ -498,11 +492,6 @@ function downloadReportsCsv(rows: SpatialUnitReport[], filename: string) {
     "nearest_mrts_m",
     "nearest_cmrl_m",
     "nearest_railway_m",
-    "mean_walk_m",
-    "median_walk_m",
-    "p90_walk_m",
-    "pct_samples_within_400m",
-    "pct_samples_within_800m",
     "mean_network_m",
     "mean_walk_min",
     "median_walk_min",
@@ -537,11 +526,6 @@ function downloadReportsCsv(rows: SpatialUnitReport[], filename: string) {
         r.nearest_mrts_m ?? "",
         r.nearest_cmrl_m ?? "",
         r.nearest_railway_m ?? "",
-        r.mean_walk_m ?? "",
-        r.median_walk_m ?? "",
-        r.p90_walk_m ?? "",
-        r.pct_samples_within_400m ?? "",
-        r.pct_samples_within_800m ?? "",
         r.mean_network_m ?? "",
         r.mean_walk_min ?? "",
         r.median_walk_min ?? "",

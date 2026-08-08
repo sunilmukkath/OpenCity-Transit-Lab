@@ -14506,7 +14506,6 @@
   "ward_walk_access": {
     "status": "loaded",
     "city": {
-      "mean_of_ward_means_m": 290.2,
       "mean_of_ward_means_min": 4.9,
       "wards": 200
     },
@@ -14517,11 +14516,8 @@
         "stops",
         "hubs"
       ],
-      "crow_flies": "Euclidean (EPSG:3857)",
       "network": "OSMNx network_type=walk + multi-source Dijkstra (length metres)",
       "walk_speed_m_per_min": 80.0,
-      "network_status": "loaded",
-      "network_error": null,
       "network_meta": {
         "nodes": 184632,
         "edges": 476338,
@@ -14539,16 +14535,11 @@
         "pct_routed": 100.0
       }
     },
-    "note": "Ward grid samples (~150m) to nearest GTFS stop or MRTS/metro hub. mean_walk_m = crow-flies. mean_walk_min = OSM pedestrian-network path length \u00f7 80 m/min (4.8 km/h). OSM walk graph is Partial (missing alleys / sidewalk tags). Not Google Maps, not population-weighted, not an equity score.",
+    "note": "Ward grid samples (~150m) routed on an OSM pedestrian network to the nearest GTFS stop or MRTS/metro hub. mean_walk_min = network metres \u00f7 80 m/min (4.8 km/h). OSM walk graph is Partial (missing alleys / sidewalk tags). Not Google Maps, not population-weighted, not an equity score. No crow-flies walk metric.",
     "priority_long_walk": [
       {
         "label": "159",
         "sample_points": 158,
-        "mean_walk_m": 863.7,
-        "median_walk_m": 932.7,
-        "p90_walk_m": 1403.6,
-        "pct_samples_within_400m": 19.0,
-        "pct_samples_within_800m": 42.4,
         "mean_network_m": 1977.3,
         "median_network_m": 1930.0,
         "p90_network_m": 3669.4,
@@ -14562,11 +14553,6 @@
       {
         "label": "15",
         "sample_points": 400,
-        "mean_walk_m": 1150.2,
-        "median_walk_m": 1145.0,
-        "p90_walk_m": 2032.9,
-        "pct_samples_within_400m": 16.0,
-        "pct_samples_within_800m": 32.5,
         "mean_network_m": 1664.3,
         "median_network_m": 1187.6,
         "p90_network_m": 4001.5,
@@ -14580,11 +14566,6 @@
       {
         "label": "191",
         "sample_points": 194,
-        "mean_walk_m": 872.1,
-        "median_walk_m": 876.5,
-        "p90_walk_m": 1410.8,
-        "pct_samples_within_400m": 16.5,
-        "pct_samples_within_800m": 44.8,
         "mean_network_m": 1191.3,
         "median_network_m": 1228.2,
         "p90_network_m": 2142.3,
@@ -14598,11 +14579,6 @@
       {
         "label": "189",
         "sample_points": 400,
-        "mean_walk_m": 646.9,
-        "median_walk_m": 609.3,
-        "p90_walk_m": 1130.6,
-        "pct_samples_within_400m": 28.5,
-        "pct_samples_within_800m": 67.2,
         "mean_network_m": 1054.8,
         "median_network_m": 923.3,
         "p90_network_m": 2058.0,
@@ -14616,11 +14592,6 @@
       {
         "label": "184",
         "sample_points": 144,
-        "mean_walk_m": 707.1,
-        "median_walk_m": 681.3,
-        "p90_walk_m": 1145.4,
-        "pct_samples_within_400m": 18.8,
-        "pct_samples_within_800m": 61.1,
         "mean_network_m": 1034.4,
         "median_network_m": 1056.6,
         "p90_network_m": 1569.6,
@@ -14634,11 +14605,6 @@
       {
         "label": "190",
         "sample_points": 148,
-        "mean_walk_m": 676.5,
-        "median_walk_m": 568.6,
-        "p90_walk_m": 1373.6,
-        "pct_samples_within_400m": 37.2,
-        "pct_samples_within_800m": 61.5,
         "mean_network_m": 953.5,
         "median_network_m": 828.8,
         "p90_network_m": 1921.9,
@@ -14652,11 +14618,6 @@
       {
         "label": "16",
         "sample_points": 400,
-        "mean_walk_m": 794.9,
-        "median_walk_m": 768.6,
-        "p90_walk_m": 1450.8,
-        "pct_samples_within_400m": 23.2,
-        "pct_samples_within_800m": 53.2,
         "mean_network_m": 939.2,
         "median_network_m": 885.8,
         "p90_network_m": 1813.5,
@@ -14670,11 +14631,6 @@
       {
         "label": "199",
         "sample_points": 381,
-        "mean_walk_m": 532.8,
-        "median_walk_m": 520.0,
-        "p90_walk_m": 894.7,
-        "pct_samples_within_400m": 34.4,
-        "pct_samples_within_800m": 80.6,
         "mean_network_m": 919.5,
         "median_network_m": 768.5,
         "p90_network_m": 1827.0,
@@ -14688,11 +14644,6 @@
       {
         "label": "200",
         "sample_points": 353,
-        "mean_walk_m": 600.1,
-        "median_walk_m": 577.1,
-        "p90_walk_m": 954.4,
-        "pct_samples_within_400m": 26.1,
-        "pct_samples_within_800m": 75.4,
         "mean_network_m": 829.7,
         "median_network_m": 775.9,
         "p90_network_m": 1793.2,

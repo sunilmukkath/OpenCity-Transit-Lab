@@ -116,12 +116,6 @@ export interface SpatialUnitReport {
   nearest_mrts_m?: number | null;
   nearest_cmrl_m?: number | null;
   nearest_railway_m?: number | null;
-  /** Mean crow-flies m from ward grid samples to nearest stop/hub */
-  mean_walk_m?: number | null;
-  median_walk_m?: number | null;
-  p90_walk_m?: number | null;
-  pct_samples_within_400m?: number | null;
-  pct_samples_within_800m?: number | null;
   walk_sample_points?: number | null;
   /** OSM pedestrian-network metres / minutes (Partial) */
   mean_network_m?: number | null;
@@ -148,7 +142,6 @@ export interface SpatialReports {
   gap_index_method?: GapIndexMethod;
   city_mean_stops_per_ward: number | null;
   city_mean_gap_index?: number | null;
-  city_mean_walk_m?: number | null;
   city_mean_walk_min?: number | null;
   walk_access_note?: string;
   wards: SpatialUnitReport[];

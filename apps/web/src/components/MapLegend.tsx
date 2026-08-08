@@ -59,7 +59,7 @@ export function MapLegend({
       sections.push({
         title: "Slum vs non-slum",
         items: [
-          { kind: "fill", color: "#64748b", label: "Non-slum" },
+          { kind: "fill", color: "#38bdf8", label: "Non-slum" },
           { kind: "fill", color: "#fca5a5", label: "Slum (low share)" },
           { kind: "fill", color: "#ef4444", label: "Slum ≥10%" },
           { kind: "fill", color: "#b91c1c", label: "Slum ≥25%" },

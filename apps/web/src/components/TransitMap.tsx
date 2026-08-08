@@ -173,7 +173,8 @@ function wardFillExpression(
         25,
         "#b91c1c",
       ],
-      "#64748b",
+      // Non-slum: readable on dark basemap (was slate and looked "missing")
+      "#38bdf8",
     ];
   }
   if (choropleth === "walk" && walkExtent) {
@@ -328,8 +329,20 @@ const LAYER_STACK: {
     key: "wards",
     sourceId: "tm-wards",
     layers: [
-      { id: "tm-wards-fill", type: "fill", paint: { "fill-color": "#7dd3fc", "fill-opacity": 0.55 } },
-      { id: "tm-wards-line", type: "line", paint: { "line-color": "#0f172a", "line-width": 1.1, "line-opacity": 0.9 } },
+      {
+        id: "tm-wards-fill",
+        type: "fill",
+        paint: { "fill-color": "#7dd3fc", "fill-opacity": 0.55 },
+      },
+      {
+        id: "tm-wards-line",
+        type: "line",
+        paint: {
+          "line-color": "#f8fafc",
+          "line-width": 1.4,
+          "line-opacity": 0.95,
+        },
+      },
     ],
   },
   {
@@ -746,8 +759,16 @@ export function TransitMap({
           paint = {
             ...layer.paint,
             "fill-color": fill,
-            // Keep wards under isochrones readable
-            "fill-opacity": vis.walk_isochrones ? 0.22 : 0.55,
+            // Isochrones may sit under wards; keep choropleth readable
+            "fill-opacity": vis.walk_isochrones ? 0.42 : 0.62,
+          };
+        }
+        if (layer.id === "tm-wards-line") {
+          paint = {
+            ...layer.paint,
+            "line-color": "#f8fafc",
+            "line-width": 1.4,
+            "line-opacity": 0.95,
           };
         }
 

@@ -275,17 +275,10 @@ export function MapExplorer({
     }
 
     if (!next.wards || !filtersActive(filters)) return next;
-    const wards = next.wards as FeatureCollection;
-    return {
-      ...next,
-      wards: {
-        ...wards,
-        features: wards.features.filter((f) =>
-          filteredWardLabels.has(String(f.properties?.ward_label ?? ""))
-        ),
-      },
-    };
-  }, [data, filters, filteredWardLabels, transitModes.cmrl]);
+    // Keep full ward choropleth on the map — filters apply to the summary strip only.
+    // Clipping polygons to gap/slum slices made it look like the ward layer was missing.
+    return next;
+  }, [data, transitModes.cmrl]);
 
   return (
     <div className="space-y-3">
@@ -316,8 +309,8 @@ export function MapExplorer({
         ) : null}
         {filtersActive(filters) ? (
           <p className="text-xs text-[var(--yellow)]">
-            Ward polygons filtered to {filteredWardLabels.size.toLocaleString()} matching
-            wards. Other layers stay citywide for context.
+            Summary filters active ({filteredWardLabels.size.toLocaleString()} matching wards).
+            Ward colours still show all GCC wards — use Reset in Filters to clear.
           </p>
         ) : null}
 
@@ -431,7 +424,12 @@ export function MapExplorer({
                   setChoropleth(mode);
                   setActivePreset("custom");
                   if (mode === "walk" || mode === "gap" || mode === "slum") {
-                    setVisibility((v) => ({ ...v, wards: true }));
+                    setVisibility((v) => ({
+                      ...v,
+                      wards: true,
+                      // Isochrones wash out ward fills — off while colouring wards
+                      walk_isochrones: false,
+                    }));
                     if (manifest && !data.wards) {
                       void loadLayerBatch(
                         manifest,

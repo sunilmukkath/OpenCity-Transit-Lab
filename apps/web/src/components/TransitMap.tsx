@@ -438,7 +438,15 @@ const LAYER_STACK: {
         type: "circle",
         paint: {
           "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 5, 14, 9],
-          "circle-color": "#ca8a04",
+          "circle-color": [
+            "match",
+            ["get", "hub_type"],
+            "metro_named",
+            "#7c3aed",
+            "MRTS",
+            "#ea580c",
+            "#ca8a04",
+          ],
           "circle-stroke-width": 2,
           "circle-stroke-color": "#ffffff",
         },

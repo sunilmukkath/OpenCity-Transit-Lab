@@ -65,6 +65,10 @@ const chipOn =
 const chipOff =
   "border-[var(--border)] bg-white/[0.03] text-[var(--ink-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]";
 
+type TransitModes = { bus: boolean; mrts: boolean; cmrl: boolean };
+
+const DEFAULT_TRANSIT_MODES: TransitModes = { bus: true, mrts: true, cmrl: true };
+
 export function MapExplorer({
   audienceNote,
   initialPreset: presetProp,
@@ -102,6 +106,7 @@ export function MapExplorer({
   const [loadingCore, setLoadingCore] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [activePreset, setActivePreset] = useState<string>(initialPreset);
+  const [transitModes, setTransitModes] = useState<TransitModes>(DEFAULT_TRANSIT_MODES);
   const [filters, setFilters] = useDashboardFilters({ unit: "ward" });
   const gapByLabelRef = useRef(new Map<string, { gap_index: number; gap_band: string }>());
   const {
@@ -190,10 +195,39 @@ export function MapExplorer({
       setActivePreset(id);
       setChoropleth(preset.choropleth);
       setVisibility((prev) => ({ ...prev, ...preset.layers }));
+      // Presets that include transit layers reset mode filters to all on
+      setTransitModes({ ...DEFAULT_TRANSIT_MODES });
       if (manifest) {
         const keys = layersForPreset(preset.layers);
         void loadLayerBatch(manifest, keys, gapByLabelRef.current, data).then(setData);
       }
+    },
+    [manifest, data]
+  );
+
+  const toggleTransitMode = useCallback(
+    (mode: keyof TransitModes) => {
+      setTransitModes((prev) => {
+        const next = { ...prev, [mode]: !prev[mode] };
+        setVisibility((v) => ({
+          ...v,
+          stops: next.bus,
+          mrts_stations: next.mrts,
+          mrts_lines: next.mrts,
+          hubs: next.cmrl,
+        }));
+        if (manifest) {
+          const keys: MapLayerKey[] = [];
+          if (next.bus) keys.push("stops");
+          if (next.mrts) keys.push("mrts_stations", "mrts_lines");
+          if (next.cmrl) keys.push("hubs");
+          if (keys.length) {
+            void loadLayerBatch(manifest, keys, gapByLabelRef.current, data).then(setData);
+          }
+        }
+        return next;
+      });
+      setActivePreset("custom");
     },
     [manifest, data]
   );
@@ -220,10 +254,30 @@ export function MapExplorer({
   );
 
   const mapData = useMemo((): LayerData => {
-    if (!data.wards || !filtersActive(filters)) return data;
-    const wards = data.wards as FeatureCollection;
+    let next: LayerData = data;
+
+    // CMRL = metro-named hubs only (MRTS uses mrts_stations layer)
+    if (next.hubs) {
+      const hubs = next.hubs as FeatureCollection;
+      next = {
+        ...next,
+        hubs: {
+          ...hubs,
+          features: hubs.features.filter((f) => {
+            const t = String(f.properties?.hub_type ?? "");
+            if (transitModes.cmrl && (t === "metro_named" || /metro/i.test(t))) {
+              return true;
+            }
+            return false;
+          }),
+        },
+      };
+    }
+
+    if (!next.wards || !filtersActive(filters)) return next;
+    const wards = next.wards as FeatureCollection;
     return {
-      ...data,
+      ...next,
       wards: {
         ...wards,
         features: wards.features.filter((f) =>
@@ -231,7 +285,7 @@ export function MapExplorer({
         ),
       },
     };
-  }, [data, filters, filteredWardLabels]);
+  }, [data, filters, filteredWardLabels, transitModes.cmrl]);
 
   return (
     <div className="space-y-3">
@@ -268,6 +322,45 @@ export function MapExplorer({
         ) : null}
 
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-muted)]">
+            Transit
+          </span>
+          <div className="flex flex-wrap gap-1">
+            {(
+              [
+                ["bus", "Bus stops"],
+                ["mrts", "MRTS"],
+                ["cmrl", "CMRL"],
+              ] as const
+            ).map(([mode, label]) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => toggleTransitMode(mode)}
+                aria-pressed={transitModes[mode]}
+                title={
+                  mode === "bus"
+                    ? "GTFS bus / transit stops"
+                    : mode === "mrts"
+                      ? "MRTS stations and lines"
+                      : "CMRL metro-named hubs"
+                }
+                className={`${chipBase} ${transitModes[mode] ? chipOn : chipOff}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <span className="text-[10px] text-[var(--ink-muted)]">
+            {[
+              transitModes.bus ? "Bus" : null,
+              transitModes.mrts ? "MRTS" : null,
+              transitModes.cmrl ? "CMRL" : null,
+            ]
+              .filter(Boolean)
+              .join(" · ") || "No transit layers"}
+          </span>
+          <span className="hidden h-4 w-px bg-[var(--border)] sm:block" aria-hidden />
           <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-muted)]">
             View
           </span>

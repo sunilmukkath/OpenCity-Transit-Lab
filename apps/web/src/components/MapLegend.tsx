@@ -110,12 +110,12 @@ export function MapLegend({
   }
 
   const points: Swatch[] = [];
-  if (visibility.stops) points.push({ kind: "dot", color: "#0369a1", label: "GTFS stops" });
+  if (visibility.stops) points.push({ kind: "dot", color: "#0369a1", label: "Bus stops (GTFS)" });
   if (visibility.mrts_stations) points.push({ kind: "dot", color: "#ea580c", label: "MRTS stations" });
-  if (visibility.hubs) points.push({ kind: "dot", color: "#ca8a04", label: "Rail / metro hubs" });
-  if (visibility.railway_stations)
-    points.push({ kind: "dot", color: "#7c3aed", label: "Suburban / IR stations" });
   if (visibility.mrts_lines) points.push({ kind: "line", color: "#ea580c", label: "MRTS lines" });
+  if (visibility.hubs) points.push({ kind: "dot", color: "#7c3aed", label: "CMRL metro hubs" });
+  if (visibility.railway_stations)
+    points.push({ kind: "dot", color: "#a78bfa", label: "Suburban / IR stations" });
   if (visibility.omr_corridor) points.push({ kind: "line", color: "#7c3aed", label: "OMR → Mahabs" });
   if (visibility.metro_area_boundaries) {
     points.push({ kind: "fill", color: "rgba(219,39,119,0.35)", label: "South town areas" });

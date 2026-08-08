@@ -146,7 +146,7 @@ export const CHENNAI_VIEW = {
   zoom: 9.2,
 };
 
-export type ChoroplethMode = "stops" | "gap" | "slum";
+export type ChoroplethMode = "stops" | "gap" | "slum" | "walk";
 
 export type LayerData = Partial<Record<MapLayerKey, FeatureCollection<Geometry>>>;
 

@@ -40,7 +40,10 @@ const MAP_HEIGHT = 560;
 async function loadLayerBatch(
   m: Manifest,
   keys: MapLayerKey[],
-  gapByLabel: Map<string, { gap_index: number; gap_band: string }>,
+  gapByLabel: Map<
+    string,
+    { gap_index: number; gap_band: string; mean_walk_min?: number | null }
+  >,
   already: LayerData
 ): Promise<LayerData> {
   const next: LayerData = { ...already };
@@ -108,7 +111,9 @@ export function MapExplorer({
   const [activePreset, setActivePreset] = useState<string>(initialPreset);
   const [transitModes, setTransitModes] = useState<TransitModes>(DEFAULT_TRANSIT_MODES);
   const [filters, setFilters] = useDashboardFilters({ unit: "ward" });
-  const gapByLabelRef = useRef(new Map<string, { gap_index: number; gap_band: string }>());
+  const gapByLabelRef = useRef(
+    new Map<string, { gap_index: number; gap_band: string; mean_walk_min?: number | null }>()
+  );
   const {
     loading: loadingFilters,
     filtered,
@@ -139,11 +144,15 @@ export function MapExplorer({
         if (cancelled) return;
         setManifest(m);
 
-        const gapByLabel = new Map<string, { gap_index: number; gap_band: string }>();
+        const gapByLabel = new Map<
+          string,
+          { gap_index: number; gap_band: string; mean_walk_min?: number | null }
+        >();
         for (const w of reports?.wards ?? []) {
           gapByLabel.set(w.label, {
             gap_index: w.gap_index ?? w.priority_score,
             gap_band: w.gap_band ?? "moderate",
+            mean_walk_min: w.mean_walk_min ?? null,
           });
         }
         gapByLabelRef.current = gapByLabel;
@@ -417,6 +426,7 @@ export function MapExplorer({
           <div className="flex flex-wrap gap-1">
             {(
               [
+                ["walk", "Walk min"],
                 ["stops", "Stops"],
                 ["gap", "Gap"],
                 ["slum", "Slum"],
@@ -428,6 +438,17 @@ export function MapExplorer({
                 onClick={() => {
                   setChoropleth(mode);
                   setActivePreset("custom");
+                  if (mode === "walk" || mode === "gap" || mode === "slum") {
+                    setVisibility((v) => ({ ...v, wards: true }));
+                    if (manifest && !data.wards) {
+                      void loadLayerBatch(
+                        manifest,
+                        ["wards"],
+                        gapByLabelRef.current,
+                        data
+                      ).then(setData);
+                    }
+                  }
                 }}
                 className={`${chipBase} ${choropleth === mode ? chipOn : chipOff}`}
               >

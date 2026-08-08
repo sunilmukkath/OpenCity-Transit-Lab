@@ -69,6 +69,7 @@ function formatPopupProps(props: Record<string, unknown>): string {
     "band",
     "area_km2",
     "note",
+    "mean_walk_min",
     "gap_index",
     "gap_band",
     "has_slum",
@@ -146,7 +147,8 @@ function setGeoJsonSource(
 function wardFillExpression(
   choropleth: ChoroplethMode,
   stopExtent: { min: number; max: number } | null,
-  gapExtent: { min: number; max: number } | null
+  gapExtent: { min: number; max: number } | null,
+  walkExtent: { min: number; max: number } | null
 ): ExpressionSpecification | string {
   if (choropleth === "slum") {
     return [
@@ -170,6 +172,27 @@ function wardFillExpression(
         "#b91c1c",
       ],
       "#64748b",
+    ];
+  }
+  if (choropleth === "walk" && walkExtent) {
+    const [a, b, c, d] = ascendingStops([
+      Math.min(walkExtent.min, 3),
+      5,
+      10,
+      Math.max(walkExtent.max, 15),
+    ]);
+    return [
+      "interpolate",
+      ["linear"],
+      ["coalesce", ["to-number", ["get", "mean_walk_min"]], 0],
+      a,
+      "#14b8a6",
+      b,
+      "#eab308",
+      c,
+      "#f97316",
+      d,
+      "#f43f5e",
     ];
   }
   if (choropleth === "gap" && gapExtent) {
@@ -670,11 +693,13 @@ export function TransitMap({
 
   const stopExtent = useMemo(() => extentOf(data.wards, "stop_count"), [data.wards]);
   const gapExtent = useMemo(() => extentOf(data.wards, "gap_index"), [data.wards]);
+  const walkExtent = useMemo(() => extentOf(data.wards, "mean_walk_min"), [data.wards]);
   const dataRef = useRef(data);
   const visibilityRef = useRef(visibility);
   const choroplethRef = useRef(choropleth);
   const stopExtentRef = useRef(stopExtent);
   const gapExtentRef = useRef(gapExtent);
+  const walkExtentRef = useRef(walkExtent);
   const interactiveRef = useRef(interactive);
 
   dataRef.current = data;
@@ -682,6 +707,7 @@ export function TransitMap({
   choroplethRef.current = choropleth;
   stopExtentRef.current = stopExtent;
   gapExtentRef.current = gapExtent;
+  walkExtentRef.current = walkExtent;
   interactiveRef.current = interactive;
 
   const syncLayers = useCallback((map: MapLibreMap) => {
@@ -692,7 +718,8 @@ export function TransitMap({
     const fill = wardFillExpression(
       choroplethRef.current,
       stopExtentRef.current,
-      gapExtentRef.current
+      gapExtentRef.current,
+      walkExtentRef.current
     );
 
     for (const entry of LAYER_STACK) {
@@ -1096,10 +1123,13 @@ function escapeHtml(s: string) {
     .replace(/"/g, "&quot;");
 }
 
-/** Attach gap_index / gap_band from reports onto ward features. */
+/** Attach gap / walk metrics from reports onto ward features. */
 export function joinWardGapIndex(
   wards: FeatureCollection<Geometry>,
-  gapByLabel: Map<string, { gap_index: number; gap_band: string }>
+  gapByLabel: Map<
+    string,
+    { gap_index: number; gap_band: string; mean_walk_min?: number | null }
+  >
 ): FeatureCollection<Geometry> {
   return {
     ...wards,
@@ -1113,6 +1143,7 @@ export function joinWardGapIndex(
           ...f.properties,
           gap_index: gap.gap_index,
           gap_band: gap.gap_band,
+          ...(gap.mean_walk_min != null ? { mean_walk_min: gap.mean_walk_min } : {}),
         },
       };
     }),

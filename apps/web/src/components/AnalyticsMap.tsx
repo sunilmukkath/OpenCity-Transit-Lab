@@ -32,7 +32,10 @@ const CORE: MapLayerKey[] = [
 async function loadBatch(
   m: Awaited<ReturnType<typeof fetchManifestClient>>,
   keys: MapLayerKey[],
-  gapByLabel: Map<string, { gap_index: number; gap_band: string }>
+  gapByLabel: Map<
+    string,
+    { gap_index: number; gap_band: string; mean_walk_min?: number | null }
+  >
 ): Promise<LayerData> {
   if (!m) return {};
   const next: LayerData = {};
@@ -69,11 +72,15 @@ export function AnalyticsMap({
         fetchManifestClient(),
         fetchReportsClient(),
       ]);
-      const gapByLabel = new Map<string, { gap_index: number; gap_band: string }>();
+      const gapByLabel = new Map<
+        string,
+        { gap_index: number; gap_band: string; mean_walk_min?: number | null }
+      >();
       for (const w of reports?.wards ?? []) {
         gapByLabel.set(w.label, {
           gap_index: w.gap_index ?? w.priority_score,
           gap_band: w.gap_band ?? "moderate",
+          mean_walk_min: w.mean_walk_min ?? null,
         });
       }
 

@@ -20,3 +20,6 @@ files (2).zip
 .vercel
 .env*
 data/downloaded/
+
+# osmnx / ETL local caches
+cache/

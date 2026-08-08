@@ -65,6 +65,16 @@ export function MapLegend({
           { kind: "fill", color: "#b91c1c", label: "Slum ≥25%" },
         ],
       });
+    } else if (choropleth === "walk") {
+      sections.push({
+        title: "Ward OSM walk to PT",
+        items: [
+          { kind: "fill", color: "#14b8a6", label: "Shorter (~≤5 min)" },
+          { kind: "fill", color: "#eab308", label: "About 5–10 min" },
+          { kind: "fill", color: "#f97316", label: "Longer (~10+ min)" },
+          { kind: "fill", color: "#f43f5e", label: "Longest walks" },
+        ],
+      });
     } else if (choropleth === "gap") {
       sections.push({
         title: "Ward Gap Index",

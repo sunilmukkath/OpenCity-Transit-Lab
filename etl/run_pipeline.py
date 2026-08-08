@@ -36,6 +36,7 @@ from build_pop_access import main as build_pop_access_main  # noqa: E402
 from build_nmt_network import main as build_nmt_network_main  # noqa: E402
 from build_cmp_corridors import main as build_cmp_corridors_main  # noqa: E402
 from build_ward_walk_access import main as build_ward_walk_access_main  # noqa: E402
+from gap_index import build_gap_index  # noqa: E402
 
 RAW = ROOT / "data" / "raw"
 PROCESSED = ROOT / "data" / "processed"
@@ -599,111 +600,6 @@ def build_recommendations(
     return recs
 
 
-def build_gap_index(
-    *,
-    stop_count: int | None,
-    shelter_count: int | None,
-    hub_count: int | None,
-    area_km2: float | None,
-    city_mean_stops: float | None,
-) -> dict[str, Any]:
-    """
-    Inventory Gap Index 0–100 (higher = larger gap).
-    Built only from verified point-in-polygon counts — not census equity.
-    """
-    stops = stop_count
-    shelters = shelter_count
-    hubs = hub_count
-    density = None
-    if stops is not None and area_km2 and area_km2 > 0:
-        density = stops / area_km2
-
-    # Stop access gap — max 40
-    stop_gap = 0
-    if stops is None:
-        stop_gap = 0
-    elif stops == 0:
-        stop_gap = 40
-    elif stops < 5:
-        stop_gap = 30
-    elif city_mean_stops and stops < city_mean_stops * 0.35:
-        stop_gap = 26
-    elif city_mean_stops and stops < city_mean_stops * 0.5:
-        stop_gap = 18
-    elif city_mean_stops and stops < city_mean_stops * 0.75:
-        stop_gap = 10
-    elif city_mean_stops and stops < city_mean_stops:
-        stop_gap = 4
-
-    # Shelter gap — max 30
-    shelter_gap = 0
-    if shelters is None:
-        shelter_gap = 0
-    elif stops is not None and stops > 0:
-        ratio = shelters / max(stops, 1)
-        if shelters == 0:
-            shelter_gap = 30
-        elif ratio < 0.08:
-            shelter_gap = 24
-        elif ratio < 0.15:
-            shelter_gap = 16
-        elif ratio < 0.25:
-            shelter_gap = 8
-    elif stops == 0 and shelters == 0:
-        shelter_gap = 10  # no amenities either
-
-    # Hub / last-mile trunk access — max 20
-    hub_gap = 0
-    if hubs is None:
-        hub_gap = 0
-    elif hubs == 0:
-        hub_gap = 20
-    elif hubs == 1:
-        hub_gap = 6
-
-    # Density gap — max 10
-    density_gap = 0
-    if density is not None and stops is not None and stops > 0:
-        if density < 3:
-            density_gap = 10
-        elif density < 5:
-            density_gap = 7
-        elif density < 8:
-            density_gap = 4
-        elif density < 12:
-            density_gap = 2
-
-    components = {
-        "stop_gap": stop_gap,
-        "shelter_gap": shelter_gap,
-        "hub_gap": hub_gap,
-        "density_gap": density_gap,
-    }
-    total = int(sum(components.values()))
-    total = max(0, min(100, total))
-
-    if total >= 70:
-        band = "severe"
-    elif total >= 45:
-        band = "high"
-    elif total >= 25:
-        band = "moderate"
-    else:
-        band = "low"
-
-    return {
-        "gap_index": total,
-        "gap_band": band,
-        "gap_components": components,
-        "gap_max": {
-            "stop_gap": 40,
-            "shelter_gap": 30,
-            "hub_gap": 20,
-            "density_gap": 10,
-        },
-    }
-
-
 def build_unit_report(
     row: dict[str, Any],
     unit_type: str,
@@ -723,12 +619,20 @@ def build_unit_report(
     hubs_i = int(hub_count) if hub_count is not None and str(hub_count) != "nan" else None
     area_f = float(area_km2) if area_km2 is not None and str(area_km2) != "nan" else None
 
+    walk_raw = row.get("mean_walk_min")
+    walk_f = (
+        float(walk_raw)
+        if walk_raw is not None and str(walk_raw) != "nan"
+        else None
+    )
+
     gap = build_gap_index(
         stop_count=stops_i,
         shelter_count=shelters_i,
         hub_count=hubs_i,
         area_km2=area_f,
         city_mean_stops=city_mean_stops,
+        mean_walk_min=walk_f,
     )
 
     # Keep priority_score as alias of gap_index for older UI consumers
@@ -807,25 +711,45 @@ def build_spatial_reports(
     return {
         "generated_at": utc_now(),
         "note": (
-            "Reports use verified spatial joins only (stops/shelters/hubs inside polygons). "
+            "Reports use verified spatial joins (stops/shelters/hubs inside polygons). "
+            "Ward Gap Index also includes OSM network mean walk minutes to PT when Loaded. "
             "Mode fields split MRTS stations, CMRL metro-named hubs, and OSM railway stations. "
             "Nearest_*_m are crow-flies from unit representative point — not network walk. "
-            "Gap Index and recommendations are inventory rules — not census equity scores."
+            "Gap Index and recommendations are inventory + walk rules — not census equity scores."
         ),
         "gap_index_method": {
-            "scale": "0–100 (higher = larger inventory gap)",
+            "scale": "0–100 (higher = larger inventory / walk gap)",
             "bands": {
                 "severe": "≥70",
                 "high": "45–69",
                 "moderate": "25–44",
                 "low": "<25",
             },
-            "components": {
-                "stop_gap": "max 40 — zero / very low / below city-mean stop counts",
-                "shelter_gap": "max 30 — shelter presence vs stops",
-                "hub_gap": "max 20 — no MRTS/metro hub inside boundary (combined hub_count)",
+            "components_with_walk": {
+                "stop_gap": "max 30 — zero / very low / below city-mean stop counts",
+                "shelter_gap": "max 25 — shelter presence vs stops",
+                "hub_gap": "max 15 — no MRTS/metro hub inside boundary",
                 "density_gap": "max 10 — low stops per km²",
+                "walk_gap": (
+                    "max 20 — OSM network mean_walk_min "
+                    "(≥15→20, ≥12→16, ≥10→12, ≥8→8, ≥6→4)"
+                ),
             },
+            "components_legacy_no_walk": {
+                "stop_gap": "max 40",
+                "shelter_gap": "max 30",
+                "hub_gap": "max 20",
+                "density_gap": "max 10",
+                "note": "Used when mean_walk_min is Unavailable (e.g. zones)",
+            },
+            "components": {
+                "stop_gap": "max 30 with walk / 40 legacy — stop counts vs city mean",
+                "shelter_gap": "max 25 with walk / 30 legacy — shelter presence vs stops",
+                "hub_gap": "max 15 with walk / 20 legacy — MRTS/metro hub inside boundary",
+                "density_gap": "max 10 — low stops per km²",
+                "walk_gap": "max 20 — OSM network mean walk minutes to nearest PT (wards)",
+            },
+            "pt_index": "pt_index = 100 − gap_index (higher = better inventory/walk access)",
             "mode_inventory": {
                 "mrts_station_count": "OpenCity MRTS station points inside the unit",
                 "cmrl_hub_count": "metro_named hubs (CMRL Phase-I tags) inside the unit",
@@ -835,7 +759,8 @@ def build_spatial_reports(
             },
             "disclaimer": (
                 "Not a population-weighted equity score. Field-verify before capital works. "
-                "Community GTFS may under-count official MTC stops."
+                "Community GTFS may under-count official MTC stops. "
+                "Walk uses OSM pedestrian network at 80 m/min — Partial."
             ),
         },
         "city_mean_stops_per_ward": round(city_mean, 2) if city_mean is not None else None,

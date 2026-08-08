@@ -37,12 +37,14 @@ const BAND_STYLE: Record<string, string> = {
 const COMPONENT_META: {
   key: keyof GapComponents;
   label: string;
-  max: number;
+  maxWithWalk: number;
+  maxLegacy: number;
 }[] = [
-  { key: "stop_gap", label: "Stop access", max: 40 },
-  { key: "shelter_gap", label: "Shelter coverage", max: 30 },
-  { key: "hub_gap", label: "Hub / last-mile", max: 20 },
-  { key: "density_gap", label: "Stop density", max: 10 },
+  { key: "stop_gap", label: "Stop access", maxWithWalk: 30, maxLegacy: 40 },
+  { key: "shelter_gap", label: "Shelter coverage", maxWithWalk: 25, maxLegacy: 30 },
+  { key: "hub_gap", label: "Hub / last-mile", maxWithWalk: 15, maxLegacy: 20 },
+  { key: "density_gap", label: "Stop density", maxWithWalk: 10, maxLegacy: 10 },
+  { key: "walk_gap", label: "Walk to PT", maxWithWalk: 20, maxLegacy: 20 },
 ];
 
 function PriorityChip({ priority }: { priority: string }) {
@@ -123,18 +125,21 @@ function GapComponentsBreakdown({
       <p className="text-sm text-[var(--ink-muted)]">Gap components unavailable for this unit.</p>
     );
   }
+  const withWalk = components.walk_gap != null;
   return (
     <div className="space-y-3">
       {COMPONENT_META.map((c) => {
+        if (c.key === "walk_gap" && !withWalk) return null;
         const value = components[c.key] ?? 0;
-        const pct = Math.round((value / c.max) * 100);
+        const max = withWalk ? c.maxWithWalk : c.maxLegacy;
+        const pct = Math.round((value / max) * 100);
         return (
           <div key={c.key} className="space-y-1">
             <div className="flex items-center justify-between gap-2 text-sm">
               <span className="text-[var(--ink)]">{c.label}</span>
               <span className="font-semibold text-[var(--yellow)]">
                 {value}
-                <span className="font-normal text-[var(--ink-muted)]">/{c.max}</span>
+                <span className="font-normal text-[var(--ink-muted)]">/{max}</span>
               </span>
             </div>
             <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
@@ -494,6 +499,7 @@ function downloadReportsCsv(rows: SpatialUnitReport[], filename: string) {
     "shelter_gap",
     "hub_gap",
     "density_gap",
+    "walk_gap",
     "stop_count",
     "shelter_count",
     "hub_count",
@@ -528,6 +534,7 @@ function downloadReportsCsv(rows: SpatialUnitReport[], filename: string) {
         r.gap_components?.shelter_gap ?? "",
         r.gap_components?.hub_gap ?? "",
         r.gap_components?.density_gap ?? "",
+        r.gap_components?.walk_gap ?? "",
         r.stop_count ?? "",
         r.shelter_count ?? "",
         r.hub_count ?? "",

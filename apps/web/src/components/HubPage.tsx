@@ -134,7 +134,8 @@ function CitizenHub() {
             <li>
               Service band:{" "}
               <span className="font-semibold text-[var(--ink)]">{String(unit.gap_band)}</span>{" "}
-              (inventory Gap Index {unit.gap_index ?? "—"} — stop/shelter/hub counts only, not
+              (inventory Gap Index {unit.gap_index ?? "—"} — stops/shelters/hubs + OSM walk when
+              Loaded, not
               ridership).
             </li>
             {unit.unit_type === "ward" ? (
@@ -494,7 +495,7 @@ function PressHub() {
       "",
       "Sources portal: /sources",
       "OpenCity CKAN: https://data.opencity.in/",
-      "Methodology: Gap Index = inventory rules (stops/shelters/hubs), not census equity.",
+      "Methodology: Gap Index = inventory (stops/shelters/hubs) + OSM walk_gap when Loaded; pt_index = 100 − gap_index. Not census equity.",
     ];
     const blob = new Blob([lines.join("\n")], { type: "text/plain" });
     const url = URL.createObjectURL(blob);

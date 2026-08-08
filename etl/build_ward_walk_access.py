@@ -286,6 +286,8 @@ def merge_into_reports(payload: dict[str, Any]) -> None:
     path = PROCESSED / "reports.json"
     if not path.exists() or payload.get("status") not in ("loaded", "partial"):
         return
+    from gap_index import apply_gap_to_unit
+
     reports = json.loads(path.read_text())
     by = {str(w["label"]): w for w in payload.get("wards") or []}
     fields = [
@@ -306,6 +308,7 @@ def merge_into_reports(payload: dict[str, Any]) -> None:
         "pct_samples_within_400m",
         "pct_samples_within_800m",
     ]
+    city_mean_stops = reports.get("city_mean_stops_per_ward")
     for unit in reports.get("wards") or []:
         hit = by.get(str(unit.get("label") or ""))
         for f in crow_drop:
@@ -315,9 +318,65 @@ def merge_into_reports(payload: dict[str, Any]) -> None:
         for f in fields:
             unit[f] = hit.get(f)
         unit["walk_sample_points"] = hit.get("sample_points")
+        # Recompute Gap Index with walk_gap once OSM minutes are attached
+        apply_gap_to_unit(
+            unit,
+            city_mean_stops=city_mean_stops,
+            mean_walk_min=hit.get("mean_walk_min"),
+        )
+        # Surface long-walk recommendation when walk drives gap
+        walk_min = hit.get("mean_walk_min")
+        if walk_min is not None and float(walk_min) >= 10:
+            recs = list(unit.get("recommendations") or [])
+            title = "Long OSM walk to nearest PT"
+            if not any(r.get("title") == title for r in recs):
+                recs.insert(
+                    0,
+                    {
+                        "priority": "high" if float(walk_min) >= 12 else "medium",
+                        "title": title,
+                        "detail": (
+                            f"Mean network walk is ~{float(walk_min):.1f} min "
+                            "(80 m/min on OSM pedestrian graph). "
+                            "Prioritise mid-block stops or feeder links; verify on the ground."
+                        ),
+                    },
+                )
+                unit["recommendations"] = recs[:6]
+
     reports.pop("city_mean_walk_m", None)
     reports["city_mean_walk_min"] = (payload.get("city") or {}).get("mean_of_ward_means_min")
     reports["walk_access_note"] = payload.get("note")
+
+    ward_reports = reports.get("wards") or []
+    if ward_reports:
+        ward_reports.sort(key=lambda r: (-(r.get("gap_index") or 0), str(r.get("label") or "")))
+        reports["wards"] = ward_reports
+        gaps = [w["gap_index"] for w in ward_reports if w.get("gap_index") is not None]
+        reports["city_mean_gap_index"] = round(sum(gaps) / len(gaps), 1) if gaps else None
+        reports["priority_wards"] = [w for w in ward_reports if (w.get("gap_index") or 0) >= 45][:25]
+        reports["severe_gap_wards"] = [w for w in ward_reports if w.get("gap_band") == "severe"][:25]
+
+    # Keep method text in sync when walk merge refreshes reports
+    method = reports.get("gap_index_method") or {}
+    method["components"] = {
+        "stop_gap": "max 30 with walk / 40 legacy — stop counts vs city mean",
+        "shelter_gap": "max 25 with walk / 30 legacy — shelter presence vs stops",
+        "hub_gap": "max 15 with walk / 20 legacy — MRTS/metro hub inside boundary",
+        "density_gap": "max 10 — low stops per km²",
+        "walk_gap": "max 20 — OSM network mean walk minutes to nearest PT (wards)",
+    }
+    method["pt_index"] = "pt_index = 100 − gap_index (higher = better inventory/walk access)"
+    method["scale"] = "0–100 (higher = larger inventory / walk gap)"
+    reports["gap_index_method"] = method
+    reports["note"] = (
+        "Reports use verified spatial joins (stops/shelters/hubs inside polygons). "
+        "Ward Gap Index also includes OSM network mean walk minutes to PT when Loaded. "
+        "Mode fields split MRTS stations, CMRL metro-named hubs, and OSM railway stations. "
+        "Nearest_*_m are crow-flies from unit representative point — not network walk. "
+        "Gap Index and recommendations are inventory + walk rules — not census equity scores."
+    )
+
     path.write_text(json.dumps(reports, indent=2))
     _copy_web("reports.json")
 

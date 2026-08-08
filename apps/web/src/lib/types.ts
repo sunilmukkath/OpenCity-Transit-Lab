@@ -80,6 +80,8 @@ export interface GapComponents {
   shelter_gap: number;
   hub_gap: number;
   density_gap: number;
+  /** OSM network mean walk minutes to PT — present on wards when Loaded */
+  walk_gap?: number;
 }
 
 export interface UnitRecommendation {

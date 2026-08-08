@@ -830,10 +830,19 @@ export function TransitMap({
 
     const onClick = (e: MapMouseEvent) => {
       if (!interactiveRef.current) return;
-      const layerIds = INTERACTIVE_LAYER_IDS.filter((id) => map.getLayer(id));
-      const features = layerIds.length
-        ? map.queryRenderedFeatures(e.point, { layers: layerIds })
-        : [];
+      // Resolve layers at event time — toggles/style sync can remove them between frames
+      const layerIds = INTERACTIVE_LAYER_IDS.filter((id) => Boolean(map.getLayer(id)));
+      if (!layerIds.length) {
+        setPopup(null);
+        return;
+      }
+      let features: ReturnType<MapLibreMap["queryRenderedFeatures"]> = [];
+      try {
+        features = map.queryRenderedFeatures(e.point, { layers: layerIds });
+      } catch {
+        setPopup(null);
+        return;
+      }
       const f = features[0];
       if (!f) {
         setPopup(null);
@@ -910,17 +919,23 @@ export function TransitMap({
     map.dragPan.enable();
     map.scrollZoom.enable();
 
-    const ids = interactive
-      ? INTERACTIVE_LAYER_IDS.filter((id) => map.getLayer(id))
-      : [];
-
     const onMove = (e: MapMouseEvent) => {
-      if (!ids.length) {
+      if (!interactive) {
         map.getCanvas().style.cursor = "grab";
         return;
       }
-      const hits = map.queryRenderedFeatures(e.point, { layers: ids });
-      map.getCanvas().style.cursor = hits.length ? "pointer" : "grab";
+      // Always re-check which layers exist — visibility sync can drop them mid-hover
+      const layerIds = INTERACTIVE_LAYER_IDS.filter((id) => Boolean(map.getLayer(id)));
+      if (!layerIds.length) {
+        map.getCanvas().style.cursor = "grab";
+        return;
+      }
+      try {
+        const hits = map.queryRenderedFeatures(e.point, { layers: layerIds });
+        map.getCanvas().style.cursor = hits.length ? "pointer" : "grab";
+      } catch {
+        map.getCanvas().style.cursor = "grab";
+      }
     };
 
     map.on("mousemove", onMove);

@@ -857,9 +857,15 @@
         "amenity_deprivation",
         "amenity_band",
         "sec_proxy_band",
-        "amenity_join"
+        "amenity_join",
+        "gap_index",
+        "gap_band",
+        "mean_walk_min",
+        "median_walk_min",
+        "p90_walk_min",
+        "walk_gap"
       ],
-      "notes": "Enriched with slum area share + Census 2011 HH-14 amenity proxy (155/200 wards joined by number)."
+      "notes": "Enriched with slum area share + Census 2011 HH-14 amenity proxy (155/200 wards joined by number). Gap Index includes OSM walk_gap when Loaded; mean_walk_min baked for map choropleth."
     },
     "zones": {
       "status": "loaded",

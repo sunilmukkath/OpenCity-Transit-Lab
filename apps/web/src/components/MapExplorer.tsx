@@ -122,15 +122,6 @@ export function MapExplorer({
     cityMeanGap,
   } = useFilteredUniverse(filters);
 
-  const ensureLayers = useCallback(
-    async (m: Manifest, keys: MapLayerKey[]) => {
-      const next = await loadLayerBatch(m, keys, gapByLabelRef.current, data);
-      setData(next);
-      return next;
-    },
-    [data]
-  );
-
   useEffect(() => {
     let cancelled = false;
     (async () => {

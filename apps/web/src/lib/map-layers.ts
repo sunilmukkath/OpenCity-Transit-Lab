@@ -181,11 +181,11 @@ export const LAYER_PRESETS: Record<
 > = {
   walkkm: {
     label: "Walk km",
-    blurb: "≤100m teal · 100–500m green · >1km red — includes OMR / Mahabs",
-    choropleth: "stops",
+    blurb: "Walk bands + ward OSM walk minutes (Colour → Walk min)",
+    choropleth: "walk",
     layers: {
       ...CORE_OFF_AMENITIES,
-      wards: false,
+      wards: true,
       stops: true,
       mrts_lines: true,
       mrts_stations: true,

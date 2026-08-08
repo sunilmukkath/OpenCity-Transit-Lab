@@ -72,6 +72,7 @@ function formatPopupProps(props: Record<string, unknown>): string {
     "mean_walk_min",
     "gap_index",
     "gap_band",
+    "walk_gap",
     "has_slum",
     "pct_slum_area",
     "slum_band",

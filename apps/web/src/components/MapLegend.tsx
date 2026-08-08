@@ -77,11 +77,12 @@ export function MapLegend({
       });
     } else if (choropleth === "gap") {
       sections.push({
-        title: "Ward Gap Index",
+        title: "Ward Gap Index (inventory + walk)",
         items: [
           { kind: "fill", color: "#14b8a6", label: "Lower gap" },
           { kind: "fill", color: "#eab308", label: "Moderate" },
-          { kind: "fill", color: "#e11d48", label: "Higher gap" },
+          { kind: "fill", color: "#f97316", label: "Higher" },
+          { kind: "fill", color: "#f43f5e", label: "Severe" },
         ],
       });
     } else {

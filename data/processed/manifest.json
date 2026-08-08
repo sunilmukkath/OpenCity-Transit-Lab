@@ -1184,7 +1184,7 @@
       "status": "loaded",
       "file": "ward_walk_access.json",
       "feature_count": 200,
-      "notes": "Mean crow-flies metres from a ~150m grid of sample points inside each ward to the nearest GTFS stop or MRTS/metro hub. Not network walk, not population-weighted, not an equity score. Community GTFS may under-count official MTC stops."
+      "notes": "Ward grid samples (~150m) to nearest GTFS stop or MRTS/metro hub. mean_walk_m = crow-flies. mean_walk_min = OSM pedestrian-network path length \u00f7 80 m/min (4.8 km/h). OSM walk graph is Partial (missing alleys / sidewalk tags). Not Google Maps, not population-weighted, not an equity score."
     }
   },
   "realtime": [

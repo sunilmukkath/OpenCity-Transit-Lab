@@ -123,6 +123,16 @@ export interface SpatialUnitReport {
   pct_samples_within_400m?: number | null;
   pct_samples_within_800m?: number | null;
   walk_sample_points?: number | null;
+  /** OSM pedestrian-network metres / minutes (Partial) */
+  mean_network_m?: number | null;
+  median_network_m?: number | null;
+  p90_network_m?: number | null;
+  mean_walk_min?: number | null;
+  median_walk_min?: number | null;
+  p90_walk_min?: number | null;
+  pct_samples_within_5min?: number | null;
+  pct_samples_within_10min?: number | null;
+  pct_network_routed?: number | null;
 }
 
 export interface GapIndexMethod {
@@ -139,6 +149,7 @@ export interface SpatialReports {
   city_mean_stops_per_ward: number | null;
   city_mean_gap_index?: number | null;
   city_mean_walk_m?: number | null;
+  city_mean_walk_min?: number | null;
   walk_access_note?: string;
   wards: SpatialUnitReport[];
   zones: SpatialUnitReport[];

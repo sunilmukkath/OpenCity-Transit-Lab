@@ -212,7 +212,11 @@ function UnitListItem({
         {unit.railway_station_count != null && unit.railway_station_count > 0
           ? ` · rail ${fmt(unit.railway_station_count)}`
           : ""}
-        {unit.mean_walk_m != null ? ` · walk ~${fmt(unit.mean_walk_m, 0)} m` : ""}
+        {unit.mean_walk_min != null
+          ? ` · ~${fmt(unit.mean_walk_min, 1)} min walk`
+          : unit.mean_walk_m != null
+            ? ` · walk ~${fmt(unit.mean_walk_m, 0)} m`
+            : ""}
         {enriched.pt_index != null ? ` · PT ${enriched.pt_index}` : ""}
       </p>
       {unit.unit_type === "ward" ? (
@@ -368,39 +372,42 @@ function ReportDetail({
             Avg walk to PT
           </p>
           <p className="mt-1 text-2xl font-semibold text-[var(--yellow)]">
-            {unit.mean_walk_m != null ? `${fmt(unit.mean_walk_m, 0)} m` : "—"}
+            {unit.mean_walk_min != null ? `${fmt(unit.mean_walk_min, 1)} min` : "—"}
           </p>
           <p className="mt-1 text-xs text-[var(--ink-muted)]">
-            Crow-flies mean
-            {unit.median_walk_m != null ? ` · median ${fmt(unit.median_walk_m, 0)} m` : ""}
+            OSM network
+            {unit.median_walk_min != null ? ` · median ${fmt(unit.median_walk_min, 1)} min` : ""}
+            {unit.mean_network_m != null ? ` · ${fmt(unit.mean_network_m, 0)} m` : ""}
           </p>
         </div>
         <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
           <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-            Within 400m
+            Within 10 min
           </p>
           <p className="mt-1 text-2xl font-semibold text-[var(--yellow)]">
-            {unit.pct_samples_within_400m != null
-              ? `${fmt(unit.pct_samples_within_400m, 0)}%`
+            {unit.pct_samples_within_10min != null
+              ? `${fmt(unit.pct_samples_within_10min, 0)}%`
               : "—"}
           </p>
           <p className="mt-1 text-xs text-[var(--ink-muted)]">
             of ward sample grid
-            {unit.pct_samples_within_800m != null
-              ? ` · ${fmt(unit.pct_samples_within_800m, 0)}% ≤800m`
+            {unit.pct_samples_within_5min != null
+              ? ` · ${fmt(unit.pct_samples_within_5min, 0)}% ≤5 min`
               : ""}
           </p>
         </div>
         <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
           <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-            P90 walk
+            Crow-flies (compare)
           </p>
           <p className="mt-1 text-2xl font-semibold text-[var(--yellow)]">
-            {unit.p90_walk_m != null ? `${fmt(unit.p90_walk_m, 0)} m` : "—"}
+            {unit.mean_walk_m != null ? `${fmt(unit.mean_walk_m, 0)} m` : "—"}
           </p>
           <p className="mt-1 text-xs text-[var(--ink-muted)]">
-            90th percentile sample distance
-            {unit.walk_sample_points != null ? ` · n=${unit.walk_sample_points}` : ""}
+            Straight-line mean
+            {unit.pct_samples_within_400m != null
+              ? ` · ${fmt(unit.pct_samples_within_400m, 0)}% ≤400m`
+              : ""}
           </p>
         </div>
       </div>
@@ -496,6 +503,12 @@ function downloadReportsCsv(rows: SpatialUnitReport[], filename: string) {
     "p90_walk_m",
     "pct_samples_within_400m",
     "pct_samples_within_800m",
+    "mean_network_m",
+    "mean_walk_min",
+    "median_walk_min",
+    "p90_walk_min",
+    "pct_samples_within_5min",
+    "pct_samples_within_10min",
     "area_km2",
     "stops_per_km2",
     "top_recommendation",
@@ -529,6 +542,12 @@ function downloadReportsCsv(rows: SpatialUnitReport[], filename: string) {
         r.p90_walk_m ?? "",
         r.pct_samples_within_400m ?? "",
         r.pct_samples_within_800m ?? "",
+        r.mean_network_m ?? "",
+        r.mean_walk_min ?? "",
+        r.median_walk_min ?? "",
+        r.p90_walk_min ?? "",
+        r.pct_samples_within_5min ?? "",
+        r.pct_samples_within_10min ?? "",
         r.area_km2 ?? "",
         r.stops_per_km2 ?? "",
         `"${(r.recommendations[0]?.title ?? "").replaceAll('"', '""')}"`,

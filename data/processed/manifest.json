@@ -1179,6 +1179,12 @@
       ],
       "notes": "TNGIS slum boundary \u2014 GetFeature failed (HTTPError). Export from QGIS if you have departmental access.",
       "reason": "HTTP Error 400: "
+    },
+    "ward_walk_access": {
+      "status": "loaded",
+      "file": "ward_walk_access.json",
+      "feature_count": 200,
+      "notes": "Mean crow-flies metres from a ~150m grid of sample points inside each ward to the nearest GTFS stop or MRTS/metro hub. Not network walk, not population-weighted, not an equity score. Community GTFS may under-count official MTC stops."
     }
   },
   "realtime": [

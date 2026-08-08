@@ -212,6 +212,7 @@ function UnitListItem({
         {unit.railway_station_count != null && unit.railway_station_count > 0
           ? ` · rail ${fmt(unit.railway_station_count)}`
           : ""}
+        {unit.mean_walk_m != null ? ` · walk ~${fmt(unit.mean_walk_m, 0)} m` : ""}
         {enriched.pt_index != null ? ` · PT ${enriched.pt_index}` : ""}
       </p>
       {unit.unit_type === "ward" ? (
@@ -364,6 +365,49 @@ function ReportDetail({
       <div className="mt-3 grid gap-3 sm:grid-cols-3">
         <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
           <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
+            Avg walk to PT
+          </p>
+          <p className="mt-1 text-2xl font-semibold text-[var(--yellow)]">
+            {unit.mean_walk_m != null ? `${fmt(unit.mean_walk_m, 0)} m` : "—"}
+          </p>
+          <p className="mt-1 text-xs text-[var(--ink-muted)]">
+            Crow-flies mean
+            {unit.median_walk_m != null ? ` · median ${fmt(unit.median_walk_m, 0)} m` : ""}
+          </p>
+        </div>
+        <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
+            Within 400m
+          </p>
+          <p className="mt-1 text-2xl font-semibold text-[var(--yellow)]">
+            {unit.pct_samples_within_400m != null
+              ? `${fmt(unit.pct_samples_within_400m, 0)}%`
+              : "—"}
+          </p>
+          <p className="mt-1 text-xs text-[var(--ink-muted)]">
+            of ward sample grid
+            {unit.pct_samples_within_800m != null
+              ? ` · ${fmt(unit.pct_samples_within_800m, 0)}% ≤800m`
+              : ""}
+          </p>
+        </div>
+        <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
+            P90 walk
+          </p>
+          <p className="mt-1 text-2xl font-semibold text-[var(--yellow)]">
+            {unit.p90_walk_m != null ? `${fmt(unit.p90_walk_m, 0)} m` : "—"}
+          </p>
+          <p className="mt-1 text-xs text-[var(--ink-muted)]">
+            90th percentile sample distance
+            {unit.walk_sample_points != null ? ` · n=${unit.walk_sample_points}` : ""}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-3 sm:grid-cols-3">
+        <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
             MRTS stations
           </p>
           <p className="mt-1 text-2xl font-semibold text-[var(--yellow)]">
@@ -447,6 +491,11 @@ function downloadReportsCsv(rows: SpatialUnitReport[], filename: string) {
     "nearest_mrts_m",
     "nearest_cmrl_m",
     "nearest_railway_m",
+    "mean_walk_m",
+    "median_walk_m",
+    "p90_walk_m",
+    "pct_samples_within_400m",
+    "pct_samples_within_800m",
     "area_km2",
     "stops_per_km2",
     "top_recommendation",
@@ -475,6 +524,11 @@ function downloadReportsCsv(rows: SpatialUnitReport[], filename: string) {
         r.nearest_mrts_m ?? "",
         r.nearest_cmrl_m ?? "",
         r.nearest_railway_m ?? "",
+        r.mean_walk_m ?? "",
+        r.median_walk_m ?? "",
+        r.p90_walk_m ?? "",
+        r.pct_samples_within_400m ?? "",
+        r.pct_samples_within_800m ?? "",
         r.area_km2 ?? "",
         r.stops_per_km2 ?? "",
         `"${(r.recommendations[0]?.title ?? "").replaceAll('"', '""')}"`,

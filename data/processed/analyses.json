@@ -14502,5 +14502,160 @@
       13.3
     ],
     "fetched_at": "2026-08-08T07:37:54.672858+00:00"
+  },
+  "ward_walk_access": {
+    "status": "loaded",
+    "city": {
+      "mean_of_ward_means_m": 290.2,
+      "wards": 200
+    },
+    "method": {
+      "spacing_m": 150,
+      "max_samples_per_ward": 400,
+      "pt_layers": [
+        "stops",
+        "hubs"
+      ],
+      "distance": "Euclidean (EPSG:3857)"
+    },
+    "note": "Mean crow-flies metres from a ~150m grid of sample points inside each ward to the nearest GTFS stop or MRTS/metro hub. Not network walk, not population-weighted, not an equity score. Community GTFS may under-count official MTC stops.",
+    "priority_long_walk": [
+      {
+        "label": "15",
+        "sample_points": 400,
+        "mean_walk_m": 1150.2,
+        "median_walk_m": 1145.0,
+        "p90_walk_m": 2032.9,
+        "pct_samples_within_400m": 16.0,
+        "pct_samples_within_800m": 32.5
+      },
+      {
+        "label": "191",
+        "sample_points": 194,
+        "mean_walk_m": 872.1,
+        "median_walk_m": 876.5,
+        "p90_walk_m": 1410.8,
+        "pct_samples_within_400m": 16.5,
+        "pct_samples_within_800m": 44.8
+      },
+      {
+        "label": "159",
+        "sample_points": 158,
+        "mean_walk_m": 863.7,
+        "median_walk_m": 932.7,
+        "p90_walk_m": 1403.6,
+        "pct_samples_within_400m": 19.0,
+        "pct_samples_within_800m": 42.4
+      },
+      {
+        "label": "16",
+        "sample_points": 400,
+        "mean_walk_m": 794.9,
+        "median_walk_m": 768.6,
+        "p90_walk_m": 1450.8,
+        "pct_samples_within_400m": 23.2,
+        "pct_samples_within_800m": 53.2
+      },
+      {
+        "label": "184",
+        "sample_points": 144,
+        "mean_walk_m": 707.1,
+        "median_walk_m": 681.3,
+        "p90_walk_m": 1145.4,
+        "pct_samples_within_400m": 18.8,
+        "pct_samples_within_800m": 61.1
+      },
+      {
+        "label": "190",
+        "sample_points": 148,
+        "mean_walk_m": 676.5,
+        "median_walk_m": 568.6,
+        "p90_walk_m": 1373.6,
+        "pct_samples_within_400m": 37.2,
+        "pct_samples_within_800m": 61.5
+      },
+      {
+        "label": "189",
+        "sample_points": 400,
+        "mean_walk_m": 646.9,
+        "median_walk_m": 609.3,
+        "p90_walk_m": 1130.6,
+        "pct_samples_within_400m": 28.5,
+        "pct_samples_within_800m": 67.2
+      },
+      {
+        "label": "200",
+        "sample_points": 353,
+        "mean_walk_m": 600.1,
+        "median_walk_m": 577.1,
+        "p90_walk_m": 954.4,
+        "pct_samples_within_400m": 26.1,
+        "pct_samples_within_800m": 75.4
+      },
+      {
+        "label": "198",
+        "sample_points": 293,
+        "mean_walk_m": 578.0,
+        "median_walk_m": 547.5,
+        "p90_walk_m": 987.0,
+        "pct_samples_within_400m": 32.4,
+        "pct_samples_within_800m": 73.4
+      },
+      {
+        "label": "21",
+        "sample_points": 84,
+        "mean_walk_m": 533.1,
+        "median_walk_m": 482.1,
+        "p90_walk_m": 935.0,
+        "pct_samples_within_400m": 36.9,
+        "pct_samples_within_800m": 77.4
+      },
+      {
+        "label": "199",
+        "sample_points": 381,
+        "mean_walk_m": 532.8,
+        "median_walk_m": 520.0,
+        "p90_walk_m": 894.7,
+        "pct_samples_within_400m": 34.4,
+        "pct_samples_within_800m": 80.6
+      },
+      {
+        "label": "158",
+        "sample_points": 93,
+        "mean_walk_m": 521.5,
+        "median_walk_m": 490.1,
+        "p90_walk_m": 973.4,
+        "pct_samples_within_400m": 38.7,
+        "pct_samples_within_800m": 81.7
+      },
+      {
+        "label": "197",
+        "sample_points": 396,
+        "mean_walk_m": 520.5,
+        "median_walk_m": 503.4,
+        "p90_walk_m": 851.5,
+        "pct_samples_within_400m": 34.3,
+        "pct_samples_within_800m": 84.3
+      },
+      {
+        "label": "7",
+        "sample_points": 359,
+        "mean_walk_m": 518.2,
+        "median_walk_m": 479.3,
+        "p90_walk_m": 916.8,
+        "pct_samples_within_400m": 37.6,
+        "pct_samples_within_800m": 84.7
+      },
+      {
+        "label": "23",
+        "sample_points": 196,
+        "mean_walk_m": 501.4,
+        "median_walk_m": 486.8,
+        "p90_walk_m": 797.7,
+        "pct_samples_within_400m": 36.2,
+        "pct_samples_within_800m": 90.3
+      }
+    ],
+    "file": "ward_walk_access.json"
   }
 }

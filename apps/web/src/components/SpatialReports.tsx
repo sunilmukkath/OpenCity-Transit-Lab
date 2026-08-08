@@ -18,7 +18,7 @@ import {
 import type { EnrichedWard } from "@/lib/dashboard-filters";
 import { useDashboardFilters } from "@/hooks/useDashboardFilters";
 
-type SortKey = "gap" | "stops" | "density" | "name" | "pt" | "slum" | "activity";
+type SortKey = "gap" | "walk" | "stops" | "density" | "name" | "pt" | "slum" | "activity";
 
 const PRIORITY_STYLE: Record<string, string> = {
   critical: "border-[var(--danger)] bg-[rgba(251,113,133,0.12)] text-[var(--danger)]",
@@ -204,6 +204,11 @@ function UnitListItem({
         <div className="text-right">
           <p className="font-semibold text-[var(--yellow)]">{index}</p>
           <GapBandChip band={band} />
+          {unit.mean_walk_min != null ? (
+            <p className="mt-1 text-sm font-semibold text-[var(--accent)]">
+              {fmt(unit.mean_walk_min, 1)} min walk
+            </p>
+          ) : null}
         </div>
       </div>
       <p className="mt-1 text-xs text-[var(--ink-muted)]">
@@ -212,7 +217,6 @@ function UnitListItem({
         {unit.railway_station_count != null && unit.railway_station_count > 0
           ? ` · rail ${fmt(unit.railway_station_count)}`
           : ""}
-        {unit.mean_walk_min != null ? ` · ~${fmt(unit.mean_walk_min, 1)} min walk` : ""}
         {enriched.pt_index != null ? ` · PT ${enriched.pt_index}` : ""}
       </p>
       {unit.unit_type === "ward" ? (
@@ -284,7 +288,17 @@ function ReportDetail({
       </div>
 
       {unit.unit_type === "ward" ? (
-        <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-lg border border-[var(--yellow)]/40 bg-[rgba(255,229,102,0.08)] p-3 sm:col-span-2 lg:col-span-1">
+            <p className="text-[10px] uppercase text-[var(--ink-muted)]">OSM walk to PT</p>
+            <p className="text-2xl font-semibold text-[var(--yellow)]">
+              {unit.mean_walk_min != null ? `${fmt(unit.mean_walk_min, 1)} min` : "—"}
+            </p>
+            <p className="mt-1 text-xs text-[var(--ink-muted)]">
+              Network mean
+              {unit.mean_network_m != null ? ` · ${fmt(unit.mean_network_m, 0)} m` : ""}
+            </p>
+          </div>
           <div className="rounded-lg border border-[var(--border)] bg-white/[0.03] p-3">
             <p className="text-[10px] uppercase text-[var(--ink-muted)]">PT index</p>
             <p className="text-lg font-semibold text-[var(--yellow)]">
@@ -551,7 +565,7 @@ export function SpatialReports() {
   const [reports, setReports] = useState<SpatialReportsData | null>(null);
   const [loadingReports, setLoadingReports] = useState(true);
   const [filters, setFilters] = useDashboardFilters({ unit: "ward" });
-  const [sortKey, setSortKey] = useState<SortKey>("gap");
+  const [sortKey, setSortKey] = useState<SortKey>("walk");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const {
     loading: loadingUniverse,
@@ -595,6 +609,8 @@ export function SpatialReports() {
     const rows = [...filtered];
     rows.sort((a, b) => {
       if (sortKey === "name") return a.label.localeCompare(b.label);
+      if (sortKey === "walk")
+        return (b.mean_walk_min ?? -1) - (a.mean_walk_min ?? -1);
       if (sortKey === "stops") return (b.stop_count ?? -1) - (a.stop_count ?? -1);
       if (sortKey === "density") return (b.stops_per_km2 ?? -1) - (a.stops_per_km2 ?? -1);
       if (sortKey === "pt") return (a.pt_index ?? 999) - (b.pt_index ?? 999);
@@ -652,22 +668,35 @@ export function SpatialReports() {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--yellow)]">
-              Inventory Gap Index
+              Gap Index + OSM walk time
             </p>
             <h3 className="mt-1 font-[family-name:var(--font-display)] text-xl font-semibold text-[var(--ink)]">
               Filter any slice — then open a ward brief
             </h3>
             <p className="mt-2 text-sm text-[var(--ink-muted)]">
-              {method?.disclaimer ?? reports.note}
+              Each ward shows average OSM pedestrian-network walk time to the nearest stop or
+              hub (4.8 km/h). Sorted by longest walk by default.
             </p>
           </div>
-          <div className="min-w-[160px] rounded-lg border border-[var(--border)] bg-white/[0.03] px-4 py-3 text-center">
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-              City mean (wards)
-            </p>
-            <p className="mt-1 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow)]">
-              {fmt(reports.city_mean_gap_index, 1)}
-            </p>
+          <div className="flex flex-wrap gap-2">
+            <div className="min-w-[140px] rounded-lg border border-[var(--yellow)]/50 bg-[rgba(255,229,102,0.1)] px-4 py-3 text-center">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
+                City mean walk
+              </p>
+              <p className="mt-1 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow)]">
+                {reports.city_mean_walk_min != null
+                  ? `${fmt(reports.city_mean_walk_min, 1)} min`
+                  : "—"}
+              </p>
+            </div>
+            <div className="min-w-[140px] rounded-lg border border-[var(--border)] bg-white/[0.03] px-4 py-3 text-center">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
+                City Gap Index
+              </p>
+              <p className="mt-1 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow)]">
+                {fmt(reports.city_mean_gap_index, 1)}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -703,6 +732,15 @@ export function SpatialReports() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard
+          label="City mean walk to PT"
+          value={
+            reports.city_mean_walk_min != null
+              ? `${Number(reports.city_mean_walk_min).toFixed(1)} min`
+              : null
+          }
+          subtext="OSM network · 4.8 km/h"
+        />
+        <MetricCard
           label="City Gap Index"
           value={
             reports.city_mean_gap_index != null
@@ -713,14 +751,9 @@ export function SpatialReports() {
         />
         <MetricCard label="Severe gap (city)" value={severeCount} subtext="Gap Index ≥ 70" />
         <MetricCard
-          label="In current filter"
-          value={sorted.filter((u) => u.unit_type === "ward").length}
-          subtext="Wards matching filters"
-        />
-        <MetricCard
-          label="Filtered severe"
-          value={sorted.filter((u) => String(u.gap_band) === "severe").length}
-          subtext="Severe within filter"
+          label="Long walks (≥10 min)"
+          value={all.filter((u) => (u.mean_walk_min ?? 0) >= 10).length}
+          subtext="Wards with mean ≥ 10 min"
         />
       </div>
 
@@ -742,6 +775,7 @@ export function SpatialReports() {
                 onChange={(e) => setSortKey(e.target.value as SortKey)}
                 className="ml-1 rounded-md border border-[var(--border)] bg-[var(--bg-elevated)] px-2 py-1.5 text-[var(--ink)]"
               >
+                <option value="walk">Walk time (OSM)</option>
                 <option value="gap">Gap Index</option>
                 <option value="pt">PT index</option>
                 <option value="stops">Stop count</option>

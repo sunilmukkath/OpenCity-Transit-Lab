@@ -368,6 +368,7 @@ export function MapExplorer({
             {(
               [
                 ["connectivity_need", "Need lines"],
+                ["nmt_network", "NMT paths"],
                 ["tngis_settlement_area", "Settlements"],
                 ["tngis_habitation", "Habitation"],
               ] as const

@@ -110,8 +110,8 @@ export const MAP_LAYER_META: {
   },
   {
     key: "nmt_network",
-    label: "NMT footways / cycleways (OSM, partial)",
-    short: "NMT",
+    label: "NMT footways / cycleways (OSM, Partial)",
+    short: "NMT paths",
     defaultOn: false,
     heavy: true,
     group: "core",

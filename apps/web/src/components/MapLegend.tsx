@@ -119,6 +119,17 @@ export function MapLegend({
     });
   }
 
+  if (visibility.nmt_network) {
+    sections.push({
+      title: "NMT (non-motorized · OSM Partial)",
+      items: [
+        { kind: "line", color: "#22d3ee", label: "Cycleway" },
+        { kind: "line", color: "#a3e635", label: "Footway" },
+        { kind: "line", color: "#84cc16", label: "Path / pedestrian" },
+      ],
+    });
+  }
+
   const points: Swatch[] = [];
   if (visibility.stops) points.push({ kind: "dot", color: "#0369a1", label: "Bus stops (GTFS)" });
   if (visibility.mrts_stations) points.push({ kind: "dot", color: "#ea580c", label: "MRTS stations" });

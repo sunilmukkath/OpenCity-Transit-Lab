@@ -325,31 +325,6 @@ const LAYER_STACK: {
     ],
   },
   {
-    key: "nmt_network",
-    sourceId: "tm-nmt",
-    layers: [
-      {
-        id: "tm-nmt-line",
-        type: "line",
-        paint: {
-          "line-color": [
-            "match",
-            ["get", "highway"],
-            "cycleway",
-            "#22d3ee",
-            "footway",
-            "#a3e635",
-            "path",
-            "#84cc16",
-            "#86efac",
-          ],
-          "line-width": ["interpolate", ["linear"], ["zoom"], 11, 0.8, 15, 2.2],
-          "line-opacity": 0.75,
-        },
-      },
-    ],
-  },
-  {
     key: "wards",
     sourceId: "tm-wards",
     layers: [
@@ -406,6 +381,32 @@ const LAYER_STACK: {
           ],
           "line-width": ["match", ["get", "band"], "within_5min", 1.1, 0.6],
           "line-opacity": 0.7,
+        },
+      },
+    ],
+  },
+  {
+    key: "nmt_network",
+    sourceId: "tm-nmt",
+    layers: [
+      {
+        id: "tm-nmt-line",
+        type: "line",
+        paint: {
+          "line-color": [
+            "match",
+            ["get", "highway"],
+            "cycleway",
+            "#22d3ee",
+            "footway",
+            "#a3e635",
+            "path",
+            "#84cc16",
+            "#86efac",
+          ],
+          // Visible at city zoom; thicken when zoomed in
+          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 1.6, 12, 2.4, 15, 3.5],
+          "line-opacity": 0.9,
         },
       },
     ],
@@ -652,6 +653,7 @@ const LAYER_STACK: {
 const INTERACTIVE_LAYER_IDS = [
   "tm-wards-fill",
   "tm-walk-isochrones-fill",
+  "tm-nmt-line",
   "tm-tngis-settlement-fill",
   "tm-stops-circle",
   "tm-mrts-stations-circle",

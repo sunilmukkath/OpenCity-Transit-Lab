@@ -650,7 +650,6 @@ export function SpatialReports() {
     );
   }
 
-  const method = reports.gap_index_method;
   const severeCount = bandCounts.severe;
 
   return (

@@ -640,25 +640,6 @@ export function SpatialReports() {
     if (!still) setSelectedId(`${sorted[0].unit_type}:${sorted[0].label}`);
   }, [sorted, selectedId]);
 
-  const loading = loadingReports || loadingUniverse;
-
-  if (loading) {
-    return <p className="text-sm text-[var(--ink-muted)]">Loading ward / zone reports…</p>;
-  }
-
-  if (!reports) {
-    return (
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6">
-        <StatusBadge status="unavailable" />
-        <p className="mt-3 text-[var(--ink-muted)]">
-          Spatial reports not found. Run the ETL pipeline to generate{" "}
-          <code className="text-[var(--accent)]">reports.json</code>.
-        </p>
-      </div>
-    );
-  }
-
-  const severeCount = bandCounts.severe;
   const wardUniverse = useMemo(
     () => all.filter((u) => u.unit_type === "ward"),
     [all]
@@ -694,6 +675,25 @@ export function SpatialReports() {
   const sliceLabel = hasFilter
     ? `In this filter · ${sliceStats.wardCount} ward${sliceStats.wardCount === 1 ? "" : "s"}`
     : "Citywide · all wards";
+  const severeCount = bandCounts.severe;
+
+  const loading = loadingReports || loadingUniverse;
+
+  if (loading) {
+    return <p className="text-sm text-[var(--ink-muted)]">Loading ward / zone reports…</p>;
+  }
+
+  if (!reports) {
+    return (
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6">
+        <StatusBadge status="unavailable" />
+        <p className="mt-3 text-[var(--ink-muted)]">
+          Spatial reports not found. Run the ETL pipeline to generate{" "}
+          <code className="text-[var(--accent)]">reports.json</code>.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

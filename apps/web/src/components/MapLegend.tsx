@@ -57,7 +57,7 @@ export function MapLegend({
   if (visibility.wards) {
     if (choropleth === "slum") {
       sections.push({
-        title: "Slum vs non-slum",
+        title: "Slum vs non-slum (GCC wards)",
         items: [
           { kind: "fill", color: "#38bdf8", label: "Non-slum" },
           { kind: "fill", color: "#fca5a5", label: "Slum (low share)" },
@@ -67,7 +67,7 @@ export function MapLegend({
       });
     } else if (choropleth === "walk") {
       sections.push({
-        title: "Ward OSM walk to PT",
+        title: "Ward OSM walk to PT (GCC)",
         items: [
           { kind: "fill", color: "#14b8a6", label: "Shorter (~≤5 min)" },
           { kind: "fill", color: "#eab308", label: "About 5–10 min" },
@@ -87,7 +87,7 @@ export function MapLegend({
       });
     } else {
       sections.push({
-        title: "Ward stop count",
+        title: "Ward stop count (GCC)",
         items: [
           { kind: "fill", color: "#bfdbfe", label: "Fewer stops" },
           { kind: "fill", color: "#0369a1", label: "More stops" },
@@ -174,6 +174,12 @@ export function MapLegend({
           </div>
         ))}
       </div>
+      {visibility.wards ? (
+        <p className="mt-2 border-t border-slate-200 pt-1.5 text-[9px] leading-snug text-slate-500">
+          GCC 2022 wards only (200). Places west of the corporation edge (Avadi /
+          Poonamallee / Sriperumbudur) are outside this layer.
+        </p>
+      ) : null}
       {visibility.walk_isochrones ? (
         <p className="mt-2 border-t border-slate-200 pt-1.5 text-[9px] leading-snug text-slate-500">
           OSM pedestrian network to nearest GTFS stop/hub at 80 m/min (Partial). Not

@@ -274,9 +274,8 @@ export function MapExplorer({
       };
     }
 
-    if (!next.wards || !filtersActive(filters)) return next;
-    // Keep full ward choropleth on the map — filters apply to the summary strip only.
-    // Clipping polygons to gap/slum slices made it look like the ward layer was missing.
+    // Always show full GCC ward polygons on the map (200 wards).
+    // Gap/slum URL filters only affect the summary strip, not map geometry.
     return next;
   }, [data, transitModes.cmrl]);
 
@@ -427,9 +426,12 @@ export function MapExplorer({
                     setVisibility((v) => ({
                       ...v,
                       wards: true,
-                      // Isochrones wash out ward fills — off while colouring wards
                       walk_isochrones: false,
                     }));
+                    // Clear gap filter leftover from Assessments so all wards colour
+                    if (filters.gapBand !== "all") {
+                      setFilters((prev) => ({ ...prev, gapBand: "all" }));
+                    }
                     if (manifest && !data.wards) {
                       void loadLayerBatch(
                         manifest,

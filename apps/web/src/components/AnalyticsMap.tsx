@@ -11,6 +11,7 @@ import { TransitMap, joinWardGapIndex } from "@/components/TransitMap";
 import type { LayerData, MapLayerKey } from "@/lib/map-layers";
 
 const CORE: MapLayerKey[] = [
+  "walk_isochrones",
   "walk_distance_bands",
   "omr_corridor",
   "metro_area_boundaries",

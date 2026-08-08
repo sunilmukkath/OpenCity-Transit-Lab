@@ -14656,5 +14656,62 @@
       }
     ],
     "file": "ward_walk_access.json"
+  },
+  "walk_isochrones": {
+    "status": "partial",
+    "generated_at": "2026-08-08T09:27:43.503493+00:00",
+    "note": "OSM network walk isochrones from existing GTFS stops + MRTS/metro hubs. Bands: \u22645 min, 5\u201310 min, 10\u201315 min at 80 m/min (4.8 km/h). Multi-source Dijkstra on osmnx walk graph; node buffers dissolved. Partial \u2014 OSM completeness. Not crow-flies; not population-weighted. Proposed metro stations not included.",
+    "method": {
+      "network": "OSMNx walk + multi_source_dijkstra_path_length",
+      "walk_speed_m_per_min": 80.0,
+      "bands_min": [
+        5,
+        10,
+        15
+      ],
+      "node_buffer_m": 70.0
+    },
+    "counts": {
+      "access_points": {
+        "stops": 5580,
+        "hubs": 143,
+        "mrts_stations": 118,
+        "unique_access_points": 5685
+      },
+      "pt_source_nodes": 3725,
+      "reachable_nodes": 184632,
+      "study_area_km2": 1564.12,
+      "walk_speed_m_per_min": 80.0,
+      "node_buffer_m": 70.0,
+      "within_5min_km2": 280.99,
+      "band_5_10min_km2": 150.33,
+      "band_10_15min_km2": 51.94,
+      "pct_within_5min": 18.0,
+      "pct_band_5_10min": 9.6,
+      "pct_band_10_15min": 3.3
+    },
+    "study": {
+      "components": [
+        {
+          "id": "gcc_wards",
+          "features": 200
+        },
+        {
+          "id": "omr_corridor_buffer_m",
+          "buffer_m": 2500,
+          "features": 1
+        },
+        {
+          "id": "metro_area_boundaries",
+          "features": 3
+        },
+        {
+          "id": "corridor_aois",
+          "features": 3
+        }
+      ],
+      "study_area_km2": 1564.12
+    },
+    "file": "walk_isochrones.geojson"
   }
 }

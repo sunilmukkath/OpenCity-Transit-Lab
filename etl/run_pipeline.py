@@ -37,6 +37,7 @@ from build_nmt_network import main as build_nmt_network_main  # noqa: E402
 from build_cmp_corridors import main as build_cmp_corridors_main  # noqa: E402
 from build_ward_walk_access import main as build_ward_walk_access_main  # noqa: E402
 from gap_index import build_gap_index  # noqa: E402
+from build_walk_isochrones import main as build_walk_isochrones_main  # noqa: E402
 
 RAW = ROOT / "data" / "raw"
 PROCESSED = ROOT / "data" / "processed"
@@ -1859,6 +1860,12 @@ def main() -> int:
         print("[ok] ward_walk_access")
     except Exception as exc:  # noqa: BLE001
         print(f"[fail] ward_walk_access: {exc}", file=sys.stderr)
+
+    try:
+        build_walk_isochrones_main()
+        print("[ok] walk_isochrones")
+    except Exception as exc:  # noqa: BLE001
+        print(f"[fail] walk_isochrones: {exc}", file=sys.stderr)
 
     copy_to_web(PROCESSED, WEB_PUBLIC)
     print(f"[ok] copied processed data → {WEB_PUBLIC}")

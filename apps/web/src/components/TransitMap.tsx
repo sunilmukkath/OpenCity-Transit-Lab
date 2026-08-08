@@ -67,6 +67,7 @@ function formatPopupProps(props: Record<string, unknown>): string {
     "label",
     "name",
     "band",
+    "max_walk_min",
     "area_km2",
     "note",
     "mean_walk_min",
@@ -354,6 +355,59 @@ const LAYER_STACK: {
     layers: [
       { id: "tm-wards-fill", type: "fill", paint: { "fill-color": "#7dd3fc", "fill-opacity": 0.55 } },
       { id: "tm-wards-line", type: "line", paint: { "line-color": "#0f172a", "line-width": 1.1, "line-opacity": 0.9 } },
+    ],
+  },
+  {
+    key: "walk_isochrones",
+    sourceId: "tm-walk-isochrones",
+    layers: [
+      {
+        id: "tm-walk-isochrones-fill",
+        type: "fill",
+        paint: {
+          "fill-color": [
+            "match",
+            ["get", "band"],
+            "within_5min",
+            "#2dd4bf",
+            "band_5_10min",
+            "#eab308",
+            "band_10_15min",
+            "#f97316",
+            "#94a3b8",
+          ],
+          "fill-opacity": [
+            "match",
+            ["get", "band"],
+            "within_5min",
+            0.5,
+            "band_5_10min",
+            0.38,
+            "band_10_15min",
+            0.32,
+            0.25,
+          ],
+        },
+      },
+      {
+        id: "tm-walk-isochrones-line",
+        type: "line",
+        paint: {
+          "line-color": [
+            "match",
+            ["get", "band"],
+            "within_5min",
+            "#0f766e",
+            "band_5_10min",
+            "#a16207",
+            "band_10_15min",
+            "#c2410c",
+            "#64748b",
+          ],
+          "line-width": ["match", ["get", "band"], "within_5min", 1.1, 0.6],
+          "line-opacity": 0.7,
+        },
+      },
     ],
   },
   {
@@ -651,6 +705,7 @@ const LAYER_STACK: {
 
 const INTERACTIVE_LAYER_IDS = [
   "tm-wards-fill",
+  "tm-walk-isochrones-fill",
   "tm-walk-bands-fill",
   "tm-tngis-settlement-fill",
   "tm-stops-circle",
@@ -745,7 +800,8 @@ export function TransitMap({
             ...layer.paint,
             "fill-color": fill,
             // Keep wards under walk bands readable without washing out >1km red
-            "fill-opacity": vis.walk_distance_bands ? 0.22 : 0.55,
+            "fill-opacity":
+              vis.walk_isochrones || vis.walk_distance_bands ? 0.22 : 0.55,
           };
         }
 

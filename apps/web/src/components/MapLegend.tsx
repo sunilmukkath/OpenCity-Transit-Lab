@@ -43,9 +43,20 @@ export function MapLegend({
 }) {
   const sections: { title: string; items: Swatch[] }[] = [];
 
+  if (visibility.walk_isochrones) {
+    sections.push({
+      title: "Walk isochrones (OSM network)",
+      items: [
+        { kind: "fill", color: "#2dd4bf", label: "≤5 min" },
+        { kind: "fill", color: "#eab308", label: "5–10 min" },
+        { kind: "fill", color: "#f97316", label: "10–15 min" },
+      ],
+    });
+  }
+
   if (visibility.walk_distance_bands) {
     sections.push({
-      title: "Walk to stop / hub",
+      title: "Crow-flies to stop / hub",
       items: [
         { kind: "fill", color: "#2dd4bf", label: "Within 100m" },
         { kind: "fill", color: "#86efac", label: "100m – 500m" },
@@ -163,6 +174,12 @@ export function MapLegend({
           </div>
         ))}
       </div>
+      {visibility.walk_isochrones ? (
+        <p className="mt-2 border-t border-slate-200 pt-1.5 text-[9px] leading-snug text-slate-500">
+          OSM pedestrian network to nearest GTFS stop/hub at 80 m/min (Partial). Not crow-flies;
+          not population-weighted.
+        </p>
+      ) : null}
       {visibility.walk_distance_bands ? (
         <p className="mt-2 border-t border-slate-200 pt-1.5 text-[9px] leading-snug text-slate-500">
           Crow-flies buffers to existing stops/hubs (≤1km shown). Areas farther than 1km are

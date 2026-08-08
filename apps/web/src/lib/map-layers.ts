@@ -9,6 +9,7 @@ export type MapLayerKey =
   | "hubs"
   | "railway_stations"
   | "connectivity_need"
+  | "walk_isochrones"
   | "walk_distance_bands"
   | "omr_corridor"
   | "metro_area_boundaries"
@@ -33,10 +34,17 @@ export const MAP_LAYER_META: {
   group?: "core" | "amenities";
 }[] = [
   {
-    key: "walk_distance_bands",
-    label: "Walk distance to stop/hub (≤1km bands)",
-    short: "Walk km",
+    key: "walk_isochrones",
+    label: "Walk isochrones 5/10/15 min (OSM network)",
+    short: "Isochrones",
     defaultOn: true,
+    group: "core",
+  },
+  {
+    key: "walk_distance_bands",
+    label: "Walk distance crow-flies (≤1km bands)",
+    short: "Crow-flies",
+    defaultOn: false,
     group: "core",
   },
   { key: "stops", label: "Transit stops (GTFS)", short: "Stops", defaultOn: true, group: "core" },
@@ -181,7 +189,7 @@ export const LAYER_PRESETS: Record<
 > = {
   walkkm: {
     label: "Walk km",
-    blurb: "Walk bands + ward OSM walk minutes (Colour → Walk min)",
+    blurb: "OSM walk isochrones 5/10/15 min + ward walk colour",
     choropleth: "walk",
     layers: {
       ...CORE_OFF_AMENITIES,
@@ -191,14 +199,15 @@ export const LAYER_PRESETS: Record<
       mrts_stations: true,
       hubs: true,
       connectivity_need: false,
-      walk_distance_bands: true,
+      walk_isochrones: true,
+      walk_distance_bands: false,
       omr_corridor: true,
       metro_area_boundaries: true,
     },
   },
   destinations: {
     label: "Destinations",
-    blurb: "Schools + health · check ≤100m stop access",
+    blurb: "Schools + health · check ≤5–15 min walk isochrones",
     choropleth: "stops",
     layers: {
       wards: false,
@@ -208,7 +217,8 @@ export const LAYER_PRESETS: Record<
       hubs: true,
       railway_stations: false,
       connectivity_need: false,
-      walk_distance_bands: true,
+      walk_isochrones: true,
+      walk_distance_bands: false,
       omr_corridor: true,
       metro_area_boundaries: true,
       schools: true,
@@ -223,7 +233,7 @@ export const LAYER_PRESETS: Record<
   },
   serve: {
     label: "Where to serve",
-    blurb: ">1km red + need lines (roads far from stops) + gap wards",
+    blurb: "Isochrones + need lines + gap wards",
     choropleth: "gap",
     layers: {
       ...CORE_OFF_AMENITIES,
@@ -233,7 +243,8 @@ export const LAYER_PRESETS: Record<
       mrts_stations: true,
       hubs: true,
       connectivity_need: true,
-      walk_distance_bands: true,
+      walk_isochrones: true,
+      walk_distance_bands: false,
       omr_corridor: true,
       metro_area_boundaries: true,
       cmp_corridors: true,
@@ -251,7 +262,8 @@ export const LAYER_PRESETS: Record<
       mrts_stations: true,
       hubs: true,
       connectivity_need: false,
-      walk_distance_bands: true,
+      walk_isochrones: true,
+      walk_distance_bands: false,
       omr_corridor: true,
       metro_area_boundaries: true,
     },
@@ -268,6 +280,7 @@ export const LAYER_PRESETS: Record<
       mrts_stations: true,
       hubs: true,
       connectivity_need: false,
+      walk_isochrones: false,
       walk_distance_bands: false,
       omr_corridor: false,
       metro_area_boundaries: false,
@@ -286,6 +299,7 @@ export const LAYER_PRESETS: Record<
       mrts_stations: false,
       hubs: true,
       connectivity_need: false,
+      walk_isochrones: false,
       walk_distance_bands: false,
       omr_corridor: false,
       metro_area_boundaries: false,
@@ -304,6 +318,7 @@ export const LAYER_PRESETS: Record<
       mrts_stations: true,
       connectivity_need: true,
       cmp_corridors: true,
+      walk_isochrones: false,
       walk_distance_bands: false,
       omr_corridor: true,
       metro_area_boundaries: false,
@@ -311,7 +326,7 @@ export const LAYER_PRESETS: Record<
   },
   lastmile: {
     label: "Last mile",
-    blurb: "Need lines (no PT) + settlements + hubs + walk bands",
+    blurb: "Need lines + settlements + hubs + walk isochrones",
     choropleth: "gap",
     layers: {
       ...CORE_OFF_AMENITIES,
@@ -321,7 +336,8 @@ export const LAYER_PRESETS: Record<
       mrts_stations: true,
       hubs: true,
       connectivity_need: true,
-      walk_distance_bands: true,
+      walk_isochrones: true,
+      walk_distance_bands: false,
       omr_corridor: true,
       metro_area_boundaries: true,
       tngis_settlement_area: true,
@@ -352,7 +368,7 @@ export function layersForPreset(
 
 /** Lightweight first paint — wards + walks + stops + hubs. */
 export const BOOTSTRAP_LAYERS: MapLayerKey[] = [
-  "walk_distance_bands",
+  "walk_isochrones",
   "stops",
   "hubs",
   "mrts_stations",

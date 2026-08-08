@@ -1191,6 +1191,25 @@
       "file": "ward_walk_access.json",
       "feature_count": 200,
       "notes": "Ward grid samples (~150m) routed on an OSM pedestrian network to the nearest GTFS stop or MRTS/metro hub. mean_walk_min = network metres \u00f7 80 m/min (4.8 km/h). OSM walk graph is Partial (missing alleys / sidewalk tags). Not Google Maps, not population-weighted, not an equity score. No crow-flies walk metric."
+    },
+    "walk_isochrones": {
+      "status": "partial",
+      "file": "walk_isochrones.geojson",
+      "feature_count": 3,
+      "attributes": [
+        "band",
+        "max_walk_min",
+        "min_network_m",
+        "max_network_m",
+        "area_km2"
+      ],
+      "notes": "OSM network walk isochrones from existing GTFS stops + MRTS/metro hubs. Bands: \u22645 min, 5\u201310 min, 10\u201315 min at 80 m/min (4.8 km/h). Multi-source Dijkstra on osmnx walk graph; node buffers dissolved. Partial \u2014 OSM completeness. Not crow-flies; not population-weighted. Proposed metro stations not included.",
+      "derived_from": [
+        "stops",
+        "hubs",
+        "mrts_stations",
+        "chennai_osm_walk_graph"
+      ]
     }
   },
   "realtime": [

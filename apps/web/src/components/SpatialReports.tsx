@@ -16,6 +16,7 @@ import {
   useFilteredUniverse,
 } from "@/components/DashboardFilterBar";
 import type { EnrichedWard } from "@/lib/dashboard-filters";
+import { DEFAULT_FILTERS, filtersActive } from "@/lib/dashboard-filters";
 import { useDashboardFilters } from "@/hooks/useDashboardFilters";
 
 type SortKey = "gap" | "walk" | "stops" | "density" | "name" | "pt" | "slum" | "activity";
@@ -658,6 +659,41 @@ export function SpatialReports() {
   }
 
   const severeCount = bandCounts.severe;
+  const wardUniverse = useMemo(
+    () => all.filter((u) => u.unit_type === "ward"),
+    [all]
+  );
+  const sliceStats = useMemo(() => {
+    const wards = sorted.filter((u) => u.unit_type === "ward");
+    const withWalk = wards.filter((w) => w.mean_walk_min != null);
+    const meanWalk =
+      withWalk.length > 0
+        ? Math.round(
+            (withWalk.reduce((s, w) => s + (w.mean_walk_min as number), 0) /
+              withWalk.length) *
+              10
+          ) / 10
+        : null;
+    const meanGap =
+      wards.length > 0
+        ? Math.round(
+            (wards.reduce((s, w) => s + gapValue(w), 0) / wards.length) * 10
+          ) / 10
+        : null;
+    const severeInSlice = wards.filter((w) => gapBand(w) === "severe").length;
+    const longWalks = wards.filter((w) => (w.mean_walk_min ?? 0) >= 10).length;
+    return {
+      meanWalk,
+      meanGap,
+      severeInSlice,
+      longWalks,
+      wardCount: wards.length,
+    };
+  }, [sorted]);
+  const hasFilter = filtersActive(filters);
+  const sliceLabel = hasFilter
+    ? `In this filter · ${sliceStats.wardCount} ward${sliceStats.wardCount === 1 ? "" : "s"}`
+    : "Citywide · all wards";
 
   return (
     <div className="space-y-6">
@@ -667,6 +703,7 @@ export function SpatialReports() {
         wardOptions={wardOptions}
         zoneOptions={zoneOptions}
         resultCount={sorted.length}
+        defaults={{ unit: "ward" }}
       />
       <FilterImpactStrip units={sorted} cityMeanGap={cityMeanGap} />
 
@@ -687,26 +724,35 @@ export function SpatialReports() {
           <div className="flex flex-wrap gap-2">
             <div className="min-w-[140px] rounded-lg border border-[var(--yellow)]/50 bg-[rgba(255,229,102,0.1)] px-4 py-3 text-center">
               <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-                City mean walk
+                {hasFilter ? "Filter mean walk" : "City mean walk"}
               </p>
               <p className="mt-1 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow)]">
-                {reports.city_mean_walk_min != null
-                  ? `${fmt(reports.city_mean_walk_min, 1)} min`
-                  : "—"}
+                {sliceStats.meanWalk != null ? `${fmt(sliceStats.meanWalk, 1)} min` : "—"}
               </p>
             </div>
             <div className="min-w-[140px] rounded-lg border border-[var(--border)] bg-white/[0.03] px-4 py-3 text-center">
               <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ink-muted)]">
-                City Gap Index
+                {hasFilter ? "Filter Gap Index" : "City Gap Index"}
               </p>
               <p className="mt-1 font-[family-name:var(--font-display)] text-3xl font-semibold text-[var(--yellow)]">
-                {fmt(reports.city_mean_gap_index, 1)}
+                {fmt(sliceStats.meanGap, 1)}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setFilters((prev) => ({ ...prev, gapBand: "all" }))}
+            className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide transition ${
+              filters.gapBand === "all"
+                ? "border-[var(--yellow)] bg-[rgba(255,229,102,0.14)] text-[var(--yellow)]"
+                : "border-[var(--border)] text-[var(--ink-muted)] hover:border-[var(--accent)]"
+            }`}
+          >
+            All · {wardUniverse.length}
+          </button>
           {(
             [
               ["severe", "≥70"],
@@ -733,33 +779,46 @@ export function SpatialReports() {
               {band} {range} · {bandCounts[band] ?? 0}
             </button>
           ))}
+          {hasFilter ? (
+            <button
+              type="button"
+              onClick={() => setFilters({ ...DEFAULT_FILTERS, unit: "ward" })}
+              className="rounded-full border border-[var(--border)] px-3 py-1 text-xs font-semibold text-[var(--ink-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
+            >
+              Reset filters
+            </button>
+          ) : null}
         </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard
-          label="City mean walk to PT"
+          label={hasFilter ? "Mean walk to PT" : "City mean walk to PT"}
           value={
-            reports.city_mean_walk_min != null
-              ? `${Number(reports.city_mean_walk_min).toFixed(1)} min`
-              : null
+            sliceStats.meanWalk != null ? `${sliceStats.meanWalk.toFixed(1)} min` : null
           }
-          subtext="OSM network · 4.8 km/h"
+          subtext={sliceLabel}
         />
         <MetricCard
-          label="City Gap Index"
-          value={
-            reports.city_mean_gap_index != null
-              ? Number(reports.city_mean_gap_index).toFixed(1)
-              : null
+          label={hasFilter ? "Mean Gap Index" : "City Gap Index"}
+          value={sliceStats.meanGap != null ? sliceStats.meanGap.toFixed(1) : null}
+          subtext={
+            hasFilter
+              ? sliceLabel
+              : reports.city_mean_gap_index != null
+                ? `Citywide mean ${Number(reports.city_mean_gap_index).toFixed(1)}`
+                : "Mean across all wards"
           }
-          subtext="Mean across all wards"
         />
-        <MetricCard label="Severe gap (city)" value={severeCount} subtext="Gap Index ≥ 70" />
+        <MetricCard
+          label={hasFilter ? "Severe gap (in filter)" : "Severe gap (city)"}
+          value={hasFilter ? sliceStats.severeInSlice : severeCount}
+          subtext={hasFilter ? sliceLabel : "Gap Index ≥ 70"}
+        />
         <MetricCard
           label="Long walks (≥10 min)"
-          value={all.filter((u) => (u.mean_walk_min ?? 0) >= 10).length}
-          subtext="Wards with mean ≥ 10 min"
+          value={sliceStats.longWalks}
+          subtext={hasFilter ? sliceLabel : "Wards with mean ≥ 10 min"}
         />
       </div>
 

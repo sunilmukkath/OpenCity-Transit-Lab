@@ -114,6 +114,7 @@ export function DashboardFilterBar({
   zoneOptions,
   resultCount,
   compact,
+  defaults,
 }: {
   filters: DashboardFilters;
   onChange: (next: DashboardFilters) => void;
@@ -121,12 +122,15 @@ export function DashboardFilterBar({
   zoneOptions: string[];
   resultCount?: number;
   compact?: boolean;
+  /** Base filters for Reset (e.g. { unit: "ward" } on assessments). */
+  defaults?: Partial<DashboardFilters>;
 }) {
   const set = <K extends keyof DashboardFilters>(key: K, value: DashboardFilters[K]) =>
     onChange({ ...filters, [key]: value });
 
   const active = filtersActive(filters);
   const zoneMode = filters.unit === "zone" || Boolean(filters.zone);
+  const resetTo = { ...DEFAULT_FILTERS, ...(defaults ?? {}) };
   const wardOnlyDisabled = zoneMode;
 
   return (
@@ -157,7 +161,7 @@ export function DashboardFilterBar({
           ) : null}
           <button
             type="button"
-            onClick={() => onChange({ ...DEFAULT_FILTERS })}
+            onClick={() => onChange(resetTo)}
             className="rounded-full border border-[var(--border)] px-2.5 py-1 font-semibold text-[var(--ink-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
           >
             Reset

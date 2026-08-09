@@ -469,7 +469,7 @@ export function MapExplorer({
           </div>
         </div>
 
-        <details className="border-t border-[var(--border)] pt-2.5">
+        <details open className="border-t border-[var(--border)] pt-2.5">
           <summary className="cursor-pointer text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-muted)]">
             Layers · {loadedCount} loaded
           </summary>

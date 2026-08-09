@@ -5,7 +5,8 @@ import type { ChoroplethMode, MapLayerKey } from "@/lib/map-layers";
 type Swatch =
   | { kind: "fill"; color: string; label: string }
   | { kind: "line"; color: string; label: string; dashed?: boolean }
-  | { kind: "dot"; color: string; label: string };
+  | { kind: "dot"; color: string; label: string }
+  | { kind: "icon"; glyph: string; color: string; label: string };
 
 function SwatchRow({ item }: { item: Swatch }) {
   return (
@@ -23,6 +24,14 @@ function SwatchRow({ item }: { item: Swatch }) {
             borderStyle: item.dashed ? "dashed" : "solid",
           }}
         />
+      ) : item.kind === "icon" ? (
+        <span
+          className="flex h-3.5 w-3.5 shrink-0 items-center justify-center text-[11px] font-bold leading-none"
+          style={{ color: item.color }}
+          aria-hidden
+        >
+          {item.glyph}
+        </span>
       ) : (
         <span
           className="h-2.5 w-2.5 shrink-0 rounded-full border border-white shadow-sm"
@@ -148,18 +157,19 @@ export function MapLegend({
     points.push({ kind: "fill", color: "rgba(219,39,119,0.35)", label: "South town areas" });
   }
   if (visibility.schools || visibility.healthcare || visibility.facility_pt_walk_links) {
-    sections.push({
-      title: "School / health walk to nearest PT",
-      items: [
-        { kind: "dot", color: "#2dd4bf", label: "≤5 min OSM walk" },
-        { kind: "dot", color: "#eab308", label: "5–10 min" },
-        { kind: "dot", color: "#f97316", label: "10–15 min" },
-        { kind: "dot", color: "#f43f5e", label: ">15 min / unroutable" },
-        ...(visibility.facility_pt_walk_links
-          ? ([{ kind: "line", color: "#eab308", label: "Link → nearest stop" }] as Swatch[])
-          : []),
-      ],
-    });
+    const items: Swatch[] = [];
+    if (visibility.schools) items.push({ kind: "icon", glyph: "📖", color: "#2563eb", label: "School" });
+    if (visibility.healthcare) items.push({ kind: "icon", glyph: "+", color: "#e11d48", label: "Hospital / UPHC" });
+    items.push(
+      { kind: "dot", color: "#2dd4bf", label: "≤5 min OSM walk" },
+      { kind: "dot", color: "#eab308", label: "5–10 min" },
+      { kind: "dot", color: "#f97316", label: "10–15 min" },
+      { kind: "dot", color: "#f43f5e", label: ">15 min / unroutable" }
+    );
+    if (visibility.facility_pt_walk_links) {
+      items.push({ kind: "line", color: "#eab308", label: "Link → nearest stop" });
+    }
+    sections.push({ title: "School / health walk to nearest PT", items });
   }
   if (visibility.parks) points.push({ kind: "dot", color: "#16a34a", label: "Parks" });
   if (visibility.public_toilets) points.push({ kind: "dot", color: "#0d9488", label: "Public toilets" });

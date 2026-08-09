@@ -36,50 +36,62 @@ export function DestinationsPage() {
         </p>
       </header>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <StatusBadge status={block?.status ?? "unavailable"} />
-        {block?.summary ? (
-          <p className="text-sm text-[var(--ink-muted)]">{block.summary}</p>
-        ) : null}
-      </div>
-
-      {metrics.length ? (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {metrics.map(([label, value]) => (
-            <div
-              key={label}
-              className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4"
+      <details className="group rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-3">
+        <summary className="cursor-pointer list-none font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--ink)] [&::-webkit-details-marker]:hidden">
+          <span className="inline-flex items-center gap-2">
+            <span
+              aria-hidden
+              className="text-[var(--ink-muted)] transition-transform group-open:rotate-90"
             >
-              <p className="text-[10px] uppercase text-[var(--ink-muted)]">
-                {label.replaceAll("_", " ")}
-              </p>
-              <p className="mt-1 text-2xl text-[var(--yellow)]">
-                {value != null ? String(value) : "—"}
-              </p>
-            </div>
-          ))}
-        </div>
-      ) : null}
-
-      {block?.chart?.length ? (
-        <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
-          <h2 className="mb-3 font-[family-name:var(--font-display)] text-lg font-semibold">
-            Access share
-          </h2>
-          <DualPctChart items={block.chart} />
-          {block.limitations?.length ? (
-            <ul className="mt-4 list-disc space-y-1 pl-5 text-xs text-[var(--ink-muted)]">
-              {block.limitations.map((l) => (
-                <li key={l}>{l}</li>
-              ))}
-            </ul>
+              ▸
+            </span>
+            Summary
+            <StatusBadge status={block?.status ?? "unavailable"} />
+          </span>
+          {block?.summary ? (
+            <p className="mt-1 pl-5 text-sm font-normal text-[var(--ink-muted)]">{block.summary}</p>
           ) : null}
-        </section>
-      ) : (
-        <p className="text-sm text-[var(--ink-muted)]">
-          Destinations objective not loaded. Run the ETL objectives builder.
-        </p>
-      )}
+        </summary>
+        <div className="mt-4 space-y-4 border-t border-[var(--border)] pt-4">
+          {metrics.length ? (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {metrics.map(([label, value]) => (
+                <div
+                  key={label}
+                  className="rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4"
+                >
+                  <p className="text-[10px] uppercase text-[var(--ink-muted)]">
+                    {label.replaceAll("_", " ")}
+                  </p>
+                  <p className="mt-1 text-2xl text-[var(--yellow)]">
+                    {value != null ? String(value) : "—"}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : null}
+
+          {block?.chart?.length ? (
+            <section>
+              <h2 className="mb-3 font-[family-name:var(--font-display)] text-base font-semibold">
+                Access share
+              </h2>
+              <DualPctChart items={block.chart} />
+              {block.limitations?.length ? (
+                <ul className="mt-4 list-disc space-y-1 pl-5 text-xs text-[var(--ink-muted)]">
+                  {block.limitations.map((l) => (
+                    <li key={l}>{l}</li>
+                  ))}
+                </ul>
+              ) : null}
+            </section>
+          ) : (
+            <p className="text-sm text-[var(--ink-muted)]">
+              Destinations objective not loaded. Run the ETL objectives builder.
+            </p>
+          )}
+        </div>
+      </details>
 
       <section className="space-y-3">
         <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-[var(--ink)]">

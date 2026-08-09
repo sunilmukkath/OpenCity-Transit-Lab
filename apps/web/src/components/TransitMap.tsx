@@ -243,14 +243,161 @@ function wardFillExpression(
   return "#7dd3fc";
 }
 
+const WALK_BAND_ICON_COLORS: Record<string, string> = {
+  within_5min: "#2dd4bf",
+  band_5_10min: "#eab308",
+  band_10_15min: "#f97316",
+  over_15min: "#f43f5e",
+  unroutable: "#94a3b8",
+  school_default: "#2563eb",
+  health_default: "#e11d48",
+};
+
+function drawPlusIcon(color: string, size = 28): ImageData {
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d")!;
+  ctx.clearRect(0, 0, size, size);
+  const mid = size / 2;
+  const arm = size * 0.34;
+  const thick = Math.max(2.5, size * 0.16);
+  // soft halo for contrast on light basemaps
+  ctx.strokeStyle = "rgba(255,255,255,0.95)";
+  ctx.lineWidth = thick + 2.5;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(mid - arm, mid);
+  ctx.lineTo(mid + arm, mid);
+  ctx.moveTo(mid, mid - arm);
+  ctx.lineTo(mid, mid + arm);
+  ctx.stroke();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = thick;
+  ctx.beginPath();
+  ctx.moveTo(mid - arm, mid);
+  ctx.lineTo(mid + arm, mid);
+  ctx.moveTo(mid, mid - arm);
+  ctx.lineTo(mid, mid + arm);
+  ctx.stroke();
+  return ctx.getImageData(0, 0, size, size);
+}
+
+function drawBookIcon(color: string, size = 28): ImageData {
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d")!;
+  ctx.clearRect(0, 0, size, size);
+  const pad = size * 0.18;
+  const mid = size / 2;
+  const top = pad;
+  const bot = size - pad;
+  // white outline
+  ctx.fillStyle = "rgba(255,255,255,0.95)";
+  ctx.beginPath();
+  ctx.moveTo(mid, top + 1);
+  ctx.lineTo(size - pad + 1, top + 3);
+  ctx.lineTo(size - pad + 1, bot);
+  ctx.lineTo(mid, bot - 2);
+  ctx.lineTo(pad - 1, bot);
+  ctx.lineTo(pad - 1, top + 3);
+  ctx.closePath();
+  ctx.fill();
+  // left page
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(mid, top + 2);
+  ctx.lineTo(pad, top + 4);
+  ctx.lineTo(pad, bot - 1);
+  ctx.lineTo(mid, bot - 3);
+  ctx.closePath();
+  ctx.fill();
+  // right page (slightly lighter)
+  ctx.globalAlpha = 0.85;
+  ctx.beginPath();
+  ctx.moveTo(mid, top + 2);
+  ctx.lineTo(size - pad, top + 4);
+  ctx.lineTo(size - pad, bot - 1);
+  ctx.lineTo(mid, bot - 3);
+  ctx.closePath();
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  // spine
+  ctx.strokeStyle = "rgba(255,255,255,0.9)";
+  ctx.lineWidth = Math.max(1.2, size * 0.06);
+  ctx.beginPath();
+  ctx.moveTo(mid, top + 2);
+  ctx.lineTo(mid, bot - 3);
+  ctx.stroke();
+  return ctx.getImageData(0, 0, size, size);
+}
+
+function ensureFacilityIcons(map: MapLibreMap) {
+  if (typeof document === "undefined") return;
+  const bands = [
+    "within_5min",
+    "band_5_10min",
+    "band_10_15min",
+    "over_15min",
+    "unroutable",
+    "school_default",
+    "health_default",
+  ] as const;
+  for (const band of bands) {
+    const color = WALK_BAND_ICON_COLORS[band];
+    const plusId = `tm-icon-plus-${band}`;
+    const bookId = `tm-icon-book-${band}`;
+    if (!map.hasImage(plusId)) {
+      map.addImage(plusId, drawPlusIcon(color), { pixelRatio: 2 });
+    }
+    if (!map.hasImage(bookId)) {
+      map.addImage(bookId, drawBookIcon(color), { pixelRatio: 2 });
+    }
+  }
+}
+
+const SCHOOL_ICON_EXPR = [
+  "match",
+  ["get", "walk_band"],
+  "within_5min",
+  "tm-icon-book-within_5min",
+  "band_5_10min",
+  "tm-icon-book-band_5_10min",
+  "band_10_15min",
+  "tm-icon-book-band_10_15min",
+  "over_15min",
+  "tm-icon-book-over_15min",
+  "unroutable",
+  "tm-icon-book-unroutable",
+  "tm-icon-book-school_default",
+];
+
+const HEALTH_ICON_EXPR = [
+  "match",
+  ["get", "walk_band"],
+  "within_5min",
+  "tm-icon-plus-within_5min",
+  "band_5_10min",
+  "tm-icon-plus-band_5_10min",
+  "band_10_15min",
+  "tm-icon-plus-band_10_15min",
+  "over_15min",
+  "tm-icon-plus-over_15min",
+  "unroutable",
+  "tm-icon-plus-unroutable",
+  "tm-icon-plus-health_default",
+];
+
 /** Layer stack order (bottom → top). */
 const LAYER_STACK: {
   key: MapLayerKey;
   sourceId: string;
   layers: {
     id: string;
-    type: "fill" | "line" | "circle";
-    paint: Record<string, unknown>;
+    type: "fill" | "line" | "circle" | "symbol";
+    paint?: Record<string, unknown>;
+    layout?: Record<string, unknown>;
     filter?: unknown[];
   }[];
 }[] = [
@@ -616,26 +763,16 @@ const LAYER_STACK: {
     sourceId: "tm-schools",
     layers: [
       {
-        id: "tm-schools-circle",
-        type: "circle",
+        id: "tm-schools-symbol",
+        type: "symbol",
+        layout: {
+          "icon-image": SCHOOL_ICON_EXPR,
+          "icon-size": ["interpolate", ["linear"], ["zoom"], 9, 0.45, 12, 0.55, 15, 0.7],
+          "icon-allow-overlap": true,
+          "icon-ignore-placement": true,
+        },
         paint: {
-          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 2, 14, 5],
-          "circle-color": [
-            "match",
-            ["get", "walk_band"],
-            "within_5min",
-            "#2dd4bf",
-            "band_5_10min",
-            "#eab308",
-            "band_10_15min",
-            "#f97316",
-            "over_15min",
-            "#f43f5e",
-            "#2563eb",
-          ],
-          "circle-opacity": 0.9,
-          "circle-stroke-width": 1,
-          "circle-stroke-color": "#ffffff",
+          "icon-opacity": 0.95,
         },
       },
     ],
@@ -645,26 +782,16 @@ const LAYER_STACK: {
     sourceId: "tm-healthcare",
     layers: [
       {
-        id: "tm-healthcare-circle",
-        type: "circle",
+        id: "tm-healthcare-symbol",
+        type: "symbol",
+        layout: {
+          "icon-image": HEALTH_ICON_EXPR,
+          "icon-size": ["interpolate", ["linear"], ["zoom"], 9, 0.5, 12, 0.6, 15, 0.75],
+          "icon-allow-overlap": true,
+          "icon-ignore-placement": true,
+        },
         paint: {
-          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 2.5, 14, 6.5],
-          "circle-color": [
-            "match",
-            ["get", "walk_band"],
-            "within_5min",
-            "#2dd4bf",
-            "band_5_10min",
-            "#eab308",
-            "band_10_15min",
-            "#f97316",
-            "over_15min",
-            "#f43f5e",
-            "#e11d48",
-          ],
-          "circle-opacity": 0.95,
-          "circle-stroke-width": 1.5,
-          "circle-stroke-color": "#ffffff",
+          "icon-opacity": 0.95,
         },
       },
     ],
@@ -752,8 +879,8 @@ const INTERACTIVE_LAYER_IDS = [
   "tm-tngis-habitation-circle",
   "tm-connectivity-need-line",
   "tm-facility-pt-links-line",
-  "tm-schools-circle",
-  "tm-healthcare-circle",
+  "tm-schools-symbol",
+  "tm-healthcare-symbol",
   "tm-parks-circle",
   "tm-toilets-circle",
   "tm-anganwadis-circle",
@@ -807,6 +934,12 @@ export function TransitMap({
   const syncLayers = useCallback((map: MapLibreMap) => {
     if (!map.isStyleLoaded()) return false;
 
+    try {
+      ensureFacilityIcons(map);
+    } catch (err) {
+      console.warn("Failed to register facility icons", err);
+    }
+
     const vis = visibilityRef.current;
     const layerData = dataRef.current;
     const fill = wardFillExpression(
@@ -815,6 +948,11 @@ export function TransitMap({
       gapExtentRef.current,
       walkExtentRef.current
     );
+
+    // Drop legacy circle markers if a prior session added them
+    for (const legacy of ["tm-schools-circle", "tm-healthcare-circle"]) {
+      safeRemoveLayer(map, legacy);
+    }
 
     for (const entry of LAYER_STACK) {
       const show = Boolean(vis[entry.key] && layerData[entry.key]);
@@ -832,10 +970,10 @@ export function TransitMap({
       }
 
       for (const layer of entry.layers) {
-        let paint = layer.paint;
+        let paint = { ...(layer.paint ?? {}) };
         if (layer.id === "tm-wards-fill") {
           paint = {
-            ...layer.paint,
+            ...paint,
             "fill-color": fill,
             // Isochrones may sit under wards; keep choropleth readable
             "fill-opacity": vis.walk_isochrones ? 0.42 : 0.62,
@@ -843,7 +981,7 @@ export function TransitMap({
         }
         if (layer.id === "tm-wards-line") {
           paint = {
-            ...layer.paint,
+            ...paint,
             "line-color": "#f8fafc",
             "line-width": 1.4,
             "line-opacity": 0.95,
@@ -858,6 +996,15 @@ export function TransitMap({
               /* ignore invalid paint updates during style swap */
             }
           }
+          if (layer.layout) {
+            for (const [k, v] of Object.entries(layer.layout)) {
+              try {
+                map.setLayoutProperty(layer.id, k as never, v as never);
+              } catch {
+                /* ignore */
+              }
+            }
+          }
           continue;
         }
 
@@ -866,7 +1013,8 @@ export function TransitMap({
             id: layer.id,
             type: layer.type,
             source: entry.sourceId,
-            paint: paint as never,
+            ...(Object.keys(paint).length ? { paint: paint as never } : {}),
+            ...(layer.layout ? { layout: layer.layout as never } : {}),
             ...(layer.filter ? { filter: layer.filter as never } : {}),
           } as never);
         } catch (err) {

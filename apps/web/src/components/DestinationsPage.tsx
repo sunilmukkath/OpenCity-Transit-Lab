@@ -30,8 +30,9 @@ export function DestinationsPage() {
           Hospitals and schools
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-[var(--ink-muted)]">
-          Destination access relative to the transit inventory — schools and healthcare points
-          from OpenCity, stops from GTFS.
+          Schools and UPHCs coloured by OSM network walk minutes to the nearest GTFS stop or hub
+          (same ≤5 / 5–10 / 10–15 min bands as city isochrones). Crow-flies ≤100 m remains the
+          inventory proximity metric.
         </p>
       </header>
 
@@ -94,7 +95,7 @@ export function DestinationsPage() {
           <MapExplorerClient
             initialPreset="destinations"
             audience="citizen"
-            audienceNote="Schools and healthcare with walk-distance context."
+            audienceNote="Schools and healthcare coloured by OSM walk minutes to nearest PT."
           />
         </Suspense>
       </section>

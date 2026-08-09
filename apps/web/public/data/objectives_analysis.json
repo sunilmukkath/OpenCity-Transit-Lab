@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-08T09:32:09.467867+00:00",
+  "generated_at": "2026-08-09T06:21:26.516623+00:00",
   "note": "Objectives analysis for OpenCity Datajam problem statements. Only objectives with verified data are shown \u2014 empty Unavailable sections are omitted.",
   "objectives": [
     {
@@ -88,71 +88,11 @@
       ],
       "need_lines": {
         "status": "loaded",
-        "urgent": 55,
-        "priority": 29,
+        "urgent": 60,
+        "priority": 54,
         "top_corridors": [
           {
             "rank": 1,
-            "road_name": "Unnamed road",
-            "highway": "tertiary",
-            "need_band": "urgent",
-            "need_score": 45590.1,
-            "unmet_length_m": 28397.3,
-            "pct_outside_400m": 61.9,
-            "in_high_gap_ward": true,
-            "recommendation": "Road segments farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
-            "source_kind": "osm_roads"
-          },
-          {
-            "rank": 2,
-            "road_name": "Inner Ring Road (SH2)",
-            "highway": "primary",
-            "need_band": "urgent",
-            "need_score": 10759.4,
-            "unmet_length_m": 6559.6,
-            "pct_outside_400m": 50.4,
-            "in_high_gap_ward": true,
-            "recommendation": "Road segments farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
-            "source_kind": "osm_roads"
-          },
-          {
-            "rank": 3,
-            "road_name": "Chennai Bypass Expressway",
-            "highway": "trunk",
-            "need_band": "urgent",
-            "need_score": 8770.8,
-            "unmet_length_m": 5373.6,
-            "pct_outside_400m": 46.7,
-            "in_high_gap_ward": true,
-            "recommendation": "Road segments farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
-            "source_kind": "osm_roads"
-          },
-          {
-            "rank": 4,
-            "road_name": "Chennai Bypass",
-            "highway": "trunk",
-            "need_band": "urgent",
-            "need_score": 7166.6,
-            "unmet_length_m": 4776.2,
-            "pct_outside_400m": 71.7,
-            "in_high_gap_ward": true,
-            "recommendation": "Road segments farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
-            "source_kind": "osm_roads"
-          },
-          {
-            "rank": 5,
-            "road_name": "East Coast Road (SH49)",
-            "highway": "primary",
-            "need_band": "urgent",
-            "need_score": 5173.0,
-            "unmet_length_m": 4184.7,
-            "pct_outside_400m": 24.1,
-            "in_high_gap_ward": true,
-            "recommendation": "Partial coverage gaps along this road \u2014 field-check before capital works.",
-            "source_kind": "osm_roads"
-          },
-          {
-            "rank": 6,
             "road_name": "TNHB Main Road",
             "highway": "tertiary",
             "need_band": "urgent",
@@ -160,11 +100,11 @@
             "unmet_length_m": 2554.1,
             "pct_outside_400m": 100.0,
             "in_high_gap_ward": true,
-            "recommendation": "Road segments farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
+            "recommendation": "Road segment farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
             "source_kind": "osm_roads"
           },
           {
-            "rank": 7,
+            "rank": 2,
             "road_name": "Sadayankuppam Road (O7189)",
             "highway": "tertiary",
             "need_band": "urgent",
@@ -172,11 +112,11 @@
             "unmet_length_m": 2544.7,
             "pct_outside_400m": 84.2,
             "in_high_gap_ward": true,
-            "recommendation": "Road segments farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
+            "recommendation": "Road segment farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
             "source_kind": "osm_roads"
           },
           {
-            "rank": 8,
+            "rank": 3,
             "road_name": "Perungudi Station Road",
             "highway": "tertiary",
             "need_band": "urgent",
@@ -184,23 +124,23 @@
             "unmet_length_m": 2829.0,
             "pct_outside_400m": 100.0,
             "in_high_gap_ward": false,
-            "recommendation": "Road segments farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
+            "recommendation": "Road segment farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
             "source_kind": "osm_roads"
           },
           {
-            "rank": 9,
-            "road_name": "Constable Road",
+            "rank": 4,
+            "road_name": "Unnamed tertiary (OSM 98358087)",
             "highway": "tertiary",
             "need_band": "urgent",
-            "need_score": 2965.0,
-            "unmet_length_m": 2111.3,
-            "pct_outside_400m": 79.3,
-            "in_high_gap_ward": false,
-            "recommendation": "Road segments farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
+            "need_score": 4070.2,
+            "unmet_length_m": 2010.0,
+            "pct_outside_400m": 100.0,
+            "in_high_gap_ward": true,
+            "recommendation": "Road segment farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
             "source_kind": "osm_roads"
           },
           {
-            "rank": 10,
+            "rank": 5,
             "road_name": "Gandhi Main Road",
             "highway": "tertiary",
             "need_band": "urgent",
@@ -208,7 +148,67 @@
             "unmet_length_m": 1598.0,
             "pct_outside_400m": 73.7,
             "in_high_gap_ward": true,
-            "recommendation": "Road segments farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
+            "recommendation": "Road segment farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
+            "source_kind": "osm_roads"
+          },
+          {
+            "rank": 6,
+            "road_name": "Kanniyampettai - Vichoor Road (O614)",
+            "highway": "tertiary",
+            "need_band": "urgent",
+            "need_score": 2779.6,
+            "unmet_length_m": 1480.7,
+            "pct_outside_400m": 78.1,
+            "in_high_gap_ward": true,
+            "recommendation": "Road segment farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
+            "source_kind": "osm_roads"
+          },
+          {
+            "rank": 7,
+            "road_name": "Madha Nagar Main Road",
+            "highway": "tertiary",
+            "need_band": "urgent",
+            "need_score": 2539.5,
+            "unmet_length_m": 1325.1,
+            "pct_outside_400m": 83.9,
+            "in_high_gap_ward": true,
+            "recommendation": "Road segment farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
+            "source_kind": "osm_roads"
+          },
+          {
+            "rank": 8,
+            "road_name": "Unnamed tertiary (OSM 28121507)",
+            "highway": "tertiary",
+            "need_band": "urgent",
+            "need_score": 2277.5,
+            "unmet_length_m": 1124.7,
+            "pct_outside_400m": 100.0,
+            "in_high_gap_ward": true,
+            "recommendation": "Road segment farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
+            "source_kind": "osm_roads"
+          },
+          {
+            "rank": 9,
+            "road_name": "Unnamed tertiary (OSM 837007476)",
+            "highway": "tertiary",
+            "need_band": "urgent",
+            "need_score": 2011.6,
+            "unmet_length_m": 1341.0,
+            "pct_outside_400m": 100.0,
+            "in_high_gap_ward": false,
+            "recommendation": "Road segment farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
+            "source_kind": "osm_roads"
+          },
+          {
+            "rank": 10,
+            "road_name": "Loco Works Road",
+            "highway": "tertiary",
+            "need_band": "urgent",
+            "need_score": 1922.9,
+            "unmet_length_m": 1281.9,
+            "pct_outside_400m": 100.0,
+            "in_high_gap_ward": false,
+            "recommendation": "Road segment farther than 400m from a GTFS stop \u2014 mid-block stops or a short feeder may help. Field-verify boarding demand.",
             "source_kind": "osm_roads"
           }
         ]
@@ -1095,7 +1095,7 @@
     {
       "id": "destinations_access",
       "title": "PT access to schools and healthcare",
-      "status": "loaded",
+      "status": "partial",
       "schools": {
         "status": "loaded",
         "destination": "schools",
@@ -1111,7 +1111,24 @@
         "over_1000m": 1775,
         "pct_within_1000m": 94.7,
         "pct_over_1000m": 79.7,
-        "note": "Crow-flies: share of schools within 100m of a GTFS stop (primary), with 500m as secondary context. Not street-network walk."
+        "note": "Crow-flies: share of schools within 100m of a GTFS stop (primary), with 500m as secondary context. Not street-network walk.",
+        "network_walk": {
+          "status": "partial",
+          "total": 2227,
+          "band_counts": {
+            "within_5min": 1639,
+            "band_5_10min": 538,
+            "band_10_15min": 41,
+            "over_15min": 9,
+            "unroutable": 0
+          },
+          "pct_within_5min": 73.6,
+          "pct_within_10min": 97.8,
+          "pct_within_15min": 99.6,
+          "mean_walk_min": 3.72,
+          "median_walk_min": 3.31,
+          "note": "OSM network walk minutes from each school / UPHC to the nearest GTFS stop or MRTS/metro hub at 80 m/min (4.8 km/h). Point colours use the same \u22645 / 5\u201310 / 10\u201315 / >15 min bands as city walk isochrones. Link lines are crow-flies to the nearest access point for display only \u2014 minutes are network. Partial (OSM)."
+        }
       },
       "healthcare": {
         "status": "loaded",
@@ -1128,7 +1145,24 @@
         "over_1000m": 95,
         "pct_within_1000m": 97.1,
         "pct_over_1000m": 67.9,
-        "note": "Crow-flies: share of healthcare within 100m of a GTFS stop (primary), with 500m as secondary context. Not street-network walk."
+        "note": "Crow-flies: share of healthcare within 100m of a GTFS stop (primary), with 500m as secondary context. Not street-network walk.",
+        "network_walk": {
+          "status": "partial",
+          "total": 140,
+          "band_counts": {
+            "within_5min": 122,
+            "band_5_10min": 18,
+            "band_10_15min": 0,
+            "over_15min": 0,
+            "unroutable": 0
+          },
+          "pct_within_5min": 87.1,
+          "pct_within_10min": 100.0,
+          "pct_within_15min": 100.0,
+          "mean_walk_min": 2.71,
+          "median_walk_min": 2.46,
+          "note": "OSM network walk minutes from each school / UPHC to the nearest GTFS stop or MRTS/metro hub at 80 m/min (4.8 km/h). Point colours use the same \u22645 / 5\u201310 / 10\u201315 / >15 min bands as city walk isochrones. Link lines are crow-flies to the nearest access point for display only \u2014 minutes are network. Partial (OSM)."
+        }
       },
       "chart": [
         {
@@ -1136,6 +1170,9 @@
           "pct_within_100m": 20.3,
           "pct_within_500m": 94.7,
           "pct_over_100m": 79.7,
+          "pct_within_5min_walk": 73.6,
+          "pct_within_15min_walk": 99.6,
+          "mean_walk_min": 3.72,
           "total": 2227,
           "within_100m": 452,
           "over_100m": 1775
@@ -1145,23 +1182,28 @@
           "pct_within_100m": 32.1,
           "pct_within_500m": 97.1,
           "pct_over_100m": 67.9,
+          "pct_within_5min_walk": 87.1,
+          "pct_within_15min_walk": 100.0,
+          "mean_walk_min": 2.71,
           "total": 140,
           "within_100m": 45,
           "over_100m": 95
         }
       ],
       "limitations": [
-        "Primary access standard: 100m crow-flies to a GTFS stop.",
-        "OpenCity school/health points \u2014 public vs private not always tagged; treated as facility inventory.",
-        "Not street-network walk time."
+        "Crow-flies 100m remains the inventory proximity standard.",
+        "OSM network walk minutes (80 m/min) to nearest GTFS stop/hub are Partial \u2014 map point colours.",
+        "OpenCity school/health points \u2014 public vs private not always tagged; treated as facility inventory."
       ],
       "metrics": {
         "schools_pct_within_100m": 20.3,
-        "schools_over_100m": 1775,
+        "schools_pct_within_5min_walk": 73.6,
+        "schools_mean_walk_min": 3.72,
         "healthcare_pct_within_100m": 32.1,
-        "healthcare_over_100m": 95
+        "healthcare_pct_within_5min_walk": 87.1,
+        "healthcare_mean_walk_min": 2.71
       },
-      "summary": "Share of school and healthcare points within 100m crow-flies of a GTFS stop (primary standard for facility access). 500m shown as secondary context."
+      "summary": "Crow-flies \u2264100m of a GTFS stop (inventory) plus OSM network walk minutes to the nearest stop/hub (\u22645 / 5\u201310 / 10\u201315 min bands on the map). Network walk is Partial."
     },
     {
       "id": "congestion_pt",
@@ -1359,13 +1401,6 @@
       "title": "High economic activity wards with weak PT index",
       "detail": "20 wards show elevated Economic Census establishments/workers but PT index <45. Prioritise feeder / stop densification where jobs cluster.",
       "map_href": "/objectives#equal_access"
-    },
-    {
-      "priority": "medium",
-      "objective": "destinations_access",
-      "title": "Bring stops within 100m of schools and clinics still outside range",
-      "detail": "79.7% of mapped schools (1775 sites) and 67.9% of healthcare points (95 sites) sit >100m crow-flies from a GTFS stop. Use Destinations preset on the map.",
-      "map_href": "/map"
     },
     {
       "priority": "medium",

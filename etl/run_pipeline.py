@@ -38,6 +38,7 @@ from build_ward_walk_access import main as build_ward_walk_access_main  # noqa: 
 from gap_index import build_gap_index  # noqa: E402
 from build_walk_isochrones import main as build_walk_isochrones_main  # noqa: E402
 from build_bus_routes import main as build_bus_routes_main  # noqa: E402
+from build_facility_walk_to_pt import main as build_facility_walk_to_pt_main  # noqa: E402
 
 RAW = ROOT / "data" / "raw"
 PROCESSED = ROOT / "data" / "processed"
@@ -1809,6 +1810,13 @@ def main() -> int:
         ingest_downloads_main()
     except Exception as exc:  # noqa: BLE001
         print(f"[fail] downloads ingest: {exc}", file=sys.stderr)
+
+    # School / healthcare OSM walk minutes to nearest PT (before objectives)
+    try:
+        build_facility_walk_to_pt_main()
+        print("[ok] facility_walk_to_pt")
+    except Exception as exc:  # noqa: BLE001
+        print(f"[fail] facility_walk_to_pt: {exc}", file=sys.stderr)
 
     # Datajam problem-statement objectives + recommendations JSON
     try:

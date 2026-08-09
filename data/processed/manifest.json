@@ -1048,18 +1048,32 @@
       "derived_from": "jam_chennai-public-toilets"
     },
     "schools": {
-      "status": "loaded",
+      "status": "partial",
       "file": "schools.geojson",
       "feature_count": 2227,
-      "notes": "schools and colleges",
-      "derived_from": "jam_chennai-schools"
+      "notes": "OSM network walk minutes from each school / UPHC to the nearest GTFS stop or MRTS/metro hub at 80 m/min (4.8 km/h). Point colours use the same \u22645 / 5\u201310 / 10\u201315 / >15 min bands as city walk isochrones. Link lines are crow-flies to the nearest access point for display only \u2014 minutes are network. Partial (OSM).",
+      "derived_from": "jam_chennai-schools",
+      "walk_band_counts": {
+        "within_5min": 1639,
+        "band_5_10min": 538,
+        "band_10_15min": 41,
+        "over_15min": 9,
+        "unroutable": 0
+      }
     },
     "healthcare": {
-      "status": "loaded",
+      "status": "partial",
       "file": "healthcare.geojson",
       "feature_count": 140,
-      "notes": "Healthcare facilities",
-      "derived_from": "jam_chennai-healthcare-uphcs-and-uchcs"
+      "notes": "OSM network walk minutes from each school / UPHC to the nearest GTFS stop or MRTS/metro hub at 80 m/min (4.8 km/h). Point colours use the same \u22645 / 5\u201310 / 10\u201315 / >15 min bands as city walk isochrones. Link lines are crow-flies to the nearest access point for display only \u2014 minutes are network. Partial (OSM).",
+      "derived_from": "jam_chennai-healthcare-uphcs-and-uchcs",
+      "walk_band_counts": {
+        "within_5min": 122,
+        "band_5_10min": 18,
+        "band_10_15min": 0,
+        "over_15min": 0,
+        "unroutable": 0
+      }
     },
     "anganwadis": {
       "status": "loaded",
@@ -1216,6 +1230,12 @@
       "derived_from": "chennai_gtfs_unified",
       "notes": "MTC bus routes from unofficial Chennai GTFS (UngalSoththu). One LineString per route_id \u00d7 direction from the trip with the most mapped stops. Straight stop-to-stop chords \u2014 not road-matched. shapes.txt has no usable bus geometry.",
       "limitation": "Crow-flies between consecutive stops; not official MTC path geometry."
+    },
+    "facility_pt_walk_links": {
+      "status": "partial",
+      "feature_count": 728,
+      "file": "facility_pt_walk_links.geojson",
+      "notes": "Crow-flies links from schools/healthcare to nearest PT access point. walk_min_to_pt is OSM network minutes (Partial)."
     }
   },
   "realtime": [

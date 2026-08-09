@@ -15,6 +15,7 @@ export type MapLayerKey =
   | "metro_area_boundaries"
   | "schools"
   | "healthcare"
+  | "facility_pt_walk_links"
   | "parks"
   | "public_toilets"
   | "anganwadis"
@@ -83,16 +84,24 @@ export const MAP_LAYER_META: {
   },
   {
     key: "schools",
-    label: "Schools (OpenCity)",
+    label: "Schools (OpenCity · walk-to-PT colour)",
     short: "Schools",
     defaultOn: false,
     group: "amenities",
   },
   {
     key: "healthcare",
-    label: "UPHC / UCHC healthcare",
+    label: "UPHC / UCHC healthcare (walk-to-PT colour)",
     short: "Health",
     defaultOn: false,
+    group: "amenities",
+  },
+  {
+    key: "facility_pt_walk_links",
+    label: "School / health → nearest PT (walk band links)",
+    short: "Facility→PT",
+    defaultOn: false,
+    heavy: true,
     group: "amenities",
   },
   { key: "parks", label: "Parks", short: "Parks", defaultOn: false, group: "amenities" },
@@ -175,6 +184,7 @@ export function defaultVisibility(): Record<MapLayerKey, boolean> {
 const CORE_OFF_AMENITIES: Partial<Record<MapLayerKey, boolean>> = {
   schools: false,
   healthcare: false,
+  facility_pt_walk_links: false,
   parks: false,
   public_toilets: false,
   anganwadis: false,
@@ -231,6 +241,7 @@ export const LAYER_PRESETS: Record<
       metro_area_boundaries: true,
       schools: true,
       healthcare: true,
+      facility_pt_walk_links: true,
       parks: false,
       public_toilets: false,
       anganwadis: false,

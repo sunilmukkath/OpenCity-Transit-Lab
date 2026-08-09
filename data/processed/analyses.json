@@ -12699,7 +12699,7 @@
   "objectives": {
     "status": "loaded",
     "file": "objectives_analysis.json",
-    "generated_at": "2026-08-08T09:32:09.467867+00:00"
+    "generated_at": "2026-08-09T06:21:26.516623+00:00"
   },
   "economic_census": {
     "status": "loaded",
@@ -14902,5 +14902,47 @@
       "study_area_km2": 1564.12
     },
     "file": "walk_isochrones.geojson"
+  },
+  "facility_walk_to_pt": {
+    "status": "partial",
+    "note": "OSM network walk minutes from each school / UPHC to the nearest GTFS stop or MRTS/metro hub at 80 m/min (4.8 km/h). Point colours use the same \u22645 / 5\u201310 / 10\u201315 / >15 min bands as city walk isochrones. Link lines are crow-flies to the nearest access point for display only \u2014 minutes are network. Partial (OSM).",
+    "walk_speed_m_per_min": 80.0,
+    "access_points": {
+      "stops": 5580,
+      "hubs": 143,
+      "mrts_stations": 118,
+      "unique_access_points": 5685
+    },
+    "pt_source_nodes": 3725,
+    "schools": {
+      "total": 2227,
+      "band_counts": {
+        "within_5min": 1639,
+        "band_5_10min": 538,
+        "band_10_15min": 41,
+        "over_15min": 9,
+        "unroutable": 0
+      },
+      "pct_within_5min": 73.6,
+      "pct_within_10min": 97.8,
+      "pct_within_15min": 99.6,
+      "mean_walk_min": 3.72,
+      "median_walk_min": 3.31
+    },
+    "healthcare": {
+      "total": 140,
+      "band_counts": {
+        "within_5min": 122,
+        "band_5_10min": 18,
+        "band_10_15min": 0,
+        "over_15min": 0,
+        "unroutable": 0
+      },
+      "pct_within_5min": 87.1,
+      "pct_within_10min": 100.0,
+      "pct_within_15min": 100.0,
+      "mean_walk_min": 2.71,
+      "median_walk_min": 2.46
+    }
   }
 }

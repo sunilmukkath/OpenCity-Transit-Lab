@@ -147,8 +147,20 @@ export function MapLegend({
   if (visibility.metro_area_boundaries) {
     points.push({ kind: "fill", color: "rgba(219,39,119,0.35)", label: "South town areas" });
   }
-  if (visibility.schools) points.push({ kind: "dot", color: "#2563eb", label: "Schools" });
-  if (visibility.healthcare) points.push({ kind: "dot", color: "#e11d48", label: "Healthcare" });
+  if (visibility.schools || visibility.healthcare || visibility.facility_pt_walk_links) {
+    sections.push({
+      title: "School / health walk to nearest PT",
+      items: [
+        { kind: "dot", color: "#2dd4bf", label: "≤5 min OSM walk" },
+        { kind: "dot", color: "#eab308", label: "5–10 min" },
+        { kind: "dot", color: "#f97316", label: "10–15 min" },
+        { kind: "dot", color: "#f43f5e", label: ">15 min / unroutable" },
+        ...(visibility.facility_pt_walk_links
+          ? ([{ kind: "line", color: "#eab308", label: "Link → nearest stop" }] as Swatch[])
+          : []),
+      ],
+    });
+  }
   if (visibility.parks) points.push({ kind: "dot", color: "#16a34a", label: "Parks" });
   if (visibility.public_toilets) points.push({ kind: "dot", color: "#0d9488", label: "Public toilets" });
   if (visibility.anganwadis) points.push({ kind: "dot", color: "#c026d3", label: "Anganwadis" });

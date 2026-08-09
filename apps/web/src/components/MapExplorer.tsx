@@ -378,6 +378,7 @@ export function MapExplorer({
               [
                 ["connectivity_need", "Need lines"],
                 ["bus_routes", "Bus routes"],
+                ["facility_pt_walk_links", "Facility→PT"],
                 ["nmt_network", "NMT paths"],
                 ["tngis_settlement_area", "Settlements"],
                 ["tngis_habitation", "Habitation"],

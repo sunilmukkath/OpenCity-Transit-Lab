@@ -333,6 +333,7 @@ def build_objectives_analysis() -> dict[str, Any]:
     }
 
     # 5. Schools & healthcare access
+    fac_walk = analyses.get("facility_walk_to_pt") or {}
     dest: dict[str, Any] = {
         "id": "destinations_access",
         "title": "PT access to schools and healthcare",
@@ -341,27 +342,71 @@ def build_objectives_analysis() -> dict[str, Any]:
         "healthcare": None,
         "chart": [],
         "limitations": [
-            "Primary access standard: 100m crow-flies to a GTFS stop.",
+            "Crow-flies 100m remains the inventory proximity standard.",
+            "OSM network walk minutes (80 m/min) to nearest GTFS stop/hub are Partial — map point colours.",
             "OpenCity school/health points — public vs private not always tagged; treated as facility inventory.",
-            "Not street-network walk time.",
         ],
     }
     if stops is not None and schools is not None:
         dest["schools"] = destination_access(schools, stops, "schools")
     if stops is not None and healthcare is not None:
         dest["healthcare"] = destination_access(healthcare, stops, "healthcare")
+
+    def _attach_network(block: dict[str, Any] | None, key: str) -> None:
+        if not block:
+            return
+        net = fac_walk.get(key) if isinstance(fac_walk, dict) else None
+        if not net:
+            # Fall back to properties on the facility GeoJSON if ETL already enriched it
+            gdf = schools if key == "schools" else healthcare
+            if gdf is not None and "walk_band" in gdf.columns:
+                bands = gdf["walk_band"].fillna("unroutable").value_counts().to_dict()
+                n = len(gdf)
+                w5 = int(bands.get("within_5min", 0))
+                w10 = w5 + int(bands.get("band_5_10min", 0))
+                w15 = w10 + int(bands.get("band_10_15min", 0))
+                mins = pd.to_numeric(gdf.get("walk_min_to_pt"), errors="coerce")
+                net = {
+                    "total": n,
+                    "band_counts": {str(k): int(v) for k, v in bands.items()},
+                    "pct_within_5min": round(100 * w5 / n, 1) if n else None,
+                    "pct_within_10min": round(100 * w10 / n, 1) if n else None,
+                    "pct_within_15min": round(100 * w15 / n, 1) if n else None,
+                    "mean_walk_min": round(float(mins.mean()), 2) if mins.notna().any() else None,
+                    "median_walk_min": round(float(mins.median()), 2)
+                    if mins.notna().any()
+                    else None,
+                }
+        if net:
+            block["network_walk"] = {
+                "status": "partial",
+                **net,
+                "note": fac_walk.get("note")
+                if isinstance(fac_walk, dict)
+                else "OSM network walk to nearest PT (Partial).",
+            }
+
+    _attach_network(dest.get("schools"), "schools")
+    _attach_network(dest.get("healthcare"), "healthcare")
+
     if dest["schools"] or dest["healthcare"]:
-        dest["status"] = "loaded"
+        dest["status"] = "partial" if fac_walk.get("status") == "partial" or any(
+            (dest.get(k) or {}).get("network_walk") for k in ("schools", "healthcare")
+        ) else "loaded"
         chart = []
         for block in (dest["schools"], dest["healthcare"]):
             if not block:
                 continue
+            net = block.get("network_walk") or {}
             chart.append(
                 {
                     "destination": block["destination"],
                     "pct_within_100m": block.get("pct_within_100m"),
                     "pct_within_500m": block.get("pct_within_500m"),
                     "pct_over_100m": block.get("pct_over_100m"),
+                    "pct_within_5min_walk": net.get("pct_within_5min"),
+                    "pct_within_15min_walk": net.get("pct_within_15min"),
+                    "mean_walk_min": net.get("mean_walk_min"),
                     "total": block.get("total"),
                     "within_100m": block.get("within_100m"),
                     "over_100m": block.get("over_100m"),
@@ -370,13 +415,23 @@ def build_objectives_analysis() -> dict[str, Any]:
         dest["chart"] = chart
         dest["metrics"] = {
             "schools_pct_within_100m": (dest.get("schools") or {}).get("pct_within_100m"),
-            "schools_over_100m": (dest.get("schools") or {}).get("over_100m"),
+            "schools_pct_within_5min_walk": ((dest.get("schools") or {}).get("network_walk") or {}).get(
+                "pct_within_5min"
+            ),
+            "schools_mean_walk_min": ((dest.get("schools") or {}).get("network_walk") or {}).get(
+                "mean_walk_min"
+            ),
             "healthcare_pct_within_100m": (dest.get("healthcare") or {}).get("pct_within_100m"),
-            "healthcare_over_100m": (dest.get("healthcare") or {}).get("over_100m"),
+            "healthcare_pct_within_5min_walk": (
+                (dest.get("healthcare") or {}).get("network_walk") or {}
+            ).get("pct_within_5min"),
+            "healthcare_mean_walk_min": (
+                (dest.get("healthcare") or {}).get("network_walk") or {}
+            ).get("mean_walk_min"),
         }
         dest["summary"] = (
-            "Share of school and healthcare points within 100m crow-flies of a GTFS stop "
-            "(primary standard for facility access). 500m shown as secondary context."
+            "Crow-flies ≤100m of a GTFS stop (inventory) plus OSM network walk minutes to the "
+            "nearest stop/hub (≤5 / 5–10 / 10–15 min bands on the map). Network walk is Partial."
         )
 
     # 6. Congestion / mobility plan (from CMP PDF when available)

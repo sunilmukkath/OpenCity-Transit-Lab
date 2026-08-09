@@ -100,6 +100,11 @@ function formatPopupProps(props: Record<string, unknown>): string {
     "route_long_name",
     "direction_id",
     "geometry_note",
+    "walk_min_to_pt",
+    "walk_band",
+    "walk_network_m",
+    "facility_layer",
+    "facility_name",
     "highway",
     "label",
     "habitation_name",
@@ -580,6 +585,33 @@ const LAYER_STACK: {
     ],
   },
   {
+    key: "facility_pt_walk_links",
+    sourceId: "tm-facility-pt-links",
+    layers: [
+      {
+        id: "tm-facility-pt-links-line",
+        type: "line",
+        paint: {
+          "line-color": [
+            "match",
+            ["get", "walk_band"],
+            "within_5min",
+            "#2dd4bf",
+            "band_5_10min",
+            "#eab308",
+            "band_10_15min",
+            "#f97316",
+            "over_15min",
+            "#f43f5e",
+            "#94a3b8",
+          ],
+          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 0.6, 14, 1.6],
+          "line-opacity": 0.55,
+        },
+      },
+    ],
+  },
+  {
     key: "schools",
     sourceId: "tm-schools",
     layers: [
@@ -588,8 +620,20 @@ const LAYER_STACK: {
         type: "circle",
         paint: {
           "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 2, 14, 5],
-          "circle-color": "#2563eb",
-          "circle-opacity": 0.85,
+          "circle-color": [
+            "match",
+            ["get", "walk_band"],
+            "within_5min",
+            "#2dd4bf",
+            "band_5_10min",
+            "#eab308",
+            "band_10_15min",
+            "#f97316",
+            "over_15min",
+            "#f43f5e",
+            "#2563eb",
+          ],
+          "circle-opacity": 0.9,
           "circle-stroke-width": 1,
           "circle-stroke-color": "#ffffff",
         },
@@ -604,10 +648,22 @@ const LAYER_STACK: {
         id: "tm-healthcare-circle",
         type: "circle",
         paint: {
-          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 2.5, 14, 6],
-          "circle-color": "#e11d48",
-          "circle-opacity": 0.9,
-          "circle-stroke-width": 1,
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 2.5, 14, 6.5],
+          "circle-color": [
+            "match",
+            ["get", "walk_band"],
+            "within_5min",
+            "#2dd4bf",
+            "band_5_10min",
+            "#eab308",
+            "band_10_15min",
+            "#f97316",
+            "over_15min",
+            "#f43f5e",
+            "#e11d48",
+          ],
+          "circle-opacity": 0.95,
+          "circle-stroke-width": 1.5,
           "circle-stroke-color": "#ffffff",
         },
       },
@@ -695,6 +751,7 @@ const INTERACTIVE_LAYER_IDS = [
   "tm-railway-circle",
   "tm-tngis-habitation-circle",
   "tm-connectivity-need-line",
+  "tm-facility-pt-links-line",
   "tm-schools-circle",
   "tm-healthcare-circle",
   "tm-parks-circle",
@@ -927,6 +984,7 @@ export function TransitMap({
           props.label ||
           props.road_name ||
           props.route_short_name ||
+          props.facility_name ||
           props.stop_name ||
           props.hub_name ||
           props.station_name ||

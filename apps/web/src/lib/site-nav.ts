@@ -39,7 +39,7 @@ export const SITE_PAGES = [
     label: "Infrastructure",
     nav: true,
     title: "Stops vs shelters",
-    blurb: "Where stops exist without weather protection.",
+    blurb: "Where stops exist without weather protection — and how the gap score works.",
   },
 ] as const;
 

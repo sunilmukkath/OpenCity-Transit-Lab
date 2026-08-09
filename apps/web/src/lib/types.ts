@@ -209,6 +209,7 @@ export interface AdvancedAnalyses {
   shelter_mismatch: {
     status: string;
     note?: string;
+    method?: Record<string, unknown>;
     wards: ShelterMismatchRow[];
     zones: ShelterMismatchRow[];
     priority_wards: ShelterMismatchRow[];

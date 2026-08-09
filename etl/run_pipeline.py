@@ -1052,9 +1052,25 @@ def build_shelter_mismatch(
     return {
         "status": "loaded" if ward_rows or zone_rows else "unavailable",
         "note": (
-            "Shelter mismatch ranks units where GTFS stops exist but mapped shelters are scarce. "
-            "Shelter layer is presence-only — confirm with field audit."
+            "Shelter gap score ranks wards/zones where GTFS stops exist but mapped shelters "
+            "are scarce. Higher score = worse weather-protection gap. Shelter layer is "
+            "presence-only — confirm with field audit."
         ),
+        "method": {
+            "score_name": "Shelter gap (0–100, higher = worse)",
+            "ratio": "shelter_count ÷ stop_count",
+            "bands": {
+                "zero_shelters": "55 + min(stops, 40)",
+                "ratio_lt_0.08": 70,
+                "ratio_lt_0.15": 55,
+                "ratio_lt_0.25": 40,
+                "ratio_lt_0.40": 25,
+                "ratio_gte_0.40": "omitted — not treated as a mismatch",
+            },
+            "disclaimer": (
+                "Inventory presence only. Not boarding demand, ridership, or the ward Gap Index."
+            ),
+        },
         "wards": ward_rows,
         "zones": zone_rows,
         "priority_wards": ward_rows[:25],

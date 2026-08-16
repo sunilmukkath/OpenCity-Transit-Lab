@@ -1,0 +1,64 @@
+{
+  "status": "partial",
+  "generated_at": "2026-08-16T15:51:07.313777+00:00",
+  "note": "OSM network walk catchment comparison: existing GTFS/hubs vs existing + approximate CMRL Phase II Corridor 5 (Red Line) stations. Station coordinates are curated approximations \u2014 not official CMRL CAD. Partial.",
+  "walk_speed_m_per_min": 80.0,
+  "study": {
+    "components": [
+      {
+        "id": "gcc_wards",
+        "features": 200
+      },
+      {
+        "id": "omr_corridor_buffer_m",
+        "buffer_m": 2500,
+        "features": 1
+      },
+      {
+        "id": "metro_area_boundaries",
+        "features": 3
+      },
+      {
+        "id": "corridor_aois",
+        "features": 3
+      }
+    ],
+    "study_area_km2": 1564.12
+  },
+  "access_points_existing": {
+    "stops": 5580,
+    "hubs": 143,
+    "mrts_stations": 118,
+    "unique_access_points": 5685
+  },
+  "proposed_stations": 45,
+  "proposed_graph_nodes": 45,
+  "scenarios": {
+    "existing": {
+      "band_km2": {
+        "within_5min_km2": 275.08,
+        "within_10min_km2": 423.69,
+        "within_15min_km2": 473.37
+      },
+      "pct_within_5min": 17.6,
+      "pct_within_10min": 27.1,
+      "pct_within_15min": 30.3
+    },
+    "existing_plus_c5": {
+      "band_km2": {
+        "within_5min_km2": 278.64,
+        "within_10min_km2": 425.64,
+        "within_15min_km2": 473.96
+      },
+      "pct_within_5min": 17.8,
+      "pct_within_10min": 27.2,
+      "pct_within_15min": 30.3
+    }
+  },
+  "crow_flies_400m_km2": {
+    "existing_400m_km2": 509.7,
+    "existing_plus_c5_400m_km2": 515.26
+  },
+  "delta_pct_within_5min": 0.2,
+  "limitation": "Proposed stations approximate; OSM walk graph Partial; not population-weighted; not official ridership or opening-year forecast."
+}

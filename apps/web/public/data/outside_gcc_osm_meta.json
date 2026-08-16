@@ -1,0 +1,24 @@
+{
+  "status": "partial",
+  "generated_at": "2026-08-16T15:52:02.891481+00:00",
+  "note": "OSM trunk/primary/secondary/tertiary road segments outside GCC 2022 ward polygons (OMR / south-corridor study bbox). Unmet = farther than 400m from a GTFS stop. Partial \u2014 OSM completeness; not ridership.",
+  "bbox": [
+    12.7,
+    79.95,
+    13.28,
+    80.35
+  ],
+  "counts": {
+    "outside_gcc_segments_scored": 150,
+    "outside_gcc_road_km": 2685.4,
+    "top_unmet_km_shown": 470.4,
+    "by_highway": {
+      "tertiary": 120,
+      "primary": 16,
+      "secondary": 12,
+      "trunk": 2
+    }
+  },
+  "file": "outside_gcc_roads.geojson",
+  "limitation": "Crow-flies 400m stop buffer; OSM Partial; GCC clip uses 2022 wards only."
+}

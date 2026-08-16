@@ -39,6 +39,10 @@ from gap_index import build_gap_index  # noqa: E402
 from build_walk_isochrones import main as build_walk_isochrones_main  # noqa: E402
 from build_bus_routes import main as build_bus_routes_main  # noqa: E402
 from build_facility_walk_to_pt import main as build_facility_walk_to_pt_main  # noqa: E402
+from build_cmrl_phase2 import main as build_cmrl_phase2_main  # noqa: E402
+from build_outside_gcc_osm import main as build_outside_gcc_osm_main  # noqa: E402
+from build_coverage_assessment import main as build_coverage_assessment_main  # noqa: E402
+from ingest_tngis_wfs import main as ingest_tngis_wfs_main  # noqa: E402
 
 RAW = ROOT / "data" / "raw"
 PROCESSED = ROOT / "data" / "processed"
@@ -1872,6 +1876,17 @@ def main() -> int:
         print("[ok] walk_isochrones")
     except Exception as exc:  # noqa: BLE001
         print(f"[fail] walk_isochrones: {exc}", file=sys.stderr)
+
+    for label, fn in (
+        ("cmrl_phase2", build_cmrl_phase2_main),
+        ("outside_gcc_osm", build_outside_gcc_osm_main),
+        ("coverage_assessment", build_coverage_assessment_main),
+    ):
+        try:
+            fn()
+            print(f"[ok] {label}")
+        except Exception as exc:  # noqa: BLE001
+            print(f"[fail] {label}: {exc}", file=sys.stderr)
 
     copy_to_web(PROCESSED, WEB_PUBLIC)
     print(f"[ok] copied processed data → {WEB_PUBLIC}")

@@ -832,6 +832,31 @@
         80.4,
         13.3
       ]
+    },
+    "cmrl_phase2_c5": {
+      "id": "cmrl_phase2_c5",
+      "name": "CMRL Phase II Corridor 5 (Red Line) \u2014 curated stations",
+      "publisher": "Curated from public CMRL / Wikipedia station lists",
+      "url": "https://chennaimetrorail.org/project-status/",
+      "portal": "https://chennaimetrorail.org/project-status/",
+      "kind": "curated_partial",
+      "status": "partial",
+      "notes": "OSM network walk catchment comparison: existing GTFS/hubs vs existing + approximate CMRL Phase II Corridor 5 (Red Line) stations. Station coordinates are curated approximations \u2014 not official CMRL CAD. Partial."
+    },
+    "osm_outside_gcc": {
+      "id": "osm_outside_gcc",
+      "name": "OSM major roads outside GCC",
+      "publisher": "OpenStreetMap contributors",
+      "url": "https://www.openstreetmap.org/copyright",
+      "kind": "overpass",
+      "status": "partial",
+      "notes": "OSM trunk/primary/secondary/tertiary road segments outside GCC 2022 ward polygons (OMR / south-corridor study bbox). Unmet = farther than 400m from a GTFS stop. Partial \u2014 OSM completeness; not ridership.",
+      "bbox": [
+        12.7,
+        79.95,
+        13.28,
+        80.35
+      ]
     }
   },
   "layers": {
@@ -1236,6 +1261,32 @@
       "feature_count": 728,
       "file": "facility_pt_walk_links.geojson",
       "notes": "Crow-flies links from schools/healthcare to nearest PT access point. walk_min_to_pt is OSM network minutes (Partial)."
+    },
+    "cmrl_phase2_stations": {
+      "status": "partial",
+      "feature_count": 45,
+      "file": "cmrl_phase2_stations.geojson",
+      "derived_from": "cmrl_c5_red_line_stations.json",
+      "notes": "OSM network walk catchment comparison: existing GTFS/hubs vs existing + approximate CMRL Phase II Corridor 5 (Red Line) stations. Station coordinates are curated approximations \u2014 not official CMRL CAD. Partial."
+    },
+    "cmrl_phase2_line": {
+      "status": "partial",
+      "feature_count": 1,
+      "file": "cmrl_phase2_line.geojson",
+      "derived_from": "cmrl_c5_red_line_stations.json",
+      "notes": "OSM network walk catchment comparison: existing GTFS/hubs vs existing + approximate CMRL Phase II Corridor 5 (Red Line) stations. Station coordinates are curated approximations \u2014 not official CMRL CAD. Partial."
+    },
+    "outside_gcc_roads": {
+      "status": "partial",
+      "feature_count": 150,
+      "file": "outside_gcc_roads.geojson",
+      "derived_from": "osm_overpass_outside_gcc",
+      "notes": "OSM trunk/primary/secondary/tertiary road segments outside GCC 2022 ward polygons (OMR / south-corridor study bbox). Unmet = farther than 400m from a GTFS stop. Partial \u2014 OSM completeness; not ridership."
+    },
+    "coverage_assessment": {
+      "status": "partial",
+      "file": "coverage_assessment.json",
+      "notes": "Unified coverage view for partners/authorities. Combines GCC ward catchments, OSM walk isochrones over GCC\u222aOMR study area, outside-GCC road gaps, and a Partial CMRL Phase II Corridor 5 (Red Line) walk scenario. No fabricated ridership. Proposed metro coordinates are curated approximations."
     }
   },
   "realtime": [

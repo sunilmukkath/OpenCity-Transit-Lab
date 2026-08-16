@@ -16,8 +16,8 @@ export default function HomePage() {
             Chennai public transport — mapped and measured
           </h1>
           <p className="et-fade-up et-fade-up-delay-2 mt-4 text-lg text-[var(--ink-muted)]">
-            Four analysis pages. Verified open data only — no fabricated equity or ridership
-            scores.
+            Verified open data only — walk coverage, destinations, wards, infrastructure, and an
+            authority coverage dashboard. No fabricated equity or ridership scores.
           </p>
         </div>
       </section>

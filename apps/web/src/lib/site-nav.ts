@@ -1,4 +1,4 @@
-/** Canonical 5-page app structure. */
+/** Canonical app structure. */
 
 export const SITE_PAGES = [
   {
@@ -40,6 +40,14 @@ export const SITE_PAGES = [
     nav: true,
     title: "Stops vs shelters",
     blurb: "Where stops exist without weather protection — and how the gap score works.",
+  },
+  {
+    id: "coverage",
+    href: "/coverage",
+    label: "Coverage",
+    nav: true,
+    title: "Coverage assessment",
+    blurb: "Authority view — walk isochrones, outside-GCC roads, CMRL Red Line C5 scenario.",
   },
 ] as const;
 

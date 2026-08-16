@@ -382,9 +382,19 @@ export function MapExplorer({
                 ["nmt_network", "NMT paths"],
                 ["tngis_settlement_area", "Settlements"],
                 ["tngis_habitation", "Habitation"],
+                ["cmrl_phase2_stations", "CMRL C5"],
+                ["outside_gcc_roads", "Outside GCC"],
               ] as const
             ).map(([key, label]) => {
-              const ready = layerIsReady(manifest?.layers[key]);
+              const ready =
+                key === "cmrl_phase2_stations"
+                  ? layerIsReady(manifest?.layers.cmrl_phase2_stations) ||
+                    layerIsReady(manifest?.layers.cmrl_phase2_line)
+                  : layerIsReady(manifest?.layers[key]);
+              const pressed =
+                key === "cmrl_phase2_stations"
+                  ? Boolean(visibility.cmrl_phase2_stations || visibility.cmrl_phase2_line)
+                  : Boolean(visibility[key]);
               return (
                 <button
                   key={key}
@@ -395,9 +405,36 @@ export function MapExplorer({
                       ? MAP_LAYER_META.find((l) => l.key === key)?.label
                       : "Layer not loaded yet"
                   }
-                  onClick={() => toggle(key)}
-                  aria-pressed={Boolean(visibility[key])}
-                  className={`${chipBase} ${visibility[key] ? chipOn : chipOff}`}
+                  onClick={() => {
+                    if (key === "cmrl_phase2_stations") {
+                      const nextOn = !(
+                        visibility.cmrl_phase2_stations || visibility.cmrl_phase2_line
+                      );
+                      setVisibility((v) => ({
+                        ...v,
+                        cmrl_phase2_stations: nextOn,
+                        cmrl_phase2_line: nextOn,
+                      }));
+                      setActivePreset("custom");
+                      if (nextOn && manifest) {
+                        const need = (
+                          ["cmrl_phase2_stations", "cmrl_phase2_line"] as MapLayerKey[]
+                        ).filter((k) => !data[k]);
+                        if (need.length) {
+                          void loadLayerBatch(
+                            manifest,
+                            need,
+                            gapByLabelRef.current,
+                            data
+                          ).then(setData);
+                        }
+                      }
+                      return;
+                    }
+                    toggle(key);
+                  }}
+                  aria-pressed={pressed}
+                  className={`${chipBase} ${pressed ? chipOn : chipOff}`}
                 >
                   {label}
                 </button>

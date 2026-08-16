@@ -146,6 +146,12 @@ export function MapLegend({
   if (visibility.mrts_stations) points.push({ kind: "dot", color: "#ea580c", label: "MRTS stations" });
   if (visibility.mrts_lines) points.push({ kind: "line", color: "#ea580c", label: "MRTS lines" });
   if (visibility.hubs) points.push({ kind: "dot", color: "#7c3aed", label: "CMRL metro hubs" });
+  if (visibility.cmrl_phase2_line)
+    points.push({ kind: "line", color: "#dc2626", label: "Proposed Red Line C5", dashed: true });
+  if (visibility.cmrl_phase2_stations)
+    points.push({ kind: "dot", color: "#dc2626", label: "Proposed C5 stations (Partial)" });
+  if (visibility.outside_gcc_roads)
+    points.push({ kind: "line", color: "#f59e0b", label: "Outside-GCC roads >400m from stop" });
   if (visibility.railway_stations)
     points.push({ kind: "dot", color: "#a78bfa", label: "Suburban / IR stations" });
   if (visibility.tngis_settlement_area)
@@ -214,6 +220,17 @@ export function MapLegend({
         <p className="mt-2 border-t border-slate-200 pt-1.5 text-[9px] leading-snug text-slate-500">
           Need lines = OSM road stretches outside 400m of a GTFS stop (drawn only where there is
           no nearby PT). Inventory — not ridership.
+        </p>
+      ) : null}
+      {visibility.outside_gcc_roads ? (
+        <p className="mt-2 border-t border-slate-200 pt-1.5 text-[9px] leading-snug text-slate-500">
+          Outside-GCC roads = major OSM ways beyond corporation wards, still &gt;400 m from a GTFS
+          stop (Partial Overpass extract).
+        </p>
+      ) : null}
+      {visibility.cmrl_phase2_stations || visibility.cmrl_phase2_line ? (
+        <p className="mt-2 border-t border-slate-200 pt-1.5 text-[9px] leading-snug text-slate-500">
+          Red Line C5 stations/line are curated approximations — not official CMRL CAD.
         </p>
       ) : null}
     </div>

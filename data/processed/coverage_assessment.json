@@ -1,0 +1,164 @@
+{
+  "status": "partial",
+  "generated_at": "2026-08-16T15:52:03.202658+00:00",
+  "title": "Authority coverage assessment \u2014 Chennai PT",
+  "note": "Unified coverage view for partners/authorities. Combines GCC ward catchments, OSM walk isochrones over GCC\u222aOMR study area, outside-GCC road gaps, and a Partial CMRL Phase II Corridor 5 (Red Line) walk scenario. No fabricated ridership. Proposed metro coordinates are curated approximations.",
+  "study_area": {
+    "description": "GCC 2022 wards \u222a OMR corridor buffer \u222a south-town AOIs (not full CMA)",
+    "study_area_km2": 1564.12,
+    "gcc_wards": 200
+  },
+  "kpis": {
+    "pct_study_within_5min_walk_existing": 17.6,
+    "pct_study_within_5min_walk_plus_c5": 17.8,
+    "delta_pct_5min_with_c5": 0.2,
+    "city_mean_pct_outside_400m_wards": 21.3,
+    "high_catchment_gap_wards": 14,
+    "need_line_corridors": 120,
+    "outside_gcc_unmet_km_shown": 470.4,
+    "outside_gcc_road_km": 2685.4,
+    "cmrl_c5_proposed_stations": 45,
+    "sir_chennai_district_electors": 2893505,
+    "sir_map_electors": 5804521
+  },
+  "blocks": {
+    "walk_isochrones": {
+      "status": "partial",
+      "counts": {
+        "access_points": {
+          "stops": 5580,
+          "hubs": 143,
+          "mrts_stations": 118,
+          "unique_access_points": 5685
+        },
+        "pt_source_nodes": 3725,
+        "reachable_nodes": 184632,
+        "study_area_km2": 1564.12,
+        "walk_speed_m_per_min": 80.0,
+        "node_buffer_m": 70.0,
+        "within_5min_km2": 280.99,
+        "band_5_10min_km2": 150.33,
+        "band_10_15min_km2": 51.94,
+        "pct_within_5min": 18.0,
+        "pct_band_5_10min": 9.6,
+        "pct_band_10_15min": 3.3
+      },
+      "note": "OSM network walk isochrones from existing GTFS stops + MRTS/metro hubs. Bands: \u22645 min, 5\u201310 min, 10\u201315 min at 80 m/min (4.8 km/h). Multi-source Dijkstra on osmnx walk graph; node buffers dissolved. Partial \u2014 OSM completeness. Not crow-flies; not population-weighted. Proposed metro stations not included."
+    },
+    "catchment_coverage": {
+      "status": "loaded",
+      "counts": {
+        "wards_scored": 200,
+        "high_gap_wards": 14,
+        "moderate_gap_wards": 39,
+        "low_gap_wards": 147
+      },
+      "city_mean_pct_outside_400m": 21.3,
+      "note": "Catchment coverage is the share of ward polygon area inside dissolved 400m/800m stop buffers. Geometry only \u2014 not population-weighted access."
+    },
+    "cmrl_phase2_scenario": {
+      "status": "partial",
+      "delta_pct_within_5min": 0.2,
+      "scenarios": {
+        "existing": {
+          "band_km2": {
+            "within_5min_km2": 275.08,
+            "within_10min_km2": 423.69,
+            "within_15min_km2": 473.37
+          },
+          "pct_within_5min": 17.6,
+          "pct_within_10min": 27.1,
+          "pct_within_15min": 30.3
+        },
+        "existing_plus_c5": {
+          "band_km2": {
+            "within_5min_km2": 278.64,
+            "within_10min_km2": 425.64,
+            "within_15min_km2": 473.96
+          },
+          "pct_within_5min": 17.8,
+          "pct_within_10min": 27.2,
+          "pct_within_15min": 30.3
+        }
+      },
+      "proposed_stations": 45,
+      "note": "OSM network walk catchment comparison: existing GTFS/hubs vs existing + approximate CMRL Phase II Corridor 5 (Red Line) stations. Station coordinates are curated approximations \u2014 not official CMRL CAD. Partial.",
+      "limitation": "Proposed stations approximate; OSM walk graph Partial; not population-weighted; not official ridership or opening-year forecast."
+    },
+    "outside_gcc_osm": {
+      "status": "partial",
+      "counts": {
+        "outside_gcc_segments_scored": 150,
+        "outside_gcc_road_km": 2685.4,
+        "top_unmet_km_shown": 470.4,
+        "by_highway": {
+          "tertiary": 120,
+          "primary": 16,
+          "secondary": 12,
+          "trunk": 2
+        }
+      },
+      "note": "OSM trunk/primary/secondary/tertiary road segments outside GCC 2022 ward polygons (OMR / south-corridor study bbox). Unmet = farther than 400m from a GTFS stop. Partial \u2014 OSM completeness; not ridership."
+    },
+    "connectivity_need": {
+      "status": "loaded",
+      "counts": {
+        "high_gap_wards": 51,
+        "corridors_mapped": 120,
+        "urgent": 60,
+        "priority": 54,
+        "watch": 6,
+        "source_kind_osm": 1
+      },
+      "note": "OSM major-road segments farther than 400m from a GTFS stop (unmet geometry). High Gap Index wards are boosted in ranking. Inventory only \u2014 not ridership or equity."
+    },
+    "sir_electors": {
+      "status": "loaded",
+      "grain": "assembly_constituency",
+      "as_of": "2026-04-06",
+      "chennai_district_electors_total": 2893505,
+      "map_electors_total": 5804521,
+      "note": "SIR electors at assembly constituency level. Not GCC ward households; not total population (excludes under-18). Includes ACs on the OpenCity Chennai AC map (Chennai district + some adjoining ACs). Boundaries are 2021.",
+      "reason_not_ward": "Open public SIR tables are AC-level only; booth/part rolls are PDFs without machine-readable counts."
+    },
+    "first_last_mile": {
+      "status": "partial",
+      "summary": "OSM network walk isochrones from existing GTFS stops + MRTS/metro hubs. Bands: \u22645 min, 5\u201310 min, 10\u201315 min at 80 m/min (4.8 km/h). Multi-source Dijkstra on osmnx walk graph; node buffers dissolved. Partial \u2014 OSM completeness. Not crow-flies; not population-weighted. Proposed metro stations not included."
+    }
+  },
+  "sources": [
+    {
+      "name": "GTFS stops (MTC + CMRL community feed)",
+      "portal": "https://github.com/ungalsoththu/ChennaiGTFS"
+    },
+    {
+      "name": "GCC wards / zones 2022",
+      "portal": "https://data.opencity.in/"
+    },
+    {
+      "name": "OSM walk network + major roads",
+      "portal": "https://www.openstreetmap.org/copyright"
+    },
+    {
+      "name": "CMRL Phase II Corridor 5 (Red Line) \u2014 curated stations",
+      "portal": "https://chennaimetrorail.org/project-status/",
+      "status": "partial"
+    },
+    {
+      "name": "TNGIS settlement / habitation (WFS)",
+      "portal": "https://tngis.tn.gov.in/",
+      "status": "partial"
+    },
+    {
+      "name": "TN SIR voter rolls 2026 (AC electors)",
+      "portal": "https://data.opencity.in/dataset/tamil-nadu-sir-voter-rolls-2026",
+      "status": "partial"
+    }
+  ],
+  "next_steps_for_authorities": [
+    "Field-verify high-gap wards and outside-GCC unmet road segments before capital works.",
+    "Replace curated Red Line coordinates with official CMRL station CAD when available.",
+    "Add population-weighted coverage (Census / dasymetric) \u2014 SIR is electors 18+ at AC grain only.",
+    "Extend OSM street metrics and settlement context across full CMA if required."
+  ]
+}

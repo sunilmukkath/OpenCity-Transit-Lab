@@ -23,7 +23,10 @@ export type MapLayerKey =
   | "nmt_network"
   | "cmp_corridors"
   | "tngis_settlement_area"
-  | "tngis_habitation";
+  | "tngis_habitation"
+  | "cmrl_phase2_stations"
+  | "cmrl_phase2_line"
+  | "outside_gcc_roads";
 
 export const MAP_LAYER_META: {
   key: MapLayerKey;
@@ -156,6 +159,28 @@ export const MAP_LAYER_META: {
     defaultOn: false,
     group: "core",
   },
+  {
+    key: "cmrl_phase2_line",
+    label: "CMRL Phase II Red Line C5 (proposed, Partial)",
+    short: "C5 line",
+    defaultOn: false,
+    group: "core",
+  },
+  {
+    key: "cmrl_phase2_stations",
+    label: "CMRL Phase II C5 stations (proposed, Partial)",
+    short: "C5 stations",
+    defaultOn: false,
+    group: "core",
+  },
+  {
+    key: "outside_gcc_roads",
+    label: "Outside-GCC OSM roads >400m from stop (Partial)",
+    short: "Outside GCC",
+    defaultOn: false,
+    heavy: true,
+    group: "core",
+  },
 ];
 
 export const CHENNAI_VIEW = {
@@ -194,6 +219,9 @@ const CORE_OFF_AMENITIES: Partial<Record<MapLayerKey, boolean>> = {
   cmp_corridors: false,
   tngis_settlement_area: false,
   tngis_habitation: false,
+  cmrl_phase2_stations: false,
+  cmrl_phase2_line: false,
+  outside_gcc_roads: false,
 };
 
 export const LAYER_PRESETS: Record<
@@ -363,6 +391,30 @@ export const LAYER_PRESETS: Record<
       tngis_habitation: true,
     },
   },
+  coverage: {
+    label: "Coverage",
+    blurb: "Isochrones + outside-GCC roads + proposed Red Line C5",
+    choropleth: "walk",
+    layers: {
+      ...CORE_OFF_AMENITIES,
+      wards: false,
+      stops: true,
+      bus_routes: false,
+      mrts_lines: true,
+      mrts_stations: true,
+      hubs: true,
+      connectivity_need: false,
+      walk_isochrones: true,
+      omr_corridor: true,
+      metro_area_boundaries: true,
+      tngis_settlement_area: true,
+      tngis_habitation: false,
+      cmrl_phase2_line: true,
+      cmrl_phase2_stations: true,
+      outside_gcc_roads: true,
+      nmt_network: false,
+    },
+  },
 };
 
 /** Audience-facing map views — one row only. */
@@ -376,6 +428,7 @@ export const AUDIENCE_PRESETS: {
   { id: "planner", label: "Gaps", audience: "planner", preset: "serve" },
   { id: "hubs", label: "Hubs", audience: "hubs", preset: "hubs" },
   { id: "equity", label: "Slum", audience: "equity", preset: "slum" },
+  { id: "coverage", label: "Coverage", audience: "planner", preset: "coverage" },
 ];
 
 /** Layers that must be loaded for a given visibility map. */

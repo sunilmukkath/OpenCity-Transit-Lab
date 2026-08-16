@@ -644,6 +644,37 @@ const LAYER_STACK: {
     ],
   },
   {
+    key: "cmrl_phase2_line",
+    sourceId: "tm-cmrl-c5-line",
+    layers: [
+      {
+        id: "tm-cmrl-c5-line",
+        type: "line",
+        paint: {
+          "line-color": "#dc2626",
+          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 2.5, 14, 5],
+          "line-dasharray": [2, 1.5],
+          "line-opacity": 0.9,
+        },
+      },
+    ],
+  },
+  {
+    key: "outside_gcc_roads",
+    sourceId: "tm-outside-gcc",
+    layers: [
+      {
+        id: "tm-outside-gcc-line",
+        type: "line",
+        paint: {
+          "line-color": "#f59e0b",
+          "line-width": ["interpolate", ["linear"], ["zoom"], 9, 1.4, 14, 3.5],
+          "line-opacity": 0.85,
+        },
+      },
+    ],
+  },
+  {
     key: "bus_routes",
     sourceId: "tm-bus-routes",
     layers: [
@@ -685,6 +716,22 @@ const LAYER_STACK: {
         paint: {
           "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 4.5, 14, 8],
           "circle-color": "#ea580c",
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "#ffffff",
+        },
+      },
+    ],
+  },
+  {
+    key: "cmrl_phase2_stations",
+    sourceId: "tm-cmrl-c5-stations",
+    layers: [
+      {
+        id: "tm-cmrl-c5-stations-circle",
+        type: "circle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 5, 14, 9],
+          "circle-color": "#dc2626",
           "circle-stroke-width": 2,
           "circle-stroke-color": "#ffffff",
         },
@@ -874,6 +921,9 @@ const INTERACTIVE_LAYER_IDS = [
   "tm-bus-routes-line",
   "tm-stops-circle",
   "tm-mrts-stations-circle",
+  "tm-cmrl-c5-stations-circle",
+  "tm-cmrl-c5-line",
+  "tm-outside-gcc-line",
   "tm-hubs-circle",
   "tm-railway-circle",
   "tm-tngis-habitation-circle",
@@ -1130,6 +1180,7 @@ export function TransitMap({
         props.ward_label ||
           props.zone_label ||
           props.label ||
+          props.name ||
           props.road_name ||
           props.route_short_name ||
           props.facility_name ||

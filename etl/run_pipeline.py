@@ -43,6 +43,7 @@ from build_cmrl_phase2 import main as build_cmrl_phase2_main  # noqa: E402
 from build_outside_gcc_osm import main as build_outside_gcc_osm_main  # noqa: E402
 from build_coverage_assessment import main as build_coverage_assessment_main  # noqa: E402
 from build_walk_beyond_10min import main as build_walk_beyond_10min_main  # noqa: E402
+from build_outside_gcc_omr_context import main as build_outside_gcc_omr_context_main  # noqa: E402
 from ingest_tngis_wfs import main as ingest_tngis_wfs_main  # noqa: E402
 
 RAW = ROOT / "data" / "raw"
@@ -1882,6 +1883,7 @@ def main() -> int:
         ("cmrl_phase2", build_cmrl_phase2_main),
         ("outside_gcc_osm", build_outside_gcc_osm_main),
         ("walk_beyond_10min", build_walk_beyond_10min_main),
+        ("outside_gcc_omr_context", build_outside_gcc_omr_context_main),
         ("coverage_assessment", build_coverage_assessment_main),
     ):
         try:

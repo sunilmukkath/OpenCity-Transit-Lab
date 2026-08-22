@@ -39,6 +39,21 @@ type CoverageAssessment = {
   next_steps_for_authorities?: string[];
 };
 
+type OmRAoi = {
+  aoi?: string;
+  aoi_km2?: number;
+  unmet_road_km?: number;
+  unmet_road_segments?: number;
+  settlement_km2?: number;
+  settlement_beyond_10min_km2?: number;
+  habitation_points?: number;
+  habitation_beyond_10min?: number;
+  railway_stations?: number;
+  beyond_10min_km2?: number;
+  top_unmet_roads?: { road_name?: string; unmet_km?: number }[];
+  railway_station_names?: string[];
+};
+
 type Beyond10Meta = {
   status?: string;
   note?: string;
@@ -57,6 +72,17 @@ type Beyond10Meta = {
     gap_band?: string;
   }[];
   files?: { geojson?: string; wards_csv?: string; isochrones?: string };
+};
+
+type OmRContext = {
+  status?: string;
+  note?: string;
+  limitation?: string;
+  counts?: Record<string, number | null | undefined>;
+  aois?: OmRAoi[];
+  omr_highlight?: OmRAoi;
+  cmp_corridors_focus?: { corridor_name?: string; osm_display_name?: string }[];
+  metro_towns?: { name?: string; kind?: string }[];
 };
 
 function Kpi({
@@ -97,16 +123,19 @@ function DlLink({ href, children }: { href: string; children: React.ReactNode })
 export function CoveragePage() {
   const [data, setData] = useState<CoverageAssessment | null>(null);
   const [beyond, setBeyond] = useState<Beyond10Meta | null>(null);
+  const [omr, setOmr] = useState<OmRContext | null>(null);
 
   useEffect(() => {
     let c = false;
     Promise.all([
       fetchJson<CoverageAssessment>("/data/coverage_assessment.json"),
       fetchJson<Beyond10Meta>("/data/walk_beyond_10min_meta.json"),
-    ]).then(([cov, b10]) => {
+      fetchJson<OmRContext>("/data/outside_gcc_omr_context.json"),
+    ]).then(([cov, b10, omrCtx]) => {
       if (!c) {
         setData(cov);
         setBeyond(b10);
+        setOmr(omrCtx);
       }
     });
     return () => {
@@ -119,6 +148,8 @@ export function CoveragePage() {
   const outside = data?.blocks?.outside_gcc_osm;
   const sir = data?.blocks?.sir_electors;
   const highWards = beyond?.high_beyond_10min_wards ?? [];
+  const aois = omr?.aois ?? [];
+  const omrHighlight = omr?.omr_highlight;
 
   return (
     <div className="space-y-8">
@@ -231,6 +262,114 @@ export function CoveragePage() {
         </p>
       </section>
 
+      <section className="space-y-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-4 sm:p-5">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">
+              Outside GCC — OMR / south corridor
+            </h2>
+            <p className="mt-1 max-w-3xl text-sm text-[var(--ink-muted)]">
+              {omr?.note ??
+                "Settlements, habitation, unmet roads, and suburban rail outside GCC wards along OMR and south AOIs."}
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <StatusBadge status={omr?.status ?? "unavailable"} />
+              {omrHighlight?.beyond_10min_km2 != null ? (
+                <span className="text-xs text-[var(--ink-muted)]">
+                  OMR AOI beyond 10 min ≈ {omrHighlight.beyond_10min_km2} km² · settlements beyond
+                  10 min ≈ {fmt(omrHighlight.settlement_beyond_10min_km2, " km²")}
+                </span>
+              ) : null}
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <DlLink href="/data/outside_gcc_omr_context.json">OMR context JSON</DlLink>
+            <DlLink href="/data/outside_gcc_settlements.geojson">Settlements GeoJSON</DlLink>
+            <DlLink href="/data/omr_south_rail_stations.geojson">South rail GeoJSON</DlLink>
+            <DlLink href="/data/outside_gcc_roads.geojson">Unmet roads GeoJSON</DlLink>
+          </div>
+        </div>
+
+        {aois.length ? (
+          <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
+            <table className="w-full min-w-[640px] text-left text-sm">
+              <thead className="bg-[rgba(10,31,74,0.7)] text-[10px] uppercase text-[var(--ink-muted)]">
+                <tr>
+                  <th className="px-3 py-2">Study AOI</th>
+                  <th className="px-3 py-2">Beyond 10 min</th>
+                  <th className="px-3 py-2">Settlement &gt;10 min</th>
+                  <th className="px-3 py-2">Unmet roads</th>
+                  <th className="px-3 py-2">Habitation</th>
+                  <th className="px-3 py-2">Rail stns</th>
+                </tr>
+              </thead>
+              <tbody>
+                {aois.map((a) => (
+                  <tr key={String(a.aoi)} className="border-t border-[var(--border)]">
+                    <td className="px-3 py-2 font-medium text-[var(--yellow)]">{a.aoi}</td>
+                    <td className="px-3 py-2">{fmt(a.beyond_10min_km2, " km²")}</td>
+                    <td className="px-3 py-2">{fmt(a.settlement_beyond_10min_km2, " km²")}</td>
+                    <td className="px-3 py-2">
+                      {fmt(a.unmet_road_km, " km")}
+                      {a.unmet_road_segments != null ? (
+                        <span className="text-[var(--ink-muted)]"> · {a.unmet_road_segments} seg</span>
+                      ) : null}
+                    </td>
+                    <td className="px-3 py-2">
+                      {fmt(a.habitation_points)}
+                      {a.habitation_beyond_10min != null ? (
+                        <span className="text-[var(--ink-muted)]">
+                          {" "}
+                          ({a.habitation_beyond_10min} &gt;10 min)
+                        </span>
+                      ) : null}
+                    </td>
+                    <td className="px-3 py-2">{fmt(a.railway_stations)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : null}
+
+        {omrHighlight?.top_unmet_roads?.length ? (
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--accent)]">
+              OMR AOI — top unmet feeder roads
+            </p>
+            <ul className="mt-2 space-y-1 text-sm text-[var(--ink-muted)]">
+              {omrHighlight.top_unmet_roads.map((r) => (
+                <li key={`${r.road_name}-${r.unmet_km}`}>
+                  <span className="text-[var(--ink)]">{r.road_name}</span>
+                  {r.unmet_km != null ? ` · ${r.unmet_km} km unmet` : ""}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        {omr?.cmp_corridors_focus?.length ? (
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--accent)]">
+              CMP corridors (geocoded Partial)
+            </p>
+            <ul className="mt-2 space-y-1 text-sm text-[var(--ink-muted)]">
+              {omr.cmp_corridors_focus.map((c) => (
+                <li key={String(c.corridor_name)}>
+                  <span className="text-[var(--ink)]">{c.corridor_name}</span>
+                  {c.osm_display_name ? ` — ${c.osm_display_name}` : ""}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        <p className="text-xs text-[var(--ink-muted)]">
+          {omr?.limitation ??
+            "Tambaram ward maps are PDF-only. Settlement area is TNGIS Partial and not population-weighted. Outer Ring Road geocode may be wrong in CMP extract."}
+        </p>
+      </section>
+
       <section className="grid gap-4 lg:grid-cols-2">
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
           <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">
@@ -331,8 +470,10 @@ export function CoveragePage() {
           Map — coverage context
         </h2>
         <p className="text-xs text-[var(--ink-muted)]">
-          Toggle <strong>CMRL C5</strong>, <strong>Outside GCC roads</strong>, Settlements, and
-          Isochrones in Layers. Red Line stations are Partial (curated).
+          Toggle <strong>South AOIs</strong>, <strong>Beyond 10 min</strong>,{" "}
+          <strong>Out-GCC settle</strong>, <strong>Outside GCC</strong> roads,{" "}
+          <strong>South rail</strong>, and <strong>CMRL C5</strong> in Context / Layers. Place names
+          show on OMR, south towns, and rail stations.
         </p>
         <Suspense
           fallback={

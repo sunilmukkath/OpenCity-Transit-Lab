@@ -15048,7 +15048,7 @@
   },
   "coverage_assessment": {
     "status": "partial",
-    "generated_at": "2026-08-16T15:52:03.202658+00:00",
+    "generated_at": "2026-08-22T06:47:33.922671+00:00",
     "title": "Authority coverage assessment \u2014 Chennai PT",
     "note": "Unified coverage view for partners/authorities. Combines GCC ward catchments, OSM walk isochrones over GCC\u222aOMR study area, outside-GCC road gaps, and a Partial CMRL Phase II Corridor 5 (Red Line) walk scenario. No fabricated ridership. Proposed metro coordinates are curated approximations.",
     "study_area": {
@@ -15065,6 +15065,9 @@
       "need_line_corridors": 120,
       "outside_gcc_unmet_km_shown": 470.4,
       "outside_gcc_road_km": 2685.4,
+      "omr_beyond_10min_km2": 105.16,
+      "omr_settlement_beyond_10min_km2": 6.65,
+      "omr_south_rail_stations": 19,
       "cmrl_c5_proposed_stations": 45,
       "sir_chennai_district_electors": 2893505,
       "sir_map_electors": 5804521
@@ -15148,6 +15151,248 @@
         },
         "note": "OSM trunk/primary/secondary/tertiary road segments outside GCC 2022 ward polygons (OMR / south-corridor study bbox). Unmet = farther than 400m from a GTFS stop. Partial \u2014 OSM completeness; not ridership."
       },
+      "outside_gcc_omr_context": {
+        "status": "partial",
+        "note": "Inventory for areas outside Greater Chennai Corporation wards, focused on the OMR \u2192 Mahabalipuram corridor and Tambaram / Chengalpattu study AOIs. Combines OSM unmet roads, TNGIS settlements/habitation, OSM walk-beyond-10min, and suburban rail stations. Partial \u2014 not official municipal wards; not ridership.",
+        "limitation": "Tambaram official ward maps are PDF-only (not ingested). TNGIS Partial. Settlement area includes non-residential landuse. Beyond-10min includes vacant/water. CMP corridors are Nominatim approximations.",
+        "counts": {
+          "outside_gcc_settlement_pieces": 400,
+          "outside_gcc_habitation_points": 800,
+          "omr_south_rail_stations": 19,
+          "unmet_road_segments": 150,
+          "omr_unmet_road_km": 6.54,
+          "omr_settlement_beyond_10min_km2": 6.65,
+          "omr_beyond_10min_km2": 105.16
+        },
+        "aois": [
+          {
+            "aoi": "OMR \u2192 Mahabalipuram",
+            "aoi_km2": 132.68,
+            "unmet_road_segments": 3,
+            "unmet_road_km": 6.54,
+            "top_unmet_roads": [
+              {
+                "road_name": "Mambakkam - Thiruporur Road",
+                "unmet_km": 2.3
+              },
+              {
+                "road_name": "Thiruporur - Nemili Road",
+                "unmet_km": 2.12
+              },
+              {
+                "road_name": "Unnamed road",
+                "unmet_km": 2.12
+              }
+            ],
+            "settlement_pieces": 44,
+            "settlement_km2": 6.68,
+            "settlement_beyond_10min_km2": 6.65,
+            "habitation_points": 21,
+            "habitation_beyond_10min": 18,
+            "railway_stations": 5,
+            "railway_station_names": [
+              "Kasturiba Nagar",
+              "Indira Nagar",
+              "Tiruvanmiyur",
+              "Taramani",
+              "Perungudi"
+            ],
+            "beyond_10min_km2": 105.16
+          },
+          {
+            "aoi": "Toward Tambaram",
+            "aoi_km2": 284.81,
+            "unmet_road_segments": 8,
+            "unmet_road_km": 21.14,
+            "top_unmet_roads": [
+              {
+                "road_name": "Unnamed road",
+                "unmet_km": 5.04
+              },
+              {
+                "road_name": "Ayyanachery - Meenachipuram Road",
+                "unmet_km": 3.53
+              },
+              {
+                "road_name": "Thirumudivakkam Road",
+                "unmet_km": 3.43
+              },
+              {
+                "road_name": "Adhanur-Padappai Link Road",
+                "unmet_km": 2.69
+              },
+              {
+                "road_name": "Malyambakkam Harijan Colony Road",
+                "unmet_km": 2.39
+              }
+            ],
+            "settlement_pieces": 101,
+            "settlement_km2": 127.83,
+            "settlement_beyond_10min_km2": 127.11,
+            "habitation_points": 560,
+            "habitation_beyond_10min": 89,
+            "railway_stations": 14,
+            "railway_station_names": [
+              "Palavanthangal",
+              "Palur",
+              "St. Thomas Mount",
+              "Pallavaram",
+              "Perungalattur",
+              "Tirusulam",
+              "Meenambakkam",
+              "Chromepet",
+              "Kattangulathur",
+              "Guduvancheri",
+              "Tambaram",
+              "Adambakkam"
+            ],
+            "beyond_10min_km2": 164.75
+          },
+          {
+            "aoi": "Toward Chengalpattu",
+            "aoi_km2": 584.48,
+            "unmet_road_segments": 36,
+            "unmet_road_km": 147.27,
+            "top_unmet_roads": [
+              {
+                "road_name": "Unnamed road",
+                "unmet_km": 27.89
+              },
+              {
+                "road_name": "Singaperumalkoil - Sriperumbudur - Thiruvallur - Red Hills Road",
+                "unmet_km": 23.74
+              },
+              {
+                "road_name": "Singaperumalkoil - Reddikuppam Road",
+                "unmet_km": 12.94
+              },
+              {
+                "road_name": "Anjur - Pattravakkam - Thenur Road",
+                "unmet_km": 6.67
+              },
+              {
+                "road_name": "Kayarambedu - Kalivanthapattu Road",
+                "unmet_km": 5.99
+              }
+            ],
+            "settlement_pieces": 193,
+            "settlement_km2": 49.98,
+            "settlement_beyond_10min_km2": 49.83,
+            "habitation_points": 198,
+            "habitation_beyond_10min": 126,
+            "railway_stations": 14,
+            "railway_station_names": [
+              "Palavanthangal",
+              "Palur",
+              "St. Thomas Mount",
+              "Pallavaram",
+              "Perungalattur",
+              "Tirusulam",
+              "Meenambakkam",
+              "Chromepet",
+              "Kattangulathur",
+              "Guduvancheri",
+              "Tambaram",
+              "Adambakkam"
+            ],
+            "beyond_10min_km2": 551.11
+          }
+        ],
+        "omr_highlight": {
+          "aoi": "OMR \u2192 Mahabalipuram",
+          "aoi_km2": 132.68,
+          "unmet_road_segments": 3,
+          "unmet_road_km": 6.54,
+          "top_unmet_roads": [
+            {
+              "road_name": "Mambakkam - Thiruporur Road",
+              "unmet_km": 2.3
+            },
+            {
+              "road_name": "Thiruporur - Nemili Road",
+              "unmet_km": 2.12
+            },
+            {
+              "road_name": "Unnamed road",
+              "unmet_km": 2.12
+            }
+          ],
+          "settlement_pieces": 44,
+          "settlement_km2": 6.68,
+          "settlement_beyond_10min_km2": 6.65,
+          "habitation_points": 21,
+          "habitation_beyond_10min": 18,
+          "railway_stations": 5,
+          "railway_station_names": [
+            "Kasturiba Nagar",
+            "Indira Nagar",
+            "Tiruvanmiyur",
+            "Taramani",
+            "Perungudi"
+          ],
+          "beyond_10min_km2": 105.16
+        },
+        "cmp_corridors_focus": [
+          {
+            "corridor_name": "IT Corridor / OMR",
+            "osm_display_name": "Rajiv Gandhi Salai, CMWSSB Division 200, Panaiyur, Zone 15 Sholinganallur, Chennai Corporation, Sholinganallur, Chennai, Tamil Nadu, 600130, India",
+            "note": "CMP PDF name geocoded via Nominatim \u2014 Partial, not CMDA CAD."
+          },
+          {
+            "corridor_name": "GST Road",
+            "osm_display_name": "Grand Southern Trunk Road, CMWSSB Division 159, Ward 159, Zone 12 Alandur, Chennai Corporation, Alandur, Chennai, Tamil Nadu, 600027, India",
+            "note": "CMP PDF name geocoded via Nominatim \u2014 Partial, not CMDA CAD."
+          },
+          {
+            "corridor_name": "Outer Ring Road",
+            "osm_display_name": "Radisson Blu Bengaluru Outer Ring Road, Sy. #90/4, Outer Ring Road, Kaadubeesanahalli, Panathur, Bengaluru East City Corporation, Bengaluru, Bangalore East, Bengaluru Urban, Karnataka, 560037, India",
+            "note": "CMP PDF name geocoded via Nominatim \u2014 Partial, not CMDA CAD."
+          }
+        ],
+        "metro_towns": [
+          {
+            "name": "Tambaram",
+            "kind": "municipal_boundary",
+            "note": "OSM administrative boundary. Not GCC wards. Tambaram official ward maps on OpenCity are PDF-only."
+          },
+          {
+            "name": "Chengalpattu",
+            "kind": "admin_boundary",
+            "note": "OSM administrative boundary covering Chengalpattu area (may be taluk-scale)."
+          },
+          {
+            "name": "Mahabalipuram (study buffer)",
+            "kind": "study_buffer",
+            "note": "Approx. 3\u20134 km study buffer around Mahabalipuram / Mamallapuram \u2014 not an official municipal ward map."
+          }
+        ],
+        "sources": [
+          {
+            "name": "TNGIS settlement / habitation WFS",
+            "status": "partial"
+          },
+          {
+            "name": "OSM outside-GCC major roads",
+            "status": "partial"
+          },
+          {
+            "name": "OSM walk isochrones \u2192 beyond 10 min",
+            "status": "partial"
+          },
+          {
+            "name": "OSM railway stations (manual download)",
+            "status": "loaded"
+          },
+          {
+            "name": "CMP corridors (PDF + Nominatim)",
+            "status": "partial"
+          },
+          {
+            "name": "Corridor AOIs / OMR line (OSM)",
+            "status": "loaded"
+          }
+        ]
+      },
       "connectivity_need": {
         "status": "loaded",
         "counts": {
@@ -15184,7 +15429,7 @@
         "portal": "https://data.opencity.in/"
       },
       {
-        "name": "OSM walk network + major roads",
+        "name": "OSM walk network + major roads + OMR",
         "portal": "https://www.openstreetmap.org/copyright"
       },
       {
@@ -15198,6 +15443,14 @@
         "status": "partial"
       },
       {
+        "name": "OSM railway stations (south / OMR)",
+        "status": "partial"
+      },
+      {
+        "name": "CMP corridors (PDF + Nominatim)",
+        "status": "partial"
+      },
+      {
         "name": "TN SIR voter rolls 2026 (AC electors)",
         "portal": "https://data.opencity.in/dataset/tamil-nadu-sir-voter-rolls-2026",
         "status": "partial"
@@ -15205,9 +15458,10 @@
     ],
     "next_steps_for_authorities": [
       "Field-verify high-gap wards and outside-GCC unmet road segments before capital works.",
+      "Prioritise OMR AOI settlements tagged beyond 10 min walk and unmet feeder roads (Mambakkam\u2013Thiruporur).",
       "Replace curated Red Line coordinates with official CMRL station CAD when available.",
       "Add population-weighted coverage (Census / dasymetric) \u2014 SIR is electors 18+ at AC grain only.",
-      "Extend OSM street metrics and settlement context across full CMA if required."
+      "Ingest Tambaram municipal wards when machine-readable GeoJSON is published (PDF-only today)."
     ]
   },
   "walk_beyond_10min": {
@@ -15285,5 +15539,255 @@
       }
     ],
     "limitation": "Not official MTC service areas; OSM graph gaps can inflate beyond-10min land; includes water/vacant land in study polygon; ward metrics are samples not people."
+  },
+  "outside_gcc_omr_context": {
+    "status": "partial",
+    "generated_at": "2026-08-22T06:45:31.886828+00:00",
+    "title": "Outside GCC \u2014 OMR / south corridor context",
+    "note": "Inventory for areas outside Greater Chennai Corporation wards, focused on the OMR \u2192 Mahabalipuram corridor and Tambaram / Chengalpattu study AOIs. Combines OSM unmet roads, TNGIS settlements/habitation, OSM walk-beyond-10min, and suburban rail stations. Partial \u2014 not official municipal wards; not ridership.",
+    "aois": [
+      {
+        "aoi": "OMR \u2192 Mahabalipuram",
+        "aoi_km2": 132.68,
+        "unmet_road_segments": 3,
+        "unmet_road_km": 6.54,
+        "top_unmet_roads": [
+          {
+            "road_name": "Mambakkam - Thiruporur Road",
+            "unmet_km": 2.3
+          },
+          {
+            "road_name": "Thiruporur - Nemili Road",
+            "unmet_km": 2.12
+          },
+          {
+            "road_name": "Unnamed road",
+            "unmet_km": 2.12
+          }
+        ],
+        "settlement_pieces": 44,
+        "settlement_km2": 6.68,
+        "settlement_beyond_10min_km2": 6.65,
+        "habitation_points": 21,
+        "habitation_beyond_10min": 18,
+        "railway_stations": 5,
+        "railway_station_names": [
+          "Kasturiba Nagar",
+          "Indira Nagar",
+          "Tiruvanmiyur",
+          "Taramani",
+          "Perungudi"
+        ],
+        "beyond_10min_km2": 105.16
+      },
+      {
+        "aoi": "Toward Tambaram",
+        "aoi_km2": 284.81,
+        "unmet_road_segments": 8,
+        "unmet_road_km": 21.14,
+        "top_unmet_roads": [
+          {
+            "road_name": "Unnamed road",
+            "unmet_km": 5.04
+          },
+          {
+            "road_name": "Ayyanachery - Meenachipuram Road",
+            "unmet_km": 3.53
+          },
+          {
+            "road_name": "Thirumudivakkam Road",
+            "unmet_km": 3.43
+          },
+          {
+            "road_name": "Adhanur-Padappai Link Road",
+            "unmet_km": 2.69
+          },
+          {
+            "road_name": "Malyambakkam Harijan Colony Road",
+            "unmet_km": 2.39
+          }
+        ],
+        "settlement_pieces": 101,
+        "settlement_km2": 127.83,
+        "settlement_beyond_10min_km2": 127.11,
+        "habitation_points": 560,
+        "habitation_beyond_10min": 89,
+        "railway_stations": 14,
+        "railway_station_names": [
+          "Palavanthangal",
+          "Palur",
+          "St. Thomas Mount",
+          "Pallavaram",
+          "Perungalattur",
+          "Tirusulam",
+          "Meenambakkam",
+          "Chromepet",
+          "Kattangulathur",
+          "Guduvancheri",
+          "Tambaram",
+          "Adambakkam"
+        ],
+        "beyond_10min_km2": 164.75
+      },
+      {
+        "aoi": "Toward Chengalpattu",
+        "aoi_km2": 584.48,
+        "unmet_road_segments": 36,
+        "unmet_road_km": 147.27,
+        "top_unmet_roads": [
+          {
+            "road_name": "Unnamed road",
+            "unmet_km": 27.89
+          },
+          {
+            "road_name": "Singaperumalkoil - Sriperumbudur - Thiruvallur - Red Hills Road",
+            "unmet_km": 23.74
+          },
+          {
+            "road_name": "Singaperumalkoil - Reddikuppam Road",
+            "unmet_km": 12.94
+          },
+          {
+            "road_name": "Anjur - Pattravakkam - Thenur Road",
+            "unmet_km": 6.67
+          },
+          {
+            "road_name": "Kayarambedu - Kalivanthapattu Road",
+            "unmet_km": 5.99
+          }
+        ],
+        "settlement_pieces": 193,
+        "settlement_km2": 49.98,
+        "settlement_beyond_10min_km2": 49.83,
+        "habitation_points": 198,
+        "habitation_beyond_10min": 126,
+        "railway_stations": 14,
+        "railway_station_names": [
+          "Palavanthangal",
+          "Palur",
+          "St. Thomas Mount",
+          "Pallavaram",
+          "Perungalattur",
+          "Tirusulam",
+          "Meenambakkam",
+          "Chromepet",
+          "Kattangulathur",
+          "Guduvancheri",
+          "Tambaram",
+          "Adambakkam"
+        ],
+        "beyond_10min_km2": 551.11
+      }
+    ],
+    "omr_highlight": {
+      "aoi": "OMR \u2192 Mahabalipuram",
+      "aoi_km2": 132.68,
+      "unmet_road_segments": 3,
+      "unmet_road_km": 6.54,
+      "top_unmet_roads": [
+        {
+          "road_name": "Mambakkam - Thiruporur Road",
+          "unmet_km": 2.3
+        },
+        {
+          "road_name": "Thiruporur - Nemili Road",
+          "unmet_km": 2.12
+        },
+        {
+          "road_name": "Unnamed road",
+          "unmet_km": 2.12
+        }
+      ],
+      "settlement_pieces": 44,
+      "settlement_km2": 6.68,
+      "settlement_beyond_10min_km2": 6.65,
+      "habitation_points": 21,
+      "habitation_beyond_10min": 18,
+      "railway_stations": 5,
+      "railway_station_names": [
+        "Kasturiba Nagar",
+        "Indira Nagar",
+        "Tiruvanmiyur",
+        "Taramani",
+        "Perungudi"
+      ],
+      "beyond_10min_km2": 105.16
+    },
+    "cmp_corridors_focus": [
+      {
+        "corridor_name": "IT Corridor / OMR",
+        "osm_display_name": "Rajiv Gandhi Salai, CMWSSB Division 200, Panaiyur, Zone 15 Sholinganallur, Chennai Corporation, Sholinganallur, Chennai, Tamil Nadu, 600130, India",
+        "note": "CMP PDF name geocoded via Nominatim \u2014 Partial, not CMDA CAD."
+      },
+      {
+        "corridor_name": "GST Road",
+        "osm_display_name": "Grand Southern Trunk Road, CMWSSB Division 159, Ward 159, Zone 12 Alandur, Chennai Corporation, Alandur, Chennai, Tamil Nadu, 600027, India",
+        "note": "CMP PDF name geocoded via Nominatim \u2014 Partial, not CMDA CAD."
+      },
+      {
+        "corridor_name": "Outer Ring Road",
+        "osm_display_name": "Radisson Blu Bengaluru Outer Ring Road, Sy. #90/4, Outer Ring Road, Kaadubeesanahalli, Panathur, Bengaluru East City Corporation, Bengaluru, Bangalore East, Bengaluru Urban, Karnataka, 560037, India",
+        "note": "CMP PDF name geocoded via Nominatim \u2014 Partial, not CMDA CAD."
+      }
+    ],
+    "metro_towns": [
+      {
+        "name": "Tambaram",
+        "kind": "municipal_boundary",
+        "note": "OSM administrative boundary. Not GCC wards. Tambaram official ward maps on OpenCity are PDF-only."
+      },
+      {
+        "name": "Chengalpattu",
+        "kind": "admin_boundary",
+        "note": "OSM administrative boundary covering Chengalpattu area (may be taluk-scale)."
+      },
+      {
+        "name": "Mahabalipuram (study buffer)",
+        "kind": "study_buffer",
+        "note": "Approx. 3\u20134 km study buffer around Mahabalipuram / Mamallapuram \u2014 not an official municipal ward map."
+      }
+    ],
+    "files": {
+      "outside_gcc_settlements": "outside_gcc_settlements.geojson",
+      "outside_gcc_habitation": "outside_gcc_habitation.geojson",
+      "outside_gcc_roads": "outside_gcc_roads.geojson",
+      "omr_south_rail_stations": "omr_south_rail_stations.geojson"
+    },
+    "counts": {
+      "outside_gcc_settlement_pieces": 400,
+      "outside_gcc_habitation_points": 800,
+      "omr_south_rail_stations": 19,
+      "unmet_road_segments": 150,
+      "omr_unmet_road_km": 6.54,
+      "omr_settlement_beyond_10min_km2": 6.65,
+      "omr_beyond_10min_km2": 105.16
+    },
+    "limitation": "Tambaram official ward maps are PDF-only (not ingested). TNGIS Partial. Settlement area includes non-residential landuse. Beyond-10min includes vacant/water. CMP corridors are Nominatim approximations.",
+    "sources": [
+      {
+        "name": "TNGIS settlement / habitation WFS",
+        "status": "partial"
+      },
+      {
+        "name": "OSM outside-GCC major roads",
+        "status": "partial"
+      },
+      {
+        "name": "OSM walk isochrones \u2192 beyond 10 min",
+        "status": "partial"
+      },
+      {
+        "name": "OSM railway stations (manual download)",
+        "status": "loaded"
+      },
+      {
+        "name": "CMP corridors (PDF + Nominatim)",
+        "status": "partial"
+      },
+      {
+        "name": "Corridor AOIs / OMR line (OSM)",
+        "status": "loaded"
+      }
+    ]
   }
 }

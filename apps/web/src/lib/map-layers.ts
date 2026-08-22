@@ -26,7 +26,12 @@ export type MapLayerKey =
   | "tngis_habitation"
   | "cmrl_phase2_stations"
   | "cmrl_phase2_line"
-  | "outside_gcc_roads";
+  | "outside_gcc_roads"
+  | "corridor_aois"
+  | "walk_beyond_10min"
+  | "outside_gcc_settlements"
+  | "outside_gcc_habitation"
+  | "omr_south_rail_stations";
 
 export const MAP_LAYER_META: {
   key: MapLayerKey;
@@ -181,6 +186,43 @@ export const MAP_LAYER_META: {
     heavy: true,
     group: "core",
   },
+  {
+    key: "corridor_aois",
+    label: "OMR / Tambaram / Chengalpattu study AOIs",
+    short: "South AOIs",
+    defaultOn: false,
+    group: "core",
+  },
+  {
+    key: "walk_beyond_10min",
+    label: "Areas beyond 10 min OSM walk (Partial)",
+    short: "Beyond 10 min",
+    defaultOn: false,
+    heavy: true,
+    group: "core",
+  },
+  {
+    key: "outside_gcc_settlements",
+    label: "TNGIS settlements outside GCC (OMR focus, Partial)",
+    short: "Out-GCC settle",
+    defaultOn: false,
+    heavy: true,
+    group: "core",
+  },
+  {
+    key: "outside_gcc_habitation",
+    label: "TNGIS habitation outside GCC (OMR focus, Partial)",
+    short: "Out-GCC habit",
+    defaultOn: false,
+    group: "core",
+  },
+  {
+    key: "omr_south_rail_stations",
+    label: "South / OMR railway stations (OSM, Partial)",
+    short: "South rail",
+    defaultOn: false,
+    group: "core",
+  },
 ];
 
 export const CHENNAI_VIEW = {
@@ -222,6 +264,11 @@ const CORE_OFF_AMENITIES: Partial<Record<MapLayerKey, boolean>> = {
   cmrl_phase2_stations: false,
   cmrl_phase2_line: false,
   outside_gcc_roads: false,
+  corridor_aois: false,
+  walk_beyond_10min: false,
+  outside_gcc_settlements: false,
+  outside_gcc_habitation: false,
+  omr_south_rail_stations: false,
 };
 
 export const LAYER_PRESETS: Record<
@@ -393,7 +440,7 @@ export const LAYER_PRESETS: Record<
   },
   coverage: {
     label: "Coverage",
-    blurb: "Isochrones + outside-GCC roads + proposed Red Line C5",
+    blurb: "Isochrones + outside-GCC / OMR settlements + proposed Red Line C5",
     choropleth: "walk",
     layers: {
       ...CORE_OFF_AMENITIES,
@@ -407,12 +454,18 @@ export const LAYER_PRESETS: Record<
       walk_isochrones: true,
       omr_corridor: true,
       metro_area_boundaries: true,
-      tngis_settlement_area: true,
+      tngis_settlement_area: false,
       tngis_habitation: false,
       cmrl_phase2_line: true,
       cmrl_phase2_stations: true,
       outside_gcc_roads: true,
+      corridor_aois: true,
+      walk_beyond_10min: true,
+      outside_gcc_settlements: true,
+      outside_gcc_habitation: false,
+      omr_south_rail_stations: true,
       nmt_network: false,
+      cmp_corridors: true,
     },
   },
 };

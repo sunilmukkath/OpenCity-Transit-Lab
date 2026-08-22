@@ -49,6 +49,7 @@ def build() -> dict[str, Any]:
     need = analyses.get("connectivity_need") or {}
     cmrl = analyses.get("cmrl_phase2_scenario") or _load_json("cmrl_phase2_scenario.json") or {}
     outside = analyses.get("outside_gcc_osm") or _load_json("outside_gcc_osm_meta.json") or {}
+    omr_ctx = analyses.get("outside_gcc_omr_context") or _load_json("outside_gcc_omr_context.json") or {}
     sir = _load_json("sir_chennai_summary.json") or {}
     objectives = _load_json("objectives_analysis.json") or {}
     first_mile = next(
@@ -94,6 +95,11 @@ def build() -> dict[str, Any]:
             or (need.get("counts") or {}).get("urgent"),
             "outside_gcc_unmet_km_shown": (outside.get("counts") or {}).get("top_unmet_km_shown"),
             "outside_gcc_road_km": (outside.get("counts") or {}).get("outside_gcc_road_km"),
+            "omr_beyond_10min_km2": (omr_ctx.get("counts") or {}).get("omr_beyond_10min_km2"),
+            "omr_settlement_beyond_10min_km2": (omr_ctx.get("counts") or {}).get(
+                "omr_settlement_beyond_10min_km2"
+            ),
+            "omr_south_rail_stations": (omr_ctx.get("counts") or {}).get("omr_south_rail_stations"),
             "cmrl_c5_proposed_stations": cmrl.get("proposed_stations"),
             "sir_chennai_district_electors": sir.get("chennai_district_electors_total"),
             "sir_map_electors": sir.get("map_electors_total"),
@@ -122,6 +128,17 @@ def build() -> dict[str, Any]:
                 "status": outside.get("status"),
                 "counts": outside.get("counts"),
                 "note": outside.get("note"),
+            },
+            "outside_gcc_omr_context": {
+                "status": omr_ctx.get("status"),
+                "note": omr_ctx.get("note"),
+                "limitation": omr_ctx.get("limitation"),
+                "counts": omr_ctx.get("counts"),
+                "aois": omr_ctx.get("aois"),
+                "omr_highlight": omr_ctx.get("omr_highlight"),
+                "cmp_corridors_focus": omr_ctx.get("cmp_corridors_focus"),
+                "metro_towns": omr_ctx.get("metro_towns"),
+                "sources": omr_ctx.get("sources"),
             },
             "connectivity_need": {
                 "status": need.get("status"),
@@ -152,7 +169,7 @@ def build() -> dict[str, Any]:
                 "portal": "https://data.opencity.in/",
             },
             {
-                "name": "OSM walk network + major roads",
+                "name": "OSM walk network + major roads + OMR",
                 "portal": "https://www.openstreetmap.org/copyright",
             },
             {
@@ -166,6 +183,14 @@ def build() -> dict[str, Any]:
                 "status": "partial",
             },
             {
+                "name": "OSM railway stations (south / OMR)",
+                "status": "partial",
+            },
+            {
+                "name": "CMP corridors (PDF + Nominatim)",
+                "status": "partial",
+            },
+            {
                 "name": "TN SIR voter rolls 2026 (AC electors)",
                 "portal": "https://data.opencity.in/dataset/tamil-nadu-sir-voter-rolls-2026",
                 "status": "partial",
@@ -173,9 +198,10 @@ def build() -> dict[str, Any]:
         ],
         "next_steps_for_authorities": [
             "Field-verify high-gap wards and outside-GCC unmet road segments before capital works.",
+            "Prioritise OMR AOI settlements tagged beyond 10 min walk and unmet feeder roads (Mambakkam–Thiruporur).",
             "Replace curated Red Line coordinates with official CMRL station CAD when available.",
             "Add population-weighted coverage (Census / dasymetric) — SIR is electors 18+ at AC grain only.",
-            "Extend OSM street metrics and settlement context across full CMA if required.",
+            "Ingest Tambaram municipal wards when machine-readable GeoJSON is published (PDF-only today).",
         ],
     }
     return summary

@@ -117,6 +117,11 @@ function formatPopupProps(props: Record<string, unknown>): string {
     "village_name",
     "block_name",
     "ac_name",
+    "aoi_hints",
+    "beyond_10min",
+    "pct_area_beyond_10min",
+    "outside_gcc",
+    "corridor",
     "source_layer",
   ];
   const lines: string[] = [];
@@ -407,6 +412,161 @@ const LAYER_STACK: {
     layers: [
       { id: "tm-metro-boundaries-fill", type: "fill", paint: { "fill-color": "#db2777", "fill-opacity": 0.1 } },
       { id: "tm-metro-boundaries-line", type: "line", paint: { "line-color": "#be185d", "line-width": 2 } },
+      {
+        id: "tm-metro-boundaries-label",
+        type: "symbol",
+        layout: {
+          "text-field": ["coalesce", ["get", "label"], ["get", "name"]],
+          "text-size": ["interpolate", ["linear"], ["zoom"], 9, 11, 13, 14],
+          "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
+          "text-anchor": "center",
+          "text-allow-overlap": false,
+        },
+        paint: {
+          "text-color": "#9d174d",
+          "text-halo-color": "#ffffff",
+          "text-halo-width": 1.5,
+        },
+      },
+    ],
+  },
+  {
+    key: "corridor_aois",
+    sourceId: "tm-corridor-aois",
+    layers: [
+      {
+        id: "tm-corridor-aois-fill",
+        type: "fill",
+        paint: { "fill-color": "#6366f1", "fill-opacity": 0.08 },
+      },
+      {
+        id: "tm-corridor-aois-line",
+        type: "line",
+        paint: {
+          "line-color": "#4f46e5",
+          "line-width": 2,
+          "line-dasharray": [2, 1.5],
+        },
+      },
+      {
+        id: "tm-corridor-aois-label",
+        type: "symbol",
+        layout: {
+          "text-field": ["coalesce", ["get", "label"], ["get", "name"]],
+          "text-size": ["interpolate", ["linear"], ["zoom"], 9, 12, 13, 15],
+          "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
+          "text-anchor": "center",
+        },
+        paint: {
+          "text-color": "#312e81",
+          "text-halo-color": "#ffffff",
+          "text-halo-width": 1.6,
+        },
+      },
+    ],
+  },
+  {
+    key: "walk_beyond_10min",
+    sourceId: "tm-beyond-10",
+    layers: [
+      {
+        id: "tm-beyond-10-fill",
+        type: "fill",
+        paint: {
+          "fill-color": "#f43f5e",
+          "fill-opacity": 0.18,
+        },
+      },
+      {
+        id: "tm-beyond-10-line",
+        type: "line",
+        paint: { "line-color": "#e11d48", "line-width": 1, "line-opacity": 0.5 },
+      },
+    ],
+  },
+  {
+    key: "outside_gcc_settlements",
+    sourceId: "tm-out-gcc-sett",
+    layers: [
+      {
+        id: "tm-out-gcc-sett-fill",
+        type: "fill",
+        paint: {
+          "fill-color": [
+            "case",
+            [
+              "any",
+              ["==", ["get", "beyond_10min"], true],
+              ["==", ["get", "beyond_10min"], "true"],
+            ],
+            "#ea580c",
+            "#d97706",
+          ],
+          "fill-opacity": 0.45,
+        },
+      },
+      {
+        id: "tm-out-gcc-sett-line",
+        type: "line",
+        paint: { "line-color": "#9a3412", "line-width": 0.8 },
+      },
+    ],
+  },
+  {
+    key: "outside_gcc_habitation",
+    sourceId: "tm-out-gcc-hab",
+    layers: [
+      {
+        id: "tm-out-gcc-hab-circle",
+        type: "circle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 2.5, 14, 5],
+          "circle-color": [
+            "case",
+            [
+              "any",
+              ["==", ["get", "beyond_10min"], true],
+              ["==", ["get", "beyond_10min"], "true"],
+            ],
+            "#c2410c",
+            "#b45309",
+          ],
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+      },
+    ],
+  },
+  {
+    key: "omr_south_rail_stations",
+    sourceId: "tm-omr-rail",
+    layers: [
+      {
+        id: "tm-omr-rail-circle",
+        type: "circle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 5, 14, 9],
+          "circle-color": "#6d28d9",
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "#ffffff",
+        },
+      },
+      {
+        id: "tm-omr-rail-label",
+        type: "symbol",
+        layout: {
+          "text-field": ["get", "label"],
+          "text-size": 11,
+          "text-offset": [0, 1.2],
+          "text-anchor": "top",
+          "text-font": ["Open Sans Semibold", "Arial Unicode MS Regular"],
+        },
+        paint: {
+          "text-color": "#4c1d95",
+          "text-halo-color": "#ffffff",
+          "text-halo-width": 1.4,
+        },
+      },
     ],
   },
   {
@@ -419,6 +579,21 @@ const LAYER_STACK: {
         paint: {
           "line-color": "#7c3aed",
           "line-width": ["interpolate", ["linear"], ["zoom"], 9, 3, 14, 6],
+        },
+      },
+      {
+        id: "tm-omr-label",
+        type: "symbol",
+        layout: {
+          "symbol-placement": "line",
+          "text-field": ["coalesce", ["get", "corridor"], ["literal", "OMR / Rajiv Gandhi Salai"]],
+          "text-size": 12,
+          "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
+        },
+        paint: {
+          "text-color": "#5b21b6",
+          "text-halo-color": "#ffffff",
+          "text-halo-width": 1.5,
         },
       },
     ],
@@ -916,6 +1091,11 @@ const LAYER_STACK: {
 const INTERACTIVE_LAYER_IDS = [
   "tm-wards-fill",
   "tm-walk-isochrones-fill",
+  "tm-beyond-10-fill",
+  "tm-out-gcc-sett-fill",
+  "tm-out-gcc-hab-circle",
+  "tm-corridor-aois-fill",
+  "tm-metro-boundaries-fill",
   "tm-nmt-line",
   "tm-tngis-settlement-fill",
   "tm-bus-routes-line",
@@ -924,6 +1104,7 @@ const INTERACTIVE_LAYER_IDS = [
   "tm-cmrl-c5-stations-circle",
   "tm-cmrl-c5-line",
   "tm-outside-gcc-line",
+  "tm-omr-rail-circle",
   "tm-hubs-circle",
   "tm-railway-circle",
   "tm-tngis-habitation-circle",

@@ -152,6 +152,16 @@ export function MapLegend({
     points.push({ kind: "dot", color: "#dc2626", label: "Proposed C5 stations (Partial)" });
   if (visibility.outside_gcc_roads)
     points.push({ kind: "line", color: "#f59e0b", label: "Outside-GCC roads >400m from stop" });
+  if (visibility.corridor_aois)
+    points.push({ kind: "fill", color: "rgba(99,102,241,0.35)", label: "OMR / Tambaram / Chengalpattu AOIs" });
+  if (visibility.walk_beyond_10min)
+    points.push({ kind: "fill", color: "rgba(244,63,94,0.35)", label: "Beyond 10 min walk" });
+  if (visibility.outside_gcc_settlements)
+    points.push({ kind: "fill", color: "rgba(234,88,12,0.5)", label: "Settlements outside GCC" });
+  if (visibility.outside_gcc_habitation)
+    points.push({ kind: "dot", color: "#b45309", label: "Habitation outside GCC" });
+  if (visibility.omr_south_rail_stations)
+    points.push({ kind: "dot", color: "#6d28d9", label: "South / OMR rail stations" });
   if (visibility.railway_stations)
     points.push({ kind: "dot", color: "#a78bfa", label: "Suburban / IR stations" });
   if (visibility.tngis_settlement_area)

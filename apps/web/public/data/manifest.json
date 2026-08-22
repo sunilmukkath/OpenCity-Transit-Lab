@@ -1017,8 +1017,8 @@
     },
     "corridor_aois": {
       "status": "loaded",
-      "file": "corridor_aois.geojson",
       "feature_count": 3,
+      "file": "corridor_aois.geojson",
       "notes": "Study AOIs for OMR, Tambaram, Chengalpattu \u2014 not official wards."
     },
     "connectivity_need": {
@@ -1281,7 +1281,7 @@
       "feature_count": 150,
       "file": "outside_gcc_roads.geojson",
       "derived_from": "osm_overpass_outside_gcc",
-      "notes": "OSM trunk/primary/secondary/tertiary road segments outside GCC 2022 ward polygons (OMR / south-corridor study bbox). Unmet = farther than 400m from a GTFS stop. Partial \u2014 OSM completeness; not ridership."
+      "notes": "Outside-GCC unmet roads tagged with OMR / Tambaram / Chengalpattu AOI hints."
     },
     "coverage_assessment": {
       "status": "partial",
@@ -1292,8 +1292,25 @@
       "status": "partial",
       "feature_count": 152,
       "file": "walk_beyond_10min.geojson",
-      "notes": "Areas in the GCC\u222aOMR study polygon outside a 10-minute OSM network walk to nearest GTFS stop/hub (80 m/min). Derived from existing isochrone rings. Ward CSV uses sample-grid walk minutes \u2014 Partial, not population-weighted.",
-      "limitation": "Not official MTC service areas; OSM graph gaps can inflate beyond-10min land; includes water/vacant land in study polygon; ward metrics are samples not people."
+      "notes": "Study area outside \u226410 min OSM walk (Partial)."
+    },
+    "outside_gcc_settlements": {
+      "status": "partial",
+      "feature_count": 400,
+      "file": "outside_gcc_settlements.geojson",
+      "notes": "Inventory for areas outside Greater Chennai Corporation wards, focused on the OMR \u2192 Mahabalipuram corridor and Tambaram / Chengalpattu study AOIs. Combines OSM unmet roads, TNGIS settlements/habitation, OSM walk-beyond-10min, and suburban rail stations. Partial \u2014 not official municipal wards; not ridership."
+    },
+    "outside_gcc_habitation": {
+      "status": "partial",
+      "feature_count": 800,
+      "file": "outside_gcc_habitation.geojson",
+      "notes": "Inventory for areas outside Greater Chennai Corporation wards, focused on the OMR \u2192 Mahabalipuram corridor and Tambaram / Chengalpattu study AOIs. Combines OSM unmet roads, TNGIS settlements/habitation, OSM walk-beyond-10min, and suburban rail stations. Partial \u2014 not official municipal wards; not ridership."
+    },
+    "omr_south_rail_stations": {
+      "status": "partial",
+      "feature_count": 19,
+      "file": "omr_south_rail_stations.geojson",
+      "notes": "OSM railway stations near OMR / south AOIs or outside GCC."
     }
   },
   "realtime": [

@@ -384,6 +384,10 @@ export function MapExplorer({
                 ["tngis_habitation", "Habitation"],
                 ["cmrl_phase2_stations", "CMRL C5"],
                 ["outside_gcc_roads", "Outside GCC"],
+                ["corridor_aois", "South AOIs"],
+                ["walk_beyond_10min", "Beyond 10 min"],
+                ["outside_gcc_settlements", "Out-GCC settle"],
+                ["omr_south_rail_stations", "South rail"],
               ] as const
             ).map(([key, label]) => {
               const ready =

@@ -18,6 +18,7 @@ export function ensureMapLibreWorker() {
 export const RASTER_BASEMAP = {
   version: 8 as const,
   name: "Carto Voyager",
+  glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
   sources: {
     carto: {
       type: "raster" as const,

@@ -58,6 +58,29 @@ export function LastMilePage() {
         </div>
       </div>
 
+      <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm">
+        <span className="text-[var(--ink-muted)]">Downloads — beyond 10 min walk:</span>
+        <a
+          href="/data/walk_beyond_10min.geojson"
+          download
+          className="font-semibold text-[var(--accent)] hover:underline"
+        >
+          Map GeoJSON
+        </a>
+        <span className="text-[var(--ink-muted)]">·</span>
+        <a
+          href="/data/walk_beyond_10min_wards.csv"
+          download
+          className="font-semibold text-[var(--accent)] hover:underline"
+        >
+          Ward list CSV
+        </a>
+        <span className="text-[var(--ink-muted)]">·</span>
+        <a href="/coverage" className="font-semibold text-[var(--accent)] hover:underline">
+          Coverage dashboard
+        </a>
+      </div>
+
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
           <div className="mb-3 flex items-center justify-between gap-2">

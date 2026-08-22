@@ -1,0 +1,76 @@
+{
+  "status": "partial",
+  "generated_at": "2026-08-22T06:40:09.429121+00:00",
+  "note": "Areas in the GCC\u222aOMR study polygon outside a 10-minute OSM network walk to nearest GTFS stop/hub (80 m/min). Derived from existing isochrone rings. Ward CSV uses sample-grid walk minutes \u2014 Partial, not population-weighted.",
+  "files": {
+    "geojson": "walk_beyond_10min.geojson",
+    "wards_csv": "walk_beyond_10min_wards.csv",
+    "isochrones": "walk_isochrones.geojson"
+  },
+  "counts": {
+    "study_area_km2": 1564.12,
+    "within_10min_km2": 422.47,
+    "beyond_10min_km2": 1127.81,
+    "pct_study_beyond_10min": 72.1,
+    "polygon_pieces_ge_0_05km2": 152,
+    "gcc_wards_listed": 200,
+    "gcc_wards_high_beyond_10min": 9
+  },
+  "high_beyond_10min_wards": [
+    {
+      "ward_label": "159",
+      "mean_walk_min": 24.7,
+      "pct_samples_beyond_10min": 70.9,
+      "gap_band": "severe"
+    },
+    {
+      "ward_label": "15",
+      "mean_walk_min": 20.8,
+      "pct_samples_beyond_10min": 70.5,
+      "gap_band": "high"
+    },
+    {
+      "ward_label": "191",
+      "mean_walk_min": 14.9,
+      "pct_samples_beyond_10min": 69.6,
+      "gap_band": "severe"
+    },
+    {
+      "ward_label": "184",
+      "mean_walk_min": 12.9,
+      "pct_samples_beyond_10min": 66.0,
+      "gap_band": "high"
+    },
+    {
+      "ward_label": "16",
+      "mean_walk_min": 11.7,
+      "pct_samples_beyond_10min": 59.2,
+      "gap_band": "high"
+    },
+    {
+      "ward_label": "189",
+      "mean_walk_min": 13.2,
+      "pct_samples_beyond_10min": 57.0,
+      "gap_band": "moderate"
+    },
+    {
+      "ward_label": "190",
+      "mean_walk_min": 11.9,
+      "pct_samples_beyond_10min": 54.1,
+      "gap_band": "high"
+    },
+    {
+      "ward_label": "199",
+      "mean_walk_min": 11.5,
+      "pct_samples_beyond_10min": 47.5,
+      "gap_band": "high"
+    },
+    {
+      "ward_label": "200",
+      "mean_walk_min": 10.4,
+      "pct_samples_beyond_10min": 42.2,
+      "gap_band": "high"
+    }
+  ],
+  "limitation": "Not official MTC service areas; OSM graph gaps can inflate beyond-10min land; includes water/vacant land in study polygon; ward metrics are samples not people."
+}

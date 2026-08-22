@@ -1287,6 +1287,13 @@
       "status": "partial",
       "file": "coverage_assessment.json",
       "notes": "Unified coverage view for partners/authorities. Combines GCC ward catchments, OSM walk isochrones over GCC\u222aOMR study area, outside-GCC road gaps, and a Partial CMRL Phase II Corridor 5 (Red Line) walk scenario. No fabricated ridership. Proposed metro coordinates are curated approximations."
+    },
+    "walk_beyond_10min": {
+      "status": "partial",
+      "feature_count": 152,
+      "file": "walk_beyond_10min.geojson",
+      "notes": "Areas in the GCC\u222aOMR study polygon outside a 10-minute OSM network walk to nearest GTFS stop/hub (80 m/min). Derived from existing isochrone rings. Ward CSV uses sample-grid walk minutes \u2014 Partial, not population-weighted.",
+      "limitation": "Not official MTC service areas; OSM graph gaps can inflate beyond-10min land; includes water/vacant land in study polygon; ward metrics are samples not people."
     }
   },
   "realtime": [

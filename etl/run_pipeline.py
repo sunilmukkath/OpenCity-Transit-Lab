@@ -42,6 +42,7 @@ from build_facility_walk_to_pt import main as build_facility_walk_to_pt_main  # 
 from build_cmrl_phase2 import main as build_cmrl_phase2_main  # noqa: E402
 from build_outside_gcc_osm import main as build_outside_gcc_osm_main  # noqa: E402
 from build_coverage_assessment import main as build_coverage_assessment_main  # noqa: E402
+from build_walk_beyond_10min import main as build_walk_beyond_10min_main  # noqa: E402
 from ingest_tngis_wfs import main as ingest_tngis_wfs_main  # noqa: E402
 
 RAW = ROOT / "data" / "raw"
@@ -1880,6 +1881,7 @@ def main() -> int:
     for label, fn in (
         ("cmrl_phase2", build_cmrl_phase2_main),
         ("outside_gcc_osm", build_outside_gcc_osm_main),
+        ("walk_beyond_10min", build_walk_beyond_10min_main),
         ("coverage_assessment", build_coverage_assessment_main),
     ):
         try:

@@ -39,6 +39,26 @@ type CoverageAssessment = {
   next_steps_for_authorities?: string[];
 };
 
+type Beyond10Meta = {
+  status?: string;
+  note?: string;
+  limitation?: string;
+  counts?: {
+    study_area_km2?: number;
+    within_10min_km2?: number;
+    beyond_10min_km2?: number;
+    pct_study_beyond_10min?: number;
+    gcc_wards_high_beyond_10min?: number;
+  };
+  high_beyond_10min_wards?: {
+    ward_label?: string;
+    mean_walk_min?: number | null;
+    pct_samples_beyond_10min?: number | null;
+    gap_band?: string;
+  }[];
+  files?: { geojson?: string; wards_csv?: string; isochrones?: string };
+};
+
 function Kpi({
   label,
   value,
@@ -62,13 +82,32 @@ function fmt(v: number | null | undefined, suffix = ""): string {
   return `${v}${suffix}`;
 }
 
+function DlLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <a
+      href={href}
+      download
+      className="inline-flex rounded-md border border-[var(--border)] bg-white/[0.03] px-3 py-2 text-sm font-semibold text-[var(--ink)] transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
+    >
+      {children}
+    </a>
+  );
+}
+
 export function CoveragePage() {
   const [data, setData] = useState<CoverageAssessment | null>(null);
+  const [beyond, setBeyond] = useState<Beyond10Meta | null>(null);
 
   useEffect(() => {
     let c = false;
-    fetchJson<CoverageAssessment>("/data/coverage_assessment.json").then((d) => {
-      if (!c) setData(d);
+    Promise.all([
+      fetchJson<CoverageAssessment>("/data/coverage_assessment.json"),
+      fetchJson<Beyond10Meta>("/data/walk_beyond_10min_meta.json"),
+    ]).then(([cov, b10]) => {
+      if (!c) {
+        setData(cov);
+        setBeyond(b10);
+      }
     });
     return () => {
       c = true;
@@ -79,6 +118,7 @@ export function CoveragePage() {
   const cmrl = data?.blocks?.cmrl_phase2_scenario;
   const outside = data?.blocks?.outside_gcc_osm;
   const sir = data?.blocks?.sir_electors;
+  const highWards = beyond?.high_beyond_10min_wards ?? [];
 
   return (
     <div className="space-y-8">
@@ -131,6 +171,65 @@ export function CoveragePage() {
           hint={`City mean outside 400m: ${fmt(k.city_mean_pct_outside_400m_wards, "%")}`}
         />
       </div>
+
+      <section className="space-y-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-4 sm:p-5">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">
+              Areas beyond a 10-minute walk
+            </h2>
+            <p className="mt-1 max-w-3xl text-sm text-[var(--ink-muted)]">
+              {beyond?.note ??
+                "Study area outside ≤10 min OSM network walk to nearest GTFS stop/hub (Partial)."}
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <StatusBadge status={beyond?.status ?? "unavailable"} />
+              {beyond?.counts?.beyond_10min_km2 != null ? (
+                <span className="text-xs text-[var(--ink-muted)]">
+                  ≈ {beyond.counts.beyond_10min_km2} km² beyond 10 min (
+                  {fmt(beyond.counts.pct_study_beyond_10min, "%")} of study polygon)
+                </span>
+              ) : null}
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <DlLink href="/data/walk_beyond_10min.geojson">Download map (GeoJSON)</DlLink>
+            <DlLink href="/data/walk_beyond_10min_wards.csv">Download ward list (CSV)</DlLink>
+            <DlLink href="/data/walk_isochrones.geojson">Download 5/10/15 min bands</DlLink>
+          </div>
+        </div>
+
+        {highWards.length ? (
+          <div className="overflow-hidden rounded-xl border border-[var(--border)]">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-[rgba(10,31,74,0.7)] text-[10px] uppercase text-[var(--ink-muted)]">
+                <tr>
+                  <th className="px-3 py-2">Ward</th>
+                  <th className="px-3 py-2">Mean walk</th>
+                  <th className="px-3 py-2">Samples &gt;10 min</th>
+                  <th className="px-3 py-2">Gap</th>
+                </tr>
+              </thead>
+              <tbody>
+                {highWards.map((w) => (
+                  <tr key={String(w.ward_label)} className="border-t border-[var(--border)]">
+                    <td className="px-3 py-2 text-[var(--yellow)]">{w.ward_label}</td>
+                    <td className="px-3 py-2">{fmt(w.mean_walk_min, " min")}</td>
+                    <td className="px-3 py-2">{fmt(w.pct_samples_beyond_10min, "%")}</td>
+                    <td className="px-3 py-2 capitalize text-[var(--ink-muted)]">
+                      {w.gap_band ?? "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : null}
+        <p className="text-xs text-[var(--ink-muted)]">
+          {beyond?.limitation ??
+            "Large share of beyond-10-min land is OMR / south corridor and vacant or water — not only dense neighbourhoods. Ward list uses sample grids, not population."}
+        </p>
+      </section>
 
       <section className="grid gap-4 lg:grid-cols-2">
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
@@ -194,19 +293,29 @@ export function CoveragePage() {
             <li>
               Outside-GCC major road length:{" "}
               <strong className="text-[var(--ink)]">
-                {fmt((outside?.counts as { outside_gcc_road_km?: number } | undefined)?.outside_gcc_road_km, " km")}
+                {fmt(
+                  (outside?.counts as { outside_gcc_road_km?: number } | undefined)
+                    ?.outside_gcc_road_km,
+                  " km"
+                )}
               </strong>
             </li>
             <li>
               Top unmet segments shown:{" "}
               <strong className="text-[var(--ink)]">
-                {fmt((outside?.counts as { top_unmet_km_shown?: number } | undefined)?.top_unmet_km_shown, " km")}
+                {fmt(
+                  (outside?.counts as { top_unmet_km_shown?: number } | undefined)
+                    ?.top_unmet_km_shown,
+                  " km"
+                )}
               </strong>{" "}
               (&gt;400 m from a GTFS stop)
             </li>
           </ul>
           <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--bg)] p-3 text-sm">
-            <p className="text-[10px] font-semibold uppercase text-[var(--accent)]">SIR electors (proxy)</p>
+            <p className="text-[10px] font-semibold uppercase text-[var(--accent)]">
+              SIR electors (proxy)
+            </p>
             <p className="mt-1 text-[var(--ink-muted)]">{sir?.note}</p>
             <p className="mt-2 text-[var(--ink)]">
               Chennai district ACs: {fmt(sir?.chennai_district_electors_total)} electors
